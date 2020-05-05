@@ -1,8 +1,11 @@
 package io.github.lucaargolo.kibe.entangled
 
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.container.BlockContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
@@ -44,6 +47,10 @@ class EntangledHandler {
                     BlockContext.EMPTY
                 ), playerEntity.inventory, entity.name
             )
+        }
+
+        BlockEntityRendererRegistry.INSTANCE.register(ENTANGLED_CHEST.entityType) {
+            EntangledChestEntityRenderer(it) as BlockEntityRenderer<BlockEntity>
         }
     }
 
