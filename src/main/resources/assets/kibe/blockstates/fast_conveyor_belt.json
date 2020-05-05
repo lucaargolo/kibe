@@ -1,0 +1,16 @@
+{
+  "multipart": [
+
+    {"apply": {"model": "kibe:block/conveyor_corner"}},
+
+    {"when": {"facing": "north"}, "apply": { "model": "kibe:block/fast_conveyor_center" }},
+    {"when": {"facing": "east"}, "apply": { "model": "kibe:block/fast_conveyor_center" , "y": 90}},
+    {"when": {"facing": "south"}, "apply": { "model": "kibe:block/fast_conveyor_center", "y": 180 }},
+    {"when": {"facing": "west"}, "apply": { "model": "kibe:block/fast_conveyor_center", "y": 270 }},
+
+    {"when": {"north": "false"}, "apply": { "model": "kibe:block/conveyor_side", "y": 270 }},
+    {"when": {"east": "false"}, "apply": { "model": "kibe:block/conveyor_side" }},
+    {"when": {"south": "false"}, "apply": { "model": "kibe:block/conveyor_side", "y": 90 }},
+    {"when": {"west": "false"}, "apply": { "model": "kibe:block/conveyor_side", "y": 180 }}
+  ]
+}

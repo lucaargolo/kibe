@@ -1,0 +1,7 @@
+{
+  "parent": "kibe:item/conveyor_belt",
+  "textures": {
+       "conveyor_belt_base": "kibe:block/conveyor_belt_base",
+       "conveyor_belt_top": "kibe:block/conveyor_belt_regular_center"
+   }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "kibe:block/conveyor_center",
+  "textures": {
+       "center": "kibe:block/conveyor_belt_fast_center"
+   }
+}
