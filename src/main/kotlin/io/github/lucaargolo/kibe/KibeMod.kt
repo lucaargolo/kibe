@@ -16,9 +16,9 @@ fun init() {
 
     ENTANGLED_HANDLER.init()
 
-    val REGULAR_CONVEYOR_BELT = ConveyorBelt(0.5F)
-    val FAST_CONVEYOR_BELT = ConveyorBelt(1F)
-    val EXPRESS_CONVEYOR_BELT = ConveyorBelt(2F)
+    val REGULAR_CONVEYOR_BELT = ConveyorBelt(0.125F)
+    val FAST_CONVEYOR_BELT = ConveyorBelt(0.25F)
+    val EXPRESS_CONVEYOR_BELT = ConveyorBelt(0.5F)
     Registry.register(Registry.BLOCK, Identifier(MOD_ID, "regular_conveyor_belt"), REGULAR_CONVEYOR_BELT)
     Registry.register(Registry.ITEM, Identifier(MOD_ID, "regular_conveyor_belt"), BlockItem(REGULAR_CONVEYOR_BELT, Item.Settings().group(ItemGroup.MISC)))
     Registry.register(Registry.BLOCK, Identifier(MOD_ID, "fast_conveyor_belt"), FAST_CONVEYOR_BELT)
