@@ -1,15 +1,10 @@
-package io.github.lucaargolo.kibe.entangled
+package io.github.lucaargolo.kibe.blocks.entangled
 
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
 import net.minecraft.util.DefaultedList
 import net.minecraft.world.PersistentState
-import java.util.function.Supplier
 
 class EntangledChestState(var inventory: DefaultedList<ItemStack>, key: String) : PersistentState(key) {
 

@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.entangled
+package io.github.lucaargolo.kibe.blocks.entangled
 
 import io.github.lucaargolo.kibe.ENTANGLED_HANDLER
 import net.minecraft.container.BlockContext
@@ -6,7 +6,6 @@ import net.minecraft.container.Container
 import net.minecraft.container.Slot
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.inventory.BasicInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
@@ -120,12 +119,12 @@ class EntangledChestContainer(
 
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
-        val slot = this.slotList[invSlot]
+        val slot = this.slots[invSlot]
         if (slot != null && slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 27) {
-                if (!insertItem(itemStack2, 27, this.slotList.size, true)) {
+                if (!insertItem(itemStack2, 27, this.slots.size, true)) {
                     return ItemStack.EMPTY
                 }
             } else if (!insertItem(itemStack2, 0, 27, false)) {

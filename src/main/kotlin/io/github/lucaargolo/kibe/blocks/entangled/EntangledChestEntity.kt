@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.entangled
+package io.github.lucaargolo.kibe.blocks.entangled
 
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.container.Container

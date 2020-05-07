@@ -1,10 +1,9 @@
-package io.github.lucaargolo.kibe.entangled
+package io.github.lucaargolo.kibe.blocks.entangled
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.container.BlockContext
 import net.minecraft.entity.player.PlayerEntity
@@ -22,7 +21,7 @@ class EntangledHandler {
     fun init() {
         Registry.register(Registry.BLOCK, ENTANGLED_CHEST.id, ENTANGLED_CHEST)
         Registry.register(Registry.ITEM, ENTANGLED_CHEST.id, BlockItem(ENTANGLED_CHEST, Item.Settings().group(ItemGroup.MISC)))
-        Registry.register(Registry.BLOCK_ENTITY, ENTANGLED_CHEST.id, ENTANGLED_CHEST.entityType)
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, ENTANGLED_CHEST.id, ENTANGLED_CHEST.entityType)
 
         ContainerProviderRegistry.INSTANCE.registerFactory(ENTANGLED_CHEST.id) { syncId: Int, identifier: Identifier?, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
             val pos = packetByteBuf.readBlockPos()

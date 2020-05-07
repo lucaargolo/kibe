@@ -1,7 +1,6 @@
-package io.github.lucaargolo.kibe.entangled
+package io.github.lucaargolo.kibe.blocks.entangled
 
 import io.github.lucaargolo.kibe.ENTANGLED_HANDLER
-import it.unimi.dsi.fastutil.ints.Int2IntFunction
 import net.minecraft.block.enums.ChestType
 import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.RenderLayer
@@ -9,7 +8,6 @@ import net.minecraft.client.render.TexturedRenderLayers
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
-import net.minecraft.client.render.block.entity.LightmapCoordinatesRetriever
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
 import net.minecraft.state.property.Properties

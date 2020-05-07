@@ -1,6 +1,5 @@
-package io.github.lucaargolo.kibe.entangled
+package io.github.lucaargolo.kibe.blocks.entangled
 
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.text.Text

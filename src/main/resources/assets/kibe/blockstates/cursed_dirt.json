@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "snowy=false": [
+      { "model": "kibe:block/cursed_dirt" },
+      { "model": "kibe:block/cursed_dirt", "y": 90 },
+      { "model": "kibe:block/cursed_dirt", "y": 180 },
+      { "model": "kibe:block/cursed_dirt", "y": 270 }
+    ],
+    "snowy=true":  { "model": "kibe:block/cursed_dirt" }
+  }
+}
