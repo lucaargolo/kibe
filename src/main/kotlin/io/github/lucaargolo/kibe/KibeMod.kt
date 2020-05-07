@@ -7,13 +7,17 @@ import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimer
 import io.github.lucaargolo.kibe.blocks.miscellaneous.Spikes
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Material
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import java.util.*
 
 val MOD_ID = "kibe"
+val FAKE_PLAYER_UUID = UUID.randomUUID();
 val ENTANGLED_HANDLER = EntangledHandler()
 
 @Suppress("unused")
@@ -30,7 +34,12 @@ fun init() {
     Registry.register(Registry.ITEM, REDSTONE_TIMER.id, BlockItem(REDSTONE_TIMER, Item.Settings().group(ItemGroup.MISC)))
     Registry.register(Registry.BLOCK_ENTITY_TYPE, REDSTONE_TIMER.id, REDSTONE_TIMER.entityType)
 
-    val WOODEN_SPIKES = Spikes(1F, false, FabricBlockSettings.of(Material.WOOD))
+    val IRON_SPIKES = Spikes(6F, false, FabricBlockSettings.of(Material.METAL))
+    Registry.register(Registry.BLOCK, Identifier(MOD_ID, "iron_spikes"), IRON_SPIKES)
+    Registry.register(Registry.ITEM, Identifier(MOD_ID, "iron_spikes"), BlockItem(IRON_SPIKES, Item.Settings().group(ItemGroup.MISC)))
+    val DIAMOND_SPIKES = Spikes(7F, true, FabricBlockSettings.of(Material.METAL))
+    Registry.register(Registry.BLOCK, Identifier(MOD_ID, "diamond_spikes"), DIAMOND_SPIKES)
+    Registry.register(Registry.ITEM, Identifier(MOD_ID, "diamond_spikes"), BlockItem(DIAMOND_SPIKES, Item.Settings().group(ItemGroup.MISC)))
 
     val REGULAR_CONVEYOR_BELT = ConveyorBelt(0.125F)
     val FAST_CONVEYOR_BELT = ConveyorBelt(0.25F)
