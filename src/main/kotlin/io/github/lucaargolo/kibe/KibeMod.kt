@@ -4,6 +4,9 @@ import io.github.lucaargolo.kibe.blocks.entangled.EntangledHandler
 import io.github.lucaargolo.kibe.blocks.miscellaneous.ConveyorBelt
 import io.github.lucaargolo.kibe.blocks.miscellaneous.CursedDirt
 import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimer
+import io.github.lucaargolo.kibe.blocks.miscellaneous.Spikes
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.minecraft.block.Material
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -26,6 +29,8 @@ fun init() {
     Registry.register(Registry.BLOCK, REDSTONE_TIMER.id, REDSTONE_TIMER)
     Registry.register(Registry.ITEM, REDSTONE_TIMER.id, BlockItem(REDSTONE_TIMER, Item.Settings().group(ItemGroup.MISC)))
     Registry.register(Registry.BLOCK_ENTITY_TYPE, REDSTONE_TIMER.id, REDSTONE_TIMER.entityType)
+
+    val WOODEN_SPIKES = Spikes(1F, false, FabricBlockSettings.of(Material.WOOD))
 
     val REGULAR_CONVEYOR_BELT = ConveyorBelt(0.125F)
     val FAST_CONVEYOR_BELT = ConveyorBelt(0.25F)

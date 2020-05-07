@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
 import io.github.lucaargolo.kibe.MOD_ID
-import net.fabricmc.fabric.api.block.FabricBlockSettings
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -20,7 +20,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.function.Supplier
 
-class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).build()) {
+class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
 
     val id: Identifier = Identifier(MOD_ID, "entangled_chest")
     val entityType = BlockEntityType.Builder.create(Supplier { this.createBlockEntity(null) }, this).build(null)

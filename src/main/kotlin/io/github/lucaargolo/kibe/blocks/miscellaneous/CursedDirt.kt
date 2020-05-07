@@ -1,10 +1,8 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
-import net.minecraft.entity.EntityCategory
-import net.minecraft.entity.SpawnRestriction
-import net.minecraft.entity.SpawnType
+import net.minecraft.entity.*
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.EmptyFluid
@@ -27,13 +25,13 @@ import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
 
-class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly().build()) {
+class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly()) {
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
             val entries = (world.chunkManager as ServerChunkManager).chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos.up())
             if (entries.isEmpty()) {
-                player.sendMessage(TranslatableText("Nothing can spawn"))
+                player.sendMessage(LiteralText("Nothing can spawn"))
                 return ActionResult.SUCCESS
             } else {
                 val names: Text = LiteralText("Names: ")
@@ -80,9 +78,10 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
         //Yay, you've passed all the required conditions, now you only need to decide what mob to spawn and do it
         val mob = getSpawnableMonster(world, pos.up(), random)
         if (mob != null) {
-            mob.setPos(pos.x + .5, pos.y + 1.0, pos.z + .5)
             val location = if(world.getFluidState(pos.up()).fluid is EmptyFluid) SpawnRestriction.Location.ON_GROUND else SpawnRestriction.Location.IN_WATER
-            if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob.type)) world.spawnEntity(mob)
+            if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob)) {
+                mob.spawn(world, null, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
+            }
         }
     }
 
@@ -96,14 +95,11 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
         }
     }
 
-    private fun getSpawnableMonster(world: World, pos: BlockPos, random: Random): MobEntity? {
+    private fun getSpawnableMonster(world: World, pos: BlockPos, random: Random): EntityType<*>? {
         val spawnList = (world.chunkManager as ServerChunkManager).chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos)
         if (spawnList.size == 0) return null
         val entry: Biome.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
         if (!SpawnRestriction.canSpawn(entry.type, world, SpawnType.NATURAL, pos, world.random)) return null
-        val entity = entry.type.create(world)
-        if (entity !is MobEntity) return null
-        entity.initialize(world, world.getLocalDifficulty(pos), SpawnType.NATURAL, null, null)
-        return entity
+        return entry.type
     }
 }
