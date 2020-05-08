@@ -1,0 +1,7 @@
+{
+    "parent": "kibe:block/spikes",
+    "textures": {
+        "0": "block/diamond_block",
+        "particle": "block/diamond_block"
+    }
+}

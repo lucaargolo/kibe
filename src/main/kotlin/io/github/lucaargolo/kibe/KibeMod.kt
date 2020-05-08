@@ -6,9 +6,11 @@ import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.minecraft.block.Material
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
+import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
@@ -62,7 +64,11 @@ fun initClient() {
 
 
     ENTANGLED_HANDLER.initClient()
-
+    ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(ClientSpriteRegistryCallback { spriteAtlasTexture, registry ->
+        (0..15).forEach{
+            registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
+        }
+    })
 
     BlockEntityRendererRegistry.INSTANCE.register(REDSTONE_TIMER.entityType) {
         RedstoneTimerEntityRenderer(it)

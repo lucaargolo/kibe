@@ -23,7 +23,7 @@ class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
     var bottom: ModelPart = ModelPart(16, 16, 0, -16)
     var bottomSolid: ModelPart = ModelPart(16, 16, 3, -9)
     var center: ModelPart = ModelPart(16, 16, 5, -1)
-    var rightSolid: ModelPart = ModelPart(16, 16, 3, -1)
+    var rightSolid: ModelPart = ModelPart(16, 16, -2, -1)
     var right: ModelPart = ModelPart(16, 16, 0, 0)
     var left: ModelPart = ModelPart(16, 16, 15, 0)
 
@@ -43,11 +43,12 @@ class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
 
     override fun render(blockEntity: RedstoneTimerEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         val spriteIdentifier = SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, Identifier("kibe:block/redstone_timer_"+ ceil(tickDelta*15).toInt()))
+
         val vertexConsumer = spriteIdentifier.getVertexConsumer(vertexConsumers,
             Function { texture: Identifier? -> RenderLayer.getEntitySolid(texture) }
         )
         val lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.world, blockEntity.pos.up())
-        
+
         matrices.push()
         matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180f));
         matrices.translate(0.0, -1.0, -1.0)

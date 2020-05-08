@@ -1,22 +1,19 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import com.mojang.authlib.GameProfile
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType
 import net.minecraft.block.BlockState
 import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityContext
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.network.ServerPlayerInteractionManager
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.shape.VoxelShape
+import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import java.util.*
-
 class Spikes(private val damage: Float, private val isPlayer: Boolean, settings: Settings): Block(settings) {
-
 
     override fun onSteppedOn(world: World, pos: BlockPos, entity: Entity) {
         if(world is ServerWorld) {
@@ -25,16 +22,24 @@ class Spikes(private val damage: Float, private val isPlayer: Boolean, settings:
                 else entity.damage(DamageSource.GENERIC, damage)
             }
         }
-
-
     }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
         return BlockRenderType.MODEL
     }
 
+
     override fun hasSidedTransparency(state: BlockState?): Boolean {
         return true
+    }
+
+
+    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: EntityContext?): VoxelShape {
+        return createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
+    }
+
+    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: EntityContext?): VoxelShape {
+        return createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
     }
 
 }
