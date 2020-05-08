@@ -1,12 +1,14 @@
 package io.github.lucaargolo.kibe
 
+import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntityRenderer
 import io.github.lucaargolo.kibe.blocks.entangled.EntangledHandler
-import io.github.lucaargolo.kibe.blocks.miscellaneous.ConveyorBelt
-import io.github.lucaargolo.kibe.blocks.miscellaneous.CursedDirt
-import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimer
-import io.github.lucaargolo.kibe.blocks.miscellaneous.Spikes
+import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.minecraft.block.Material
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
@@ -20,6 +22,9 @@ val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID = UUID.randomUUID();
 val ENTANGLED_HANDLER = EntangledHandler()
 
+val REDSTONE_TIMER = RedstoneTimer()
+
+
 @Suppress("unused")
 fun init() {
 
@@ -29,7 +34,6 @@ fun init() {
     Registry.register(Registry.BLOCK, Identifier(MOD_ID, "cursed_dirt"), CURSED_EARTH)
     Registry.register(Registry.ITEM, Identifier(MOD_ID, "cursed_dirt"), BlockItem(CURSED_EARTH, Item.Settings().group(ItemGroup.MISC)))
 
-    val REDSTONE_TIMER = RedstoneTimer()
     Registry.register(Registry.BLOCK, REDSTONE_TIMER.id, REDSTONE_TIMER)
     Registry.register(Registry.ITEM, REDSTONE_TIMER.id, BlockItem(REDSTONE_TIMER, Item.Settings().group(ItemGroup.MISC)))
     Registry.register(Registry.BLOCK_ENTITY_TYPE, REDSTONE_TIMER.id, REDSTONE_TIMER.entityType)
@@ -56,6 +60,12 @@ fun init() {
 @Suppress("unused")
 fun initClient() {
 
+
     ENTANGLED_HANDLER.initClient()
+
+
+    BlockEntityRendererRegistry.INSTANCE.register(REDSTONE_TIMER.entityType) {
+        RedstoneTimerEntityRenderer(it)
+    }
 }
 
