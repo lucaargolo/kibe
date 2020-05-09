@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.cursedEffect
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.*
@@ -7,6 +8,8 @@ import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.EmptyFluid
 import net.minecraft.fluid.Fluids
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerChunkManager
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.LiteralText
@@ -19,11 +22,11 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import net.minecraft.util.registry.Registry
 import net.minecraft.world.*
 import net.minecraft.world.biome.Biome
 import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
-
 
 class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly()) {
 
@@ -80,7 +83,23 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
         if (mob != null) {
             val location = if(world.getFluidState(pos.up()).fluid is EmptyFluid) SpawnRestriction.Location.ON_GROUND else SpawnRestriction.Location.IN_WATER
             if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob)) {
-                mob.spawn(world, null, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
+                val activeEffect = CompoundTag()
+                activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(cursedEffect))
+                activeEffect.putInt("Amplifier", 1)
+                activeEffect.putInt("Duration", 999999)
+                val activeEffects = ListTag()
+                activeEffects.add(activeEffect)
+                val tag = CompoundTag()
+                tag.put("ActiveEffects", activeEffects)
+                tag.putString("id", Registry.ENTITY_TYPE.getId(mob).toString())
+                val entity = EntityType.loadEntityWithPassengers(tag, world) { it ->
+                    it.refreshPositionAndAngles(pos.x+.0, pos.y+1.0, pos.z+.0, it.yaw, it.pitch)
+                    if (!world.tryLoadEntity(it)) null else it
+                }
+                if(entity is MobEntity) {
+                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity)), SpawnType.NATURAL, null, null)
+                }
+                //mob.spawn(world, tag, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
             }
         }
     }

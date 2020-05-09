@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.MOD_ID
 import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
@@ -11,7 +10,6 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
 import net.minecraft.util.Identifier
 import java.util.function.Function
-import kotlin.math.ceil
 
 
 class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<RedstoneTimerEntity>(dispatcher) {
@@ -42,47 +40,74 @@ class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
 
 
     override fun render(blockEntity: RedstoneTimerEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-        val spriteIdentifier = SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, Identifier("kibe:block/redstone_timer_"+ ceil(tickDelta*15).toInt()))
 
-        val vertexConsumer = spriteIdentifier.getVertexConsumer(vertexConsumers,
-            Function { texture: Identifier? -> RenderLayer.getEntitySolid(texture) }
-        )
         val lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.world, blockEntity.pos.up())
 
         matrices.push()
         matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180f));
         matrices.translate(0.0, -1.0, -1.0)
-        renderThings(matrices, vertexConsumer, lightAbove, overlay)
+        renderThings(blockEntity, matrices, vertexConsumers, lightAbove, overlay)
         matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f));
         matrices.translate(-1.0, 0.0, -1.0)
-        renderThings(matrices, vertexConsumer, lightAbove, overlay)
+        renderThings(blockEntity, matrices, vertexConsumers, lightAbove, overlay)
         matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90f));
         matrices.translate(-1.0, 0.0, 0.0)
-        renderThings(matrices, vertexConsumer, lightAbove, overlay)
+        renderThings(blockEntity, matrices, vertexConsumers, lightAbove, overlay)
         matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f));
         matrices.translate(-1.0, 0.0, -1.0)
-        renderThings(matrices, vertexConsumer, lightAbove, overlay)
+        renderThings(blockEntity, matrices, vertexConsumers, lightAbove, overlay)
         matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(90f));
         matrices.translate(0.0, -1.0, 0.0)
-        renderThings(matrices, vertexConsumer, lightAbove, overlay)
+        renderThings(blockEntity, matrices, vertexConsumers, lightAbove, overlay)
         matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(180f));
         matrices.translate(-1.0, -1.0, 0.0)
-        renderThings(matrices, vertexConsumer, lightAbove, overlay)
+        renderThings(blockEntity, matrices, vertexConsumers, lightAbove, overlay)
 
         matrices.pop()
     }
 
-    private fun renderThings(matrices: MatrixStack, vertexConsumer: VertexConsumer, light: Int, overlay: Int) {
-        background.render(matrices, vertexConsumer, light, overlay)
-        leftSolid.render(matrices, vertexConsumer, light, overlay)
-        topSolid.render(matrices, vertexConsumer, light, overlay)
-        top.render(matrices, vertexConsumer, light, overlay)
-        bottom.render(matrices, vertexConsumer, light, overlay)
-        bottomSolid.render(matrices, vertexConsumer, light, overlay)
-        center.render(matrices, vertexConsumer, light, overlay)
-        rightSolid.render(matrices, vertexConsumer, light, overlay)
-        right.render(matrices, vertexConsumer, light, overlay)
-        left.render(matrices, vertexConsumer, light, overlay)
+    private fun renderThings(blockEntity: RedstoneTimerEntity, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
+
+        val timerTexture = SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, Identifier("kibe:block/redstone_timer_"+blockEntity.current/4))
+        val ironTexture = SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, Identifier("block/iron_block"))
+
+        val timerConsumer = timerTexture.getVertexConsumer(vertexConsumers,
+            Function { texture: Identifier? -> RenderLayer.getEntitySolid(texture) }
+        )
+        val ironConsumer = ironTexture.getVertexConsumer(vertexConsumers,
+            Function { texture: Identifier? -> RenderLayer.getEntitySolid(texture) }
+        )
+
+        val offsetx = when(blockEntity.level) {
+            in 0..4 -> blockEntity.level*2
+            in 5..8 -> 8
+            in 9..12 -> 24-(blockEntity.level*2)
+            in 13..15 -> 0
+            else -> 0
+        }
+
+        val offsety = when(blockEntity.level) {
+            in 0..4 -> 0
+            in 5..8 -> (blockEntity.level-4)*2
+            in 9..12 -> 4*2
+            in 13..15 -> 32-(blockEntity.level*2)
+            else -> 0
+        }
+
+        val selector = ModelPart(16, 16, 3, 3)
+        selector.addCuboid(3f+offsetx, 3f+offsety, 0f, 2f, 2f, 1f)
+        selector.render(matrices, ironConsumer, light, overlay)
+
+        background.render(matrices, timerConsumer, light, overlay)
+        leftSolid.render(matrices, timerConsumer, light, overlay)
+        topSolid.render(matrices, timerConsumer, light, overlay)
+        top.render(matrices, timerConsumer, light, overlay)
+        bottom.render(matrices, timerConsumer, light, overlay)
+        bottomSolid.render(matrices, timerConsumer, light, overlay)
+        center.render(matrices, timerConsumer, light, overlay)
+        rightSolid.render(matrices, timerConsumer, light, overlay)
+        right.render(matrices, timerConsumer, light, overlay)
+        left.render(matrices, timerConsumer, light, overlay)
     }
 
 

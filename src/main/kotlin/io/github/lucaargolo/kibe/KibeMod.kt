@@ -1,21 +1,16 @@
 package io.github.lucaargolo.kibe
 
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntityRenderer
 import io.github.lucaargolo.kibe.blocks.entangled.EntangledHandler
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
+import io.github.lucaargolo.kibe.effects.CursedEffect
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.minecraft.block.Material
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.texture.SpriteAtlasTexture
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import java.util.*
@@ -25,12 +20,15 @@ val FAKE_PLAYER_UUID = UUID.randomUUID();
 val ENTANGLED_HANDLER = EntangledHandler()
 
 val REDSTONE_TIMER = RedstoneTimer()
+val cursedEffect = CursedEffect()
 
 
 @Suppress("unused")
 fun init() {
 
     ENTANGLED_HANDLER.init()
+
+    Registry.register(Registry.STATUS_EFFECT, Identifier(MOD_ID, "cursed_effect"), cursedEffect)
 
     val CURSED_EARTH = CursedDirt()
     Registry.register(Registry.BLOCK, Identifier(MOD_ID, "cursed_dirt"), CURSED_EARTH)
