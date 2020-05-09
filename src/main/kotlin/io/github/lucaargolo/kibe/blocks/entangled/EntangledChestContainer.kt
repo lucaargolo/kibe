@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
-import io.github.lucaargolo.kibe.ENTANGLED_HANDLER
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import net.minecraft.container.BlockContext
 import net.minecraft.container.Container
 import net.minecraft.container.Slot
@@ -11,12 +11,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class EntangledChestContainer(
-    syncId: Int,
-    playerInventory: PlayerInventory,
-    entity: EntangledChestEntity,
-    val blockContext: BlockContext
-): Container(null, syncId) {
+class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, entity: EntangledChestEntity, val blockContext: BlockContext): Container(null, syncId) {
 
     var inventory: Inventory = object: Inventory {
         override fun getInvSize(): Int {
@@ -108,7 +103,7 @@ class EntangledChestContainer(
         return blockContext.run({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
-                ).block != ENTANGLED_HANDLER.ENTANGLED_CHEST
+                ).block != ENTANGLED_CHEST
             ) false else player.squaredDistanceTo(
                 blockPos.x + .5,
                 blockPos.y + .5,

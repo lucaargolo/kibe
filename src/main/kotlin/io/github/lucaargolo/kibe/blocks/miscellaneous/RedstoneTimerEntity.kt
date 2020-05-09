@@ -1,11 +1,12 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 
-class RedstoneTimerEntity(val timer: RedstoneTimer): BlockEntity(timer.entityType), Tickable {
+class RedstoneTimerEntity(val timer: RedstoneTimer): BlockEntity(getEntityType(timer)), Tickable {
 
     var current = 0;
     var level = 0

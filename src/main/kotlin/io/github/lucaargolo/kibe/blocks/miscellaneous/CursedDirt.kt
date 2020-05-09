@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.cursedEffect
+import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.*
@@ -84,7 +84,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
             val location = if(world.getFluidState(pos.up()).fluid is EmptyFluid) SpawnRestriction.Location.ON_GROUND else SpawnRestriction.Location.IN_WATER
             if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob)) {
                 val activeEffect = CompoundTag()
-                activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(cursedEffect))
+                activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
                 activeEffect.putInt("Amplifier", 1)
                 activeEffect.putInt("Duration", 999999)
                 val activeEffects = ListTag()

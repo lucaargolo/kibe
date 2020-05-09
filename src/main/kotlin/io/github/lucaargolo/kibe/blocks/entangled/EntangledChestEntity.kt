@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.container.Container
 import net.minecraft.entity.player.PlayerEntity
@@ -12,7 +13,7 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.DefaultedList
 
-class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(chest.entityType) {
+class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)) {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
 

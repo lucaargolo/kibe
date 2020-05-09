@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
-import io.github.lucaargolo.kibe.ENTANGLED_HANDLER
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import net.minecraft.block.enums.ChestType
 import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.RenderLayer
@@ -34,7 +34,7 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         val world = blockEntity.world
         val blockState =
             if (world != null) blockEntity.cachedState
-            else (ENTANGLED_HANDLER.ENTANGLED_CHEST.defaultState.with(
+            else (ENTANGLED_CHEST.defaultState.with(
                 Properties.HORIZONTAL_FACING,
                 Direction.SOUTH
             ))

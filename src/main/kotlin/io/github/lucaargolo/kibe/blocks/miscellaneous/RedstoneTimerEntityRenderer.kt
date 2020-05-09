@@ -4,13 +4,12 @@ import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
-import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
+import net.minecraft.container.PlayerContainer
 import net.minecraft.util.Identifier
 import java.util.function.Function
-
 
 class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<RedstoneTimerEntity>(dispatcher) {
 
@@ -37,8 +36,7 @@ class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
         right.addCuboid(0f, 1f, 15f, 0f, 14f,1f)
         left.addCuboid(0f, 1f, 0f, 0f, 14f, 1f)
     }
-
-
+    
     override fun render(blockEntity: RedstoneTimerEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
         val lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.world, blockEntity.pos.up())
@@ -68,8 +66,8 @@ class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
 
     private fun renderThings(blockEntity: RedstoneTimerEntity, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
-        val timerTexture = SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, Identifier("kibe:block/redstone_timer_"+blockEntity.current/4))
-        val ironTexture = SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, Identifier("block/iron_block"))
+        val timerTexture = SpriteIdentifier(PlayerContainer.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/redstone_timer_"+blockEntity.current/4))
+        val ironTexture = SpriteIdentifier(PlayerContainer.BLOCK_ATLAS_TEXTURE, Identifier("block/iron_block"))
 
         val timerConsumer = timerTexture.getVertexConsumer(vertexConsumers,
             Function { texture: Identifier? -> RenderLayer.getEntitySolid(texture) }

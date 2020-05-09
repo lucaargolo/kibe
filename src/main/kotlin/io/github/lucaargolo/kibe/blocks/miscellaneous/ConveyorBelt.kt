@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityContext
@@ -18,7 +18,7 @@ import net.minecraft.world.IWorld
 import net.minecraft.world.World
 
 
-class ConveyorBelt(val speed: Float): Block(FabricBlockSettings.of(Material.METAL).build()) {
+class ConveyorBelt(val speed: Float): Block(FabricBlockSettings.of(Material.METAL)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
