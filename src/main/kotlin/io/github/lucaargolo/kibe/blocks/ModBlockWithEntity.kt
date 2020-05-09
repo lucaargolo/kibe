@@ -17,14 +17,16 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.registry.Registry
 import java.util.function.Supplier
+import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 
 class ModBlockWithEntity<T: BlockEntity>: ModBlock {
 
     var entity: BlockEntityType<T>? = null
         private set
-    private var renderer: Class<BlockEntityRenderer<T>>? = null
-    private var container: Class<Container>? = null
-    private var containerScreen: Class<ContainerScreen<*>>? = null
+    private var renderer: KClass<BlockEntityRenderer<T>>? = null
+    private var container: KClass<Container>? = null
+    private var containerScreen: KClass<ContainerScreen<*>>? = null
 
     @Suppress("UNCHECKED_CAST", "unused")
     constructor(block: BlockWithEntity) : super(block) {
@@ -32,17 +34,17 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
     }
 
     @Suppress("UNCHECKED_CAST", "unused")
-    constructor(block: BlockWithEntity, blockEntityRenderer: Class<*>) : super(block) {
+    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.renderer = blockEntityRenderer as Class<BlockEntityRenderer<T>>
+        this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
     }
 
     @Suppress("UNCHECKED_CAST", "unused")
-    constructor(block: BlockWithEntity, blockEntityRenderer: Class<*>, blockEntityContainer: Class<*>, blockEntityScreen: Class<*>) : super(block) {
+    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityContainer: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.renderer = blockEntityRenderer as Class<BlockEntityRenderer<T>>
-        this.container = blockEntityContainer as Class<Container>
-        this.containerScreen = blockEntityScreen as Class<ContainerScreen<*>>
+        this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
+        this.container = blockEntityContainer as KClass<Container>
+        this.containerScreen = blockEntityScreen as KClass<ContainerScreen<*>>
     }
 
     override fun init(identifier: Identifier) {
@@ -53,9 +55,9 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
         if (container != null) {
             ContainerProviderRegistry.INSTANCE.registerFactory(identifier) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
                 val pos = packetByteBuf.readBlockPos()
-                container!!.getConstructor().newInstance(syncId,
+                container!!.primaryConstructor!!.call(syncId,
                     playerEntity.inventory,
-                    playerEntity.world.getBlockEntity(pos) as EntangledChestEntity,
+                    playerEntity.world.getBlockEntity(pos),
                     BlockContext.create(playerEntity.world, pos)
                 )
             }
@@ -68,8 +70,8 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
             ScreenProviderRegistry.INSTANCE.registerFactory(identifier) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
                 val pos = packetByteBuf.readBlockPos()
                 val entity = playerEntity.entityWorld.getBlockEntity(pos) as LockableContainerBlockEntity
-                containerScreen!!.getConstructor().newInstance(
-                    container!!.getConstructor().newInstance(
+                containerScreen!!.primaryConstructor!!.call(
+                    container!!.primaryConstructor!!.call(
                         syncId,
                         playerEntity.inventory,
                         entity,
@@ -80,7 +82,7 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
         }
         if(renderer != null) {
             BlockEntityRendererRegistry.INSTANCE.register(entity) { it2 ->
-                renderer!!.getConstructor().newInstance(it2)
+                renderer!!.primaryConstructor!!.call(it2)
             }
         }
     }
