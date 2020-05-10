@@ -12,6 +12,8 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerChunkManager
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.state.StateManager
+import net.minecraft.state.property.Properties
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
@@ -29,6 +31,17 @@ import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
 class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly()) {
+
+    init {
+        defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 15).with(Properties.SNOWY, false)
+    }
+
+    override fun appendProperties(stateManager: StateManager.Builder<Block, BlockState>) {
+        stateManager.add(Properties.LEVEL_15)
+        super.appendProperties(stateManager)
+    }
+
+
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
@@ -60,8 +73,8 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
             if (world.getLightLevel(pos.up()) <= 7) {
                 repeat((0..3).count()) {
                     val randomPos = pos.add(random.nextInt(3) - 1, random.nextInt(3) - 1, random.nextInt(3) - 1)
-                    if ((world.getBlockState(randomPos).block == Blocks.DIRT || world.getBlockState(randomPos).block == Blocks.GRASS_BLOCK ) && canSurvive(world.getBlockState(randomPos), world, randomPos)) {
-                        world.setBlockState(randomPos, defaultState.with(SNOWY, world.getBlockState(randomPos.up()).block == Blocks.SNOW))
+                    if (canSpread(state, world, randomPos)) {
+                        world.setBlockState(randomPos, defaultState.with(SNOWY, world.getBlockState(randomPos.up()).block == Blocks.SNOW).with(Properties.LEVEL_15, state[Properties.LEVEL_15]-1))
                     }
                 }
             }
@@ -102,6 +115,10 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
                 //mob.spawn(world, tag, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
             }
         }
+    }
+
+    public fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
+        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
     }
 
     private fun canSurvive(state: BlockState, worldView: WorldView, pos: BlockPos): Boolean {

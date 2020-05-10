@@ -40,4 +40,5 @@ class CursedEffect: StatusEffect(StatusEffectType.HARMFUL, 3484199) {
     }
 
 
+
 }

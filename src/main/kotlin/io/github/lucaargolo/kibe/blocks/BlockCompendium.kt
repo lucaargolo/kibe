@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier
 
 private val registry = mutableMapOf<Identifier, ModBlock>()
 
-val CURSED_EARTH = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
+val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
 val REDSTONE_TIMER = register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class))
 val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), ModBlock(Spikes(6F, false, FabricBlockSettings.of(Material.METAL))))
 val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), ModBlock(Spikes(7F, true, FabricBlockSettings.of(Material.METAL))))
