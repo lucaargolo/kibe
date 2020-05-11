@@ -1,22 +1,6 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "kibe:block/redstone_timer",
-		"0": "kibe:block/redstone_timer_0",
-		"1": "kibe:block/redstone_timer_1",
-		"2": "kibe:block/redstone_timer_2",
-		"3": "kibe:block/redstone_timer_3",
-		"4": "kibe:block/redstone_timer_4",
-		"5": "kibe:block/redstone_timer_5",
-		"6": "kibe:block/redstone_timer_6",
-		"7": "kibe:block/redstone_timer_7",
-		"8": "kibe:block/redstone_timer_8",
-		"9": "kibe:block/redstone_timer_9",
-		"10": "kibe:block/redstone_timer_10",
-		"11": "kibe:block/redstone_timer_11",
-		"12": "kibe:block/redstone_timer_12",
-		"13": "kibe:block/redstone_timer_13",
-		"14": "kibe:block/redstone_timer_14",
-		"15": "kibe:block/redstone_timer_15"
+		"all": "kibe:block/redstone_timer"
 	}
 }

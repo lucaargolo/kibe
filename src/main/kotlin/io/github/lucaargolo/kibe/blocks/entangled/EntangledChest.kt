@@ -47,13 +47,13 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
     override fun createBlockEntity(view: BlockView?) = EntangledChestEntity(this)
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        if(!world.getBlockState(pos.up()).isAir) {
+        return if(world.getBlockState(pos.up()).isAir) {
             if (!world.isClient) {
                 ContainerProviderRegistry.INSTANCE.openContainer(getId(this), player as ServerPlayerEntity?) { buf -> buf.writeBlockPos(pos) }
             }
-            return ActionResult.SUCCESS
+            ActionResult.SUCCESS
         }else{
-            return ActionResult.FAIL
+            ActionResult.FAIL
         }
     }
 

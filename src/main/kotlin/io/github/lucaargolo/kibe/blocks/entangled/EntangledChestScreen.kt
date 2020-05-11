@@ -14,9 +14,9 @@ class EntangledChestScreen(container: EntangledChestContainer?, inventory: Playe
     private val TEXTURE = Identifier("kibe:textures/gui/entangled_chest.png")
 
     override fun render(mouseX: Int, mouseY: Int, delta: Float) {
-        //this.renderBackground()
-        //super.render(mouseX, mouseY, delta)
-        //drawMouseoverTooltip(mouseX, mouseY)
+        this.renderBackground()
+        super.render(mouseX, mouseY, delta)
+        drawMouseoverTooltip(mouseX, mouseY)
     }
 
     override fun drawForeground(mouseX: Int, mouseY: Int) {
