@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, entity: EntangledChestEntity, val blockContext: BlockContext): Container(null, syncId) {
+class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val entity: EntangledChestEntity, val blockContext: BlockContext): Container(null, syncId) {
 
     var inventory: Inventory = object: Inventory {
         override fun getInvSize(): Int {

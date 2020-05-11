@@ -43,6 +43,8 @@ fun initClient() {
 fun initTexturesClient() {
     @Suppress("deprecated")
     ClientSpriteRegistryCallback.event(PlayerContainer.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
+        registry.register(Identifier(MOD_ID, "block/entangled_chest"))
+        registry.register(Identifier(MOD_ID, "block/entangled_chest_runes"))
         (0..15).forEach{
             registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
         }
