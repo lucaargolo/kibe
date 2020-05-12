@@ -10,7 +10,7 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.util.Identifier
 
-private val registry = mutableMapOf<Identifier, ModBlock>()
+val blockRegistry = mutableMapOf<Identifier, ModBlock>()
 
 val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
 val REDSTONE_TIMER = register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class))
@@ -22,28 +22,28 @@ val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt")
 val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), EntangledChestEntityRenderer::class, EntangledChestContainer::class, EntangledChestScreen::class))
 
 private fun register(identifier: Identifier, block: ModBlock): Block {
-    registry[identifier] = block
+    blockRegistry[identifier] = block
     return block.block
 }
 
 fun getId(block: Block): Identifier? {
-    registry.forEach {
+    blockRegistry.forEach {
         if(it.value.block == block) return it.key
     }
     return null
 }
 
 fun getEntityType(block: Block): BlockEntityType<out BlockEntity>? {
-    registry.forEach {
+    blockRegistry.forEach {
         if(it.value.block == block) return (it.value as ModBlockWithEntity<*>).entity
     }
     return null
 }
 
 fun initBlocks() {
-    registry.forEach{ it.value.init(it.key) }
+    blockRegistry.forEach{ it.value.init(it.key) }
 }
 
 fun initBlocksClient() {
-    registry.forEach{ it.value.initClient(it.key) }
+    blockRegistry.forEach{ it.value.initClient(it.key) }
 }

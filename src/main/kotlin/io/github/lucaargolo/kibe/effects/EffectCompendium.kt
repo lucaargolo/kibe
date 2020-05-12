@@ -5,15 +5,15 @@ import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
-private val registry = mutableMapOf<Identifier, StatusEffect>()
+val effectRegistry = mutableMapOf<Identifier, StatusEffect>()
 
 val CURSED_EFFECT = register(Identifier(MOD_ID, "cursed_effect"), CursedEffect())
 
 private fun register(identifier: Identifier, effect: StatusEffect): StatusEffect {
-    registry[identifier] = effect
+    effectRegistry[identifier] = effect
     return effect
 }
 
 fun initEffects() {
-    registry.forEach{ Registry.register(Registry.STATUS_EFFECT, it.key, it.value) }
+    effectRegistry.forEach{ Registry.register(Registry.STATUS_EFFECT, it.key, it.value) }
 }

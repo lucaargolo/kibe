@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.entangled
 
 import com.google.common.collect.ImmutableList
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
+import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.RenderLayer
@@ -16,7 +17,12 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
 import net.minecraft.container.PlayerContainer
 import net.minecraft.state.property.Properties
+import net.minecraft.util.DyeColor
+import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
+import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.util.hit.HitResult
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import java.util.*
 import java.util.function.Function
@@ -34,9 +40,13 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         DOWN
     }
 
-    var isScreenOpen = false
-    var currentState = ANIMATION_STATE.DOWN
-    var counter = 0f
+    private val contextMap = mutableMapOf<BlockPos, Context>()
+
+    private class Context {
+        var isScreenOpen = false
+        var currentState = ANIMATION_STATE.DOWN
+        var counter = 0f
+    }
 
     val bottomModel = ModelPart(64, 64, 0, 0)
     val topModel = ModelPart(64, 64, 0, 0)
@@ -88,7 +98,19 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
 
     override fun render(blockEntity: EntangledChestEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
-        if(MinecraftClient.getInstance().currentScreen is EntangledChestScreen) {
+        var context = Context()
+
+        if(contextMap.contains(blockEntity.pos)) {
+            context = contextMap[blockEntity.pos]!!
+        }else{
+            contextMap[blockEntity.pos] = context
+        }
+
+        var isScreenOpen = context.isScreenOpen
+        var currentState = context.currentState
+        var counter = context.counter
+
+        if(MinecraftClient.getInstance().currentScreen is EntangledChestScreen && (MinecraftClient.getInstance().currentScreen as EntangledChestScreen).container.entity.runeColors == blockEntity.runeColors) {
             if(!isScreenOpen) {
                 isScreenOpen = true
                 when(currentState){
@@ -175,6 +197,28 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         }
         matrices.translate(-0.5, 0.0, -0.5)
 
+        val popup = if(
+            MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
+            (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == blockEntity.pos &&
+            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune) 1 else 0
+
+
+        (1..8).forEach {
+            val rune = ModelPart(32, 32, 0, 0)
+            rune.setTextureOffset(getRuneTextureU(blockEntity.runeColors[it]!!), getRuneTextureV(blockEntity.runeColors[it]!!))
+            when(it) {
+                1 -> rune.addCuboid(11f, 13f+popup, 11f, 2f, 2f, 2f)
+                2 -> rune.addCuboid(7f, 13f+popup, 11f, 2f, 2f, 2f)
+                3 -> rune.addCuboid(3f, 13f+popup, 11f, 2f, 2f, 2f)
+                4 -> rune.addCuboid(3f, 13f+popup, 7f, 2f, 2f, 2f)
+                5 -> rune.addCuboid(3f, 13f+popup, 3f, 2f, 2f, 2f)
+                6 -> rune.addCuboid(7f, 13f+popup, 3f, 2f, 2f, 2f)
+                7 -> rune.addCuboid(11f, 13f+popup, 3f, 2f, 2f, 2f)
+                8 -> rune.addCuboid(11f, 13f+popup, 7f, 2f, 2f, 2f)
+            }
+            rune.render(matrices, runesConsumer, lightAbove, overlay)
+        }
+
         topModel.render(matrices, chestConsumer, lightAbove, overlay)
 
         m = matrices.peek().model
@@ -183,7 +227,54 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
             renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(LAYER_LIST[l]))
         }
 
+        contextMap[blockEntity.pos]!!.isScreenOpen = isScreenOpen
+        contextMap[blockEntity.pos]!!.currentState = currentState
+        contextMap[blockEntity.pos]!!.counter = counter
+
         matrices.pop()
+    }
+
+    private fun getRuneTextureV(color: DyeColor): Int {
+        return when(color) {
+            DyeColor.WHITE -> 0
+            DyeColor.ORANGE -> 4
+            DyeColor.MAGENTA -> 8
+            DyeColor.LIGHT_BLUE -> 12
+            DyeColor.YELLOW -> 16
+            DyeColor.LIME -> 20
+            DyeColor.PINK -> 24
+            DyeColor.GRAY -> 28
+            DyeColor.LIGHT_GRAY -> 0
+            DyeColor.CYAN -> 4
+            DyeColor.BLUE -> 8
+            DyeColor.PURPLE -> 12
+            DyeColor.GREEN -> 16
+            DyeColor.BROWN -> 20
+            DyeColor.RED -> 24
+            DyeColor.BLACK -> 28
+        }
+
+    }
+
+    private fun getRuneTextureU(color: DyeColor): Int {
+        return when(color) {
+            DyeColor.WHITE -> 0
+            DyeColor.ORANGE -> 0
+            DyeColor.MAGENTA -> 0
+            DyeColor.LIGHT_BLUE -> 0
+            DyeColor.YELLOW -> 0
+            DyeColor.LIME -> 0
+            DyeColor.PINK -> 0
+            DyeColor.GRAY -> 0
+            DyeColor.LIGHT_GRAY -> 8
+            DyeColor.CYAN -> 8
+            DyeColor.BLUE -> 8
+            DyeColor.PURPLE -> 8
+            DyeColor.GREEN -> 8
+            DyeColor.BROWN -> 8
+            DyeColor.RED -> 8
+            DyeColor.BLACK -> 8
+        }
     }
 
     private fun renderMiddleDownPart(g: Float, matrix4f: Matrix4f, vertexConsumer: VertexConsumer) {

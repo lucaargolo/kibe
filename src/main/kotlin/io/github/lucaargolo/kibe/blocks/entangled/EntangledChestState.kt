@@ -6,24 +6,45 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.DefaultedList
 import net.minecraft.world.PersistentState
 
-class EntangledChestState(var inventory: DefaultedList<ItemStack>, key: String) : PersistentState(key) {
+class EntangledChestState(key: String) : PersistentState(key) {
 
-    override fun fromTag(tag: CompoundTag?) {
-        this.inventory = DefaultedList.ofSize(inventory.size, ItemStack.EMPTY)
-        Inventories.fromTag(tag, this.inventory)
+    var inventoryMap = mutableMapOf<String, DefaultedList<ItemStack>>()
+
+    fun createInventory(colorCode: String) {
+        inventoryMap[colorCode] = DefaultedList.ofSize(27, ItemStack.EMPTY)
     }
 
-    override fun toTag(tag: CompoundTag?): CompoundTag {
-        Inventories.toTag(tag, this.inventory)
-        return tag!!
+    fun hasInventory(colorCode: String): Boolean {
+        return inventoryMap[colorCode] != null
+    }
+
+    override fun fromTag(tag: CompoundTag) {
+        tag.keys.forEach {
+            val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
+            Inventories.fromTag(tag.get(it) as CompoundTag, tempInventory)
+            inventoryMap[it] = tempInventory
+        }
+    }
+
+    override fun toTag(tag: CompoundTag): CompoundTag {
+        inventoryMap.forEach { (colorCode, inventory) ->
+            val subTag = CompoundTag()
+            Inventories.toTag(subTag, inventory)
+            tag.put(colorCode, subTag)
+        }
+        return tag
     }
 
     val invMaxStackAmount = 64
 
-    fun getInvSize() = inventory.size
+    fun getInvSize(colorCode: String): Int {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        return inventoryMap[colorCode]!!.size
+    }
 
-    fun isInvEmpty(): Boolean {
-        val iterator = this.inventory.iterator()
+    fun isInvEmpty(colorCode: String): Boolean {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        val iterator = inventoryMap[colorCode]!!.iterator()
         var itemStack: ItemStack
         do {
             if (iterator.hasNext())
@@ -33,28 +54,34 @@ class EntangledChestState(var inventory: DefaultedList<ItemStack>, key: String) 
         return false
     }
 
-    fun getInvStack(slot: Int): ItemStack {
-        return inventory[slot]
+    fun getInvStack(slot: Int, colorCode: String): ItemStack {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        return inventoryMap[colorCode]!![slot]
     }
 
-    fun takeInvStack(slot: Int, amount: Int): ItemStack {
-        return Inventories.splitStack(inventory, slot, amount)
+    fun takeInvStack(slot: Int, amount: Int, colorCode: String): ItemStack {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        return Inventories.splitStack(inventoryMap[colorCode]!!, slot, amount)
     }
 
-    fun removeInvStack(slot: Int): ItemStack {
-        return Inventories.removeStack(this.inventory, slot);
+    fun removeInvStack(slot: Int, colorCode: String): ItemStack {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        return Inventories.removeStack(inventoryMap[colorCode]!!, slot);
     }
 
-    fun setInvStack(slot: Int, stack: ItemStack?) {
-        inventory[slot] = stack
+    fun setInvStack(slot: Int, stack: ItemStack?, colorCode: String) {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        inventoryMap[colorCode]!![slot] = stack
         if (stack!!.count > invMaxStackAmount) {
             stack.count = invMaxStackAmount
         }
     }
 
-    fun clear() {
-        inventory.clear()
+    fun clear(colorCode: String) {
+        if(!hasInventory(colorCode)) createInventory(colorCode)
+        inventoryMap[colorCode]!!.clear()
     }
+
 
 
 }
