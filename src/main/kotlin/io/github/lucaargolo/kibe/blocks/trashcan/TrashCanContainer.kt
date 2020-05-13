@@ -1,7 +1,9 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.blocks.trashcan
 
-import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
-import net.minecraft.container.*
+import io.github.lucaargolo.kibe.blocks.TRASH_CAN
+import net.minecraft.container.BlockContext
+import net.minecraft.container.Container
+import net.minecraft.container.Slot
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -9,7 +11,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val entity: EntangledChestEntity, val blockContext: BlockContext): Container(null, syncId) {
+class TrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val entity: TrashCanEntity, val blockContext: BlockContext): Container(null, syncId) {
 
     var inventory: Inventory = object: Inventory {
         override fun getInvSize(): Int {
@@ -55,27 +57,14 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
     }
 
     init {
-        checkContainerSize(inventory, 27)
+        checkContainerSize(inventory, 1)
         inventory.onInvOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
-        var n: Int
-        var m: Int
+        addSlot(Slot(inventory, 0, 8 + 4*18,  36))
 
-        n = 0
-        while (n < 3) {
-            m = 0
-            while (m < 9) {
-                addSlot(Slot(inventory, m + n * 9, 8 + m * 18, 18 + n * 18))
-                ++m
-            }
-            ++n
-        }
-
-        n = 0
-        while (n < 3) {
-            m = 0
-            while (m < 9) {
+        (0..2).forEach {n ->
+            (0..8).forEach { m ->
                 addSlot(
                     Slot(
                         playerInventory,
@@ -84,15 +73,11 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
                         103 + n * 18 + i
                     )
                 )
-                ++m
             }
-            ++n
         }
 
-        n = 0
-        while (n < 9) {
+        (0..8).forEach { n ->
             addSlot(Slot(playerInventory, n, 8 + n * 18, 161 + i))
-            ++n
         }
 
     }
@@ -101,7 +86,7 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
         return blockContext.run({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
-                ).block != ENTANGLED_CHEST
+                ).block != TRASH_CAN
             ) false else player.squaredDistanceTo(
                 blockPos.x + .5,
                 blockPos.y + .5,
@@ -116,11 +101,11 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
         if (slot != null && slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
-            if (invSlot < 27) {
-                if (!insertItem(itemStack2, 27, this.slots.size, true)) {
+            if (invSlot < 1) {
+                if (!insertItem(itemStack2, 1, this.slots.size, true)) {
                     return ItemStack.EMPTY
                 }
-            } else if (!insertItem(itemStack2, 0, 27, false)) {
+            } else if (!insertItem(itemStack2, 0, 1, false)) {
                 return ItemStack.EMPTY
             }
             if (itemStack2.isEmpty) {
@@ -131,4 +116,5 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
         }
         return itemStack
     }
+
 }

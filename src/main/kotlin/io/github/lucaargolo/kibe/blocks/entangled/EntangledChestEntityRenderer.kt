@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.entangled
 
 import com.google.common.collect.ImmutableList
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
+import io.github.lucaargolo.kibe.items.entangled.EntangledBagScreen
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.ModelPart
@@ -16,6 +17,7 @@ import net.minecraft.client.util.math.Matrix4f
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
 import net.minecraft.container.PlayerContainer
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
@@ -110,7 +112,15 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         var currentState = context.currentState
         var counter = context.counter
 
-        if(MinecraftClient.getInstance().currentScreen is EntangledChestScreen && (MinecraftClient.getInstance().currentScreen as EntangledChestScreen).container.entity.runeColors == blockEntity.runeColors) {
+        val screen = MinecraftClient.getInstance().currentScreen
+        val isChestScreenOpen = if(screen is EntangledChestScreen) {
+            screen.container.entity.runeColors == blockEntity.runeColors
+        }else false
+        val isBagScreenOpen = if(screen is EntangledBagScreen) {
+            screen.hasSameColors(blockEntity.runeColors)
+        }else false
+
+        if((isChestScreenOpen || isBagScreenOpen) && blockEntity.world!!.getBlockState(blockEntity.pos.up()).isAir) {
             if(!isScreenOpen) {
                 isScreenOpen = true
                 when(currentState){

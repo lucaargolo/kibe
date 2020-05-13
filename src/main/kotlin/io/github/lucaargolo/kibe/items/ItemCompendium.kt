@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items
 
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.items.entangled.EntangledBag
 import io.github.lucaargolo.kibe.items.miscellaneous.CursedSeeds
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.minecraft.item.Item
@@ -35,10 +36,19 @@ val BROWN_RUNE = register(Identifier(MOD_ID, "brown_rune"), Rune(DyeColor.BROWN,
 val RED_RUNE = register(Identifier(MOD_ID, "red_rune"), Rune(DyeColor.RED, Item.Settings().group(ItemGroup.MISC)))
 val BLACK_RUNE = register(Identifier(MOD_ID, "black_rune"), Rune(DyeColor.BLACK, Item.Settings().group(ItemGroup.MISC)))
 
+val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"), EntangledBag())
+
 
 private fun register(identifier: Identifier, item: Item): Item {
     itemRegistry[identifier] = item
     return item;
+}
+
+fun getItemId(item: Item): Identifier? {
+    itemRegistry.forEach {
+        if(it.value == item) return it.key
+    }
+    return null
 }
 
 fun initItems() {

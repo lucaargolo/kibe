@@ -44,6 +44,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
 
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        player.pos
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
             val entries = (world.chunkManager as ServerChunkManager).chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos.up())
             if (entries.isEmpty()) {

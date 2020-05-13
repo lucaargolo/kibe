@@ -30,7 +30,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
     }
 
-    private fun getColorCode(): String {
+    public fun getColorCode(): String {
         var code = 0;
         (1..8).forEach {
             code += when(runeColors[it]) {

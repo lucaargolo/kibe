@@ -1,12 +1,11 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
-import io.github.lucaargolo.kibe.blocks.getId
+import io.github.lucaargolo.kibe.blocks.getBlockId
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.*
-import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.EntityContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
@@ -14,16 +13,13 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
-import net.minecraft.util.BooleanBiFunction
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
-import net.minecraft.world.RayTraceContext
 import net.minecraft.world.World
 
 class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
@@ -50,7 +46,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
 
     override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos?, context: EntityContext): VoxelShape {
         var isHoldingRune = false;
-        itemRegistry.forEach { (_, item) -> if(context.isHolding(item)) isHoldingRune = true }
+        itemRegistry.forEach { (_, item) -> if(item is Rune && context.isHolding(item)) isHoldingRune = true }
         if(isHoldingRune) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
         return createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
     }
@@ -69,7 +65,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
         }
         return if(world.getBlockState(pos.up()).isAir) {
             if (!world.isClient) {
-                ContainerProviderRegistry.INSTANCE.openContainer(getId(this), player as ServerPlayerEntity?) { buf -> buf.writeBlockPos(pos) }
+                ContainerProviderRegistry.INSTANCE.openContainer(getBlockId(this), player as ServerPlayerEntity?) { buf -> buf.writeBlockPos(pos) }
             }
             ActionResult.SUCCESS
         }else{
