@@ -1,11 +1,13 @@
 package io.github.lucaargolo.kibe.mixin;
 
+import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -14,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.HashSet;
 import java.util.Iterator;
 
 @Mixin(PlayerEntity.class)
@@ -43,6 +46,22 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
         PlayerEntity player = (PlayerEntity) ((Object) this);
+        //Angel Ring Logic
+        if(!player.isCreative()) {
+            HashSet<Item> itemSet = new HashSet<>();
+            itemSet.add(ItemCompendiumKt.getANGEL_RING());
+            if(player.inventory.containsAnyInInv(itemSet)) {
+                if(!player.abilities.allowFlying) {
+                    player.abilities.allowFlying = true;
+                }
+            }else {
+                if (player.abilities.allowFlying) {
+                    player.abilities.allowFlying = false;
+                    player.abilities.flying = false;
+                }
+            }
+        }
+        //Slime Boots Logic
         Iterator<Entity> keyIt;
         if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntityes().keySet().iterator();
         else keyIt = SlimeBounceHandler.Companion.getServerBouncingEntityes().keySet().iterator();
