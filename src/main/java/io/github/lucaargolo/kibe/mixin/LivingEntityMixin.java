@@ -1,10 +1,14 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.blocks.miscellaneous.Elevator;
+import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
+import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
+import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -16,6 +20,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
@@ -24,6 +29,13 @@ public abstract class LivingEntityMixin extends Entity {
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(at = @At("HEAD"), method = "isSleepingInBed", cancellable = true)
+    private void isSleepingInBed(CallbackInfoReturnable<Boolean> info) {
+        if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
+            info.setReturnValue(true);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "jump", cancellable = true)
@@ -41,6 +53,35 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "handleFallDamage", cancellable = true)
+    private void handleFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> info) {
+        if((Object) this instanceof PlayerEntity) {
+            PlayerEntity player = ((PlayerEntity) ((Object) this));
+            if (player.getEquippedStack(EquipmentSlot.FEET).getItem() == ItemCompendiumKt.getSLIME_BOOTS()) {
+                if(!isSneaking() && fallDistance > 2) {
+                    this.fallDistance = 0;
+
+                    if(world.isClient) {
+                        setVelocity(getVelocity().x, getVelocity().y*-0.9, getVelocity().z);
+                        velocityDirty = true;
+                        onGround = false;
+                        double f = 0.91d + 0.04d;
+                        setVelocity(getVelocity().x/f, getVelocity().y, getVelocity().z/f);
+                    }else{
+                        info.cancel();
+                    }
+
+                    this.playSound(SoundEvents.ENTITY_SLIME_SQUISH, 1f, 1f);
+                    SlimeBounceHandler.Companion.addBounceHandler(player, getVelocity().y);
+
+                }else if(!world.isClient && isSneaking()) {
+                    if(fallDistance > 5) this.fallDistance = 5;
+                }
+            }
+        }
+
     }
 
 }

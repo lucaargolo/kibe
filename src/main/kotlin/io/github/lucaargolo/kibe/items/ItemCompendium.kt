@@ -2,13 +2,14 @@ package io.github.lucaargolo.kibe.items
 
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.items.entangled.EntangledBag
-import io.github.lucaargolo.kibe.items.miscellaneous.CursedSeeds
-import io.github.lucaargolo.kibe.items.miscellaneous.Rune
+import io.github.lucaargolo.kibe.items.miscellaneous.*
+import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCan
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import org.spongepowered.asm.mixin.transformer.ext.IDecompiler
 
 val itemRegistry = mutableMapOf<Identifier, Item>()
 
@@ -36,8 +37,14 @@ val BROWN_RUNE = register(Identifier(MOD_ID, "brown_rune"), Rune(DyeColor.BROWN,
 val RED_RUNE = register(Identifier(MOD_ID, "red_rune"), Rune(DyeColor.RED, Item.Settings().group(ItemGroup.MISC)))
 val BLACK_RUNE = register(Identifier(MOD_ID, "black_rune"), Rune(DyeColor.BLACK, Item.Settings().group(ItemGroup.MISC)))
 
+val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"), SlimeBoots(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
+val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"), SlimeSling(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
+
+val POCKET_TRASH_CAN = register(Identifier(MOD_ID, "pocket_trash_can"), PocketTrashCan(Item.Settings().group(ItemGroup.MISC)))
+val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"), PocketCraftingTable(Item.Settings().group(ItemGroup.MISC)))
 val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"), EntangledBag())
 
+val SLEEPING_BAG = register(Identifier(MOD_ID, "sleeping_bag"), SleepingBag(Item.Settings().group(ItemGroup.MISC)))
 
 private fun register(identifier: Identifier, item: Item): Item {
     itemRegistry[identifier] = item

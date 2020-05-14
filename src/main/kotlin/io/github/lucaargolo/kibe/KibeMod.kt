@@ -5,13 +5,12 @@ import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
-import io.github.lucaargolo.kibe.items.CURSED_DROPLETS
-import io.github.lucaargolo.kibe.items.ENTANGLED_BAG
+import io.github.lucaargolo.kibe.items.*
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagBakedModel
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagContainer
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagScreen
-import io.github.lucaargolo.kibe.items.getItemId
-import io.github.lucaargolo.kibe.items.initItems
+import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanContainer
+import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanScreen
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry
@@ -20,7 +19,6 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
-import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.render.model.ModelBakeSettings
 import net.minecraft.client.render.model.ModelLoader
 import net.minecraft.client.render.model.UnbakedModel
@@ -42,11 +40,12 @@ import net.minecraft.resource.ResourceManager
 import net.minecraft.text.LiteralText
 import net.minecraft.util.Identifier
 import net.minecraft.util.PacketByteBuf
+import java.util.*
 import java.util.function.Consumer
 import java.util.function.Function
 
-
 const val MOD_ID = "kibe"
+val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 
 @Suppress("unused")
 fun init() {
@@ -81,6 +80,16 @@ fun initClient() {
                 playerEntity.world,
                 packetByteBuf.readCompoundTag()!!
             ), playerEntity.inventory, LiteralText("Entangled Bag")
+        )
+    }
+
+    ScreenProviderRegistry.INSTANCE.registerFactory(getItemId(POCKET_TRASH_CAN)) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
+        PocketTrashCanScreen(
+            PocketTrashCanContainer(syncId,
+                playerEntity.inventory,
+                playerEntity.world,
+                packetByteBuf.readCompoundTag()
+            ), playerEntity.inventory, LiteralText("Pocket Trash Can")
         )
     }
 

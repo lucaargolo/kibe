@@ -35,7 +35,7 @@ class EntangledBag: Item(Settings().group(ItemGroup.MISC)){
             if(!context.world.isClient) context.player!!.sendMessage(LiteralText("${TextFormat.GOLD}Successfully linked bag!"))
             return ActionResult.SUCCESS
         }
-        return ActionResult.FAIL
+        return ActionResult.PASS
     }
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {

@@ -7,6 +7,10 @@ import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanContainer
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
+import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopper
+import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperContainer
+import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
+import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Material
@@ -25,6 +29,7 @@ val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ModB
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ModBlock(ConveyorBelt(0.5F)))
 val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), EntangledChestEntityRenderer::class, EntangledChestContainer::class, EntangledChestScreen::class))
 val TRASH_CAN = register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), TrashCanContainer::class, TrashCanScreen::class))
+val VACUUM_HOPPER = register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), VacuumHopperContainer::class, VacuumHopperScreen::class))
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), ModBlock(Elevator()))
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), ModBlock(Elevator()))
