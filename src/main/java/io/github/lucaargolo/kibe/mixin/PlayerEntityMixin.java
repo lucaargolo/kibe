@@ -1,14 +1,15 @@
 package io.github.lucaargolo.kibe.mixin;
 
+import io.github.ladysnake.pal.VanillaAbilities;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
+import io.github.lucaargolo.kibe.utils.RingAbilitySourceKt;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,14 +52,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             HashSet<Item> itemSet = new HashSet<>();
             itemSet.add(ItemCompendiumKt.getANGEL_RING());
             if(player.inventory.containsAnyInInv(itemSet)) {
-                if(!player.abilities.allowFlying) {
-                    player.abilities.allowFlying = true;
-                }
+                RingAbilitySourceKt.getAngelRingSource().grants(player, VanillaAbilities.ALLOW_FLYING);
             }else {
-                if (player.abilities.allowFlying) {
-                    player.abilities.allowFlying = false;
-                    player.abilities.flying = false;
-                }
+                RingAbilitySourceKt.getAngelRingSource().revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
             }
         }
         //Slime Boots Logic

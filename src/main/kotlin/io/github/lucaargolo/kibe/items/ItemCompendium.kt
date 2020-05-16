@@ -9,15 +9,20 @@ import net.minecraft.item.ItemGroup
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import org.spongepowered.asm.mixin.transformer.ext.IDecompiler
 
 val itemRegistry = mutableMapOf<Identifier, Item>()
 
 val CURSED_DROPLETS = register(Identifier(MOD_ID, "cursed_droplets"), Item(Item.Settings().group(ItemGroup.MISC)))
-val CURSED_DROPS = register(Identifier(MOD_ID, "cursed_drops"), Item(Item.Settings().group(ItemGroup.MISC)))
-val SOLID_CURSES = register(Identifier(MOD_ID, "solid_curses"), Item(Item.Settings().group(ItemGroup.MISC)))
+val CURSED_BOTTLE = register(Identifier(MOD_ID, "cursed_bottle"), Item(Item.Settings().group(ItemGroup.MISC)))
+val CURSED_STAR = register(Identifier(MOD_ID, "cursed_star"), Item(Item.Settings().group(ItemGroup.MISC)))
 
 val CURSED_SEEDS = register(Identifier(MOD_ID, "cursed_seeds"), CursedSeeds(Item.Settings().group(ItemGroup.MISC)))
+
+val BLESSED_DROPLETS = register(Identifier(MOD_ID, "blessed_droplets"), Item(Item.Settings().group(ItemGroup.MISC)))
+val BLESSED_BOTTLE = register(Identifier(MOD_ID, "blessed_bottle"), Item(Item.Settings().group(ItemGroup.MISC)))
+val BLESSED_STAR = register(Identifier(MOD_ID, "blessed_star"), Item(Item.Settings().group(ItemGroup.MISC)))
+
+val BLESSED_SEEDS = register(Identifier(MOD_ID, "blessed_seeds"), CursedSeeds(Item.Settings().group(ItemGroup.MISC)))
 
 val BLANK_RUNE = register(Identifier(MOD_ID, "blank_rune"), Item(Item.Settings().group(ItemGroup.MISC)))
 val WHITE_RUNE = register(Identifier(MOD_ID, "white_rune"), Rune(DyeColor.WHITE, Item.Settings().group(ItemGroup.MISC)))
@@ -38,6 +43,9 @@ val RED_RUNE = register(Identifier(MOD_ID, "red_rune"), Rune(DyeColor.RED, Item.
 val BLACK_RUNE = register(Identifier(MOD_ID, "black_rune"), Rune(DyeColor.BLACK, Item.Settings().group(ItemGroup.MISC)))
 
 val ANGEL_RING = register(Identifier(MOD_ID, "angel_ring"), Item(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
+val GOLDEN_LASSO = register(Identifier(MOD_ID, "golden_lasso"), GoldenLasso(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
+val CURSED_LASSO = register(Identifier(MOD_ID, "cursed_lasso"), CursedLasso(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
+val BLESSED_LASSO = register(Identifier(MOD_ID, "blessed_lasso"), BlessedLasso(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
 
 val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"), SlimeBoots(Item.Settings().maxCount(1).group(ItemGroup.MISC)))
 val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"), SlimeSling(Item.Settings().maxCount(1).group(ItemGroup.MISC)))

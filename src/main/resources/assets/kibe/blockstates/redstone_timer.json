@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "kibe:block/redstone_timer" }
+    "": { "model": "kibe:block/redstone_timer_structure" }
   }
 }

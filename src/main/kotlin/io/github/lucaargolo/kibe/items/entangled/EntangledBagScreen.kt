@@ -38,8 +38,8 @@ class EntangledBagScreen(container: EntangledBagContainer, inventory: PlayerInve
     }
 
     override fun drawForeground(mouseX: Int, mouseY: Int) {
-        font.draw(title.asFormattedString(), 8.0f, 6.0f, 0)
-        font.draw(playerInventory.displayName.asFormattedString(), 8.0f, (containerHeight - 96 + 4).toFloat(), 0)
+        font.draw(title.asFormattedString(), 8.0f, 6.0f, 0xFFFFFF)
+        font.draw(playerInventory.displayName.asFormattedString(), 8.0f, (containerHeight - 96 + 4).toFloat(), 0xFFFFFF)
     }
 
     override fun drawBackground(delta: Float, mouseX: Int, mouseY: Int) {

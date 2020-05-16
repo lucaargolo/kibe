@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.blocks.CURSED_DIRT
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -30,7 +31,33 @@ import net.minecraft.world.biome.Biome
 import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
-class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly()) {
+class CursedDirt: InfectedDirt() {
+    override fun getSpawnTag(): CompoundTag {
+        val activeEffect = CompoundTag()
+        activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+        activeEffect.putInt("Amplifier", 1)
+        activeEffect.putInt("Duration", 999999)
+        val activeEffects = ListTag()
+        activeEffects.add(activeEffect)
+        val tag = CompoundTag()
+        tag.put("ActiveEffects", activeEffects)
+        return tag;
+    }
+    override fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
+        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
+    }
+}
+
+class BlessedDirt: InfectedDirt() {
+    override fun getSpawnTag(): CompoundTag {
+        return CompoundTag()
+    }
+    override fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
+        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK || world.getBlockState(pos) == CURSED_DIRT) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
+    }
+}
+
+abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly()) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 15).with(Properties.SNOWY, false)
@@ -40,8 +67,6 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
         stateManager.add(Properties.LEVEL_15)
         super.appendProperties(stateManager)
     }
-
-
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         player.pos
@@ -97,14 +122,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
         if (mob != null) {
             val location = if(world.getFluidState(pos.up()).fluid is EmptyFluid) SpawnRestriction.Location.ON_GROUND else SpawnRestriction.Location.IN_WATER
             if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob)) {
-                val activeEffect = CompoundTag()
-                activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
-                activeEffect.putInt("Amplifier", 1)
-                activeEffect.putInt("Duration", 999999)
-                val activeEffects = ListTag()
-                activeEffects.add(activeEffect)
-                val tag = CompoundTag()
-                tag.put("ActiveEffects", activeEffects)
+                val tag = getSpawnTag()
                 tag.putString("id", Registry.ENTITY_TYPE.getId(mob).toString())
                 val entity = EntityType.loadEntityWithPassengers(tag, world) { it ->
                     it.refreshPositionAndAngles(pos.x+.0, pos.y+1.0, pos.z+.0, it.yaw, it.pitch)
@@ -118,11 +136,10 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly
         }
     }
 
-    public fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
-        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
-    }
+    abstract fun getSpawnTag(): CompoundTag
+    abstract fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean
 
-    private fun canSurvive(state: BlockState, worldView: WorldView, pos: BlockPos): Boolean {
+    fun canSurvive(state: BlockState, worldView: WorldView, pos: BlockPos): Boolean {
         val blockPos = pos.up()
         val blockState = worldView.getBlockState(blockPos)
         return if (blockState.block === Blocks.SNOW && blockState.get(SnowBlock.LAYERS) as Int == 1) {

@@ -5,6 +5,8 @@ import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
+import io.github.lucaargolo.kibe.fluids.initFluids
+import io.github.lucaargolo.kibe.fluids.initFluidsClient
 import io.github.lucaargolo.kibe.items.*
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagBakedModel
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagContainer
@@ -53,6 +55,7 @@ fun init() {
     initItems()
     initEffects()
     initLootTables()
+    initFluids()
     ContainerProviderRegistry.INSTANCE.registerFactory(getItemId(ENTANGLED_BAG)) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
         EntangledBagContainer(syncId,
             playerEntity.inventory,
@@ -65,6 +68,7 @@ fun init() {
 @Suppress("unused")
 fun initClient() {
     initBlocksClient()
+    initFluidsClient()
     initTexturesClient()
     ModelLoadingRegistry.INSTANCE.registerAppender { manager: ResourceManager?, out: Consumer<ModelIdentifier?> ->
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_background"), "inventory"))
@@ -129,7 +133,7 @@ fun initLootTables() {
                         LootContext.EntityTarget.THIS,
                         EntityPredicate.Builder.create().effects(EntityEffectPredicate.create().withEffect(CURSED_EFFECT))
                     ))
-                .withCondition(RandomChanceLootCondition.builder(0.25F))
+                .withCondition(RandomChanceLootCondition.builder(0.05F))
                 .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f,1.5f)).build())
             supplier.withPool(poolBuilder)
         }
@@ -140,7 +144,7 @@ fun initLootTables() {
             val poolBuilder = FabricLootPoolBuilder.builder()
                 .withRolls(ConstantLootTableRange.create(1))
                 .withEntry(ItemEntry.builder(CURSED_DROPLETS))
-                .withCondition(RandomChanceLootCondition.builder(0.5F))
+                .withCondition(RandomChanceLootCondition.builder(0.1F))
                 .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f,1.5f)).build())
             supplier.withPool(poolBuilder)
         }

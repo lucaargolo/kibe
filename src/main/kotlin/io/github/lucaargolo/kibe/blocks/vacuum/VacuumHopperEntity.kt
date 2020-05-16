@@ -1,18 +1,74 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.DefaultedList
 
-class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)) {
+class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), BlockEntityClientSerializable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
+    var liquidXp: Int = 0
+        private set
+
+    fun addLiquid(qnt: Int):Boolean {
+        return if(liquidXp + qnt <= 16000) {
+            liquidXp += qnt
+            true
+        }else{
+            false
+        }
+    }
+
+    fun removeLiquid(qnt: Int): Boolean {
+        return if(liquidXp - qnt >= 0) {
+            liquidXp -= qnt
+            true
+        }else{
+            false
+        }
+    }
+
+    override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
+        val tag = CompoundTag()
+        this.toTag(tag)
+        return BlockEntityUpdateS2CPacket(this.pos, 2, this.toInitialChunkDataTag())
+    }
+
+    override fun toInitialChunkDataTag(): CompoundTag? {
+        return toTag(CompoundTag())
+    }
+
+    override fun toTag(tag: CompoundTag): CompoundTag {
+        tag.putInt("fluid", liquidXp)
+        Inventories.toTag(tag, inventory)
+        return super.toTag(tag)
+    }
+
+    override fun toClientTag(tag: CompoundTag): CompoundTag {
+        tag.putInt("fluid", liquidXp)
+        Inventories.toTag(tag, inventory)
+        return tag;
+    }
+
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
+        liquidXp = tag.getInt("fluid")
+        Inventories.fromTag(tag, inventory)
+    }
+
+    override fun fromClientTag(tag: CompoundTag) {
+        liquidXp = tag.getInt("fluid")
+        Inventories.fromTag(tag, inventory)
+    }
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack

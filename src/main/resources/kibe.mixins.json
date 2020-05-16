@@ -5,6 +5,7 @@
   "mixins": [
     "CraftingTableContainerAccessor",
     "EntityMixin",
+    "ExperienceOrbEntityMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
     "MobSpawnerLogicMixin",

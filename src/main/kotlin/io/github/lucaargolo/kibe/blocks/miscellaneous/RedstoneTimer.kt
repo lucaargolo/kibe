@@ -48,7 +48,7 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.METAL)) {
     }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED
+        return BlockRenderType.MODEL
     }
 
 }
