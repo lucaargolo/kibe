@@ -5,35 +5,34 @@ import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.text.Text
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 
 class EntangledBagScreen(container: EntangledBagContainer, inventory: PlayerInventory, title: Text): AbstractInventoryScreen<EntangledBagContainer>(container, inventory, title) {
 
-    private val TEXTURE = Identifier("kibe:textures/gui/entangled_chest.png")
+    private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
 
-    var START_X = 0
-    var START_Y = 0
+    private var startX = 0
+    private var startY = 0
 
     override fun init() {
         super.init()
-        START_X = width/2-containerWidth/2
-        START_Y = height/2-containerHeight/2
+        startX = width/2-containerWidth/2
+        startY = height/2-containerHeight/2
     }
 
     override fun render(mouseX: Int, mouseY: Int, delta: Float) {
         this.renderBackground()
-        drawRunes(mouseX, mouseY, delta)
+        drawRunes()
         super.render(mouseX, mouseY, delta)
         drawMouseoverTooltip(mouseX, mouseY)
     }
 
-    fun drawRunes(mouseX: Int, mouseY: Int, delta: Float) {
+    private fun drawRunes() {
         (1..8).forEach {
             val color = DyeColor.byName(container.tag.getString("rune$it"), DyeColor.WHITE)
-            itemRenderer.renderGuiItem(ItemStack(Rune.getRuneByColor(color)), START_X+87+(it-1)*10, START_Y+2)
+            itemRenderer.renderGuiItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(it-1)*10, startY+2)
         }
     }
 
@@ -44,8 +43,8 @@ class EntangledBagScreen(container: EntangledBagContainer, inventory: PlayerInve
 
     override fun drawBackground(delta: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
-        minecraft!!.textureManager.bindTexture(TEXTURE)
-        blit(START_X,START_Y, 0, 0, 176, 166)
+        minecraft!!.textureManager.bindTexture(texture)
+        blit(startX,startY, 0, 0, 176, 166)
     }
 
     fun hasSameColors(map: MutableMap<Int, DyeColor>): Boolean {

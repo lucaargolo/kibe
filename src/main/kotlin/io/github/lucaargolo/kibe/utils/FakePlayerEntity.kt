@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile
 import io.github.lucaargolo.kibe.FAKE_PLAYER_UUID
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.world.World
-import java.util.*
 
 class FakePlayerEntity(world: World): PlayerEntity(world, GameProfile(FAKE_PLAYER_UUID, "fake")) {
 

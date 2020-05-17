@@ -42,8 +42,8 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
         val background = ModelIdentifier(Identifier(MOD_ID, "entangled_bag_background"), "inventory")
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q.vertexData, 0, true);
-            emitter.emit();
+            emitter.fromVanilla(q.vertexData, 0, true)
+            emitter.emit()
         }
 
         val core =
@@ -53,8 +53,8 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
                 ModelIdentifier(Identifier(MOD_ID, "entangled_bag_gold_core"), "inventory")
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
         coreModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q.vertexData, 0, true);
-            emitter.emit();
+            emitter.fromVanilla(q.vertexData, 0, true)
+            emitter.emit()
         }
 
         context.popTransform()
@@ -79,8 +79,8 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
         val ring = ModelIdentifier(Identifier(MOD_ID, "entangled_bag_ring"), "inventory")
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q.vertexData, 0, true);
-            emitter.emit();
+            emitter.fromVanilla(q.vertexData, 0, true)
+            emitter.emit()
         }
         context.popTransform()
     }

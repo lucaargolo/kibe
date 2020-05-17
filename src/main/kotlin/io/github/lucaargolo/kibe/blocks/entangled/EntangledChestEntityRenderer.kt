@@ -17,7 +17,6 @@ import net.minecraft.client.util.math.Matrix4f
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
 import net.minecraft.container.PlayerContainer
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
@@ -32,10 +31,14 @@ import java.util.stream.IntStream
 
 class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<EntangledChestEntity>(dispatcher) {
 
-    private val LAYER_LIST: List<RenderLayer> = IntStream.range(0, 16).mapToObj { i: Int -> RenderLayer.getEndPortal(i + 1) }.collect(ImmutableList.toImmutableList())
-    private val RANDOM = Random(31100L)
+    @Suppress("UnstableApiUsage")
+    private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj {
+            i: Int -> RenderLayer.getEndPortal(i + 1)
+    }.collect(ImmutableList.toImmutableList())
 
-    enum class ANIMATION_STATE {
+    private val random = Random(31100L)
+
+    enum class AnimationState {
         GOING_UP,
         GOING_DOWN,
         UP,
@@ -46,12 +49,12 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
 
     private class Context {
         var isScreenOpen = false
-        var currentState = ANIMATION_STATE.DOWN
+        var currentState = AnimationState.DOWN
         var counter = 0f
     }
 
-    val bottomModel = ModelPart(64, 64, 0, 0)
-    val topModel = ModelPart(64, 64, 0, 0)
+    private val bottomModel = ModelPart(64, 64, 0, 0)
+    private val topModel = ModelPart(64, 64, 0, 0)
 
     init {
         bottomModel.addCuboid(1F, 0F, 1F, 14F, 10F, 14F) // CHEST_BOTTOM
@@ -124,12 +127,12 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
             if(!isScreenOpen) {
                 isScreenOpen = true
                 when(currentState){
-                    ANIMATION_STATE.DOWN -> {
-                        currentState = ANIMATION_STATE.GOING_UP
+                    AnimationState.DOWN -> {
+                        currentState = AnimationState.GOING_UP
                         counter = 0f
                     }
-                    ANIMATION_STATE.GOING_DOWN -> {
-                        currentState = ANIMATION_STATE.GOING_UP
+                    AnimationState.GOING_DOWN -> {
+                        currentState = AnimationState.GOING_UP
                         counter = 30f-counter
                     }
                     else -> print("AAAAAAAAAAAAAAAAaaa")
@@ -139,12 +142,12 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
             if(isScreenOpen) {
                 isScreenOpen = false
                 when(currentState){
-                    ANIMATION_STATE.UP -> {
-                        currentState = ANIMATION_STATE.GOING_DOWN
+                    AnimationState.UP -> {
+                        currentState = AnimationState.GOING_DOWN
                         counter = 0f
                     }
-                    ANIMATION_STATE.GOING_UP -> {
-                        currentState = ANIMATION_STATE.GOING_DOWN
+                    AnimationState.GOING_UP -> {
+                        currentState = AnimationState.GOING_DOWN
                         counter = 30f-counter
                     }
                     else -> print("BBBBBBBBBBBbbb")
@@ -177,31 +180,31 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
 
         val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
         var m = matrices.peek().model
-        renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(LAYER_LIST[0]))
+        renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
         for (l in 1 until getLayersToRender(d)) {
-            renderMiddleDownPart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(LAYER_LIST[l]))
+            renderMiddleDownPart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
         }
 
         matrices.translate(0.5, 0.0, 0.5)
         when(currentState) {
-            ANIMATION_STATE.GOING_UP -> {
+            AnimationState.GOING_UP -> {
                 counter += tickDelta
                 matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(counter*6))
                 matrices.translate(0.0, counter/90.0, 0.0)
-                if(counter >= 30f) currentState = ANIMATION_STATE.UP
+                if(counter >= 30f) currentState = AnimationState.UP
             }
-            ANIMATION_STATE.GOING_DOWN -> {
+            AnimationState.GOING_DOWN -> {
                 counter += tickDelta
                 matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360-counter*6))
                 matrices.translate(0.0, 0.333-counter/90.0, 0.0)
-                if(counter >= 30f) currentState = ANIMATION_STATE.DOWN
+                if(counter >= 30f) currentState = AnimationState.DOWN
             }
-            ANIMATION_STATE.UP -> {
+            AnimationState.UP -> {
                 matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360f))
                 matrices.translate(0.0, 30.0/90.0, 0.0)
                 counter = 0f
             }
-            ANIMATION_STATE.DOWN -> {
+            AnimationState.DOWN -> {
                 counter = 0f
             }
         }
@@ -232,9 +235,9 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         topModel.render(matrices, chestConsumer, lightAbove, overlay)
 
         m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(LAYER_LIST[0]))
+        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
         for (l in 1 until getLayersToRender(d)) {
-            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(LAYER_LIST[l]))
+            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
         }
 
         contextMap[blockEntity.pos]!!.isScreenOpen = isScreenOpen
@@ -288,17 +291,17 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
     }
 
     private fun renderMiddleDownPart(g: Float, matrix4f: Matrix4f, vertexConsumer: VertexConsumer) {
-        val red = (RANDOM.nextFloat() * 0.5f + 0.1f) * g
-        val green = (RANDOM.nextFloat() * 0.5f + 0.4f) * g
-        val blue = (RANDOM.nextFloat() * 0.5f + 0.5f) * g
+        val red = (random.nextFloat() * 0.5f + 0.1f) * g
+        val green = (random.nextFloat() * 0.5f + 0.4f) * g
+        val blue = (random.nextFloat() * 0.5f + 0.5f) * g
 
         renderVertices(matrix4f, vertexConsumer, 0.125f, 0.875f, 0.626f, 0.626f, 0.875f, 0.875f, 0.125f, 0.125f, red, green, blue) //Direction.UP
     }
 
     private fun renderMiddlePart(g: Float, matrix4f: Matrix4f, vertexConsumer: VertexConsumer) {
-        val red = (RANDOM.nextFloat() * 0.5f + 0.1f) * g
-        val green = (RANDOM.nextFloat() * 0.5f + 0.4f) * g
-        val blue = (RANDOM.nextFloat() * 0.5f + 0.5f) * g
+        val red = (random.nextFloat() * 0.5f + 0.1f) * g
+        val green = (random.nextFloat() * 0.5f + 0.4f) * g
+        val blue = (random.nextFloat() * 0.5f + 0.5f) * g
 
         renderVertices(matrix4f, vertexConsumer, 0.125f, 0.875f, 0.625f, 0.875f, 0.875f, 0.875f, 0.875f, 0.875f, red, green, blue) //Direction.SOUTH
         renderVertices(matrix4f, vertexConsumer, 0.125f, 0.875f, 0.875f, 0.625f, 0.125f, 0.125f, 0.125f, 0.125f, red, green, blue) //Direction.NORTH

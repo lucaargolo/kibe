@@ -17,8 +17,7 @@ abstract class LiquidXpFluid: ModdedFluid() {
     override fun getBucketItem(): Item = getFluidBucket(LIQUID_XP)!!
 
     override fun toBlockState(fluidState: FluidState): BlockState {
-        // method_15741 converts the LEVEL_1_8 of the fluid state to the LEVEL_15 the fluid block uses
-        return getFluidBlock(LIQUID_XP)!!.defaultState.with(Properties.LEVEL_15, method_15741(fluidState));
+        return getFluidBlock(LIQUID_XP)!!.defaultState.with(Properties.LEVEL_15, method_15741(fluidState))
     }
 
     class Flowing : LiquidXpFluid() {

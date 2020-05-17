@@ -27,7 +27,7 @@ class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntity
         var itemStack: ItemStack
         do {
             if (iterator.hasNext())
-                return true;
+                return true
             itemStack = iterator.next()
         } while(itemStack.isEmpty)
         return false

@@ -26,21 +26,21 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
     val colorCode: String = tag.getString("colorCode")
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
 
-    var synchronizedInventory: Inventory = object: Inventory {
+    private var synchronizedInventory: Inventory = object: Inventory {
         
         override fun getInvSize(): Int {
-            return if(hasPersistentState()) getPersistentState()!!.getInvSize(colorCode);
-            else inventory.size;
+            return if(hasPersistentState()) getPersistentState()!!.getInvSize(colorCode)
+            else inventory.size
         }
 
         override fun isInvEmpty(): Boolean {
-            return if(hasPersistentState()) getPersistentState()!!.isInvEmpty(colorCode);
+            return if(hasPersistentState()) getPersistentState()!!.isInvEmpty(colorCode)
             else {
                 val iterator = inventory.iterator()
                 var itemStack: ItemStack
                 do {
                     if (iterator.hasNext())
-                        return true;
+                        return true
                     itemStack = iterator.next()
                 } while(itemStack.isEmpty)
                 return false
@@ -48,7 +48,7 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         }
 
         override fun getInvStack(slot: Int): ItemStack {
-            return if(hasPersistentState()) getPersistentState()!!.getInvStack(slot, colorCode);
+            return if(hasPersistentState()) getPersistentState()!!.getInvStack(slot, colorCode)
             else inventory[slot]
         }
 
@@ -59,13 +59,13 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         }
 
         override fun takeInvStack(slot: Int, amount: Int): ItemStack {
-            return if(hasPersistentState()) getPersistentState()!!.takeInvStack(slot, amount, colorCode);
+            return if(hasPersistentState()) getPersistentState()!!.takeInvStack(slot, amount, colorCode)
             else Inventories.splitStack(inventory, slot, amount)
         }
 
         override fun removeInvStack(slot: Int): ItemStack {
-            return if(hasPersistentState()) getPersistentState()!!.removeInvStack(slot, colorCode);
-            else Inventories.removeStack(inventory, slot);
+            return if(hasPersistentState()) getPersistentState()!!.removeInvStack(slot, colorCode)
+            else Inventories.removeStack(inventory, slot)
         }
 
         override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
@@ -73,7 +73,7 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         }
 
         override fun setInvStack(slot: Int, stack: ItemStack?) {
-            if(hasPersistentState()) getPersistentState()!!.setInvStack(slot, stack, colorCode);
+            if(hasPersistentState()) getPersistentState()!!.setInvStack(slot, stack, colorCode)
             else {
                 inventory[slot] = stack
                 if (stack!!.count > invMaxStackAmount) {
@@ -83,7 +83,7 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         }
 
         override fun clear() {
-            return if(hasPersistentState()) getPersistentState()!!.clear(colorCode);
+            return if(hasPersistentState()) getPersistentState()!!.clear(colorCode)
             else inventory.clear()
         }
     }
@@ -93,40 +93,15 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         synchronizedInventory.onInvOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
-        var n: Int
-        var m: Int
-
-        n = 0
-        while (n < 3) {
-            m = 0
-            while (m < 9) {
+        (0..2).forEach { n ->
+            (0..8).forEach { m ->
                 addSlot(Slot(synchronizedInventory, m + n * 9, 8 + m * 18, 18 + n * 18))
-                ++m
+                addSlot(Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 103 + n * 18 + i))
             }
-            ++n
         }
 
-        n = 0
-        while (n < 3) {
-            m = 0
-            while (m < 9) {
-                addSlot(
-                    Slot(
-                        playerInventory,
-                        m + n * 9 + 9,
-                        8 + m * 18,
-                        103 + n * 18 + i
-                    )
-                )
-                ++m
-            }
-            ++n
-        }
-
-        n = 0
-        while (n < 9) {
+        (0..8).forEach { n ->
             addSlot(Slot(playerInventory, n, 8 + n * 18, 161 + i))
-            ++n
         }
 
     }

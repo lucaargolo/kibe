@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.items.trashcan
 
-import io.github.lucaargolo.kibe.blocks.TRASH_CAN
 import net.minecraft.container.Container
 import net.minecraft.container.Slot
 import net.minecraft.entity.player.PlayerEntity
@@ -9,14 +8,14 @@ import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.DefaultedList
-import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
+@Suppress("UNUSED_PARAMETER")
 class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val world: World, tag: CompoundTag?): Container(null, syncId) {
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
-    var synchronizedInventory: Inventory = object: Inventory {
+    private var synchronizedInventory: Inventory = object: Inventory {
         override fun getInvSize() = inventory.size
 
         override fun isInvEmpty(): Boolean {
@@ -24,7 +23,7 @@ class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val
             var itemStack: ItemStack
             do {
                 if (iterator.hasNext())
-                    return true;
+                    return true
                 itemStack = iterator.next()
             } while(itemStack.isEmpty)
             return false
@@ -68,14 +67,7 @@ class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val
 
         (0..2).forEach {n ->
             (0..8).forEach { m ->
-                addSlot(
-                    Slot(
-                        playerInventory,
-                        m + n * 9 + 9,
-                        8 + m * 18,
-                        103 + n * 18 + i
-                    )
-                )
+                addSlot(Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 103 + n * 18 + i))
             }
         }
 

@@ -7,16 +7,15 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import java.util.*
 
-
-class SlimeBounceHandler(var entityLiving: LivingEntity, var bounce: Double) {
+class SlimeBounceHandler(entityLiving: LivingEntity, var bounce: Double) {
 
     var timer = 0
     var wasInAir = false
     var bounceTick = if (bounce != 0.0) entityLiving.age else 0
 
     init {
-        if(entityLiving is ServerPlayerEntity) serverBouncingEntityes[entityLiving] = this
-        if(entityLiving is ClientPlayerEntity) clientBouncingEntityes[entityLiving] = this
+        if(entityLiving is ServerPlayerEntity) serverBouncingEntities[entityLiving] = this
+        if(entityLiving is ClientPlayerEntity) clientBouncingEntities[entityLiving] = this
     }
 
     var lastMovX: Double = 0.0
@@ -24,15 +23,15 @@ class SlimeBounceHandler(var entityLiving: LivingEntity, var bounce: Double) {
 
     companion object {
 
-        var serverBouncingEntityes: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap<Entity, SlimeBounceHandler>()
-        var clientBouncingEntityes: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap<Entity, SlimeBounceHandler>()
+        var serverBouncingEntities: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap<Entity, SlimeBounceHandler>()
+        var clientBouncingEntities: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap<Entity, SlimeBounceHandler>()
 
         fun addBounceHandler(entity: LivingEntity, bounce: Double) {
             if (entity !is PlayerEntity) {
                 return
             }
-            val sHandler = serverBouncingEntityes[entity]
-            val cHandler = clientBouncingEntityes[entity]
+            val sHandler = serverBouncingEntities[entity]
+            val cHandler = clientBouncingEntities[entity]
             if (sHandler == null || cHandler == null) {
                 SlimeBounceHandler(entity, bounce)
             } else if (bounce != 0.0) {

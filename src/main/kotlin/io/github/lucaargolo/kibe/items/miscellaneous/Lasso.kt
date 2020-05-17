@@ -11,17 +11,14 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.LiteralText
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.hit.EntityHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
-import java.util.function.Predicate
 
 class GoldenLasso(settings: Settings): Lasso(settings) {
     override fun addToTag(tag: CompoundTag): CompoundTag = tag
@@ -60,11 +57,11 @@ abstract class Lasso(settings: Settings): Item(settings) {
         val vec3d2 = player.getRotationVec(1.0f)
         val vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d)
         val box: Box = player.boundingBox.stretch(vec3d2.multiply(d)).expand(1.0, 1.0, 1.0)
-        val entityHitResult = ProjectileUtil.rayTrace(player, vec3d, vec3d3, box, Predicate { entityx ->
-            !entityx.isSpectator && entityx.collides();
-        }, d);
+        val entityHitResult = ProjectileUtil.rayTrace(player, vec3d, vec3d3, box, { entityx ->
+            !entityx.isSpectator && entityx.collides()
+        }, d)
         val stack = player.getStackInHand(hand)
-        val stackTag = stack.orCreateTag;
+        val stackTag = stack.orCreateTag
         if(entityHitResult != null && !stackTag.contains("Entity")) {
             val entity = entityHitResult.entity
             return if(canStoreEntity(entity.type)) {
@@ -82,7 +79,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
             if(!world.isClient) {
                 val pos = (hitResult as BlockHitResult).blockPos
                 val newTag = addToTag(stackTag["Entity"] as CompoundTag)
-                val entity = EntityType.loadEntityWithPassengers(newTag, world) { it ->
+                val entity = EntityType.loadEntityWithPassengers(newTag, world) {
                     it.refreshPositionAndAngles(pos.x+.0, pos.y+1.0, pos.z+.0, it.yaw, it.pitch)
                     if (!(world as ServerWorld).tryLoadEntity(it)) null else it
                 }

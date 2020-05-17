@@ -22,6 +22,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
     fun addLiquid(qnt: Int):Boolean {
         return if(liquidXp + qnt <= 16000) {
             liquidXp += qnt
+            markDirty()
             true
         }else{
             false
@@ -31,6 +32,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
     fun removeLiquid(qnt: Int): Boolean {
         return if(liquidXp - qnt >= 0) {
             liquidXp -= qnt
+            markDirty()
             true
         }else{
             false
@@ -56,7 +58,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
     override fun toClientTag(tag: CompoundTag): CompoundTag {
         tag.putInt("fluid", liquidXp)
         Inventories.toTag(tag, inventory)
-        return tag;
+        return tag
     }
 
     override fun fromTag(tag: CompoundTag) {
@@ -85,7 +87,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
                         modifiableStack.count -= aux
                     }else if(stk.count+modifiableStack.count == stk.maxCount){
                         stk.count = stk.maxCount
-                        modifiableStack = ItemStack.EMPTY;
+                        modifiableStack = ItemStack.EMPTY
                     }else{
                         stk.count += modifiableStack.count
                         modifiableStack = ItemStack.EMPTY
@@ -102,14 +104,14 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
 
     override fun createContainer(i: Int, playerInventory: PlayerInventory?) = null
 
-    override fun getInvSize() = inventory.size;
+    override fun getInvSize() = inventory.size
 
     override fun isInvEmpty(): Boolean {
         val iterator = this.inventory.iterator()
         var itemStack: ItemStack
         do {
             if (iterator.hasNext())
-                return true;
+                return true
             itemStack = iterator.next()
         } while(itemStack.isEmpty)
         return false
@@ -119,7 +121,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
 
     override fun takeInvStack(slot: Int, amount: Int): ItemStack = Inventories.splitStack(inventory, slot, amount)
 
-    override fun removeInvStack(slot: Int): ItemStack = Inventories.removeStack(this.inventory, slot);
+    override fun removeInvStack(slot: Int): ItemStack = Inventories.removeStack(this.inventory, slot)
 
     override fun setInvStack(slot: Int, stack: ItemStack?) {
         inventory[slot] = stack

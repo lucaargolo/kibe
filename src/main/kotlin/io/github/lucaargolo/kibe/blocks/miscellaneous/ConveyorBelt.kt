@@ -16,9 +16,9 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.IWorld
 import net.minecraft.world.World
+import kotlin.math.abs
 
-
-class ConveyorBelt(val speed: Float): Block(FabricBlockSettings.of(Material.METAL)) {
+class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Material.METAL)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
@@ -39,7 +39,7 @@ class ConveyorBelt(val speed: Float): Block(FabricBlockSettings.of(Material.META
         val desiredPos = Vec3d(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
         val adjustmentFactor = 0.1
         val adjustmentSpeed = speed*(desiredPos.distanceTo(entity.pos))
-        val adjustmentVec3d = Vec3d(if (Math.abs(entity.pos.x-desiredPos.x) > adjustmentFactor) MathHelper.sign((entity.pos.x-desiredPos.x)*-1).toDouble() else 0.0, 0.0, if (Math.abs(entity.pos.z-desiredPos.z) > adjustmentFactor) MathHelper.sign((entity.pos.z-desiredPos.z)*-1).toDouble() else 0.0)
+        val adjustmentVec3d = Vec3d(if (abs(entity.pos.x-desiredPos.x) > adjustmentFactor) MathHelper.sign((entity.pos.x-desiredPos.x)*-1).toDouble() else 0.0, 0.0, if (abs(entity.pos.z-desiredPos.z) > adjustmentFactor) MathHelper.sign((entity.pos.z-desiredPos.z)*-1).toDouble() else 0.0)
         if (entity.y - pos.y > 0.3 || (entity is PlayerEntity && entity.isSneaking)) return
         entity.velocity = Vec3d(if(direction.offsetX == 0) adjustmentVec3d.x*adjustmentSpeed else direction.offsetX.toDouble()*speed, 0.0, if(direction.offsetZ == 0) adjustmentVec3d.z*adjustmentSpeed else direction.offsetZ.toDouble()*speed)
     }
@@ -53,6 +53,7 @@ class ConveyorBelt(val speed: Float): Block(FabricBlockSettings.of(Material.META
             .with(Properties.HORIZONTAL_FACING, ctx.playerFacing)
     }
 
+    @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, facing: Direction, neighborState: BlockState, world: IWorld, pos: BlockPos, neighborPos: BlockPos): BlockState {
         return if (facing.axis.type == Direction.Type.HORIZONTAL)
             state.with(HorizontalConnectingBlock.NORTH, world.getBlockState(pos.south()).block is ConveyorBelt)

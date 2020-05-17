@@ -13,6 +13,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
 
+@Suppress("CAST_NEVER_SUCCEEDS")
 class PocketCraftingTable(settings: Settings): Item(settings) {
 
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {

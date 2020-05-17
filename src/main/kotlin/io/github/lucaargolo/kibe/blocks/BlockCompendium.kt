@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.MOD_ID

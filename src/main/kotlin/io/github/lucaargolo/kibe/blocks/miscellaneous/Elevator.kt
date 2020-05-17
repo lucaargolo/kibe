@@ -6,7 +6,7 @@ import net.minecraft.block.Material
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class Elevator(): Block(FabricBlockSettings.of(Material.WOOL)) {
+class Elevator: Block(FabricBlockSettings.of(Material.WOOL)) {
 
     companion object {
         fun isElevatorValid(world: World, pos: BlockPos): Boolean {

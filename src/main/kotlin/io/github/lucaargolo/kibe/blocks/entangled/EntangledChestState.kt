@@ -8,13 +8,13 @@ import net.minecraft.world.PersistentState
 
 class EntangledChestState(key: String) : PersistentState(key) {
 
-    var inventoryMap = mutableMapOf<String, DefaultedList<ItemStack>>()
+    private var inventoryMap = mutableMapOf<String, DefaultedList<ItemStack>>()
 
-    fun createInventory(colorCode: String) {
+    private fun createInventory(colorCode: String) {
         inventoryMap[colorCode] = DefaultedList.ofSize(27, ItemStack.EMPTY)
     }
 
-    fun hasInventory(colorCode: String): Boolean {
+    private fun hasInventory(colorCode: String): Boolean {
         return inventoryMap[colorCode] != null
     }
 
@@ -35,7 +35,7 @@ class EntangledChestState(key: String) : PersistentState(key) {
         return tag
     }
 
-    val invMaxStackAmount = 64
+    private val invMaxStackAmount = 64
 
     fun getInvSize(colorCode: String): Int {
         if(!hasInventory(colorCode)) createInventory(colorCode)
@@ -48,7 +48,7 @@ class EntangledChestState(key: String) : PersistentState(key) {
         var itemStack: ItemStack
         do {
             if (iterator.hasNext())
-                return true;
+                return true
             itemStack = iterator.next()
         } while(itemStack.isEmpty)
         return false
@@ -66,7 +66,7 @@ class EntangledChestState(key: String) : PersistentState(key) {
 
     fun removeInvStack(slot: Int, colorCode: String): ItemStack {
         if(!hasInventory(colorCode)) createInventory(colorCode)
-        return Inventories.removeStack(inventoryMap[colorCode]!!, slot);
+        return Inventories.removeStack(inventoryMap[colorCode]!!, slot)
     }
 
     fun setInvStack(slot: Int, stack: ItemStack?, colorCode: String) {

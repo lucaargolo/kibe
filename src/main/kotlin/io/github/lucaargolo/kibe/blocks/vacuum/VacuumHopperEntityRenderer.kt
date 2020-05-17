@@ -1,7 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
 import com.google.common.collect.ImmutableList
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntity
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -14,32 +13,33 @@ import java.util.stream.IntStream
 
 class VacuumHopperEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<VacuumHopperEntity>(dispatcher) {
 
-    private val LAYER_LIST: List<RenderLayer> = IntStream.range(0, 16).mapToObj { i: Int -> RenderLayer.getEndPortal(i + 1) }.collect(
+    @Suppress("UnstableApiUsage")
+    private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj { i: Int -> RenderLayer.getEndPortal(i + 1) }.collect(
         ImmutableList.toImmutableList())
-    private val RANDOM = Random(31100L)
+    private val random = Random(31100L)
 
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         matrices.push()
         val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
         val m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(LAYER_LIST[0]))
+        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
         for (l in 1 until getLayersToRender(d)) {
-            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(LAYER_LIST[l]))
+            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
         }
         matrices.pop()
     }
 
     private fun renderMiddlePart(g: Float, matrix4f: Matrix4f, vertexConsumer: VertexConsumer) {
-        val red = (RANDOM.nextFloat() * 0.5f + 0.1f) * g
-        val green = (RANDOM.nextFloat() * 0.5f + 0.4f) * g
-        val blue = (RANDOM.nextFloat() * 0.5f + 0.5f) * g
+        val red = (random.nextFloat() * 0.5f + 0.1f) * g
+        val green = (random.nextFloat() * 0.5f + 0.4f) * g
+        val blue = (random.nextFloat() * 0.5f + 0.5f) * g
 
-        renderVertices(matrix4f, vertexConsumer, 0.05f, 0.95f, 0.05f, 0.95f, 0.95f, 0.95f, 0.95f, 0.95f, red, green, blue) //Direction.SOUTH
-        renderVertices(matrix4f, vertexConsumer, 0.05f, 0.95f, 0.95f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, red, green, blue) //Direction.NORTH
-        renderVertices(matrix4f, vertexConsumer, 0.95f, 0.95f, 0.95f, 0.05f, 0.05f, 0.95f, 0.95f, 0.05f, red, green, blue) //Direction.EAST
-        renderVertices(matrix4f, vertexConsumer, 0.05f, 0.05f, 0.05f, 0.95f, 0.05f, 0.95f, 0.95f, 0.05f, red, green, blue) //Direction.WEST)
-        renderVertices(matrix4f, vertexConsumer, 0.05f, 0.95f, 0.05f, 0.05f, 0.05f, 0.05f, 0.95f, 0.95f, red, green, blue) //Direction.DOWN
-        renderVertices(matrix4f, vertexConsumer, 0.05f, 0.95f, 0.95f, 0.95f, 0.95f, 0.95f, 0.05f, 0.05f, red, green, blue) //Direction.UP
+        renderVertices(matrix4f, vertexConsumer, 0.02f, 0.98f, 0.02f, 0.98f, 0.98f, 0.98f, 0.98f, 0.98f, red, green, blue) //Direction.SOUTH
+        renderVertices(matrix4f, vertexConsumer, 0.02f, 0.98f, 0.98f, 0.02f, 0.02f, 0.02f, 0.02f, 0.02f, red, green, blue) //Direction.NORTH
+        renderVertices(matrix4f, vertexConsumer, 0.98f, 0.98f, 0.98f, 0.02f, 0.02f, 0.98f, 0.98f, 0.02f, red, green, blue) //Direction.EAST
+        renderVertices(matrix4f, vertexConsumer, 0.02f, 0.02f, 0.02f, 0.98f, 0.02f, 0.98f, 0.98f, 0.02f, red, green, blue) //Direction.WEST)
+        renderVertices(matrix4f, vertexConsumer, 0.02f, 0.98f, 0.02f, 0.02f, 0.02f, 0.02f, 0.98f, 0.98f, red, green, blue) //Direction.DOWN
+        renderVertices(matrix4f, vertexConsumer, 0.02f, 0.98f, 0.98f, 0.98f, 0.98f, 0.98f, 0.02f, 0.02f, red, green, blue) //Direction.UP
     }
 
     private fun renderVertices(matrix4f: Matrix4f, vertexConsumer: VertexConsumer, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float, red: Float, green: Float, blue: Float) {

@@ -1,0 +1,7 @@
+{
+  "type": "kibe:vacuum_hopper",
+  "input": {
+    "item": "minecraft:glass_bottle"
+  },
+  "output": "minecraft:experience_bottle"
+}

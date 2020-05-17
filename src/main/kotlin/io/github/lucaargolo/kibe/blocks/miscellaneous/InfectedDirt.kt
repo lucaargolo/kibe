@@ -41,7 +41,7 @@ class CursedDirt: InfectedDirt() {
         activeEffects.add(activeEffect)
         val tag = CompoundTag()
         tag.put("ActiveEffects", activeEffects)
-        return tag;
+        return tag
     }
     override fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
         return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
@@ -88,6 +88,7 @@ abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ti
         return ActionResult.FAIL
     }
 
+    @Suppress("DEPRECATION")
     override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         if (!world.isChunkLoaded(pos)) return
 
@@ -124,7 +125,7 @@ abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ti
             if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob)) {
                 val tag = getSpawnTag()
                 tag.putString("id", Registry.ENTITY_TYPE.getId(mob).toString())
-                val entity = EntityType.loadEntityWithPassengers(tag, world) { it ->
+                val entity = EntityType.loadEntityWithPassengers(tag, world) {
                     it.refreshPositionAndAngles(pos.x+.0, pos.y+1.0, pos.z+.0, it.yaw, it.pitch)
                     if (!world.tryLoadEntity(it)) null else it
                 }

@@ -28,7 +28,7 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.METAL)) {
     }
 
     override fun getWeakRedstonePower(state: BlockState, view: BlockView, pos: BlockPos, facing: Direction): Int {
-        return if(state[Properties.ENABLED]) 15 else 0;
+        return if(state[Properties.ENABLED]) 15 else 0
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {

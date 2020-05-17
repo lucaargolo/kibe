@@ -10,27 +10,27 @@ import net.minecraft.util.Identifier
 
 class EntangledChestScreen(container: EntangledChestContainer, inventory: PlayerInventory, title: Text): AbstractInventoryScreen<EntangledChestContainer>(container, inventory, title) {
 
-    private val TEXTURE = Identifier("kibe:textures/gui/entangled_chest.png")
+    private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
 
-    var START_X = 0
-    var START_Y = 0
+    private var startX = 0
+    private var startY = 0
 
     override fun init() {
         super.init()
-        START_X = width/2-containerWidth/2
-        START_Y = height/2-containerHeight/2
+        startX = width/2-containerWidth/2
+        startY = height/2-containerHeight/2
     }
 
     override fun render(mouseX: Int, mouseY: Int, delta: Float) {
         this.renderBackground()
-        drawRunes(mouseX, mouseY, delta)
+        drawRunes()
         super.render(mouseX, mouseY, delta)
         drawMouseoverTooltip(mouseX, mouseY)
     }
 
-    fun drawRunes(mouseX: Int, mouseY: Int, delta: Float) {
-        container.entity.runeColors.forEach { n, color ->
-            itemRenderer.renderGuiItem(ItemStack(Rune.getRuneByColor(color)), START_X+87+(n-1)*10, START_Y+2)
+    private fun drawRunes() {
+        container.entity.runeColors.forEach { (n, color) ->
+            itemRenderer.renderGuiItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(n-1)*10, startY+2)
         }
     }
 
@@ -41,8 +41,8 @@ class EntangledChestScreen(container: EntangledChestContainer, inventory: Player
 
     override fun drawBackground(delta: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
-        minecraft!!.textureManager.bindTexture(TEXTURE)
-        blit(START_X,START_Y, 0, 0, 176, 166)
+        minecraft!!.textureManager.bindTexture(texture)
+        blit(startX,startY, 0, 0, 176, 166)
     }
 
 }

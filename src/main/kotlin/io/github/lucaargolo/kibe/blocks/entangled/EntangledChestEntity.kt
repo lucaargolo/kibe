@@ -30,8 +30,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
     }
 
-    public fun getColorCode(): String {
-        var code = 0;
+    fun getColorCode(): String {
+        var code = 0
         (1..8).forEach {
             code += when(runeColors[it]) {
                 DyeColor.WHITE -> 0
@@ -139,18 +139,18 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
     }
 
     override fun getInvSize(): Int {
-        return if(hasPersistentState()) getPersistentState()!!.getInvSize(getColorCode());
-        else inventory.size;
+        return if(hasPersistentState()) getPersistentState()!!.getInvSize(getColorCode())
+        else inventory.size
     }
 
     override fun isInvEmpty(): Boolean {
-        return if(hasPersistentState()) getPersistentState()!!.isInvEmpty(getColorCode());
+        return if(hasPersistentState()) getPersistentState()!!.isInvEmpty(getColorCode())
         else {
             val iterator = this.inventory.iterator()
             var itemStack: ItemStack
             do {
                 if (iterator.hasNext())
-                    return true;
+                    return true
                 itemStack = iterator.next()
             } while(itemStack.isEmpty)
             return false
@@ -158,22 +158,22 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
     }
 
     override fun getInvStack(slot: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.getInvStack(slot, getColorCode());
+        return if(hasPersistentState()) getPersistentState()!!.getInvStack(slot, getColorCode())
         else inventory[slot]
     }
 
     override fun takeInvStack(slot: Int, amount: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.takeInvStack(slot, amount, getColorCode());
+        return if(hasPersistentState()) getPersistentState()!!.takeInvStack(slot, amount, getColorCode())
         else Inventories.splitStack(inventory, slot, amount)
     }
 
     override fun removeInvStack(slot: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.removeInvStack(slot, getColorCode());
-        else Inventories.removeStack(this.inventory, slot);
+        return if(hasPersistentState()) getPersistentState()!!.removeInvStack(slot, getColorCode())
+        else Inventories.removeStack(this.inventory, slot)
     }
 
     override fun setInvStack(slot: Int, stack: ItemStack?) {
-        if(hasPersistentState()) getPersistentState()!!.setInvStack(slot, stack, getColorCode());
+        if(hasPersistentState()) getPersistentState()!!.setInvStack(slot, stack, getColorCode())
         else {
             inventory[slot] = stack
             if (stack!!.count > invMaxStackAmount) {
@@ -183,7 +183,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
     }
 
     override fun clear() {
-        return if(hasPersistentState()) getPersistentState()!!.clear(getColorCode());
+        return if(hasPersistentState()) getPersistentState()!!.clear(getColorCode())
         else inventory.clear()
     }
 

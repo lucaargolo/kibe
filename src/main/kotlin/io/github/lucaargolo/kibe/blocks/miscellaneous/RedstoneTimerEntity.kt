@@ -8,9 +8,9 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 
-class RedstoneTimerEntity(val timer: RedstoneTimer): BlockEntity(getEntityType(timer)), BlockEntityClientSerializable, Tickable {
+class RedstoneTimerEntity(private val timer: RedstoneTimer): BlockEntity(getEntityType(timer)), BlockEntityClientSerializable, Tickable {
 
-    var current = 0;
+    var current = 0
     var level = 0
 
     override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
@@ -49,9 +49,9 @@ class RedstoneTimerEntity(val timer: RedstoneTimer): BlockEntity(getEntityType(t
     override fun tick() {
         val isEnabled = world!!.getBlockState(pos)[Properties.ENABLED]
         val delay = level*4
-        current++;
+        current++
         if(current >= delay){
-            current = 0;
+            current = 0
             world!!.setBlockState(pos, timer.defaultState.with(Properties.ENABLED, !isEnabled))
             level = delay/4
         }

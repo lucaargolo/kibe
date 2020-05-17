@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val entity: EntangledChestEntity, val blockContext: BlockContext): Container(null, syncId) {
+class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val entity: EntangledChestEntity, private val blockContext: BlockContext): Container(null, syncId) {
 
     var inventory: Inventory = object: Inventory {
         override fun getInvSize(): Int {
@@ -59,42 +59,16 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
         inventory.onInvOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
-        var n: Int
-        var m: Int
-
-        n = 0
-        while (n < 3) {
-            m = 0
-            while (m < 9) {
+        (0..2).forEach {n ->
+            (0..8).forEach {m ->
                 addSlot(Slot(inventory, m + n * 9, 8 + m * 18, 18 + n * 18))
-                ++m
+                addSlot(Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 103 + n * 18 + i))
             }
-            ++n
         }
 
-        n = 0
-        while (n < 3) {
-            m = 0
-            while (m < 9) {
-                addSlot(
-                    Slot(
-                        playerInventory,
-                        m + n * 9 + 9,
-                        8 + m * 18,
-                        103 + n * 18 + i
-                    )
-                )
-                ++m
-            }
-            ++n
-        }
-
-        n = 0
-        while (n < 9) {
+        (0..8).forEach { n ->
             addSlot(Slot(playerInventory, n, 8 + n * 18, 161 + i))
-            ++n
         }
-
     }
 
     override fun canUse(player: PlayerEntity): Boolean {

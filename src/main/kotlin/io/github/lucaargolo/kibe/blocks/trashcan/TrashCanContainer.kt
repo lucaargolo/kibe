@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class TrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val entity: TrashCanEntity, val blockContext: BlockContext): Container(null, syncId) {
+class TrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val entity: TrashCanEntity, private val blockContext: BlockContext): Container(null, syncId) {
 
     var inventory: Inventory = object: Inventory {
         override fun getInvSize(): Int {

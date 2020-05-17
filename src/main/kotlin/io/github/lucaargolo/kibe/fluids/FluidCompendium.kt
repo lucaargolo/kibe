@@ -16,6 +16,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.SpriteAtlasTexture
+import net.minecraft.container.PlayerContainer
 import net.minecraft.fluid.BaseFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
@@ -37,7 +38,7 @@ val LIQUID_XP = register(Identifier(MOD_ID, "liquid_xp"), LiquidXpFluid.Still(),
 
 private fun register(identifier: Identifier, fluidStill: BaseFluid, fluidFlowing: BaseFluid): Identifier {
     fluidRegistry[identifier] = Pair(fluidStill, fluidFlowing)
-    return identifier;
+    return identifier
 }
 
 
@@ -74,13 +75,14 @@ fun initFluidsClient() {
 
 }
 
+@Suppress("SameParameterValue")
 private fun setupFluidRendering(still: Fluid?, flowing: Fluid?, textureFluidId: Identifier, color: Int) {
     val stillSpriteId = Identifier(textureFluidId.namespace, "block/" + textureFluidId.path + "_still")
     val flowingSpriteId = Identifier(textureFluidId.namespace, "block/" + textureFluidId.path + "_flow")
 
     // If they're not already present, add the sprites to the block atlas
-    ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX)
-        .register(ClientSpriteRegistryCallback { atlasTexture: SpriteAtlasTexture?, registry: ClientSpriteRegistryCallback.Registry ->
+    ClientSpriteRegistryCallback.event(PlayerContainer.BLOCK_ATLAS_TEXTURE)
+        .register(ClientSpriteRegistryCallback { _: SpriteAtlasTexture?, registry: ClientSpriteRegistryCallback.Registry ->
             registry.register(stillSpriteId)
             registry.register(flowingSpriteId)
         })
@@ -98,7 +100,7 @@ private fun setupFluidRendering(still: Fluid?, flowing: Fluid?, textureFluidId: 
          */
         override fun apply(resourceManager: ResourceManager?) {
             val atlas: Function<Identifier, Sprite> =
-                MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX)
+                MinecraftClient.getInstance().getSpriteAtlas(PlayerContainer.BLOCK_ATLAS_TEXTURE)
             fluidSprites[0] = atlas.apply(stillSpriteId)
             fluidSprites[1] = atlas.apply(flowingSpriteId)
         }

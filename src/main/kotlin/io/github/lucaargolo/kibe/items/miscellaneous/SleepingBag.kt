@@ -26,7 +26,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         if(!world.isClient) {
             customTrySleep(player).ifLeft { sleepFailureReason ->
                 if (sleepFailureReason != null) {
-                    player.addChatMessage(sleepFailureReason.toText(), true);
+                    player.addChatMessage(sleepFailureReason.toText(), true)
                 }
             }
         }
@@ -39,8 +39,8 @@ class SleepingBag(settings: Settings): Item(settings) {
     }
 
     private fun customTrySleep(player: PlayerEntity): Either<PlayerEntity.SleepFailureReason, Unit> {
-        var rayTraceContext = player.rayTrace(4.5, 1.0f, false);
-        var sleepingPos = rayTraceContext.run {
+        val rayTraceContext = player.rayTrace(4.5, 1.0f, false)
+        val sleepingPos = rayTraceContext.run {
             if(this.type == HitResult.Type.BLOCK) {
                 return@run BlockPos(this.pos)
             }else{

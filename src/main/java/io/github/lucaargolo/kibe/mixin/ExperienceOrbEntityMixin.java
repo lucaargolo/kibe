@@ -9,12 +9,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExperienceOrbEntity.class)
 abstract public class ExperienceOrbEntityMixin extends Entity {
+
+    @Shadow private int amount;
 
     public ExperienceOrbEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -29,7 +32,7 @@ abstract public class ExperienceOrbEntityMixin extends Entity {
                 double distance = this.getPos().distanceTo(vecPos);
                 if(distance < 8.0) {
                     if(distance < 1.0) {
-                        ((VacuumHopperEntity) blockEntity).addLiquid(333);
+                        ((VacuumHopperEntity) blockEntity).addLiquid(amount*10);
                         this.destroy();
                     }
                     Vec3d vel = this.getPos().reverseSubtract(vecPos).normalize().multiply(0.1);

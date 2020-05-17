@@ -45,8 +45,8 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
     }
 
     override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos?, context: EntityContext): VoxelShape {
-        var isHoldingRune = false;
-        itemRegistry.forEach { (_, item) -> if(item is Rune && context.isHolding(item)) isHoldingRune = true }
+        var isHoldingRune = false
+        itemRegistry.forEach { (_, modItem) -> if(modItem.item is Rune && context.isHolding(modItem.item)) isHoldingRune = true }
         if(isHoldingRune) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
         return createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
     }

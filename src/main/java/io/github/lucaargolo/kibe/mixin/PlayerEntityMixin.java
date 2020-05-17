@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.HashSet;
 import java.util.Iterator;
 
+@SuppressWarnings({"SuspiciousMethodCalls"})
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
 
@@ -46,9 +47,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo info) {
+        @SuppressWarnings("ConstantConditions")
         PlayerEntity player = (PlayerEntity) ((Object) this);
         //Angel Ring Logic
-        if(!player.isCreative()) {
+        if(!player.isCreative() && !world.isClient) {
             HashSet<Item> itemSet = new HashSet<>();
             itemSet.add(ItemCompendiumKt.getANGEL_RING());
             if(player.inventory.containsAnyInInv(itemSet)) {
@@ -59,16 +61,14 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         }
         //Slime Boots Logic
         Iterator<Entity> keyIt;
-        if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntityes().keySet().iterator();
-        else keyIt = SlimeBounceHandler.Companion.getServerBouncingEntityes().keySet().iterator();
+        if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntities().keySet().iterator();
+        else keyIt = SlimeBounceHandler.Companion.getServerBouncingEntities().keySet().iterator();
         while(keyIt.hasNext()) {
             Entity entity = keyIt.next();
             SlimeBounceHandler bounce;
-            if(world.isClient) bounce = SlimeBounceHandler.Companion.getClientBouncingEntityes().get(entity);
-            else bounce = SlimeBounceHandler.Companion.getServerBouncingEntityes().get(entity);
+            if(world.isClient) bounce = SlimeBounceHandler.Companion.getClientBouncingEntities().get(entity);
+            else bounce = SlimeBounceHandler.Companion.getServerBouncingEntities().get(entity);
             if(player.equals(entity) && !player.isFallFlying()) {
-                System.out.println("cu");
-
                 if(player.age == bounce.getBounceTick()) {
                     Vec3d velocity = getVelocity();
                     this.setVelocity(velocity.x, bounce.getBounce(), velocity.z);
@@ -79,9 +79,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     if(bounce.getLastMovX() != getVelocity().x || bounce.getLastMovZ() != getVelocity().z) {
                         double f = 0.91d + 0.025d;
                         Vec3d velocity = getVelocity();
-                        System.out.println(velocity);
                         this.setVelocity(velocity.x/f, velocity.y, velocity.z/f);
-                        System.out.println(getVelocity());
                         this.velocityDirty = true;
                         bounce.setLastMovX(getVelocity().x);
                         bounce.setLastMovZ(getVelocity().z);
@@ -93,7 +91,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                         bounce.setTimer(player.age);
                     }else if(player.age - bounce.getTimer() > 5){
                         keyIt.remove();
-                        SlimeBounceHandler.Companion.getServerBouncingEntityes().remove(entity);
+                        SlimeBounceHandler.Companion.getServerBouncingEntities().remove(entity);
                     }
                 }else{
                     bounce.setTimer(0);

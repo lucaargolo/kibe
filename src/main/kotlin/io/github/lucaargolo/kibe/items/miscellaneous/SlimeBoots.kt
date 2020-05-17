@@ -5,9 +5,7 @@ import net.minecraft.item.ArmorItem
 import net.minecraft.item.ArmorMaterial
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
-import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
-import net.minecraft.text.LiteralText
 
 class SlimeBoots(settings: Settings) : ArmorItem(object : ArmorMaterial {
     override fun getRepairIngredient() = Ingredient.ofItems(Items.SLIME_BALL)
@@ -17,6 +15,4 @@ class SlimeBoots(settings: Settings) : ArmorItem(object : ArmorMaterial {
     override fun getDurability(slot: EquipmentSlot) = 128
     override fun getEnchantability() = 0
     override fun getProtectionAmount(slot: EquipmentSlot?) = 2
-}, EquipmentSlot.FEET, settings) {
-
-}
+}, EquipmentSlot.FEET, settings)
