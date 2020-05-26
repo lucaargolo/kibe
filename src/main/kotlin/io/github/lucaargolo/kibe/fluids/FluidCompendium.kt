@@ -31,7 +31,6 @@ import net.minecraft.util.registry.Registry
 import net.minecraft.world.BlockRenderView
 import java.util.function.Function
 
-
 val fluidRegistry = mutableMapOf<Identifier, Pair<Fluid, Fluid>>()
 
 val LIQUID_XP = register(Identifier(MOD_ID, "liquid_xp"), LiquidXpFluid.Still(), LiquidXpFluid.Flowing())

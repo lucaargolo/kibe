@@ -1,4 +1,3 @@
-@file:Suppress("unused")
 package io.github.lucaargolo.kibe.items
 
 import io.github.lucaargolo.kibe.MOD_ID
@@ -28,10 +27,21 @@ val BLESSED_BOTTLE   = register(Identifier(MOD_ID, "blessed_bottle"), ModItem())
 val BLESSED_STAR     = register(Identifier(MOD_ID, "blessed_star"), ModItem())
 val BLESSED_SEEDS    = register(Identifier(MOD_ID, "blessed_seeds"),  ModItem(BlessedSeeds(Settings())))
 
-val ANGEL_RING    = register(Identifier(MOD_ID, "angel_ring"),  ModItem(Item(Settings().maxCount(1).group(ItemGroup.MISC))))
-val GOLDEN_LASSO  = register(Identifier(MOD_ID, "golden_lasso"),  ModItem(GoldenLasso(Settings().maxCount(1).group(ItemGroup.MISC))))
-val CURSED_LASSO  = register(Identifier(MOD_ID, "cursed_lasso"),  ModItem(CursedLasso(Settings().maxCount(1).group(ItemGroup.MISC))))
-val BLESSED_LASSO = register(Identifier(MOD_ID, "blessed_lasso"),  ModItem(BlessedLasso(Settings().maxCount(1).group(ItemGroup.MISC))))
+val MAGNET = register(Identifier(MOD_ID, "magnet"), ModItem(Item(Settings().maxCount(1))))
+
+val DIAMOND_RING = register(Identifier(MOD_ID, "diamond_ring"),  ModItem(Item(Settings().maxCount(1))))
+val EMERALD_RING = register(Identifier(MOD_ID, "emerald_ring"),  ModItem(Item(Settings().maxCount(1))))
+val ANGEL_RING   = register(Identifier(MOD_ID, "angel_ring"),  ModItem(Item(Settings().maxCount(1))))
+val MAGMA_RING   = register(Identifier(MOD_ID, "magma_ring"),  ModItem(Item(Settings().maxCount(1))))
+val WATER_RING   = register(Identifier(MOD_ID, "water_ring"),  ModItem(Item(Settings().maxCount(1))))
+val LIGHT_RING   = register(Identifier(MOD_ID, "light_ring"),  ModItem(Item(Settings().maxCount(1))))
+val ENDER_RING   = register(Identifier(MOD_ID, "ender_ring"),  ModItem(Item(Settings().maxCount(1))))
+val DRAGON_RING  = register(Identifier(MOD_ID, "dragon_ring"),  ModItem(Item(Settings().maxCount(1))))
+val POTION_RING  = register(Identifier(MOD_ID, "potion_ring"),  ModItem(Item(Settings().maxCount(1))))
+
+val GOLDEN_LASSO  = register(Identifier(MOD_ID, "golden_lasso"),  ModItem(GoldenLasso(Settings().maxCount(1))))
+val CURSED_LASSO  = register(Identifier(MOD_ID, "cursed_lasso"),  ModItem(CursedLasso(Settings().maxCount(1))))
+val BLESSED_LASSO = register(Identifier(MOD_ID, "blessed_lasso"),  ModItem(BlessedLasso(Settings().maxCount(1))))
 
 val BLANK_RUNE      = register(Identifier(MOD_ID, "blank_rune"), ModItem())
 val WHITE_RUNE      = register(Identifier(MOD_ID, "white_rune"),  ModItem(Rune(DyeColor.WHITE, Settings())))
@@ -51,8 +61,8 @@ val BROWN_RUNE      = register(Identifier(MOD_ID, "brown_rune"),  ModItem(Rune(D
 val RED_RUNE        = register(Identifier(MOD_ID, "red_rune"),  ModItem(Rune(DyeColor.RED, Settings())))
 val BLACK_RUNE      = register(Identifier(MOD_ID, "black_rune"),  ModItem(Rune(DyeColor.BLACK, Settings())))
 
-val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"),  ModItem(SlimeBoots(Settings().maxCount(1).group(ItemGroup.MISC))))
-val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"),  ModItem(SlimeSling(Settings().maxCount(1).group(ItemGroup.MISC))))
+val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"),  ModItem(SlimeBoots(Settings().maxCount(1))))
+val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"),  ModItem(SlimeSling(Settings().maxCount(1))))
 
 val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"),  ModItem(PocketCraftingTable(Settings())))
 val POCKET_TRASH_CAN      = register(Identifier(MOD_ID, "pocket_trash_can"),  ModItem(PocketTrashCan(Settings()), PocketTrashCanContainer::class, PocketTrashCanScreen::class))

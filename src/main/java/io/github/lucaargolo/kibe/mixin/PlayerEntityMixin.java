@@ -54,7 +54,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             HashSet<Item> itemSet = new HashSet<>();
             itemSet.add(ItemCompendiumKt.getANGEL_RING());
             if(player.inventory.containsAnyInInv(itemSet)) {
-                RingAbilitySourceKt.getAngelRingSource().grants(player, VanillaAbilities.ALLOW_FLYING);
+                RingAbilitySourceKt.getAngelRingSource().grantTo(player, VanillaAbilities.ALLOW_FLYING);
             }else {
                 RingAbilitySourceKt.getAngelRingSource().revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
             }

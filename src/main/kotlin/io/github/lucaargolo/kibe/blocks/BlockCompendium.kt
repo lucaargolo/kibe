@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.MOD_ID
@@ -47,7 +45,6 @@ val GREEN_ELEVATOR = register(Identifier(MOD_ID, "green_elevator"), ModBlock(Ele
 val BROWN_ELEVATOR = register(Identifier(MOD_ID, "brown_elevator"), ModBlock(Elevator()))
 val RED_ELEVATOR = register(Identifier(MOD_ID, "red_elevator"), ModBlock(Elevator()))
 val BLACK_ELEVATOR = register(Identifier(MOD_ID, "black_elevator"), ModBlock(Elevator()))
-
 
 private fun register(identifier: Identifier, block: ModBlock): Block {
     blockRegistry[identifier] = block

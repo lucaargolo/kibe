@@ -12,6 +12,7 @@ import io.github.lucaargolo.kibe.fluids.initFluidsClient
 import io.github.lucaargolo.kibe.items.*
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
+import io.github.lucaargolo.kibe.utils.initCreativeTab
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
@@ -46,6 +47,7 @@ fun init() {
     initEffects()
     initLootTables()
     initFluids()
+    initCreativeTab()
 }
 
 fun initClient() {
