@@ -4,7 +4,6 @@ import io.github.lucaargolo.kibe.blocks.entangled.EntangledChest
 import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntity
 import io.github.lucaargolo.kibe.items.getItemId
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
-import net.minecraft.client.util.TextFormat
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -13,10 +12,7 @@ import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
-import net.minecraft.util.ActionResult
-import net.minecraft.util.DyeColor
-import net.minecraft.util.Hand
-import net.minecraft.util.TypedActionResult
+import net.minecraft.util.*
 import net.minecraft.world.World
 
 class EntangledBag: Item(Settings().group(ItemGroup.MISC)){
@@ -32,7 +28,7 @@ class EntangledBag: Item(Settings().group(ItemGroup.MISC)){
             }
             newTag.putString("colorCode", blockEntity.getColorCode())
             context.stack.tag = newTag
-            if(!context.world.isClient) context.player!!.sendMessage(LiteralText("${TextFormat.GOLD}Successfully linked bag!"))
+            if(!context.world.isClient) context.player!!.sendMessage(LiteralText("${Formatting.GOLD}Successfully linked bag!"), false)
             return ActionResult.SUCCESS
         }
         return ActionResult.PASS

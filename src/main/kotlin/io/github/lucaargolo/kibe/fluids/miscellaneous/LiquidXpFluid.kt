@@ -1,14 +1,12 @@
 package io.github.lucaargolo.kibe.fluids.miscellaneous
 
 import io.github.lucaargolo.kibe.fluids.*
-import io.github.lucaargolo.kibe.items.CURSED_SEEDS
 import net.minecraft.block.BlockState
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.item.Item
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-
 
 abstract class LiquidXpFluid: ModdedFluid() {
 

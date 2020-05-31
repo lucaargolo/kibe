@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.entity.EntityContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.ActionResult
@@ -35,11 +34,12 @@ class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
         return true
     }
 
-    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, context: EntityContext): VoxelShape {
+
+    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
         return Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
     }
 
-    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: EntityContext): VoxelShape {
+    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
         return Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
     }
 

@@ -3,7 +3,7 @@ package io.github.lucaargolo.kibe.blocks.entangled
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.util.DefaultedList
+import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.PersistentState
 
 class EntangledChestState(key: String) : PersistentState(key) {
@@ -37,12 +37,12 @@ class EntangledChestState(key: String) : PersistentState(key) {
 
     private val invMaxStackAmount = 64
 
-    fun getInvSize(colorCode: String): Int {
+    fun size(colorCode: String): Int {
         if(!hasInventory(colorCode)) createInventory(colorCode)
         return inventoryMap[colorCode]!!.size
     }
 
-    fun isInvEmpty(colorCode: String): Boolean {
+    fun isEmpty(colorCode: String): Boolean {
         if(!hasInventory(colorCode)) createInventory(colorCode)
         val iterator = inventoryMap[colorCode]!!.iterator()
         var itemStack: ItemStack
@@ -54,22 +54,22 @@ class EntangledChestState(key: String) : PersistentState(key) {
         return false
     }
 
-    fun getInvStack(slot: Int, colorCode: String): ItemStack {
+    fun getStack(slot: Int, colorCode: String): ItemStack {
         if(!hasInventory(colorCode)) createInventory(colorCode)
         return inventoryMap[colorCode]!![slot]
     }
 
-    fun takeInvStack(slot: Int, amount: Int, colorCode: String): ItemStack {
+    fun removeStack(slot: Int, amount: Int, colorCode: String): ItemStack {
         if(!hasInventory(colorCode)) createInventory(colorCode)
         return Inventories.splitStack(inventoryMap[colorCode]!!, slot, amount)
     }
 
-    fun removeInvStack(slot: Int, colorCode: String): ItemStack {
+    fun removeStack(slot: Int, colorCode: String): ItemStack {
         if(!hasInventory(colorCode)) createInventory(colorCode)
         return Inventories.removeStack(inventoryMap[colorCode]!!, slot)
     }
 
-    fun setInvStack(slot: Int, stack: ItemStack?, colorCode: String) {
+    fun setStack(slot: Int, stack: ItemStack?, colorCode: String) {
         if(!hasInventory(colorCode)) createInventory(colorCode)
         inventoryMap[colorCode]!![slot] = stack
         if (stack!!.count > invMaxStackAmount) {

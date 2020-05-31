@@ -3,26 +3,27 @@ package io.github.lucaargolo.kibe.blocks.entangled
 import com.google.common.math.IntMath.pow
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import net.minecraft.block.BlockState
 import net.minecraft.block.entity.LockableContainerBlockEntity
-import net.minecraft.container.Container
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
+import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.util.DefaultedList
 import net.minecraft.util.DyeColor
+import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.MathHelper
 
 class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)), BlockEntityClientSerializable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var runeColors = mutableMapOf<Int, DyeColor>()
-    var key = "global"
+    var key = "entangledchest-global"
 
     init {
         (1..8).forEach {
@@ -56,7 +57,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         return code.toString()
     }
 
-    override fun createContainer(i: Int, playerInventory: PlayerInventory?): Container? {
+    override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
         return null
     }
 
@@ -85,8 +86,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         return toTag(CompoundTag())
    }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun fromTag(state: BlockState, tag: CompoundTag) {
+        super.fromTag(state, tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -97,7 +98,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             getPersistentState()!!.fromTag(subTag)
         }
         else {
-            this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY)
+            this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
             Inventories.fromTag(tag, this.inventory)
         }
     }
@@ -107,7 +108,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
         key = tag.getString("key")
-        this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY)
+        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
         Inventories.fromTag(tag, this.inventory)
     }
 
@@ -138,13 +139,13 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         return tag
     }
 
-    override fun getInvSize(): Int {
-        return if(hasPersistentState()) getPersistentState()!!.getInvSize(getColorCode())
+    override fun size(): Int {
+        return if(hasPersistentState()) getPersistentState()!!.size(getColorCode())
         else inventory.size
     }
 
-    override fun isInvEmpty(): Boolean {
-        return if(hasPersistentState()) getPersistentState()!!.isInvEmpty(getColorCode())
+    override fun isEmpty(): Boolean {
+        return if(hasPersistentState()) getPersistentState()!!.isEmpty(getColorCode())
         else {
             val iterator = this.inventory.iterator()
             var itemStack: ItemStack
@@ -157,27 +158,27 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
     }
 
-    override fun getInvStack(slot: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.getInvStack(slot, getColorCode())
+    override fun getStack(slot: Int): ItemStack {
+        return if(hasPersistentState()) getPersistentState()!!.getStack(slot, getColorCode())
         else inventory[slot]
     }
 
-    override fun takeInvStack(slot: Int, amount: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.takeInvStack(slot, amount, getColorCode())
+    override fun removeStack(slot: Int, amount: Int): ItemStack {
+        return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, amount, getColorCode())
         else Inventories.splitStack(inventory, slot, amount)
     }
 
-    override fun removeInvStack(slot: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.removeInvStack(slot, getColorCode())
+    override fun removeStack(slot: Int): ItemStack {
+        return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, getColorCode())
         else Inventories.removeStack(this.inventory, slot)
     }
 
-    override fun setInvStack(slot: Int, stack: ItemStack?) {
-        if(hasPersistentState()) getPersistentState()!!.setInvStack(slot, stack, getColorCode())
+    override fun setStack(slot: Int, stack: ItemStack?) {
+        if(hasPersistentState()) getPersistentState()!!.setStack(slot, stack, getColorCode())
         else {
             inventory[slot] = stack
-            if (stack!!.count > invMaxStackAmount) {
-                stack.count = invMaxStackAmount
+            if (stack!!.count > maxCountPerStack) {
+                stack.count = maxCountPerStack
             }
         }
     }
@@ -189,7 +190,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
 
     override fun getContainerName(): Text = LiteralText("Entangled Chest")
 
-    override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
+    override fun canPlayerUse(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {
             false
         } else {

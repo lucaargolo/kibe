@@ -16,8 +16,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.texture.SpriteAtlasTexture
-import net.minecraft.container.PlayerContainer
-import net.minecraft.fluid.BaseFluid
+import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.item.BucketItem
@@ -25,6 +24,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceType
+import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
@@ -35,7 +35,7 @@ val fluidRegistry = mutableMapOf<Identifier, Pair<Fluid, Fluid>>()
 
 val LIQUID_XP = register(Identifier(MOD_ID, "liquid_xp"), LiquidXpFluid.Still(), LiquidXpFluid.Flowing())
 
-private fun register(identifier: Identifier, fluidStill: BaseFluid, fluidFlowing: BaseFluid): Identifier {
+private fun register(identifier: Identifier, fluidStill: FlowableFluid, fluidFlowing: FlowableFluid): Identifier {
     fluidRegistry[identifier] = Pair(fluidStill, fluidFlowing)
     return identifier
 }
@@ -62,7 +62,7 @@ fun initFluids() {
         val baseFluid = Registry.register(Registry.FLUID, it.key, it.value.first)
         Registry.register(Registry.FLUID, Identifier(it.key.namespace, "flowing_${it.key.path}"), it.value.second)
         Registry.register(Registry.ITEM, Identifier(it.key.namespace, "${it.key.path}_bucket"), BucketItem(it.value.first, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
-        Registry.register(Registry.BLOCK, it.key, object: FluidBlock(baseFluid as BaseFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
+        Registry.register(Registry.BLOCK, it.key, object: FluidBlock(baseFluid as FlowableFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
     }
 }
 
@@ -80,7 +80,7 @@ private fun setupFluidRendering(still: Fluid?, flowing: Fluid?, textureFluidId: 
     val flowingSpriteId = Identifier(textureFluidId.namespace, "block/" + textureFluidId.path + "_flow")
 
     // If they're not already present, add the sprites to the block atlas
-    ClientSpriteRegistryCallback.event(PlayerContainer.BLOCK_ATLAS_TEXTURE)
+    ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
         .register(ClientSpriteRegistryCallback { _: SpriteAtlasTexture?, registry: ClientSpriteRegistryCallback.Registry ->
             registry.register(stillSpriteId)
             registry.register(flowingSpriteId)
@@ -99,7 +99,7 @@ private fun setupFluidRendering(still: Fluid?, flowing: Fluid?, textureFluidId: 
          */
         override fun apply(resourceManager: ResourceManager?) {
             val atlas: Function<Identifier, Sprite> =
-                MinecraftClient.getInstance().getSpriteAtlas(PlayerContainer.BLOCK_ATLAS_TEXTURE)
+                MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
             fluidSprites[0] = atlas.apply(stillSpriteId)
             fluidSprites[1] = atlas.apply(flowingSpriteId)
         }

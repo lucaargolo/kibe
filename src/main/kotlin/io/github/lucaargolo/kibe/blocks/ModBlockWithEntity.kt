@@ -7,13 +7,13 @@ import net.minecraft.block.BlockWithEntity
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.block.entity.LockableContainerBlockEntity
-import net.minecraft.client.gui.screen.ingame.ContainerScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
-import net.minecraft.container.BlockContext
-import net.minecraft.container.Container
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.network.PacketByteBuf
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.util.Identifier
-import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.registry.Registry
 import java.util.function.Supplier
 import kotlin.reflect.KClass
@@ -25,8 +25,8 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
     var entity: BlockEntityType<T>? = null
         private set
     private var renderer: KClass<BlockEntityRenderer<T>>? = null
-    private var container: KClass<Container>? = null
-    private var containerScreen: KClass<ContainerScreen<*>>? = null
+    private var container: KClass<ScreenHandler>? = null
+    private var containerScreen: KClass<HandledScreen<*>>? = null
 
     constructor(block: BlockWithEntity) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
@@ -37,17 +37,17 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
         this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
     }
 
-    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityContainer: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
+    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
         this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
-        this.container = blockEntityContainer as KClass<Container>
-        this.containerScreen = blockEntityScreen as KClass<ContainerScreen<*>>
+        this.container = blockEntityScreenHandler as KClass<ScreenHandler>
+        this.containerScreen = blockEntityScreen as KClass<HandledScreen<*>>
     }
 
-    constructor(block: BlockWithEntity, blockEntityContainer: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
+    constructor(block: BlockWithEntity, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.container = blockEntityContainer as KClass<Container>
-        this.containerScreen = blockEntityScreen as KClass<ContainerScreen<*>>
+        this.container = blockEntityScreenHandler as KClass<ScreenHandler>
+        this.containerScreen = blockEntityScreen as KClass<HandledScreen<*>>
     }
 
     override fun init(identifier: Identifier) {
@@ -61,7 +61,7 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
                 container!!.primaryConstructor!!.call(syncId,
                     playerEntity.inventory,
                     playerEntity.world.getBlockEntity(pos),
-                    BlockContext.create(playerEntity.world, pos)
+                    ScreenHandlerContext.create(playerEntity.world, pos)
                 )
             }
         }
@@ -78,7 +78,7 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
                         syncId,
                         playerEntity.inventory,
                         entity,
-                        BlockContext.EMPTY
+                        ScreenHandlerContext.EMPTY
                     ), playerEntity.inventory, entity.name
                 )
             }

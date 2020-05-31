@@ -33,10 +33,6 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).nonOp
         return true
     }
 
-    override fun isSimpleFullBlock(state: BlockState?, view: BlockView?, pos: BlockPos?): Boolean {
-        return false
-    }
-
     override fun hasSidedTransparency(state: BlockState?): Boolean {
         return true
     }

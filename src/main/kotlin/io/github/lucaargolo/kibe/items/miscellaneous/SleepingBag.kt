@@ -26,7 +26,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         if(!world.isClient) {
             customTrySleep(player).ifLeft { sleepFailureReason ->
                 if (sleepFailureReason != null) {
-                    player.addChatMessage(sleepFailureReason.toText(), true)
+                    player.sendMessage(sleepFailureReason.toText(), true)
                 }
             }
         }
@@ -35,7 +35,7 @@ class SleepingBag(settings: Settings): Item(settings) {
 
     private fun isSleepingBagObstructed(world: World, pos: BlockPos, direction: Direction): Boolean {
         val blockPos: BlockPos = pos.up()
-        return world.getBlockState(blockPos).canSuffocate(world, blockPos) || world.getBlockState(blockPos.offset(direction.opposite)).canSuffocate(world, blockPos.offset(direction.opposite))
+        return world.getBlockState(blockPos).shouldSuffocate(world, blockPos) || world.getBlockState(blockPos.offset(direction.opposite)).shouldSuffocate(world, blockPos.offset(direction.opposite))
     }
 
     private fun customTrySleep(player: PlayerEntity): Either<PlayerEntity.SleepFailureReason, Unit> {
@@ -50,7 +50,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         if (player.isSleeping || !player.isAlive) {
             return Either.left(PlayerEntity.SleepFailureReason.OTHER_PROBLEM)
         }
-        if (!player.world.dimension.hasVisibleSky()) {
+        if (!player.world.dimension.hasSkyLight()) {
             return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE)
         }
         if (player.world.isDay) {
@@ -79,7 +79,7 @@ class SleepingBag(settings: Settings): Item(settings) {
 
         playersSleeping.add(player)
         player.sleep(sleepingPos)
-        (player.world as ServerWorld).updatePlayersSleeping()
+        (player.world as ServerWorld).updateSleepingPlayers()
 
         return Either.right(Unit.INSTANCE)
     }

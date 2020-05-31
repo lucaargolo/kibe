@@ -1,43 +1,45 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
-import net.minecraft.container.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.screen.ScreenHandlerContext
+import net.minecraft.screen.slot.Slot
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val entity: EntangledChestEntity, private val blockContext: BlockContext): Container(null, syncId) {
+class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val entity: EntangledChestEntity, private val blockContext: ScreenHandlerContext): ScreenHandler(null, syncId) {
 
     var inventory: Inventory = object: Inventory {
-        override fun getInvSize(): Int {
-            return entity.invSize
+        override fun size(): Int {
+            return entity.size()
         }
 
-        override fun isInvEmpty(): Boolean {
-            return entity.isInvEmpty
+        override fun isEmpty(): Boolean {
+            return entity.isEmpty
         }
 
-        override fun getInvStack(slot: Int): ItemStack? {
-            return entity.getInvStack(slot)
+        override fun getStack(slot: Int): ItemStack? {
+            return entity.getStack(slot)
         }
 
-        override fun removeInvStack(slot: Int): ItemStack? {
-            val stack: ItemStack = entity.removeInvStack(slot)
+        override fun removeStack(slot: Int): ItemStack? {
+            val stack: ItemStack = entity.removeStack(slot)
             onContentChanged(this)
             return stack
         }
 
-        override fun takeInvStack(slot: Int, amount: Int): ItemStack? {
-            val stack: ItemStack = entity.takeInvStack(slot, amount)
+        override fun removeStack(slot: Int, amount: Int): ItemStack? {
+            val stack: ItemStack = entity.removeStack(slot, amount)
             onContentChanged(this)
             return stack
         }
 
-        override fun setInvStack(slot: Int, stack: ItemStack?) {
-            entity.setInvStack(slot, stack)
+        override fun setStack(slot: Int, stack: ItemStack?) {
+            entity.setStack(slot, stack)
             onContentChanged(this)
         }
 
@@ -45,8 +47,8 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
             entity.markDirty()
         }
 
-        override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
-            return entity.canPlayerUseInv(player)
+        override fun canPlayerUse(player: PlayerEntity?): Boolean {
+            return entity.canPlayerUse(player)
         }
 
         override fun clear() {
@@ -55,8 +57,8 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
     }
 
     init {
-        checkContainerSize(inventory, 27)
-        inventory.onInvOpen(playerInventory.player)
+        checkSize(inventory, 27)
+        inventory.onOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
         (0..2).forEach {n ->

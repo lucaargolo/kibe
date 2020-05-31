@@ -34,7 +34,7 @@ class SlimeSling(settings: Settings): Item(settings) {
     override fun onStoppedUsing(stack: ItemStack, world: World, entity: LivingEntity, remainingUseTicks: Int) {
         if(entity !is PlayerEntity) return
 
-        if(!entity.onGround) {
+        if(!entity.isOnGround) {
             return
         }
 

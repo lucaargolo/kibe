@@ -28,12 +28,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(type, world);
     }
 
-    @Inject(at = @At("HEAD"), method = "setPlayerSpawn", cancellable = true)
-    private void setPlayerSpawn(CallbackInfo info) {
-        if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
-            info.cancel();
-        }
-    }
+//    @Inject(at = @At("HEAD"), method = "setPlayerSpawn", cancellable = true)
+//    private void setPlayerSpawn(CallbackInfo info) {
+//        if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
+//            info.cancel();
+//        }
+//    }
 
     @Inject(at = @At("TAIL"), method = "wakeUp()V")
     private void wakeUpV(CallbackInfo info) {
@@ -53,7 +53,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         if(!player.isCreative() && !world.isClient) {
             HashSet<Item> itemSet = new HashSet<>();
             itemSet.add(ItemCompendiumKt.getANGEL_RING());
-            if(player.inventory.containsAnyInInv(itemSet)) {
+            if(player.inventory.containsAny(itemSet)) {
                 RingAbilitySourceKt.getAngelRingSource().grantTo(player, VanillaAbilities.ALLOW_FLYING);
             }else {
                 RingAbilitySourceKt.getAngelRingSource().revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
@@ -75,7 +75,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     bounce.setBounceTick(0);
                 }
 
-                if(!player.onGround && player.age != bounce.getBounceTick()) {
+                if(!player.isOnGround() && player.age != bounce.getBounceTick()) {
                     if(bounce.getLastMovX() != getVelocity().x || bounce.getLastMovZ() != getVelocity().z) {
                         double f = 0.91d + 0.025d;
                         Vec3d velocity = getVelocity();
@@ -86,7 +86,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     }
                 }
 
-                if(bounce.getWasInAir() && player.onGround) {
+                if(bounce.getWasInAir() && player.isOnGround()) {
                     if(bounce.getTimer() == 0) {
                         bounce.setTimer(player.age);
                     }else if(player.age - bounce.getTimer() > 5){

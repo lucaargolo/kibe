@@ -11,16 +11,13 @@ import net.minecraft.fluid.EmptyFluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
-import net.minecraft.server.world.ServerChunkManager
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
-import net.minecraft.util.WeightedPicker
+import net.minecraft.util.collection.WeightedPicker
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
@@ -57,7 +54,7 @@ class BlessedDirt: InfectedDirt() {
     }
 }
 
-abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ticksRandomly()) {
+abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SOIL).ticksRandomly()) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 15).with(Properties.SNOWY, false)
@@ -69,19 +66,18 @@ abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ti
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        player.pos
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
-            val entries = (world.chunkManager as ServerChunkManager).chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos.up())
+            val entries = (world as ServerWorld).chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos.up())
             if (entries.isEmpty()) {
-                player.sendMessage(LiteralText("Nothing can spawn"))
+                player.sendMessage(LiteralText("Nothing can spawn"), false)
                 return ActionResult.SUCCESS
             } else {
-                val names: Text = LiteralText("Names: ")
+                var names = "Names: "
                 entries.forEachIndexed { index, entry ->
-                    names.append(TranslatableText(entry.type.translationKey.replace("Entity", "")))
-                    if(index < entries.size-1) names.append(LiteralText(", "))
+                    names += entry.type.translationKey.replace("Entity", "")
+                    if(index < entries.size-1) names += ", "
                 }
-                player.sendMessage(names)
+                player.sendMessage(LiteralText(names), false)
             }
             return ActionResult.SUCCESS
         }
@@ -130,7 +126,7 @@ abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ti
                     if (!world.tryLoadEntity(it)) null else it
                 }
                 if(entity is MobEntity) {
-                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity)), SpawnType.NATURAL, null, null)
+                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnReason.NATURAL, null, null)
                 }
                 //mob.spawn(world, tag, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
             }
@@ -150,11 +146,11 @@ abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SAND).ti
         }
     }
 
-    private fun getSpawnableMonster(world: World, pos: BlockPos, random: Random): EntityType<*>? {
-        val spawnList = (world.chunkManager as ServerChunkManager).chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos)
+    private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
+        val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos)
         if (spawnList.size == 0) return null
         val entry: Biome.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
-        if (!SpawnRestriction.canSpawn(entry.type, world, SpawnType.NATURAL, pos, world.random)) return null
+        if (!SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random)) return null
         return entry.type
     }
 }

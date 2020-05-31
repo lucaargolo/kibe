@@ -21,7 +21,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     public abstract M getModel();
 
     @Inject(at = @At("HEAD"), method = "getRenderLayer", cancellable = true)
-    private void getRenderLayer(T entity, boolean showBody, boolean translucent, CallbackInfoReturnable<RenderLayer> info) {
+    private void getRenderLayer(T entity, boolean showBody, boolean translucent, boolean bl, CallbackInfoReturnable<RenderLayer> info) {
         if(entity.hasStatusEffect(EffectCompendiumKt.getCURSED_EFFECT())) {
             Identifier texture = new Identifier("textures/block/coal_block.png");
             info.setReturnValue(this.getModel().getLayer(texture));

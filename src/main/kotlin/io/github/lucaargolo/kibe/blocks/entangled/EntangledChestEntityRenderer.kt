@@ -13,10 +13,9 @@ import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.util.SpriteIdentifier
-import net.minecraft.client.util.math.Matrix4f
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
-import net.minecraft.container.PlayerContainer
+import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
@@ -25,6 +24,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Matrix4f
 import java.util.*
 import java.util.function.Function
 import java.util.stream.IntStream
@@ -117,7 +117,7 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
 
         val screen = MinecraftClient.getInstance().currentScreen
         val isChestScreenOpen = if(screen is EntangledChestScreen) {
-            screen.container.entity.runeColors == blockEntity.runeColors
+            screen.screenHandler.entity.runeColors == blockEntity.runeColors
         }else false
         val isBagScreenOpen = if(screen is EntangledBagScreen) {
             screen.hasSameColors(blockEntity.runeColors)
@@ -169,10 +169,10 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
-        val chestIdentifier = SpriteIdentifier(PlayerContainer.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
+        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
         val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
-        val runesIdentifier = SpriteIdentifier(PlayerContainer.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
+        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
         val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
         val lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.world, blockEntity.pos)

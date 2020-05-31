@@ -2,17 +2,16 @@ package io.github.lucaargolo.kibe.fluids.miscellaneous
 
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.fluid.BaseFluid
+import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
-import net.minecraft.world.IWorld
+import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
-
-abstract class ModdedFluid: BaseFluid() {
+abstract class ModdedFluid: FlowableFluid() {
 
     override fun matchesType(fluid: Fluid): Boolean {
         return fluid === still || fluid === flowing
@@ -22,7 +21,7 @@ abstract class ModdedFluid: BaseFluid() {
         return false
     }
 
-    override fun beforeBreakingBlock(world: IWorld, pos: BlockPos?, state: BlockState) {
+    override fun beforeBreakingBlock(world: WorldAccess, pos: BlockPos, state: BlockState) {
         val blockEntity = if (state.block.hasBlockEntity()) world.getBlockEntity(pos) else null
         Block.dropStacks(state, world.world, pos, blockEntity)
     }
@@ -31,7 +30,7 @@ abstract class ModdedFluid: BaseFluid() {
         return false
     }
 
-    override fun method_15733(worldView: WorldView?): Int {
+    override fun getFlowSpeed(world: WorldView?): Int {
         return 2
     }
 

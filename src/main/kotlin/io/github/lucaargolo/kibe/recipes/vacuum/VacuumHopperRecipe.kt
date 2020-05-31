@@ -1,21 +1,23 @@
 package io.github.lucaargolo.kibe.recipes.vacuum
 
-import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
-import net.minecraft.inventory.Inventory
+import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
+import it.unimi.dsi.fastutil.ints.IntList
+import net.minecraft.inventory.CraftingInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.Recipe
-import net.minecraft.util.DefaultedList
+import net.minecraft.recipe.RecipeFinder
 import net.minecraft.util.Identifier
+import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class VacuumHopperRecipe(private val id: Identifier, private val inputs: DefaultedList<Ingredient>, private val output: ItemStack) : Recipe<Inventory> {
+class VacuumHopperRecipe(private val id: Identifier, private val output: ItemStack, private val input: DefaultedList<Ingredient>, val xpInput: Int) : Recipe<CraftingInventory> {
 
     override fun getId() = id
 
-    override fun craft(inv: Inventory?): ItemStack = output.copy()
+    override fun craft(inv: CraftingInventory): ItemStack = output.copy()
 
     override fun getType() = VACUUM_HOPPER_RECIPE_TYPE
 
@@ -27,11 +29,20 @@ class VacuumHopperRecipe(private val id: Identifier, private val inputs: Default
 
     override fun getRecipeKindIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.stackForRender
 
-    override fun getPreviewInputs() = inputs
+    override fun getPreviewInputs() = input
 
-    override fun matches(inv: Inventory, world: World): Boolean {
-        return inv.invSize == 1 && inputs.withIndex().all {
-            it.value.test(inv.getInvStack(it.index))
+    override fun matches(inv: CraftingInventory, world: World): Boolean {
+        val recipeFinder = RecipeFinder()
+        var i = 0
+
+        for (j in 0 until inv.size()) {
+            val itemStack: ItemStack = inv.getStack(j)
+            if (!itemStack.isEmpty) {
+                ++i
+                recipeFinder.method_20478(itemStack, 1)
+            }
         }
+
+        return i == input.size && recipeFinder.findRecipe(this, null as IntList?)
     }
 }
