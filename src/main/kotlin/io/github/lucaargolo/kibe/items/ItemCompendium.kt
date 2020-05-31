@@ -11,7 +11,6 @@ import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanContainer
 import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanScreen
 import net.minecraft.item.Item.*
 import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 
@@ -27,7 +26,7 @@ val BLESSED_BOTTLE   = register(Identifier(MOD_ID, "blessed_bottle"), ModItem())
 val BLESSED_STAR     = register(Identifier(MOD_ID, "blessed_star"), ModItem())
 val BLESSED_SEEDS    = register(Identifier(MOD_ID, "blessed_seeds"),  ModItem(BlessedSeeds(Settings())))
 
-val MAGNET = register(Identifier(MOD_ID, "magnet"), ModItem(Item(Settings().maxCount(1))))
+val MAGNET = register(Identifier(MOD_ID, "magnet"), ModItem(BooleanItem(Settings().maxCount(1))))
 
 val DIAMOND_RING = register(Identifier(MOD_ID, "diamond_ring"),  ModItem(Item(Settings().maxCount(1))))
 val EMERALD_RING = register(Identifier(MOD_ID, "emerald_ring"),  ModItem(Item(Settings().maxCount(1))))

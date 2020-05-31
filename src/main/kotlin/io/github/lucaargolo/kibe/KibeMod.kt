@@ -5,39 +5,36 @@ package io.github.lucaargolo.kibe
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
 import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.blocks.initBlocksClient
-import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
+import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.effects.initEffects
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.fluids.initFluidsClient
-import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.items.initItems
+import io.github.lucaargolo.kibe.items.initItemsClient
+import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
-import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
+import net.fabricmc.fabric.api.network.PacketContext
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
-import net.minecraft.loot.ConstantLootTableRange
-import net.minecraft.loot.UniformLootTableRange
-import net.minecraft.loot.condition.EntityPropertiesLootCondition
-import net.minecraft.loot.condition.RandomChanceLootCondition
-import net.minecraft.loot.context.LootContext
-import net.minecraft.loot.entry.ItemEntry
-import net.minecraft.loot.function.LootingEnchantLootFunction
-import net.minecraft.predicate.entity.EntityEffectPredicate
-import net.minecraft.predicate.entity.EntityPredicate
+import net.minecraft.network.PacketByteBuf
 import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import java.util.*
 import java.util.function.Consumer
 
+
 const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
+
+val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 
 fun init() {
     initRecipeSerializers()
@@ -55,6 +52,17 @@ fun initClient() {
     initItemsClient()
     initFluidsClient()
     initExtrasClient()
+
+    ClientSidePacketRegistry.INSTANCE.register(SYNCHRONIZE_LAST_RECIPE_PACKET) { packetContext: PacketContext, attachedData: PacketByteBuf ->
+        val id = attachedData.readIdentifier()
+        val recipe = VACUUM_HOPPER_RECIPE_SERIALIZER.read(id, attachedData)
+        packetContext.taskQueue.execute {
+            if(MinecraftClient.getInstance().currentScreen is VacuumHopperScreen) {
+                val screen = MinecraftClient.getInstance().currentScreen as VacuumHopperScreen
+                screen.screenHandler.lastRecipe = recipe
+            }
+        }
+    }
 }
 
 fun initExtrasClient() {

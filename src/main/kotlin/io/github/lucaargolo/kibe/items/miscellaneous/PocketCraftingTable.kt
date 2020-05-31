@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
-import io.github.lucaargolo.kibe.mixin.CraftingTableContainerAccessor
+import io.github.lucaargolo.kibe.mixin.CraftingTableContainerMixin
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.Item
@@ -21,12 +21,12 @@ class PocketCraftingTable(settings: Settings): Item(settings) {
             user.openHandledScreen(SimpleNamedScreenHandlerFactory(ScreenHandlerFactory { i, playerInventory, _ ->
                 object: CraftingScreenHandler(i, playerInventory)  {
                     override fun onContentChanged(inventory: Inventory?) {
-                        updateResult(syncId, world, (this as CraftingTableContainerAccessor).player, (this as CraftingTableContainerAccessor).input, (this as CraftingTableContainerAccessor).result)
+                        updateResult(syncId, world, (this as CraftingTableContainerMixin).player, (this as CraftingTableContainerMixin).input, (this as CraftingTableContainerMixin).result)
                     }
 
                     override fun close(player: PlayerEntity?) {
                         super.close(player)
-                        dropInventory(player, world, (this as CraftingTableContainerAccessor).input)
+                        dropInventory(player, world, (this as CraftingTableContainerMixin).input)
                     }
                 }
             }, LiteralText("Pocket Crafting Table")))

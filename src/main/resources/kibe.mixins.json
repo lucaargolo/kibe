@@ -3,13 +3,14 @@
   "package": "io.github.lucaargolo.kibe.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CraftingTableContainerAccessor",
+    "CraftingTableContainerMixin",
     "EntityMixin",
     "ExperienceOrbEntityMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
     "MobSpawnerLogicMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "PlayerInventoryMixin"
   ],
   "client": [
     "LivingEntityRendererMixin"

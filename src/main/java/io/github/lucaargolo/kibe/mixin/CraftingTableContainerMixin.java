@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(CraftingScreenHandler.class)
-public interface CraftingTableContainerAccessor {
+public interface CraftingTableContainerMixin {
 
     @Accessor
     CraftingInventory getInput();
