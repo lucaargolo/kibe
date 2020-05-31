@@ -40,16 +40,6 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
         }
     }
 
-    override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
-        val tag = CompoundTag()
-        this.toTag(tag)
-        return BlockEntityUpdateS2CPacket(this.pos, 2, this.toInitialChunkDataTag())
-    }
-
-    override fun toInitialChunkDataTag(): CompoundTag? {
-        return toTag(CompoundTag())
-    }
-
     override fun toTag(tag: CompoundTag): CompoundTag {
         tag.putInt("fluid", liquidXp)
         Inventories.toTag(tag, inventory)

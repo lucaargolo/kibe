@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.state.StateManager
@@ -32,17 +33,20 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.METAL)) {
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        val blockEntity = world.getBlockEntity(pos)
-        if(blockEntity is RedstoneTimerEntity) {
-            val level = blockEntity.level
-            if(player.isSneaking) {
-                if(level > 0) blockEntity.level = level-1
-                else blockEntity.level = 15
-            }else{
-                if(level < 15) blockEntity.level = level+1
-                else blockEntity.level = 0
+        if(!world.isClient) {
+            val blockEntity = world.getBlockEntity(pos)
+            if(blockEntity is RedstoneTimerEntity) {
+                val level = blockEntity.level
+                if(player.isSneaking) {
+                    if(level > 0) blockEntity.level = level-1
+                    else blockEntity.level = 15
+                }else{
+                    if(level < 15) blockEntity.level = level+1
+                    else blockEntity.level = 0
+                }
+                blockEntity.markDirty()
             }
-            blockEntity.markDirty()
+            (blockEntity as BlockEntityClientSerializable).sync()
         }
         return ActionResult.SUCCESS
     }

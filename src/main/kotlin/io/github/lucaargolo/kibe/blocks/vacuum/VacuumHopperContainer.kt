@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.vacuum
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -25,19 +26,11 @@ import java.util.*
 import javax.swing.Action
 
 
-class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val dsadasda: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(null, syncId) {
+class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(null, syncId) {
 
     private var player: PlayerEntity = playerInventory.player
     private var craftingInv = CraftingInventory(this, 1, 1)
     private var resultInv = CraftingResultInventory()
-
-    var entity: VacuumHopperEntity = dsadasda
-        get() {
-            context.run { world: World, pos: BlockPos ->
-                field = world.getBlockEntity(pos) as VacuumHopperEntity
-            }
-            return field
-        }
 
     var inventory: Inventory = object: Inventory {
         override fun size(): Int {
@@ -96,7 +89,7 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
                 if(!playerEntity.world.isClient) {
                     val craftingRecipe = playerEntity.world.server!!.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, craftingInv, playerEntity.world).get()
                     entity.removeLiquid(craftingRecipe.xpInput)
-                    (playerEntity as ServerPlayerEntity).networkHandler.sendPacket(BlockEntityUpdateS2CPacket(entity.pos, 2, entity.toTag(CompoundTag())))
+                    (entity as BlockEntityClientSerializable).sync()
                 }
                 entity.markDirty()
                 super.onTakeItem(playerEntity, itemStack)
@@ -126,11 +119,16 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
 
     override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
         if(actionType == SlotActionType.QUICK_MOVE && slotId == 0) {
-            val craftSize = slots[1].stack.count
-            slots[1].stack = ItemStack.EMPTY
-            val craftResult = slots[0].stack.copy()
-            craftResult.count = craftSize
-            player.giveItemStack(craftResult)
+            if(!player.world.isClient) {
+                val craftingRecipe = player.world.server!!.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, craftingInv, player.world).get()
+                val maxCraftSize = entity.liquidXp/craftingRecipe.xpInput
+                entity.removeLiquid(maxCraftSize*entity.liquidXp)
+                slots[1].stack = ItemStack.EMPTY
+                val craftResult = craftingRecipe.output
+                craftResult.count = maxCraftSize
+                player.giveItemStack(craftResult)
+                (entity as BlockEntityClientSerializable).sync()
+            }
             return ItemStack.EMPTY
         }
         return super.onSlotClick(slotId, clickData, actionType, player)

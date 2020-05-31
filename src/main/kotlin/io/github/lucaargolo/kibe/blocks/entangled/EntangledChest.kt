@@ -4,6 +4,7 @@ import io.github.lucaargolo.kibe.blocks.getBlockId
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
@@ -57,8 +58,11 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
         if((poss.y-pos.y) > 0.9375 && player.getStackInHand(hand).item is Rune) {
             val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
             if(int != null) {
-                (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = (player.getStackInHand(hand).item as Rune).color
-                (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
+                if(!world.isClient) {
+                    (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = (player.getStackInHand(hand).item as Rune).color
+                    (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
+                    (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
+                }
                 return ActionResult.CONSUME
             }
         }

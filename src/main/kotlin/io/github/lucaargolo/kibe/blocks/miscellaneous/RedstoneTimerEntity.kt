@@ -14,16 +14,6 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer): BlockEntity(getEnti
     var current = 0
     var level = 0
 
-    override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
-        val tag = CompoundTag()
-        this.toTag(tag)
-        return BlockEntityUpdateS2CPacket(this.pos, 2, this.toInitialChunkDataTag())
-    }
-
-    override fun toInitialChunkDataTag(): CompoundTag? {
-        return toTag(CompoundTag())
-    }
-
     override fun fromTag(state: BlockState, tag: CompoundTag) {
         super.fromTag(state, tag)
         current = tag.getInt("current")

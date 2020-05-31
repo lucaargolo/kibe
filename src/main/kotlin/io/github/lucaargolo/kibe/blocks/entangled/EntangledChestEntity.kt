@@ -76,16 +76,6 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         super.markDirty()
     }
 
-    override fun toUpdatePacket(): BlockEntityUpdateS2CPacket {
-        val tag = CompoundTag()
-        this.toTag(tag)
-        return BlockEntityUpdateS2CPacket(this.pos, 2, this.toInitialChunkDataTag())
-    }
-
-   override fun toInitialChunkDataTag(): CompoundTag? {
-        return toTag(CompoundTag())
-   }
-
     override fun fromTag(state: BlockState, tag: CompoundTag) {
         super.fromTag(state, tag)
         (1..8).forEach {
