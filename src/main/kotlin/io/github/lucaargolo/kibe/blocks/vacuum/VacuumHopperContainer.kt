@@ -87,14 +87,14 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
             override fun canInsert(itemStack_1: ItemStack?) = false
 
             override fun onTakeItem(playerEntity: PlayerEntity, itemStack: ItemStack): ItemStack? {
-                this@VacuumHopperContainer.slots[1].stack.decrement(1)
-                if(!playerEntity.world.isClient) {
-                    entity.removeLiquid(lastRecipe!!.xpInput)
-                    (entity as BlockEntityClientSerializable).sync()
+                return if(entity.removeLiquid(lastRecipe!!.xpInput)) {
+                    slots[1].stack.decrement(1)
+                    entity.markDirty()
+                    super.onTakeItem(playerEntity, itemStack)
+                    itemStack
+                }else{
+                    ItemStack.EMPTY
                 }
-                entity.markDirty()
-                super.onTakeItem(playerEntity, itemStack)
-                return itemStack
             }
         })
         addSlot(Slot(craftingInv, 0, 8 + 6 * 18, 18 ))
@@ -121,11 +121,12 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
     override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
         if(actionType == SlotActionType.QUICK_MOVE && slotId == 0 && slots[0].hasStack()) {
             val maxCraftSize = entity.liquidXp/lastRecipe!!.xpInput
-            entity.removeLiquid(maxCraftSize*lastRecipe!!.xpInput)
-            slots[1].stack.decrement(maxCraftSize)
-            val craftResult = lastRecipe!!.output
-            craftResult.count = maxCraftSize
-            player.giveItemStack(craftResult)
+            if(entity.removeLiquid(maxCraftSize*lastRecipe!!.xpInput)) {
+                slots[1].stack.decrement(maxCraftSize)
+                val craftResult = lastRecipe!!.output.item
+                player.giveItemStack(ItemStack(craftResult, maxCraftSize))
+            }
+            return ItemStack.EMPTY
         }
         return super.onSlotClick(slotId, clickData, actionType, player)
     }
