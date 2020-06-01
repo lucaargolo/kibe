@@ -9,6 +9,7 @@ import net.minecraft.screen.CraftingScreenHandler
 import net.minecraft.screen.ScreenHandlerFactory
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory
 import net.minecraft.text.LiteralText
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
@@ -29,7 +30,7 @@ class PocketCraftingTable(settings: Settings): Item(settings) {
                         dropInventory(player, world, (this as CraftingTableContainerMixin).input)
                     }
                 }
-            }, LiteralText("Pocket Crafting Table")))
+            }, TranslatableText("screen.kibe.pocket_crafting_table")))
         }
         return TypedActionResult.success(user.getStackInHand(hand))
     }

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.SpawnGroup
 import net.minecraft.entity.SpawnReason
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -36,12 +37,12 @@ class CursedLasso(settings: Settings): Lasso(settings) {
         tag.put("ActiveEffects", activeEffects)
         return tag
     }
-    override fun canStoreEntity(entityType: EntityType<*>): Boolean = !entityType.spawnGroup.isAnimal
+    override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER
 }
 
-class BlessedLasso(settings: Settings): Lasso(settings) {
+class DiamondLasso(settings: Settings): Lasso(settings) {
     override fun addToTag(tag: CompoundTag): CompoundTag = tag
-    override fun canStoreEntity(entityType: EntityType<*>): Boolean = !entityType.spawnGroup.isAnimal
+    override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal || entityType.spawnGroup == SpawnGroup.MONSTER
 }
 
 abstract class Lasso(settings: Settings): Item(settings) {

@@ -28,7 +28,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
-    modCompileOnly "io.github.prospector:modmenu:${project.modmenu_version}"
+    modRuntime "io.github.prospector:modmenu:${project.modmenu_version}"
     modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 }
 

@@ -6,22 +6,22 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
 
-class BooleanItem(settings: Settings): Item(settings) {
+open class BooleanItem(settings: Settings): Item(settings) {
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         if(isEnabled(stack)) {
-            tooltip.add(LiteralText("${Formatting.GREEN}Enabled"))
-            tooltip.add(LiteralText("${Formatting.BLUE}${Formatting.ITALIC}Shift click to disable"))
+            tooltip.add(TranslatableText("tooltip.kibe.enabled").formatted(Formatting.GREEN))
+            tooltip.add(TranslatableText("tooltip.kibe.shift2disable").formatted(Formatting.BLUE, Formatting.ITALIC))
         }else {
-            tooltip.add(LiteralText("${Formatting.RED}Disabled"))
-            tooltip.add(LiteralText("${Formatting.BLUE}${Formatting.ITALIC}Shift click to enable"))
+            tooltip.add(TranslatableText("tooltip.kibe.disabled").formatted(Formatting.RED))
+            tooltip.add(TranslatableText("tooltip.kibe.shift2enable").formatted(Formatting.BLUE, Formatting.ITALIC))
         }
-        super.appendTooltip(stack, world, tooltip, context)
     }
 
     override fun hasEnchantmentGlint(stack: ItemStack): Boolean {
@@ -43,11 +43,9 @@ class BooleanItem(settings: Settings): Item(settings) {
         return TypedActionResult.pass(stack)
     }
 
-    companion object {
-        fun isEnabled(stack: ItemStack): Boolean {
-            val tag = stack.orCreateTag
-            return tag.contains("enabled") && tag.getBoolean("enabled")
-        }
+    open fun isEnabled(stack: ItemStack): Boolean {
+        val tag = stack.orCreateTag
+        return tag.contains("enabled") && tag.getBoolean("enabled")
     }
 
 }

@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -48,6 +49,14 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
         var isHoldingRune = false
         itemRegistry.forEach { (_, modItem) -> if(modItem.item is Rune && context.isHolding(modItem.item)) isHoldingRune = true }
         if(isHoldingRune) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
+        if(context.isHolding(Items.DIAMOND)) return VoxelShapes.union(
+            VoxelShapes.union(
+                createCuboidShape(9.0, 14.0, 7.0, 10.0, 16.0, 9.0),
+                createCuboidShape(7.0, 14.0, 6.0, 9.0, 16.0, 10.0)
+            ),
+            createCuboidShape(6.0, 14.0, 7.0, 7.0, 16.0, 9.0)
+        )
+
         return createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
     }
 
@@ -55,15 +64,32 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         val poss = player.rayTrace(4.5, 1.0F, false).pos
-        if((poss.y-pos.y) > 0.9375 && player.getStackInHand(hand).item is Rune) {
-            val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
-            if(int != null) {
-                if(!world.isClient) {
-                    (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = (player.getStackInHand(hand).item as Rune).color
-                    (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
-                    (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
+        if((poss.y-pos.y) > 0.9375) {
+            if(player.getStackInHand(hand).item is Rune) {
+                val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
+                if(int != null) {
+                    if(!world.isClient) {
+                        (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = (player.getStackInHand(hand).item as Rune).color
+                        (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
+                        (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
+                    }
+                    return ActionResult.CONSUME
                 }
-                return ActionResult.CONSUME
+            }
+            if(player.getStackInHand(hand).item == Items.DIAMOND) {
+                var x = poss.x-pos.x
+                var z = poss.z-pos.z
+                if((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
+                    if((world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
+                        if(!world.isClient) {
+                            (world.getBlockEntity(pos) as EntangledChestEntity).owner = player.name.asString()
+                            (world.getBlockEntity(pos) as EntangledChestEntity).key = "entangledchest-${player.uuid}"
+                            (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
+                            (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
+                        }
+                        return ActionResult.CONSUME
+                    }
+                }
             }
         }
         return if(world.getBlockState(pos.up()).isAir) {
@@ -138,6 +164,10 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
                 )
             )
         )
+    }
+
+    companion object {
+        const val DEFAULT_KEY = "entangledchest-global"
     }
 
 }

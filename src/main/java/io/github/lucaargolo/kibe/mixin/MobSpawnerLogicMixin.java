@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.miscellaneous.InfectedDirt;
+import io.github.lucaargolo.kibe.blocks.miscellaneous.CursedDirt;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;
@@ -21,7 +21,7 @@ public abstract class MobSpawnerLogicMixin {
 
     @Inject(at = @At("HEAD"), method = "isPlayerInRange", cancellable = true)
     private void isPlayerInRange(CallbackInfoReturnable<Boolean> info) {
-        boolean returnValue = this.getWorld().getBlockState(this.getPos().down()).getBlock() instanceof InfectedDirt;
+        boolean returnValue = this.getWorld().getBlockState(this.getPos().down()).getBlock() instanceof CursedDirt;
         if(returnValue) info.setReturnValue(true);
     }
 }

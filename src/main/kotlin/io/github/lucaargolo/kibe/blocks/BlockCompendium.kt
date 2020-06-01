@@ -18,7 +18,6 @@ import net.minecraft.util.Identifier
 val blockRegistry = mutableMapOf<Identifier, ModBlock>()
 
 val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
-val BLESSED_DIRT = register(Identifier(MOD_ID, "blessed_dirt"), ModBlock(BlessedDirt()))
 val REDSTONE_TIMER = register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class))
 val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), ModBlock(Spikes(6F, false, FabricBlockSettings.of(Material.METAL))))
 val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), ModBlock(Spikes(7F, true, FabricBlockSettings.of(Material.METAL))))
@@ -28,6 +27,7 @@ val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt")
 val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), EntangledChestEntityRenderer::class, EntangledChestContainer::class, EntangledChestScreen::class))
 val TRASH_CAN = register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), TrashCanContainer::class, TrashCanScreen::class))
 val VACUUM_HOPPER = register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), VacuumHopperEntityRenderer::class, VacuumHopperContainer::class, VacuumHopperScreen::class))
+val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), ModBlock(LightSource()))
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), ModBlock(Elevator()))
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), ModBlock(Elevator()))

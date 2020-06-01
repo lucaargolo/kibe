@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
 
 class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntityType(trashCan)) {
@@ -52,9 +53,7 @@ class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntity
         inventory.clear()
     }
 
-    override fun getContainerName(): Text {
-        return LiteralText("Trash Can")
-    }
+    override fun getContainerName(): Text = TranslatableText("screen.kibe.trash_can")
 
     override fun canPlayerUse(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {

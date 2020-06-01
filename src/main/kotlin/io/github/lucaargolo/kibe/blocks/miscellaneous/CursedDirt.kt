@@ -28,33 +28,7 @@ import net.minecraft.world.biome.Biome
 import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
-class CursedDirt: InfectedDirt() {
-    override fun getSpawnTag(): CompoundTag {
-        val activeEffect = CompoundTag()
-        activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
-        activeEffect.putInt("Amplifier", 1)
-        activeEffect.putInt("Duration", 999999)
-        val activeEffects = ListTag()
-        activeEffects.add(activeEffect)
-        val tag = CompoundTag()
-        tag.put("ActiveEffects", activeEffects)
-        return tag
-    }
-    override fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
-        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
-    }
-}
-
-class BlessedDirt: InfectedDirt() {
-    override fun getSpawnTag(): CompoundTag {
-        return CompoundTag()
-    }
-    override fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
-        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK || world.getBlockState(pos) == CURSED_DIRT) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
-    }
-}
-
-abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SOIL).ticksRandomly()) {
+class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOIL).ticksRandomly()) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 15).with(Properties.SNOWY, false)
@@ -133,8 +107,21 @@ abstract class InfectedDirt: GrassBlock(FabricBlockSettings.of(Material.SOIL).ti
         }
     }
 
-    abstract fun getSpawnTag(): CompoundTag
-    abstract fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean
+    private fun getSpawnTag(): CompoundTag {
+        val activeEffect = CompoundTag()
+        activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+        activeEffect.putInt("Amplifier", 1)
+        activeEffect.putInt("Duration", 999999)
+        val activeEffects = ListTag()
+        activeEffects.add(activeEffect)
+        val tag = CompoundTag()
+        tag.put("ActiveEffects", activeEffects)
+        return tag
+    }
+
+    private fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
+        return (world.getBlockState(pos).block == Blocks.DIRT || world.getBlockState(pos).block == Blocks.GRASS_BLOCK) && canSurvive(world.getBlockState(pos), world, pos) && state[Properties.LEVEL_15] > 0
+    }
 
     fun canSurvive(state: BlockState, worldView: WorldView, pos: BlockPos): Boolean {
         val blockPos = pos.up()

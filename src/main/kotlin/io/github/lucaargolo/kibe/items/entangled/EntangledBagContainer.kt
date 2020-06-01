@@ -23,7 +23,7 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         }else null
     }
 
-    val key: String = if(tag.getString("key").isBlank()) "entangledchest-global" else tag.getString("key")
+    val key: String = tag.getString("key")
     val colorCode: String = tag.getString("colorCode")
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
 
@@ -94,9 +94,14 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         synchronizedInventory.onOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
-        (0..2).forEach { n ->
-            (0..8).forEach { m ->
+        (0..2).forEach {n ->
+            (0..8).forEach {m ->
                 addSlot(Slot(synchronizedInventory, m + n * 9, 8 + m * 18, 18 + n * 18))
+            }
+        }
+
+        (0..2).forEach {n ->
+            (0..8).forEach {m ->
                 addSlot(Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 103 + n * 18 + i))
             }
         }
@@ -113,12 +118,12 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
 
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
-        val slot = this.slots[invSlot]
+        val slot = slots[invSlot]
         if (slot != null && slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 27) {
-                if (!insertItem(itemStack2, 27, this.slots.size, true)) {
+                if (!insertItem(itemStack2, 27, slots.size, true)) {
                     return ItemStack.EMPTY
                 }
             } else if (!insertItem(itemStack2, 0, 27, false)) {

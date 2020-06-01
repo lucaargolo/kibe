@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.items
 
+import io.github.ladysnake.pal.VanillaAbilities
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.items.entangled.EntangledBag
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagBakedModel
@@ -9,6 +10,8 @@ import io.github.lucaargolo.kibe.items.miscellaneous.*
 import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCan
 import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanContainer
 import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanScreen
+import io.github.lucaargolo.kibe.utils.INFINITE_FIRE_RESISTENCE
+import io.github.lucaargolo.kibe.utils.INFINITE_WATER_BREATHING
 import net.minecraft.item.Item.*
 import net.minecraft.item.Item
 import net.minecraft.util.DyeColor
@@ -17,30 +20,19 @@ import net.minecraft.util.Identifier
 val itemRegistry = mutableMapOf<Identifier, ModItem>()
 
 val CURSED_DROPLETS = register(Identifier(MOD_ID, "cursed_droplets"), ModItem())
-val CURSED_BOTTLE   = register(Identifier(MOD_ID, "cursed_bottle"), ModItem())
-val CURSED_STAR     = register(Identifier(MOD_ID, "cursed_star"), ModItem())
 val CURSED_SEEDS    = register(Identifier(MOD_ID, "cursed_seeds"),  ModItem(CursedSeeds(Settings())))
-
-val BLESSED_DROPLETS = register(Identifier(MOD_ID, "blessed_droplets"), ModItem())
-val BLESSED_BOTTLE   = register(Identifier(MOD_ID, "blessed_bottle"), ModItem())
-val BLESSED_STAR     = register(Identifier(MOD_ID, "blessed_star"), ModItem())
-val BLESSED_SEEDS    = register(Identifier(MOD_ID, "blessed_seeds"),  ModItem(BlessedSeeds(Settings())))
 
 val MAGNET = register(Identifier(MOD_ID, "magnet"), ModItem(BooleanItem(Settings().maxCount(1))))
 
 val DIAMOND_RING = register(Identifier(MOD_ID, "diamond_ring"),  ModItem(Item(Settings().maxCount(1))))
-val EMERALD_RING = register(Identifier(MOD_ID, "emerald_ring"),  ModItem(Item(Settings().maxCount(1))))
-val ANGEL_RING   = register(Identifier(MOD_ID, "angel_ring"),  ModItem(Item(Settings().maxCount(1))))
-val MAGMA_RING   = register(Identifier(MOD_ID, "magma_ring"),  ModItem(Item(Settings().maxCount(1))))
-val WATER_RING   = register(Identifier(MOD_ID, "water_ring"),  ModItem(Item(Settings().maxCount(1))))
-val LIGHT_RING   = register(Identifier(MOD_ID, "light_ring"),  ModItem(Item(Settings().maxCount(1))))
-val ENDER_RING   = register(Identifier(MOD_ID, "ender_ring"),  ModItem(Item(Settings().maxCount(1))))
-val DRAGON_RING  = register(Identifier(MOD_ID, "dragon_ring"),  ModItem(Item(Settings().maxCount(1))))
-val POTION_RING  = register(Identifier(MOD_ID, "potion_ring"),  ModItem(Item(Settings().maxCount(1))))
+val ANGEL_RING   = register(Identifier(MOD_ID, "angel_ring"),  ModItem(AbilityRing(Settings().maxCount(1), VanillaAbilities.ALLOW_FLYING)))
+val MAGMA_RING   = register(Identifier(MOD_ID, "magma_ring"),  ModItem(AbilityRing(Settings().maxCount(1), INFINITE_FIRE_RESISTENCE)))
+val WATER_RING   = register(Identifier(MOD_ID, "water_ring"),  ModItem(AbilityRing(Settings().maxCount(1), INFINITE_WATER_BREATHING)))
+val LIGHT_RING   = register(Identifier(MOD_ID, "light_ring"),  ModItem(LightRing(Settings().maxCount(1))))
 
 val GOLDEN_LASSO  = register(Identifier(MOD_ID, "golden_lasso"),  ModItem(GoldenLasso(Settings().maxCount(1))))
 val CURSED_LASSO  = register(Identifier(MOD_ID, "cursed_lasso"),  ModItem(CursedLasso(Settings().maxCount(1))))
-val BLESSED_LASSO = register(Identifier(MOD_ID, "blessed_lasso"),  ModItem(BlessedLasso(Settings().maxCount(1))))
+val DIAMOND_LASSO = register(Identifier(MOD_ID, "diamond_lasso"),  ModItem(DiamondLasso(Settings().maxCount(1))))
 
 val BLANK_RUNE      = register(Identifier(MOD_ID, "blank_rune"), ModItem())
 val WHITE_RUNE      = register(Identifier(MOD_ID, "white_rune"),  ModItem(Rune(DyeColor.WHITE, Settings())))

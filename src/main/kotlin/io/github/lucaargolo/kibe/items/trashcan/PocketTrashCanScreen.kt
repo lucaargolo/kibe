@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 class PocketTrashCanScreen(container: PocketTrashCanContainer, inventory: PlayerInventory, title: Text): HandledScreen<PocketTrashCanContainer>(container, inventory, title) {
@@ -36,7 +37,7 @@ class PocketTrashCanScreen(container: PocketTrashCanContainer, inventory: Player
     }
 
     override fun drawForeground(matrices: MatrixStack?, mouseX: Int, mouseY: Int) {
-        val stringArray = title.asString().split(" ").toMutableList()
+        val stringArray = title.string.split(" ").toMutableList()
         drawCenteredString(matrices, textRenderer, stringArray[0],backgroundWidth/2, 6, 0xFFFFFF)
         stringArray.removeAt(0)
         drawCenteredString(matrices, textRenderer, Strings.join(stringArray, " "),backgroundWidth/2, 17, 0xFFFFFF)

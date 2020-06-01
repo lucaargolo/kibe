@@ -15,6 +15,7 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.MathHelper
@@ -23,7 +24,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var runeColors = mutableMapOf<Int, DyeColor>()
-    var key = "entangledchest-global"
+    var key = EntangledChest.DEFAULT_KEY
+    var owner = ""
 
     init {
         (1..8).forEach {
@@ -32,29 +34,28 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
     }
 
     fun getColorCode(): String {
-        var code = 0
+        var code = ""
         (1..8).forEach {
-            code += when(runeColors[it]) {
-                DyeColor.WHITE -> 0
-                DyeColor.ORANGE -> 1
-                DyeColor.MAGENTA -> 2
-                DyeColor.LIGHT_BLUE -> 3
-                DyeColor.YELLOW -> 4
-                DyeColor.LIME -> 5
-                DyeColor.PINK -> 6
-                DyeColor.GRAY -> 7
-                DyeColor.LIGHT_GRAY -> 8
-                DyeColor.CYAN -> 9
-                DyeColor.BLUE -> 10
-                DyeColor.PURPLE -> 11
-                DyeColor.GREEN -> 12
-                DyeColor.BROWN -> 13
-                DyeColor.RED -> 14
-                DyeColor.BLACK -> 15
-                else -> 0
-            }*pow(10, (it-1)*2)
+            code += when(runeColors[it]!!) {
+                DyeColor.WHITE -> '0'
+                DyeColor.ORANGE -> '1'
+                DyeColor.MAGENTA -> '2'
+                DyeColor.LIGHT_BLUE -> '3'
+                DyeColor.YELLOW -> '4'
+                DyeColor.LIME -> '5'
+                DyeColor.PINK -> '6'
+                DyeColor.GRAY -> '7'
+                DyeColor.LIGHT_GRAY -> '8'
+                DyeColor.CYAN -> '9'
+                DyeColor.BLUE -> 'A'
+                DyeColor.PURPLE -> 'B'
+                DyeColor.GREEN -> 'C'
+                DyeColor.BROWN -> 'D'
+                DyeColor.RED -> 'E'
+                DyeColor.BLACK -> 'F'
+            }
         }
-        return code.toString()
+        return code
     }
 
     override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
@@ -82,6 +83,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
         key = tag.getString("key")
+        owner = tag.getString("owner")
         if(hasPersistentState()) {
             val subTag = CompoundTag()
             subTag.put(getColorCode(), tag)
@@ -98,6 +100,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
         key = tag.getString("key")
+        owner = tag.getString("owner")
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
         Inventories.fromTag(tag, this.inventory)
     }
@@ -108,6 +111,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
         tag.putString("key", key)
+        tag.putString("owner", owner)
         if(hasPersistentState()) {
             var subTag = CompoundTag()
             subTag = getPersistentState()!!.toTag(subTag)
@@ -125,6 +129,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
         tag.putString("key", key)
+        tag.putString("owner", owner)
         Inventories.toTag(tag, this.inventory)
         return tag
     }
@@ -178,7 +183,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         else inventory.clear()
     }
 
-    override fun getContainerName(): Text = LiteralText("Entangled Chest")
+    override fun getContainerName(): Text = TranslatableText("screen.kibe.entangled_chest")
 
     override fun canPlayerUse(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {

@@ -232,6 +232,17 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
             rune.render(matrices, runesConsumer, lightAbove, overlay)
         }
 
+        val upuv = if(blockEntity.key != "entangledchest-global") -10 else 0;
+
+        val core = ModelPart(64, 64, 0, 0)
+        core.setTextureOffset(58, 50+upuv)
+        core.addCuboid(9f, 14f, 7f, 1f, 2f, 2f)
+        core.setTextureOffset(52, 44+upuv)
+        core.addCuboid(7f, 14f, 6f, 2f, 2f, 4f)
+        core.setTextureOffset(52, 50+upuv)
+        core.addCuboid(6f, 14f, 7f, 1f, 2f, 2f)
+        core.render(matrices, chestConsumer, lightAbove, overlay)
+
         topModel.render(matrices, chestConsumer, lightAbove, overlay)
 
         m = matrices.peek().model

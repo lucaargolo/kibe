@@ -81,7 +81,7 @@ open class ModItem(item: Item) {
                         playerEntity.inventory,
                         playerEntity.world,
                         packetByteBuf.readCompoundTag()
-                    ), playerEntity.inventory, TranslatableText("screen.name.${identifier.path}")
+                    ), playerEntity.inventory, TranslatableText("screen.kibe.${identifier.path}")
                 )
             }
         }

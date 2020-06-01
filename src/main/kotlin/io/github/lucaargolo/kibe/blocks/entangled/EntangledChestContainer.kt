@@ -64,6 +64,11 @@ class EntangledChestContainer(syncId: Int, playerInventory: PlayerInventory, val
         (0..2).forEach {n ->
             (0..8).forEach {m ->
                 addSlot(Slot(inventory, m + n * 9, 8 + m * 18, 18 + n * 18))
+            }
+        }
+
+        (0..2).forEach {n ->
+            (0..8).forEach {m ->
                 addSlot(Slot(playerInventory, m + n * 9 + 9, 8 + m * 18, 103 + n * 18 + i))
             }
         }

@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items.entangled
 
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.entangled.EntangledChest
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.block.BlockState
@@ -47,7 +48,7 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
         }
 
         val core =
-            if(stack.hasTag() && stack.tag!!.contains("key") && stack.tag!!.getString("key") != "global")
+            if(stack.hasTag() && stack.tag!!.contains("key") && stack.tag!!.getString("key") != EntangledChest.DEFAULT_KEY)
                 ModelIdentifier(Identifier(MOD_ID, "entangled_bag_diamond_core"), "inventory")
             else
                 ModelIdentifier(Identifier(MOD_ID, "entangled_bag_gold_core"), "inventory")

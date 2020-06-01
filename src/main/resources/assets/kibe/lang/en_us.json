@@ -1,0 +1,86 @@
+{
+  "block.kibe.iron_spikes": "Iron Spikes",
+  "block.kibe.diamond_spikes": "Diamond Spikes",
+
+  "block.kibe.regular_conveyor_belt": "Regular Conveyor Belt",
+  "block.kibe.fast_conveyor_belt": "Fast Conveyor Belt",
+  "block.kibe.express_conveyor_belt": "Express Conveyor Belt",
+
+  "block.kibe.white_elevator": "White Elevator",
+  "block.kibe.orange_elevator": "Orange Elevator",
+  "block.kibe.magenta_elevator": "Magenta Elevator",
+  "block.kibe.light_blue_elevator": "Light Blue Elevator",
+  "block.kibe.yellow_elevator": "Yellow Elevator",
+  "block.kibe.lime_elevator": "Lime Elevator",
+  "block.kibe.pink_elevator": "Pink Elevator",
+  "block.kibe.gray_elevator": "Gray Elevator",
+  "block.kibe.light_gray_elevator": "Light Gray Elevator",
+  "block.kibe.cyan_elevator": "Cyan Elevator",
+  "block.kibe.blue_elevator": "Blue Elevator",
+  "block.kibe.purple_elevator": "Purple Elevator",
+  "block.kibe.green_elevator": "Green Elevator",
+  "block.kibe.brown_elevator": "Brown Elevator",
+  "block.kibe.red_elevator": "Red Elevator",
+  "block.kibe.black_elevator": "Block Elevator",
+
+  "block.kibe.entangled_chest": "Entangled Chest",
+  "block.kibe.trash_can": "Trash Can",
+  "block.kibe.vacuum_hopper": "Vacuum Hopper",
+  "block.kibe.redstone_timer": "Redstone Timer",
+
+  "item.kibe.entangled_bag": "Entangled Bag",
+  "item.kibe.pocket_trash_can": "Pocket Trash Can",
+  "item.kibe.pocket_crafting_table": "Pocket Crafting Table",
+
+  "block.kibe.cursed_dirt": "Cursed Dirt",
+
+  "item.kibe.golden_lasso": "Golden Lasso",
+  "item.kibe.cursed_lasso": "Cursed Lasso",
+
+  "item.kibe.sleeping_bag": "Sleeping Bag",
+
+  "item.kibe.slime_sling": "Slime Sling",
+  "item.kibe.slime_boots": "Slime Boots",
+
+  "item.kibe.blank_rune": "Blank Rune",
+  "item.kibe.white_rune": "White Rune",
+  "item.kibe.orange_rune": "Orange Rune",
+  "item.kibe.magenta_rune": "Magenta Rune",
+  "item.kibe.light_blue_rune": "Light Blue Rune",
+  "item.kibe.yellow_rune": "Yellow Rune",
+  "item.kibe.lime_rune": "Lime Rune",
+  "item.kibe.pink_rune": "Pink Rune",
+  "item.kibe.gray_rune": "Gray Rune",
+  "item.kibe.light_gray_rune": "Light Gray Rune",
+  "item.kibe.cyan_rune": "Cyan Rune",
+  "item.kibe.blue_rune": "Blue Rune",
+  "item.kibe.purple_rune": "Purple Rune",
+  "item.kibe.green_rune": "Green Rune",
+  "item.kibe.brown_rune": "Brown Rune",
+  "item.kibe.red_rune": "Red Rune",
+  "item.kibe.black_rune": "Block Rune",
+
+  "item.kibe.magnet": "Magnet",
+  "item.kibe.diamond_ring": "Diamond Ring",
+  "item.kibe.angel_ring": "Angel Ring",
+  "item.kibe.magma_ring": "Magma Ring",
+  "item.kibe.water_ring": "Water Ring",
+  "item.kibe.light_ring": "Light Ring",
+
+  "tooltip.kibe.enabled": "Enabled",
+  "tooltip.kibe.disabled": "Disabled",
+  "tooltip.kibe.overflow": "Overflow",
+  "tooltip.kibe.owner": "Owner",
+  "tooltip.kibe.color": "Color",
+
+  "tooltip.kibe.overflowed": "Multiple rings enabled",
+  "tooltip.kibe.shift2enable": "Shift click to enable",
+  "tooltip.kibe.shift2disable": "Shift click to disable",
+
+  "screen.kibe.trash_can": "Trash Can",
+  "screen.kibe.vacuum_hopper": "Vacuum Hopper",
+  "screen.kibe.entangled_chest": "Entangled Chest",
+  "screen.kibe.entangled_bag": "Entangled Bag",
+  "screen.kibe.pocket_trash_can": "Pocket Trash Can",
+  "screen.kibe.pocket_crafting_table": "Pocket Crafting Table"
+}
