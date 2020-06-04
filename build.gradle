@@ -17,12 +17,6 @@ repositories {
         name = "Ladysnake Libs"
         url = 'https://dl.bintray.com/ladysnake/libs'
     }
-    repositories {
-        maven {
-            name = "CurseForge"
-            url = "https://minecraft.curseforge.com/api/maven/"
-        }
-    }
     mavenLocal()
 }
 
@@ -37,7 +31,7 @@ dependencies {
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     modRuntime "io.github.prospector:modmenu:${project.modmenu_version}"
     modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
-    modRuntime "squeek:appleskin:mc1.16-fabric-1.0.10"
+    //modRuntime "squeek:appleskin:mc1.16-fabric-1.0.10"
 }
 
 processResources {
