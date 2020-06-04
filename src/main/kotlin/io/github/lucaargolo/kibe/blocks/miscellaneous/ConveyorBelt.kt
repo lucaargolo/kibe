@@ -5,6 +5,7 @@ import net.minecraft.block.*
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
@@ -17,7 +18,7 @@ import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import kotlin.math.abs
 
-class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Material.METAL)) {
+class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).method_29292().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)

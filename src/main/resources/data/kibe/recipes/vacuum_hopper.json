@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#I#",
+    "CEB",
+    "#I#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:obsidian"
+    },
+    "I": {
+      "item": "minecraft:iron_bars"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "item": "kibe:vacuum_hopper",
+    "count": 1
+  }
+}

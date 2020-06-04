@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#ii",
+    "iE ",
+    "#ii"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:red_dye"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "item": "kibe:magnet",
+    "count": 1
+  }
+}

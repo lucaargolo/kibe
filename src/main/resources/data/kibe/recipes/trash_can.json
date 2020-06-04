@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "SCS",
+    "SFS"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "F": {
+      "item": "minecraft:cactus"
+    }
+  },
+  "result": {
+    "item": "kibe:trash_can",
+    "count": 1
+  }
+}

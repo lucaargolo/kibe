@@ -15,12 +15,14 @@ import net.minecraft.world.World
 open class BooleanItem(settings: Settings): Item(settings) {
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
+        super.appendTooltip(stack, world, tooltip, context)
+        if(stack.item is AbilityRing) return
         if(isEnabled(stack)) {
-            tooltip.add(TranslatableText("tooltip.kibe.enabled").formatted(Formatting.GREEN))
-            tooltip.add(TranslatableText("tooltip.kibe.shift2disable").formatted(Formatting.BLUE, Formatting.ITALIC))
+            tooltip.add(TranslatableText("tooltip.kibe.enabled"))
+            tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
         }else {
-            tooltip.add(TranslatableText("tooltip.kibe.disabled").formatted(Formatting.RED))
-            tooltip.add(TranslatableText("tooltip.kibe.shift2enable").formatted(Formatting.BLUE, Formatting.ITALIC))
+            tooltip.add(TranslatableText("tooltip.kibe.disabled"))
+            tooltip.add(TranslatableText("tooltip.kibe.shift2enable"))
         }
     }
 

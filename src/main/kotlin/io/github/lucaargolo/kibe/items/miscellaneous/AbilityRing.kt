@@ -12,18 +12,19 @@ import net.minecraft.world.World
 class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanItem(settings) {
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
+        super.appendTooltip(stack, world, tooltip, context)
         if(isEnabled(stack)) {
-            tooltip.add(TranslatableText("tooltip.kibe.enabled").formatted(Formatting.GREEN))
-            tooltip.add(TranslatableText("tooltip.kibe.shift2disable").formatted(Formatting.BLUE, Formatting.ITALIC))
+            tooltip.add(TranslatableText("tooltip.kibe.enabled"))
+            tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
         }else {
             val tag = stack.orCreateTag
             if(tag.contains("enabled") && tag.getBoolean("enabled") && tag.contains("unique") && !tag.getBoolean("unique")) {
-                tooltip.add(TranslatableText("tooltip.kibe.overflow").formatted(Formatting.RED))
-                tooltip.add(TranslatableText("tooltip.kibe.overflowed").formatted(Formatting.DARK_RED, Formatting.ITALIC))
-                tooltip.add(TranslatableText("tooltip.kibe.shift2disable").formatted(Formatting.BLUE, Formatting.ITALIC))
+                tooltip.add(TranslatableText("tooltip.kibe.overflow"))
+                tooltip.add(TranslatableText("tooltip.kibe.overflowed"))
+                tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
             }else{
-                tooltip.add(TranslatableText("tooltip.kibe.disabled").formatted(Formatting.RED))
-                tooltip.add(TranslatableText("tooltip.kibe.shift2enable").formatted(Formatting.BLUE, Formatting.ITALIC))
+                tooltip.add(TranslatableText("tooltip.kibe.disabled"))
+                tooltip.add(TranslatableText("tooltip.kibe.shift2enable"))
             }
         }
     }

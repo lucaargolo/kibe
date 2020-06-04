@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "DLD",
+    " S "
+  ],
+  "key": {
+    "#": {
+      "item": "kibe:golden_lasso"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "S": {
+      "item": "kibe:cursed_lasso"
+    }
+  },
+  "result": {
+    "item": "kibe:diamond_lasso",
+    "count": 1
+  }
+}

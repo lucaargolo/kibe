@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "SLS",
+    "iii"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:blue_dye"
+    },
+    "S": {
+      "item": "kibe:fast_conveyor_belt"
+    },
+    "L": {
+      "item": "minecraft:sugar"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "kibe:express_conveyor_belt",
+    "count": 8
+  }
+}

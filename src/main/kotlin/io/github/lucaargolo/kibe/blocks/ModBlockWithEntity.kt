@@ -10,6 +10,9 @@ import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
+import net.minecraft.item.ItemGroup
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
@@ -27,6 +30,7 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
     private var renderer: KClass<BlockEntityRenderer<T>>? = null
     private var container: KClass<ScreenHandler>? = null
     private var containerScreen: KClass<HandledScreen<*>>? = null
+    private var customBlockItem: KClass<BlockItem>? = null
 
     constructor(block: BlockWithEntity) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
@@ -35,6 +39,14 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
     constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>) : super(block) {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
         this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
+    }
+
+    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>, customBlockItem: KClass<*>) : super(block) {
+        this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
+        this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
+        this.container = blockEntityScreenHandler as KClass<ScreenHandler>
+        this.containerScreen = blockEntityScreen as KClass<HandledScreen<*>>
+        this.customBlockItem = customBlockItem as KClass<BlockItem>
     }
 
     constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
@@ -51,7 +63,13 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
     }
 
     override fun init(identifier: Identifier) {
-        super.init(identifier)
+        if(this.customBlockItem != null) {
+            Registry.register(Registry.BLOCK, identifier, block)
+            val blockItem = customBlockItem!!.primaryConstructor!!.call(block, Item.Settings())
+            Registry.register(Registry.ITEM, identifier, blockItem)
+        }else{
+            super.init(identifier)
+        }
         if (entity != null) {
             Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier, entity)
         }

@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.blocks.CURSED_DIRT
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -12,9 +11,11 @@ import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.text.LiteralText
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.collection.WeightedPicker
@@ -28,7 +29,7 @@ import net.minecraft.world.biome.Biome
 import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
-class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOIL).ticksRandomly()) {
+class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 15).with(Properties.SNOWY, false)
@@ -46,12 +47,12 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOIL).ticksRandomly
                 player.sendMessage(LiteralText("Nothing can spawn"), false)
                 return ActionResult.SUCCESS
             } else {
-                var names = "Names: "
+                var names = TranslatableText("chat.kibe.cursed_dirt.spawn")
                 entries.forEachIndexed { index, entry ->
-                    names += entry.type.translationKey.replace("Entity", "")
-                    if(index < entries.size-1) names += ", "
+                    names.append(entry.type.name)
+                    if(index < entries.size-1) names.append(", ")
                 }
-                player.sendMessage(LiteralText(names), false)
+                player.sendMessage(names, false)
             }
             return ActionResult.SUCCESS
         }

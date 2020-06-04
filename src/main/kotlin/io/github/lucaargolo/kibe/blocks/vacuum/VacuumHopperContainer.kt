@@ -120,11 +120,22 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
 
     override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
         if(actionType == SlotActionType.QUICK_MOVE && slotId == 0 && slots[0].hasStack()) {
-            val maxCraftSize = entity.liquidXp/lastRecipe!!.xpInput
+            var maxCraftSize = entity.liquidXp/lastRecipe!!.xpInput
+            val maxStackSize = lastRecipe!!.output.maxCount
             if(entity.removeLiquid(maxCraftSize*lastRecipe!!.xpInput)) {
                 slots[1].stack.decrement(maxCraftSize)
                 val craftResult = lastRecipe!!.output.item
-                player.giveItemStack(ItemStack(craftResult, maxCraftSize))
+                if(maxCraftSize > maxStackSize) {
+                    while(maxCraftSize > maxStackSize) {
+                        player.giveItemStack(ItemStack(craftResult, maxStackSize))
+                        maxCraftSize -= maxStackSize
+                    }
+                    if(maxCraftSize > 0) {
+                        player.giveItemStack(ItemStack(craftResult, maxCraftSize))
+                    }
+                }else{
+                    player.giveItemStack(ItemStack(craftResult, maxCraftSize))
+                }
             }
             return ItemStack.EMPTY
         }

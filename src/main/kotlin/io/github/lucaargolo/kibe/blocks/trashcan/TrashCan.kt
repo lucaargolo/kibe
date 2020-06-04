@@ -15,7 +15,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
+class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).method_29292().strength(1.5F, 6.0F)) {
 
     override fun createBlockEntity(view: BlockView?): BlockEntity = TrashCanEntity(this)
 

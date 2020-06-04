@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "SSS"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:blue_wool"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "item": "kibe:sleeping_bag",
+    "count": 1
+  }
+}

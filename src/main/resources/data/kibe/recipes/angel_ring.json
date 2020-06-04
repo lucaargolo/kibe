@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#E#",
+    "IPI",
+    "#E#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:nether_star"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    },
+    "I": {
+      "item": "minecraft:elytra"
+    },
+    "P": {
+      "item": "kibe:diamond_ring"
+    }
+  },
+  "result": {
+    "item": "kibe:angel_ring",
+    "count": 1
+  }
+}

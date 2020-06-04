@@ -14,7 +14,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.METAL)) {
+class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).method_29292().strength(1.5F, 6.0F)) {
 
     override fun createBlockEntity(view: BlockView?) = RedstoneTimerEntity(this)
 

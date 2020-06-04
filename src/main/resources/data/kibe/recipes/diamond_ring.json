@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#D#",
+    "g g",
+    " g "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:gold_nugget"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "item": "kibe:diamond_ring",
+    "count": 1
+  }
+}

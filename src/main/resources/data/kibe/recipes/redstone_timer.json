@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#RS",
+    "SQR",
+    "HRS"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:redstone_torch"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    },
+    "Q": {
+      "item": "minecraft:quartz_block"
+    },
+    "H": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "kibe:redstone_timer",
+    "count": 1
+  }
+}

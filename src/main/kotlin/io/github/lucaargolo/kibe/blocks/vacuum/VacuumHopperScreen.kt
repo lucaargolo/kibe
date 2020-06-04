@@ -40,7 +40,7 @@ class VacuumHopperScreen(container: VacuumHopperContainer, inventory: PlayerInve
     }
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
-        drawCenteredString(matrices, textRenderer, title.asString(),backgroundWidth/2, 6, 0xFFFFFF)
+        drawCenteredString(matrices, textRenderer, title.string,backgroundWidth/2, 6, 0xFFFFFF)
         textRenderer.draw(matrices, playerInventory.displayName, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
     }
 

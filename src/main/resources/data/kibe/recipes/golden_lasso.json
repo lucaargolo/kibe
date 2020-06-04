@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#E#",
+    "gLg",
+    "#E#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:gold_nugget"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    }
+  },
+  "result": {
+    "item": "kibe:golden_lasso",
+    "count": 1
+  }
+}

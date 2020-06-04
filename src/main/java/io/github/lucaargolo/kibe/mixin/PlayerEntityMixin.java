@@ -21,10 +21,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 @SuppressWarnings({"SuspiciousMethodCalls"})
 @Mixin(PlayerEntity.class)
@@ -40,6 +42,15 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 //            info.cancel();
 //        }
 //    }
+
+    @Inject(at = @At("TAIL"), method = "eatFood")
+    public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
+        if(stack.getItem().equals(ItemCompendiumKt.getCURSED_KIBE()) && !world.isClient) {
+            Random r = new Random();
+            int x = random.nextInt(64);
+            if(x == 0) kill();
+        }
+    }
 
     @Inject(at = @At("TAIL"), method = "wakeUp()V")
     private void wakeUpV(CallbackInfo info) {
@@ -139,7 +150,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     }
                 }
 
-                if(bounce.getWasInAir() && player.isOnGround()) {
+                if(bounce.getWasInAir() && player.isOnGround() || player.isTouchingWater()) {
                     if(bounce.getTimer() == 0) {
                         bounce.setTimer(player.age);
                     }else if(player.age - bounce.getTimer() > 5){

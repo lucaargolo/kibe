@@ -18,13 +18,13 @@ import net.minecraft.util.*
 import net.minecraft.world.World
 import java.util.*
 
-class EntangledBag: Item(Settings().group(ItemGroup.MISC).maxCount(1)){
+class EntangledBag(settings: Settings): Item(settings){
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         val tag = getTag(stack)
-        val ownerText = TranslatableText("tooltip.kibe.owner").formatted(Formatting.BLUE).append(": ")
+        val ownerText = TranslatableText("tooltip.kibe.owner")
         if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
-        val color = TranslatableText("tooltip.kibe.color").formatted(Formatting.BLUE).append(": ")
+        val color = TranslatableText("tooltip.kibe.color")
         (0..8).forEach {
             val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
             val text = LiteralText("■")
@@ -46,7 +46,7 @@ class EntangledBag: Item(Settings().group(ItemGroup.MISC).maxCount(1)){
             }
             newTag.putString("colorCode", blockEntity.getColorCode())
             context.stack.tag = newTag
-            if(!context.world.isClient) context.player!!.sendMessage(LiteralText("${Formatting.GOLD}Successfully linked bag!"), false)
+            if(!context.world.isClient) context.player!!.sendMessage(TranslatableText("chat.kibe.entangled_bag.success"), true)
             return ActionResult.SUCCESS
         }
         return ActionResult.PASS

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#E#",
+    "iPi",
+    "#i#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:red_wool"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "item": "kibe:red_elevator",
+    "count": 1
+  }
+}

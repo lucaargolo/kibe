@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#G#",
+    "GOG",
+    "#G#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:soul_torch"
+    },
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "O": {
+      "item": "kibe:diamond_ring"
+    }
+  },
+  "result": {
+    "item": "kibe:light_ring",
+    "count": 1
+  }
+}

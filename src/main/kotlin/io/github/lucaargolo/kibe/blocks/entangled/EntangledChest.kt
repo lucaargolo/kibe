@@ -6,6 +6,7 @@ import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
@@ -23,7 +24,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE)) {
+class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).method_29292().strength(22.0F, 600.0F)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.HORIZONTAL_FACING)

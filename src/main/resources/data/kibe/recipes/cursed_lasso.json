@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#L#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "kibe:cursed_droplets"
+    },
+    "L": {
+      "item": "kibe:golden_lasso"
+    }
+  },
+  "result": {
+    "item": "kibe:cursed_lasso",
+    "count": 1
+  }
+}

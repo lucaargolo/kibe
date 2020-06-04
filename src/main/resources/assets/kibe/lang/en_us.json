@@ -1,4 +1,6 @@
 {
+  "itemGroup.kibe.creative_tab": "Kibe",
+
   "block.kibe.iron_spikes": "Iron Spikes",
   "block.kibe.diamond_spikes": "Diamond Spikes",
 
@@ -28,14 +30,23 @@
   "block.kibe.vacuum_hopper": "Vacuum Hopper",
   "block.kibe.redstone_timer": "Redstone Timer",
 
+  "item.kibe.kibe": "Kibe",
+  "item.kibe.golden_kibe": "Golden Kibe",
+  "item.kibe.diamond_kibe": "Diamond Kibe",
+  "item.kibe.cursed_kibe": "Cursed Kibe",
+
   "item.kibe.entangled_bag": "Entangled Bag",
   "item.kibe.pocket_trash_can": "Pocket Trash Can",
   "item.kibe.pocket_crafting_table": "Pocket Crafting Table",
 
   "block.kibe.cursed_dirt": "Cursed Dirt",
 
+  "item.kibe.cursed_seeds": "Cursed Seeds",
+  "item.kibe.cursed_droplets": "Cursed Droplets",
+
   "item.kibe.golden_lasso": "Golden Lasso",
   "item.kibe.cursed_lasso": "Cursed Lasso",
+  "item.kibe.diamond_lasso": "Diamond Lasso",
 
   "item.kibe.sleeping_bag": "Sleeping Bag",
 
@@ -67,15 +78,39 @@
   "item.kibe.water_ring": "Water Ring",
   "item.kibe.light_ring": "Light Ring",
 
-  "tooltip.kibe.enabled": "Enabled",
-  "tooltip.kibe.disabled": "Disabled",
-  "tooltip.kibe.overflow": "Overflow",
-  "tooltip.kibe.owner": "Owner",
-  "tooltip.kibe.color": "Color",
+  "effect.kibe.cursed_effect": "Cursed Effect",
 
-  "tooltip.kibe.overflowed": "Multiple rings enabled",
-  "tooltip.kibe.shift2enable": "Shift click to enable",
-  "tooltip.kibe.shift2disable": "Shift click to disable",
+  "chat.kibe.entangled_bag.success": "§6Successfully linked bag!",
+
+  "chat.kibe.cursed_dirt.nothing": "§cNo mobs are able to spawn",
+  "chat.kibe.cursed_dirt.spawn": "§5Given the right conditions, the following mobs can spawn: ",
+
+  "tooltip.kibe.enabled": "§aEnabled",
+  "tooltip.kibe.disabled": "§cDisabled",
+  "tooltip.kibe.overflow": "§cOverflow",
+  "tooltip.kibe.owner": "§9Owner: ",
+  "tooltip.kibe.color": "§9Color: ",
+
+  "tooltip.kibe.overflowed": "§4§oMultiple rings enabled",
+  "tooltip.kibe.shift2enable": "§9§oShift click to enable",
+  "tooltip.kibe.shift2disable": "§9§oShift click to disable",
+
+  "tooltip.kibe.lore.rune": "§5§oUsed to change the entangled chest code",
+
+  "tooltip.kibe.lore.kibe": "§5§oA tasteful Levantine dish (Kibbeh)",
+  "tooltip.kibe.lore.golden_kibe": "§5§oVIP only",
+  "tooltip.kibe.lore.cursed_kibe": "§5§oHas a 1/64 chance to kill you",
+  "tooltip.kibe.lore.diamond_kibe": "§5§oVIP+ only",
+
+  "tooltip.kibe.lore.light_ring": "§5§oPlaces infinite sources of light",
+
+  "tooltip.kibe.lore.golden_lasso": "§5§oA magical lasso that hold animals",
+  "tooltip.kibe.lore.cursed_lasso.1": "§5§oA magical lasso that hold monsters",
+  "tooltip.kibe.lore.cursed_lasso.2": "§4§oBeware! They may come out cursed",
+  "tooltip.kibe.lore.diamond_lasso": "§5§oA magical lasso that hold most creatures",
+
+  "tooltip.kibe.lore.iron_spikes": "§5§oEntities drops regular items",
+  "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
 
   "screen.kibe.trash_can": "Trash Can",
   "screen.kibe.vacuum_hopper": "Vacuum Hopper",

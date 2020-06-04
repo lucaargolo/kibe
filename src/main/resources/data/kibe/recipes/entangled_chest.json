@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "/S/",
+    "ENE",
+    "/G/"
+  ],
+  "key": {
+    "/": {
+      "item": "minecraft:blaze_rod"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "N": {
+      "item": "minecraft:ender_chest"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    }
+  },
+  "result": {
+    "item": "kibe:entangled_chest",
+    "count": 1
+  }
+}

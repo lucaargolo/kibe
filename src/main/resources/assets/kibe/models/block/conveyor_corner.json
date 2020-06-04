@@ -1,6 +1,7 @@
 {
     "textures": {
-        "base": "kibe:block/conveyor_belt_base"
+        "base": "kibe:block/conveyor_belt_base",
+        "particle": "kibe:block/conveyor_belt_base"
     },
     "display": {
         "gui": {

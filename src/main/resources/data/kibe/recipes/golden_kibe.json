@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#C#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:gold_nugget"
+    },
+    "C": {
+      "item": "kibe:kibe"
+    }
+  },
+  "result": {
+    "item": "kibe:golden_kibe",
+    "count": 1
+  }
+}

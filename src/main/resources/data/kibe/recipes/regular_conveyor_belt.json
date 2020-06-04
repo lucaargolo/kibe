@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "SLS",
+    "iii"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:yellow_dye"
+    },
+    "S": {
+      "item": "minecraft:leather"
+    },
+    "L": {
+      "item": "minecraft:sugar"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "kibe:regular_conveyor_belt",
+    "count": 8
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "MGM",
+    "NON"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:nether_star"
+    },
+    "M": {
+      "item": "minecraft:magma_cream"
+    },
+    "G": {
+      "item": "kibe:diamond_ring"
+    },
+    "N": {
+      "item": "minecraft:nether_wart"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "item": "kibe:magma_ring",
+    "count": 1
+  }
+}

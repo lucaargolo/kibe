@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
+import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.entity.SpawnReason
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
@@ -21,31 +23,11 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 
-class GoldenLasso(settings: Settings): Lasso(settings) {
-    override fun addToTag(tag: CompoundTag): CompoundTag = tag
-    override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal
-}
-
-class CursedLasso(settings: Settings): Lasso(settings) {
-    override fun addToTag(tag: CompoundTag): CompoundTag {
-        val activeEffect = CompoundTag()
-        activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
-        activeEffect.putInt("Amplifier", 1)
-        activeEffect.putInt("Duration", 999999)
-        val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as ListTag else ListTag()
-        activeEffects.add(activeEffect)
-        tag.put("ActiveEffects", activeEffects)
-        return tag
-    }
-    override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER
-}
-
-class DiamondLasso(settings: Settings): Lasso(settings) {
-    override fun addToTag(tag: CompoundTag): CompoundTag = tag
-    override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal || entityType.spawnGroup == SpawnGroup.MONSTER
-}
-
 abstract class Lasso(settings: Settings): Item(settings) {
+
+    override fun appendTooltip(stack: ItemStack?, world: World?, tooltip: MutableList<Text>?, context: TooltipContext?) {
+        super.appendTooltip(stack, world, tooltip, context)
+    }
 
     override fun hasEnchantmentGlint(stack: ItemStack): Boolean {
         return stack.orCreateTag.contains("Entity")
@@ -101,5 +83,29 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     abstract fun addToTag(tag: CompoundTag): CompoundTag
     abstract fun canStoreEntity(entityType: EntityType<*>): Boolean
+
+    class GoldenLasso(settings: Settings): Lasso(settings) {
+        override fun addToTag(tag: CompoundTag): CompoundTag = tag
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal
+    }
+
+    class CursedLasso(settings: Settings): Lasso(settings) {
+        override fun addToTag(tag: CompoundTag): CompoundTag {
+            val activeEffect = CompoundTag()
+            activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+            activeEffect.putInt("Amplifier", 1)
+            activeEffect.putInt("Duration", 999999)
+            val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as ListTag else ListTag()
+            activeEffects.add(activeEffect)
+            tag.put("ActiveEffects", activeEffects)
+            return tag
+        }
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER
+    }
+
+    class DiamondLasso(settings: Settings): Lasso(settings) {
+        override fun addToTag(tag: CompoundTag): CompoundTag = tag
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal || entityType.spawnGroup == SpawnGroup.MONSTER
+    }
 
 }
