@@ -17,7 +17,11 @@ repositories {
         name = "Ladysnake Libs"
         url = 'https://dl.bintray.com/ladysnake/libs'
     }
+    maven {
+        url =  "http://tehnut.info/maven"
+    }
     mavenLocal()
+
 }
 
 dependencies {
@@ -29,9 +33,10 @@ dependencies {
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
-    modRuntime "io.github.prospector:modmenu:${project.modmenu_version}"
-    modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
-    //modRuntime "squeek:appleskin:mc1.16-fabric-1.0.10"
+    include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
+
+    modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
+    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 }
 
 processResources {

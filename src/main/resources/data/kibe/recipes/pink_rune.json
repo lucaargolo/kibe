@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#R#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone_button"
+    },
+    "R": {
+      "item": "minecraft:pink_dye"
+    }
+  },
+  "result": {
+    "item": "kibe:pink_rune",
+    "count": 8
+  }
+}

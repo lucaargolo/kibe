@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#R#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone_button"
+    },
+    "R": {
+      "item": "minecraft:light_gray_dye"
+    }
+  },
+  "result": {
+    "item": "kibe:light_gray_rune",
+    "count": 8
+  }
+}

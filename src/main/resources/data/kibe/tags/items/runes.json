@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "kibe:white_rune",
+    "kibe:orange_rune",
+    "kibe:magenta_rune",
+    "kibe:light_blue_rune",
+    "kibe:yellow_rune",
+    "kibe:lime_rune",
+    "kibe:pink_rune",
+    "kibe:gray_rune",
+    "kibe:light_gray_rune",
+    "kibe:cyan_rune",
+    "kibe:blue_rune",
+    "kibe:purple_rune",
+    "kibe:green_rune",
+    "kibe:brown_rune",
+    "kibe:red_rune",
+    "kibe:black_rune"
+  ]
+}

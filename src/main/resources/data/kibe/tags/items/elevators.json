@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "kibe:white_elevator",
+    "kibe:orange_elevator",
+    "kibe:magenta_elevator",
+    "kibe:light_blue_elevator",
+    "kibe:yellow_elevator",
+    "kibe:lime_elevator",
+    "kibe:pink_elevator",
+    "kibe:gray_elevator",
+    "kibe:light_gray_elevator",
+    "kibe:cyan_elevator",
+    "kibe:blue_elevator",
+    "kibe:purple_elevator",
+    "kibe:green_elevator",
+    "kibe:brown_elevator",
+    "kibe:red_elevator",
+    "kibe:black_elevator"
+  ]
+}

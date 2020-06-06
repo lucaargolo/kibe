@@ -42,7 +42,6 @@ val GOLDEN_LASSO  = register(Identifier(MOD_ID, "golden_lasso"),  ModItem(Lasso.
 val CURSED_LASSO  = register(Identifier(MOD_ID, "cursed_lasso"),  ModItem(Lasso.CursedLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON))))
 val DIAMOND_LASSO = register(Identifier(MOD_ID, "diamond_lasso"),  ModItem(Lasso.DiamondLasso(Settings().maxCount(1).rarity(Rarity.RARE))))
 
-val BLANK_RUNE      = register(Identifier(MOD_ID, "blank_rune"), ModItem())
 val WHITE_RUNE      = register(Identifier(MOD_ID, "white_rune"),  ModItem(Rune(DyeColor.WHITE, Settings())))
 val ORANGE_RUNE     = register(Identifier(MOD_ID, "orange_rune"),  ModItem(Rune(DyeColor.ORANGE, Settings())))
 val MAGENTA_RUNE    = register(Identifier(MOD_ID, "magenta_rune"),  ModItem(Rune(DyeColor.MAGENTA, Settings())))

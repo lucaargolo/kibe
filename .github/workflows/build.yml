@@ -15,9 +15,5 @@ jobs:
           ./gradlew build
     - uses: actions/upload-artifact@v2
       with:
-        name: main-jar
-        path: build/libs/*-*.jar
-    - uses: actions/upload-artifact@v2
-      with:
-        name: sources-jar
-        path: build/libs/*-*-sources.jar
+        name: build-artifacts
+        path: build/libs/
