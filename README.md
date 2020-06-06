@@ -1,5 +1,5 @@
 <p align="center"><img src="https://i.imgur.com/wxBb9f2.png" width="128" height="128"></p>
-<h1 align="center">Kibe</h1>
+<h3 align="center">Kibe</h3>
 <p align="center">A miscellaneous mod for Minecraft that adds a bunch of random, and mostly unoriginal things.</p>
 <p align="center">
   <a title="Fabric API" href="https://github.com/FabricMC/fabric">
@@ -12,7 +12,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/lucaargolo/kibe/actions"><img src="https://github.com/lucaargolo/kibe/workflows/Build/badge.svg"/></a>
-  <a href="https://opensource.org/licenses/MPL-2.0"><img src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg">
+  <a href="https://opensource.org/licenses/MPL-2.0"><img src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg"></a>
 </p>
 
 ## Features
