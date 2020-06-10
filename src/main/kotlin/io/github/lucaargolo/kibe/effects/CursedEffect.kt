@@ -39,9 +39,6 @@ class CursedEffect: StatusEffect(StatusEffectType.HARMFUL, 3484199) {
     override fun onApplied(entity: LivingEntity, attributes: AttributeContainer?, amplifier: Int) {
         if(entity is PlayerEntity) {
             entity.removeStatusEffect(this)
-            if(entity is ServerPlayerEntity) {
-                entity.networkHandler.sendPacket(EntityStatusEffectS2CPacket(entity.entityId, StatusEffectInstance(this)))
-            }
         }else{
             entity.absorptionAmount = entity.absorptionAmount + entity.health
             super.onApplied(entity, attributes, amplifier)

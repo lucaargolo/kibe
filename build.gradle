@@ -7,7 +7,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = project.archives_base_name+"-"+project.minecraft_version
 version = project.mod_version
 group = project.maven_group
 
@@ -17,11 +17,7 @@ repositories {
         name = "Ladysnake Libs"
         url = 'https://dl.bintray.com/ladysnake/libs'
     }
-    maven {
-        url =  "http://tehnut.info/maven"
-    }
     mavenLocal()
-
 }
 
 dependencies {

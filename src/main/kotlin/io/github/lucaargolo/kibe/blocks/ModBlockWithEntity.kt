@@ -12,7 +12,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
@@ -20,7 +19,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import java.util.function.Supplier
 import kotlin.reflect.KClass
-import kotlin.reflect.full.primaryConstructor
 
 @Suppress("UNCHECKED_CAST", "unused")
 class ModBlockWithEntity<T: BlockEntity>: ModBlock {
@@ -65,7 +63,8 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
     override fun init(identifier: Identifier) {
         if(this.customBlockItem != null) {
             Registry.register(Registry.BLOCK, identifier, block)
-            val blockItem = customBlockItem!!.primaryConstructor!!.call(block, Item.Settings())
+            val blockItem = customBlockItem!!.java.constructors[0].newInstance(block, Item.Settings()) as BlockItem
+            //val blockItem = customBlockItem!!.primaryConstructor!!.call(block, Item.Settings())
             Registry.register(Registry.ITEM, identifier, blockItem)
         }else{
             super.init(identifier)
@@ -76,11 +75,16 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
         if (container != null) {
             ContainerProviderRegistry.INSTANCE.registerFactory(identifier) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
                 val pos = packetByteBuf.readBlockPos()
-                container!!.primaryConstructor!!.call(syncId,
+                container!!.java.constructors[0].newInstance(syncId,
                     playerEntity.inventory,
                     playerEntity.world.getBlockEntity(pos),
                     ScreenHandlerContext.create(playerEntity.world, pos)
-                )
+                ) as ScreenHandler
+//                container!!.primaryConstructor!!.call(syncId,
+//                    playerEntity.inventory,
+//                    playerEntity.world.getBlockEntity(pos),
+//                    ScreenHandlerContext.create(playerEntity.world, pos)
+//                )
             }
         }
     }
@@ -91,19 +95,28 @@ class ModBlockWithEntity<T: BlockEntity>: ModBlock {
             ScreenProviderRegistry.INSTANCE.registerFactory(identifier) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
                 val pos = packetByteBuf.readBlockPos()
                 val entity = playerEntity.entityWorld.getBlockEntity(pos) as LockableContainerBlockEntity
-                containerScreen!!.primaryConstructor!!.call(
-                    container!!.primaryConstructor!!.call(
+                containerScreen!!.java.constructors[0].newInstance(
+                    container!!.java.constructors[0].newInstance(
                         syncId,
                         playerEntity.inventory,
                         entity,
                         ScreenHandlerContext.EMPTY
-                    ), playerEntity.inventory, entity.name
-                )
+                    ) as ScreenHandler, playerEntity.inventory, entity.name
+                ) as HandledScreen<*>
+//                containerScreen!!.primaryConstructor!!.call(
+//                    container!!.primaryConstructor!!.call(
+//                        syncId,
+//                        playerEntity.inventory,
+//                        entity,
+//                        ScreenHandlerContext.EMPTY
+//                    ), playerEntity.inventory, entity.name
+//                )
             }
         }
         if(renderer != null) {
             BlockEntityRendererRegistry.INSTANCE.register(entity) { it2 ->
-                renderer!!.primaryConstructor!!.call(it2)
+                //renderer!!.primaryConstructor!!.call(it2)
+                renderer!!.java.constructors[0].newInstance(it2) as BlockEntityRenderer<T>
             }
         }
     }

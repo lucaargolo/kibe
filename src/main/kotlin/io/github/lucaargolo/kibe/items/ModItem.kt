@@ -21,7 +21,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import java.util.function.Function
 import kotlin.reflect.KClass
-import kotlin.reflect.full.primaryConstructor
 
 open class ModItem(item: Item) {
 
@@ -50,11 +49,16 @@ open class ModItem(item: Item) {
         Registry.register(Registry.ITEM, identifier, item)
         if(container != null) {
             ContainerProviderRegistry.INSTANCE.registerFactory(identifier) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
-                container!!.primaryConstructor!!.call(syncId,
+//                container!!.primaryConstructor!!.call(syncId,
+//                    playerEntity.inventory,
+//                    playerEntity.world,
+//                    packetByteBuf.readCompoundTag()!!
+//                )
+                container!!.java.constructors[0].newInstance(syncId,
                     playerEntity.inventory,
                     playerEntity.world,
                     packetByteBuf.readCompoundTag()!!
-                )
+                ) as ScreenHandler
             }
         }
     }
@@ -76,13 +80,20 @@ open class ModItem(item: Item) {
         }
         if(containerScreen != null) {
             ScreenProviderRegistry.INSTANCE.registerFactory(identifier) { syncId: Int, _, playerEntity: PlayerEntity, packetByteBuf: PacketByteBuf ->
-                containerScreen!!.primaryConstructor!!.call(
-                    container!!.primaryConstructor!!.call(syncId,
+//                containerScreen!!.primaryConstructor!!.call(
+//                    container!!.primaryConstructor!!.call(syncId,
+//                        playerEntity.inventory,
+//                        playerEntity.world,
+//                        packetByteBuf.readCompoundTag()
+//                    ), playerEntity.inventory, TranslatableText("screen.kibe.${identifier.path}")
+//                )
+                containerScreen!!.java.constructors[0].newInstance(
+                    container!!.java.constructors[0].newInstance(syncId,
                         playerEntity.inventory,
                         playerEntity.world,
                         packetByteBuf.readCompoundTag()
-                    ), playerEntity.inventory, TranslatableText("screen.kibe.${identifier.path}")
-                )
+                    ) as ScreenHandler, playerEntity.inventory, TranslatableText("screen.kibe.${identifier.path}")
+                ) as HandledScreen<*>
             }
         }
     }
