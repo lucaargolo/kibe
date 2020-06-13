@@ -32,7 +32,7 @@ class EntangledChestScreen(container: EntangledChestContainer, inventory: Player
 
     private fun drawRunes() {
         handler.entity.runeColors.forEach { (n, color) ->
-            itemRenderer.renderGuiItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(n-1)*10, startY+2)
+            itemRenderer.renderGuiItemIcon(ItemStack(Rune.getRuneByColor(color)), startX+87+(n-1)*10, startY+2)
         }
     }
 
