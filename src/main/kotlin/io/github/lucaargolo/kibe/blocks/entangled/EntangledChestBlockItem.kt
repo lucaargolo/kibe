@@ -32,7 +32,7 @@ class EntangledChestBlockItem(block: Block, settings: Settings): BlockItem(block
         val ownerText = TranslatableText("tooltip.kibe.owner")
         if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
         val color = TranslatableText("tooltip.kibe.color")
-        (0..8).forEach {
+        (1..8).forEach {
             val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
             val text = LiteralText("■")
             text.style = text.style.withColor(TextColor.fromRgb(dc.materialColor.color))

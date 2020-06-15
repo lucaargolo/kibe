@@ -71,6 +71,8 @@
   "item.kibe.red_rune": "Red Rune",
   "item.kibe.black_rune": "Block Rune",
 
+  "item.kibe.liquid_xp_bucket": "Liquid Xp Bucket",
+
   "item.kibe.magnet": "Magnet",
   "item.kibe.diamond_ring": "Diamond Ring",
   "item.kibe.angel_ring": "Angel Ring",
@@ -102,7 +104,7 @@
   "tooltip.kibe.lore.cursed_kibe": "§5§oHas a 1/64 chance to kill you",
   "tooltip.kibe.lore.diamond_kibe": "§5§oVIP+ only",
 
-  "tooltip.kibe.lore.light_ring": "§5§oPlaces infinite sources of light",
+  "tooltip.kibe.lore.light_source": "§5§oPlaces infinite sources of light",
 
   "tooltip.kibe.lore.golden_lasso": "§5§oA magical lasso that hold animals",
   "tooltip.kibe.lore.cursed_lasso.1": "§5§oA magical lasso that hold monsters",

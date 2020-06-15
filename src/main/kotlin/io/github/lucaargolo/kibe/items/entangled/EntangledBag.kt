@@ -25,7 +25,7 @@ class EntangledBag(settings: Settings): Item(settings){
         val ownerText = TranslatableText("tooltip.kibe.owner")
         if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
         val color = TranslatableText("tooltip.kibe.color")
-        (0..8).forEach {
+        (1..8).forEach {
             val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
             val text = LiteralText("■")
             text.style = text.style.withColor(TextColor.fromRgb(dc.materialColor.color))
@@ -73,27 +73,5 @@ class EntangledBag(settings: Settings): Item(settings){
         }
         return TypedActionResult.success(player.getStackInHand(hand))
     }
-
-    fun getFormatting(color: DyeColor): Formatting {
-        return when(color) {
-            DyeColor.WHITE -> Formatting.WHITE
-            DyeColor.ORANGE -> Formatting.GOLD
-            DyeColor.MAGENTA -> Formatting.LIGHT_PURPLE
-            DyeColor.LIGHT_BLUE -> Formatting.BLUE
-            DyeColor.YELLOW -> Formatting.YELLOW
-            DyeColor.LIME -> Formatting.GREEN
-            DyeColor.PINK -> Formatting.RED
-            DyeColor.GRAY -> Formatting.DARK_GRAY
-            DyeColor.LIGHT_GRAY -> Formatting.GRAY
-            DyeColor.CYAN -> Formatting.AQUA
-            DyeColor.PURPLE -> Formatting.DARK_PURPLE
-            DyeColor.BLUE -> Formatting.DARK_BLUE
-            DyeColor.BROWN -> Formatting.DARK_AQUA
-            DyeColor.GREEN -> Formatting.DARK_GREEN
-            DyeColor.RED -> Formatting.DARK_RED
-            DyeColor.BLACK -> Formatting.BLACK
-        }
-    }
-
 
 }
