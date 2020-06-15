@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.block.*
+import net.minecraft.entity.EntityContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.Items
@@ -24,7 +25,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F)) {
+class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).strength(22.0F, 600.0F)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.HORIZONTAL_FACING)
@@ -42,11 +43,11 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
         return true
     }
 
-    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
+    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: EntityContext): VoxelShape {
         return createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
     }
 
-    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos?, context: ShapeContext): VoxelShape {
+    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos?, context: EntityContext): VoxelShape {
         var isHoldingRune = false
         itemRegistry.forEach { (_, modItem) -> if(modItem.item is Rune && context.isHolding(modItem.item)) isHoldingRune = true }
         if(isHoldingRune) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))

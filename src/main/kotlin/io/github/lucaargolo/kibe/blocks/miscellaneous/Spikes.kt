@@ -4,8 +4,8 @@ import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType
 import net.minecraft.block.BlockState
-import net.minecraft.block.ShapeContext
 import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityContext
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.server.world.ServerWorld
@@ -35,11 +35,11 @@ class Spikes(private val damage: Float, private val isPlayer: Boolean, settings:
     }
 
 
-    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext): VoxelShape {
+    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: EntityContext): VoxelShape {
         return createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
     }
 
-    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext): VoxelShape {
+    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: EntityContext): VoxelShape {
         return createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
     }
 

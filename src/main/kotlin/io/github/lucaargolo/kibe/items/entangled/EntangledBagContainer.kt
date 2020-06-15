@@ -1,19 +1,19 @@
 package io.github.lucaargolo.kibe.items.entangled
 
 import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestState
+import net.minecraft.container.Container
+import net.minecraft.container.Slot
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.slot.Slot
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.DefaultedList
 import net.minecraft.world.World
 
-class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val world: World, val tag: CompoundTag): ScreenHandler(null, syncId) {
+class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val world: World, val tag: CompoundTag): Container(null, syncId) {
 
     private fun hasPersistentState(): Boolean = !world.isClient
 
@@ -29,12 +29,12 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
 
     private var synchronizedInventory: Inventory = object: Inventory {
         
-        override fun size(): Int {
+        override fun getInvSize(): Int {
             return if(hasPersistentState()) getPersistentState()!!.size(colorCode)
             else inventory.size
         }
 
-        override fun isEmpty(): Boolean {
+        override fun isInvEmpty(): Boolean {
             return if(hasPersistentState()) getPersistentState()!!.isEmpty(colorCode)
             else {
                 val iterator = inventory.iterator()
@@ -48,7 +48,7 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
             }
         }
 
-        override fun getStack(slot: Int): ItemStack {
+        override fun getInvStack(slot: Int): ItemStack {
             return if(hasPersistentState()) getPersistentState()!!.getStack(slot, colorCode)
             else inventory[slot]
         }
@@ -59,26 +59,26 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
             }
         }
 
-        override fun removeStack(slot: Int, amount: Int): ItemStack {
+        override fun takeInvStack(slot: Int, amount: Int): ItemStack {
             return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, amount, colorCode)
             else Inventories.splitStack(inventory, slot, amount)
         }
 
-        override fun removeStack(slot: Int): ItemStack {
+        override fun removeInvStack(slot: Int): ItemStack {
             return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, colorCode)
             else Inventories.removeStack(inventory, slot)
         }
 
-        override fun canPlayerUse(player: PlayerEntity?): Boolean {
+        override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
             return true
         }
 
-        override fun setStack(slot: Int, stack: ItemStack?) {
+        override fun setInvStack(slot: Int, stack: ItemStack?) {
             if(hasPersistentState()) getPersistentState()!!.setStack(slot, stack, colorCode)
             else {
                 inventory[slot] = stack
-                if (stack!!.count > maxCountPerStack) {
-                    stack.count = maxCountPerStack
+                if (stack!!.count > invMaxStackAmount) {
+                    stack.count = invMaxStackAmount
                 }
             }
         }
@@ -90,8 +90,8 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
     }
 
     init {
-        checkSize(synchronizedInventory, 27)
-        synchronizedInventory.onOpen(playerInventory.player)
+        checkContainerSize(synchronizedInventory, 27)
+        synchronizedInventory.onInvOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
         (0..2).forEach {n ->

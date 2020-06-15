@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.entity.EntityContext
 import net.minecraft.fluid.FluidState
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemPlacementContext
@@ -13,8 +14,8 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
+import net.minecraft.world.IWorld
 import net.minecraft.world.World
-import net.minecraft.world.WorldAccess
 import java.util.*
 
 class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).ticksRandomly().collidable(false)), Waterloggable {
@@ -38,7 +39,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
         else super.getFluidState(state)
     }
 
-    override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: WorldAccess, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
+    override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: IWorld, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
         if (state.get(HorizontalConnectingBlock.WATERLOGGED) as Boolean) {
             world.fluidTickScheduler.schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
         }
@@ -51,7 +52,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
             val vy = (random.nextDouble()-0.5)/5.0
             val vz = (random.nextDouble()-0.5)/5.0
             val vvy = (random.nextDouble()-0.5)/30.0
-            world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, pos.x+0.5+vx, pos.y+0.5+vy, pos.z+0.5+vz, 0.0, 0.0+vvy, 0.0)
+            world.addParticle(ParticleTypes.FLAME, pos.x+0.5+vx, pos.y+0.5+vy, pos.z+0.5+vz, 0.0, 0.0+vvy, 0.0)
         }
     }
 
@@ -59,7 +60,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
         return BlockRenderType.INVISIBLE
     }
 
-    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
+    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: EntityContext): VoxelShape {
         return createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
     }
 

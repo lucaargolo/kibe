@@ -6,27 +6,26 @@ import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
+import net.minecraft.container.BlockContext
+import net.minecraft.container.Container
+import net.minecraft.container.Slot
+import net.minecraft.container.SlotActionType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.CraftingInventory
 import net.minecraft.inventory.CraftingResultInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.ScreenHandlerContext
-import net.minecraft.screen.slot.Slot
-import net.minecraft.screen.slot.SlotActionType
+import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
 
 
-class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(null, syncId) {
+class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: BlockContext): Container(null, syncId) {
 
     private var player: PlayerEntity = playerInventory.player
     private var craftingInv = CraftingInventory(this, 1, 1)
@@ -35,32 +34,32 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
     var lastRecipe: VacuumHopperRecipe? = null
 
     var inventory: Inventory = object: Inventory {
-        override fun size(): Int {
-            return entity.size()
+        override fun getInvSize(): Int {
+            return entity.getInvSize()
         }
 
-        override fun isEmpty(): Boolean {
-            return entity.isEmpty
+        override fun isInvEmpty(): Boolean {
+            return entity.isInvEmpty
         }
 
-        override fun getStack(slot: Int): ItemStack? {
-            return entity.getStack(slot)
+        override fun getInvStack(slot: Int): ItemStack? {
+            return entity.getInvStack(slot)
         }
 
-        override fun removeStack(slot: Int): ItemStack? {
-            val stack: ItemStack = entity.removeStack(slot)
+        override fun removeInvStack(slot: Int): ItemStack? {
+            val stack: ItemStack = entity.removeInvStack(slot)
             onContentChanged(this)
             return stack
         }
 
-        override fun removeStack(slot: Int, amount: Int): ItemStack? {
-            val stack: ItemStack = entity.removeStack(slot, amount)
+        override fun takeInvStack(slot: Int, amount: Int): ItemStack? {
+            val stack: ItemStack = entity.takeInvStack(slot, amount)
             onContentChanged(this)
             return stack
         }
 
-        override fun setStack(slot: Int, stack: ItemStack?) {
-            entity.setStack(slot, stack)
+        override fun setInvStack(slot: Int, stack: ItemStack?) {
+            entity.setInvStack(slot, stack)
             onContentChanged(this)
         }
 
@@ -68,8 +67,8 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
             entity.markDirty()
         }
 
-        override fun canPlayerUse(player: PlayerEntity?): Boolean {
-            return entity.canPlayerUse(player)
+        override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
+            return entity.canPlayerUseInv(player)
         }
 
         override fun clear() {
@@ -79,8 +78,8 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
     }
 
     init {
-        checkSize(inventory, 9)
-        inventory.onOpen(playerInventory.player)
+        checkContainerSize(inventory, 9)
+        inventory.onInvOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
         addSlot(object: Slot(resultInv, 0, 8 + 6 * 18, 18 + 2 * 18 ) {
@@ -158,8 +157,8 @@ class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val 
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SYNCHRONIZE_LAST_RECIPE_PACKET , passedData)
                 }
             }
-            resultInventory.setStack(0, itemStack)
-            serverPlayerEntity.networkHandler.sendPacket(ScreenHandlerSlotUpdateS2CPacket(syncId, 0, itemStack))
+            resultInventory.setInvStack(0, itemStack)
+            serverPlayerEntity.networkHandler.sendPacket(ContainerSlotUpdateS2CPacket(syncId, 0, itemStack))
         }
     }
 

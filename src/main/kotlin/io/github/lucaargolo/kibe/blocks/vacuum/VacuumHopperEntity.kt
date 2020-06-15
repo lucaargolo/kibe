@@ -9,11 +9,9 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.DefaultedList
 
 class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), BlockEntityClientSerializable {
 
@@ -53,8 +51,8 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
         return tag
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         liquidXp = tag.getInt("fluid")
         Inventories.fromTag(tag, inventory)
     }
@@ -94,11 +92,11 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
         return modifiableStack
     }
 
-    override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?) = null
+    override fun createContainer(i: Int, playerInventory: PlayerInventory?) = null
 
-    override fun size() = inventory.size
+    override fun getInvSize() = inventory.size
 
-    override fun isEmpty(): Boolean {
+    override fun isInvEmpty(): Boolean {
         val iterator = this.inventory.iterator()
         var itemStack: ItemStack
         do {
@@ -109,16 +107,16 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
         return false
     }
 
-    override fun getStack(slot: Int) = inventory[slot]
+    override fun getInvStack(slot: Int) = inventory[slot]
 
-    override fun removeStack(slot: Int, amount: Int): ItemStack = Inventories.splitStack(inventory, slot, amount)
+    override fun takeInvStack(slot: Int, amount: Int): ItemStack = Inventories.splitStack(inventory, slot, amount)
 
-    override fun removeStack(slot: Int): ItemStack = Inventories.removeStack(this.inventory, slot)
+    override fun removeInvStack(slot: Int): ItemStack = Inventories.removeStack(this.inventory, slot)
 
-    override fun setStack(slot: Int, stack: ItemStack?) {
+    override fun setInvStack(slot: Int, stack: ItemStack?) {
         inventory[slot] = stack
-        if (stack!!.count > maxCountPerStack) {
-            stack.count = maxCountPerStack
+        if (stack!!.count > invMaxStackAmount) {
+            stack.count = invMaxStackAmount
         }
     }
 
@@ -126,7 +124,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
 
     override fun getContainerName(): Text = TranslatableText("screen.kibe.vacuum_hopper")
 
-    override fun canPlayerUse(player: PlayerEntity?): Boolean {
+    override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {
             false
         } else {

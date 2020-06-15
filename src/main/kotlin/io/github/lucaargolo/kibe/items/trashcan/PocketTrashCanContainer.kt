@@ -1,17 +1,17 @@
 package io.github.lucaargolo.kibe.items.trashcan
 
+import net.minecraft.container.Container
+import net.minecraft.container.Slot
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.slot.Slot
-import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.DefaultedList
 import net.minecraft.world.World
 
 @Suppress("UNUSED_PARAMETER")
-class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val world: World, tag: CompoundTag?): ScreenHandler(null, syncId) {
+class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val world: World, tag: CompoundTag?): Container(null, syncId) {
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
@@ -25,11 +25,11 @@ class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val
             inventory.clear()
         }
 
-        override fun setStack(slot: Int, stack: ItemStack?) {
+        override fun setInvStack(slot: Int, stack: ItemStack?) {
             inventory[slot] = ItemStack.EMPTY
         }
 
-        override fun isEmpty(): Boolean {
+        override fun isInvEmpty(): Boolean {
             val iterator = inventory.iterator()
             var itemStack: ItemStack
             do {
@@ -40,29 +40,29 @@ class PocketTrashCanContainer(syncId: Int, playerInventory: PlayerInventory, val
             return false
         }
 
-        override fun removeStack(slot: Int, amount: Int): ItemStack {
+        override fun takeInvStack(slot: Int, amount: Int): ItemStack {
             return ItemStack.EMPTY
         }
 
-        override fun removeStack(slot: Int): ItemStack {
+        override fun removeInvStack(slot: Int): ItemStack {
             return ItemStack.EMPTY
         }
 
-        override fun getStack(slot: Int): ItemStack {
+        override fun getInvStack(slot: Int): ItemStack {
             return ItemStack.EMPTY
         }
 
-        override fun canPlayerUse(player: PlayerEntity?): Boolean {
+        override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
             return true
         }
 
-        override fun size() = inventory.size
+        override fun getInvSize() = inventory.size
 
     }
 
     init {
-        checkSize(synchronizedInventory, 1)
-        synchronizedInventory.onOpen(playerInventory.player)
+        checkContainerSize(synchronizedInventory, 1)
+        synchronizedInventory.onInvOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
         addSlot(Slot(synchronizedInventory, 0, 8 + 4*18,  36))

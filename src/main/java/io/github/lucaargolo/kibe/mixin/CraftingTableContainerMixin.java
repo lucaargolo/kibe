@@ -1,22 +1,22 @@
 package io.github.lucaargolo.kibe.mixin;
 
+import net.minecraft.container.BlockContext;
+import net.minecraft.container.CraftingTableContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.CraftingResultInventory;
-import net.minecraft.screen.CraftingScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(CraftingScreenHandler.class)
+@Mixin(CraftingTableContainer.class)
 public interface CraftingTableContainerMixin {
 
     @Accessor
-    CraftingInventory getInput();
+    CraftingInventory getCraftingInv();
     @Accessor
-    CraftingResultInventory getResult();
+    CraftingResultInventory getResultInv();
     @Accessor
-    ScreenHandlerContext getContext();
+    BlockContext getContext();
     @Accessor
     PlayerEntity getPlayer();
 }

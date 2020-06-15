@@ -5,19 +5,19 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
-import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.gui.screen.ingame.ContainerScreen
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.render.model.ModelBakeSettings
 import net.minecraft.client.render.model.ModelLoader
 import net.minecraft.client.render.model.UnbakedModel
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.SpriteIdentifier
-import net.minecraft.screen.ScreenHandler
+import net.minecraft.container.Container
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
+import net.minecraft.util.PacketByteBuf
 import net.minecraft.util.registry.Registry
 import java.util.function.Function
 import kotlin.reflect.KClass
@@ -27,22 +27,22 @@ open class ModItem(item: Item) {
     var item: Item = item
         private set
     private var bakedModel: BakedModel? = null
-    private var container: KClass<ScreenHandler>? = null
-    private var containerScreen: KClass<HandledScreen<*>>? = null
+    private var container: KClass<Container>? = null
+    private var containerScreen: KClass<ContainerScreen<*>>? = null
 
     constructor(): this(Item(Item.Settings()))
 
     @Suppress("UNCHECKED_CAST")
     constructor(item: Item, container: KClass<*>, containerScreen: KClass<*>) : this(item) {
-        this.container = container as KClass<ScreenHandler>
-        this.containerScreen = containerScreen as KClass<HandledScreen<*>>
+        this.container = container as KClass<Container>
+        this.containerScreen = containerScreen as KClass<ContainerScreen<*>>
     }
 
     @Suppress("UNCHECKED_CAST")
     constructor(item: Item, bakedModel: BakedModel, container: KClass<*>, containerScreen: KClass<*>) : this(item) {
         this.bakedModel = bakedModel
-        this.container = container as KClass<ScreenHandler>
-        this.containerScreen = containerScreen as KClass<HandledScreen<*>>
+        this.container = container as KClass<Container>
+        this.containerScreen = containerScreen as KClass<ContainerScreen<*>>
     }
 
     open fun init(identifier: Identifier) {
@@ -58,7 +58,7 @@ open class ModItem(item: Item) {
                     playerEntity.inventory,
                     playerEntity.world,
                     packetByteBuf.readCompoundTag()!!
-                ) as ScreenHandler
+                ) as Container
             }
         }
     }
@@ -92,8 +92,8 @@ open class ModItem(item: Item) {
                         playerEntity.inventory,
                         playerEntity.world,
                         packetByteBuf.readCompoundTag()
-                    ) as ScreenHandler, playerEntity.inventory, TranslatableText("screen.kibe.${identifier.path}")
-                ) as HandledScreen<*>
+                    ) as Container, playerEntity.inventory, TranslatableText("screen.kibe.${identifier.path}")
+                ) as ContainerScreen<*>
             }
         }
     }

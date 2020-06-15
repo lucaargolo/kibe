@@ -2,27 +2,26 @@ package io.github.lucaargolo.kibe.blocks.trashcan
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.minecraft.block.entity.LockableContainerBlockEntity
+import net.minecraft.container.Container
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.DefaultedList
 
 class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntityType(trashCan)) {
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
-    override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
+    override fun createContainer(i: Int, playerInventory: PlayerInventory?): Container? {
         return null
     }
 
-    override fun size() = inventory.size
+    override fun getInvSize() = inventory.size
 
 
-    override fun isEmpty(): Boolean {
+    override fun isInvEmpty(): Boolean {
         val iterator = this.inventory.iterator()
         var itemStack: ItemStack
         do {
@@ -33,19 +32,19 @@ class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntity
         return false
     }
 
-    override fun getStack(slot: Int): ItemStack {
+    override fun getInvStack(slot: Int): ItemStack {
         return ItemStack.EMPTY
     }
 
-    override fun removeStack(slot: Int, amount: Int): ItemStack {
+    override fun takeInvStack(slot: Int, amount: Int): ItemStack {
         return ItemStack.EMPTY
     }
 
-    override fun removeStack(slot: Int): ItemStack {
+    override fun removeInvStack(slot: Int): ItemStack {
         return ItemStack.EMPTY
     }
 
-    override fun setStack(slot: Int, stack: ItemStack?) {
+    override fun setInvStack(slot: Int, stack: ItemStack?) {
         inventory[slot] = ItemStack.EMPTY
     }
 
@@ -55,7 +54,7 @@ class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntity
 
     override fun getContainerName(): Text = TranslatableText("screen.kibe.trash_can")
 
-    override fun canPlayerUse(player: PlayerEntity?): Boolean {
+    override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {
             false
         } else {

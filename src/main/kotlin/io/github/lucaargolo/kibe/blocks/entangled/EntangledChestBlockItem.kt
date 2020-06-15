@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.text.TextColor
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
@@ -32,14 +31,34 @@ class EntangledChestBlockItem(block: Block, settings: Settings): BlockItem(block
         val ownerText = TranslatableText("tooltip.kibe.owner")
         if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
         val color = TranslatableText("tooltip.kibe.color")
-        (0..8).forEach {
+        (1..8).forEach {
             val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
-            val text = LiteralText("■")
-            text.style = text.style.withColor(TextColor.fromRgb(dc.materialColor.color))
+            val text = LiteralText("${getFormattingFromDye(dc)}■")
             color.append(text)
         }
         tooltip.add(color)
     }
 
-
+    companion object {
+        fun getFormattingFromDye(color: DyeColor): Formatting {
+            return when(color) {
+                DyeColor.BLACK -> Formatting.BLACK
+                DyeColor.RED -> Formatting.DARK_RED
+                DyeColor.GREEN -> Formatting.DARK_GREEN
+                DyeColor.BROWN -> Formatting.GOLD
+                DyeColor.PURPLE -> Formatting.DARK_PURPLE
+                DyeColor.MAGENTA -> Formatting.LIGHT_PURPLE
+                DyeColor.BLUE -> Formatting.DARK_BLUE
+                DyeColor.LIGHT_BLUE -> Formatting.BLUE
+                DyeColor.CYAN -> Formatting.BLUE
+                DyeColor.LIGHT_GRAY -> Formatting.GRAY
+                DyeColor.GRAY -> Formatting.DARK_GRAY
+                DyeColor.PINK -> Formatting.RED
+                DyeColor.LIME -> Formatting.GREEN
+                DyeColor.YELLOW -> Formatting.YELLOW
+                DyeColor.ORANGE -> Formatting.GOLD
+                else -> Formatting.WHITE
+            }
+        }
+    }
 }

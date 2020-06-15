@@ -9,7 +9,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.render.model.BakedQuad
 import net.minecraft.client.render.model.json.JsonUnbakedModel
-import net.minecraft.client.render.model.json.ModelOverrideList
+import net.minecraft.client.render.model.json.ModelItemPropertyOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.item.ItemStack
@@ -96,7 +96,7 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
         return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
     }
 
-    override fun getOverrides(): ModelOverrideList = ModelOverrideList.EMPTY
+    override fun getItemPropertyOverrides() = ModelItemPropertyOverrideList.EMPTY
 
     override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
 

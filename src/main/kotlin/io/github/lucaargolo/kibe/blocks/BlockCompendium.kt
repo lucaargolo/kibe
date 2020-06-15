@@ -9,22 +9,20 @@ import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
 import io.github.lucaargolo.kibe.blocks.vacuum.*
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.block.Block
 import net.minecraft.block.Material
 import net.minecraft.block.MaterialColor
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.sound.BlockSoundGroup
-import net.minecraft.tag.ItemTags
 import net.minecraft.util.Identifier
 
 val blockRegistry = mutableMapOf<Identifier, ModBlock>()
 
 val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
 val REDSTONE_TIMER = register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class))
-val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), ModBlock(Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
-val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), ModBlock(Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MaterialColor.DIAMOND).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
+val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), ModBlock(Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
+val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), ModBlock(Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MaterialColor.DIAMOND).strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
 val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt"), ModBlock(ConveyorBelt(0.125F)))
 val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ModBlock(ConveyorBelt(0.25F)))
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ModBlock(ConveyorBelt(0.5F)))

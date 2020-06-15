@@ -7,7 +7,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
-import net.minecraft.screen.PlayerScreenHandler
+import net.minecraft.container.PlayerContainer
 import net.minecraft.util.Identifier
 import java.util.function.Function
 
@@ -79,8 +79,8 @@ class RedstoneTimerEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
     }
 
     private fun renderThings(selector: ModelPart, blockEntity: RedstoneTimerEntity, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-        val timerTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/redstone_timer_"+blockEntity.current/4))
-        val ironTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("block/iron_block"))
+        val timerTexture = SpriteIdentifier(PlayerContainer.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/redstone_timer_"+blockEntity.current/4))
+        val ironTexture = SpriteIdentifier(PlayerContainer.BLOCK_ATLAS_TEXTURE, Identifier("block/iron_block"))
 
         val timerConsumer = timerTexture.getVertexConsumer(vertexConsumers,
             Function { texture: Identifier? -> RenderLayer.getEntitySolid(texture) }

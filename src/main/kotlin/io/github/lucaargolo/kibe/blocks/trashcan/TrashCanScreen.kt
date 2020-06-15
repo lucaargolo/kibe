@@ -1,14 +1,12 @@
 package io.github.lucaargolo.kibe.blocks.trashcan
 
 import com.mojang.blaze3d.systems.RenderSystem
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.screen.ingame.ContainerScreen
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
-class TrashCanScreen(container: TrashCanContainer, inventory: PlayerInventory, title: Text): HandledScreen<TrashCanContainer>(container, inventory, title) {
+class TrashCanScreen(container: TrashCanContainer, inventory: PlayerInventory, title: Text): ContainerScreen<TrashCanContainer>(container, inventory, title) {
 
     private val texture = Identifier("kibe:textures/gui/trash_can.png")
 
@@ -17,25 +15,25 @@ class TrashCanScreen(container: TrashCanContainer, inventory: PlayerInventory, t
 
     override fun init() {
         super.init()
-        startX = width/2-backgroundWidth/2
-        startY = height/2-backgroundHeight/2
+        startX = width/2-containerWidth/2
+        startY = height/2-containerHeight/2
     }
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(matrices)
-        super.render(matrices, mouseX, mouseY, delta)
-        drawMouseoverTooltip(matrices, mouseX, mouseY)
+    override fun render(mouseX: Int, mouseY: Int, delta: Float) {
+        this.renderBackground()
+        super.render(mouseX, mouseY, delta)
+        drawMouseoverTooltip(mouseX, mouseY)
     }
 
-    override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
-        drawCenteredString(matrices, textRenderer, title.string,backgroundWidth/2, 6, 0xFFFFFF)
-        textRenderer.draw(matrices, playerInventory.displayName, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
+    override fun drawForeground(mouseX: Int, mouseY: Int) {
+        drawCenteredString(font, title.string,containerWidth/2, 6, 0xFFFFFF)
+        font.draw(playerInventory.displayName.string, 8f, containerHeight - 96 + 4f, 0xFFFFFF)
     }
 
-    override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
+    override fun drawBackground(delta: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
-        client!!.textureManager.bindTexture(texture)
-        drawTexture(matrices, startX, startY, 0, 0, 176, 166)
+        minecraft!!.textureManager.bindTexture(texture)
+        blit(startX, startY, 0, 0, 176, 166)
     }
 
 }

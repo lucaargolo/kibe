@@ -9,8 +9,8 @@ import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.Recipe
 import net.minecraft.recipe.RecipeFinder
+import net.minecraft.util.DefaultedList
 import net.minecraft.util.Identifier
-import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
 class VacuumHopperRecipe(private val id: Identifier, private val output: ItemStack, private val input: DefaultedList<Ingredient>, val xpInput: Int) : Recipe<CraftingInventory> {
@@ -35,8 +35,8 @@ class VacuumHopperRecipe(private val id: Identifier, private val output: ItemSta
         val recipeFinder = RecipeFinder()
         var i = 0
 
-        for (j in 0 until inv.size()) {
-            val itemStack: ItemStack = inv.getStack(j)
+        for (j in 0 until inv.invSize) {
+            val itemStack: ItemStack = inv.getInvStack(j)
             if (!itemStack.isEmpty) {
                 ++i
                 recipeFinder.method_20478(itemStack, 1)

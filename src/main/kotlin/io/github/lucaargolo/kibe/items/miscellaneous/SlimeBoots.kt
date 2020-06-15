@@ -10,7 +10,6 @@ import net.minecraft.sound.SoundEvents
 class SlimeBoots(settings: Settings) : ArmorItem(object : ArmorMaterial {
     override fun getRepairIngredient() = Ingredient.ofItems(Items.SLIME_BALL)
     override fun getToughness() = 1.0F
-    override fun getKnockbackResistance() = 0F
     override fun getEquipSound() = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC
     override fun getName() = "slime"
     override fun getDurability(slot: EquipmentSlot) = 128

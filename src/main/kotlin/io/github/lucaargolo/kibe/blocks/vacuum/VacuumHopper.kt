@@ -17,7 +17,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
+class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
 
     override fun createBlockEntity(view: BlockView?) = VacuumHopperEntity(this)
 
@@ -31,14 +31,13 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Mater
         return ActionResult.SUCCESS
     }
 
-    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
-        if (!state.isOf(newState.block)) {
+    override fun onBlockRemoved(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, moved: Boolean) {
+        if (state.block !== newState.block) {
             val blockEntity = world.getBlockEntity(pos)
             if (blockEntity is Inventory) {
                 ItemScatterer.spawn(world, pos, blockEntity as Inventory?)
-                //world.updateComparators(pos, this)
             }
-            super.onStateReplaced(state, world, pos, newState, notify)
+            super.onBlockRemoved(state, world, pos, newState, moved)
         }
     }
 

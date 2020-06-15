@@ -2,12 +2,12 @@ package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.entity.EntityCategory
 import net.minecraft.entity.EntityType
-import net.minecraft.entity.SpawnGroup
-import net.minecraft.entity.SpawnReason
+import net.minecraft.entity.ProjectileUtil
+import net.minecraft.entity.SpawnType
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.projectile.ProjectileUtil
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
@@ -71,7 +71,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
                     stack.tag = stackTag
                 }
                 if(entity is MobEntity) {
-                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnReason.NATURAL, null, null)
+                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnType.NATURAL, null, null)
                 }
                 return TypedActionResult.success(stack)
             }else{
@@ -86,7 +86,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     class GoldenLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: CompoundTag): CompoundTag = tag
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.category.isAnimal
     }
 
     class CursedLasso(settings: Settings): Lasso(settings) {
@@ -100,12 +100,12 @@ abstract class Lasso(settings: Settings): Item(settings) {
             tag.put("ActiveEffects", activeEffects)
             return tag
         }
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.category == EntityCategory.MONSTER
     }
 
     class DiamondLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: CompoundTag): CompoundTag = tag
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal || entityType.spawnGroup == SpawnGroup.MONSTER
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.category.isAnimal || entityType.category == EntityCategory.MONSTER
     }
 
 }

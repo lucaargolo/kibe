@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.sound.BlockSoundGroup
@@ -14,11 +15,11 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
+import net.minecraft.world.IWorld
 import net.minecraft.world.World
-import net.minecraft.world.WorldAccess
 import kotlin.math.abs
 
-class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
+class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
@@ -54,7 +55,7 @@ class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Mater
     }
 
     @Suppress("DEPRECATION")
-    override fun getStateForNeighborUpdate(state: BlockState, facing: Direction, neighborState: BlockState, world: WorldAccess, pos: BlockPos, neighborPos: BlockPos): BlockState {
+    override fun getStateForNeighborUpdate(state: BlockState, facing: Direction, neighborState: BlockState, world: IWorld, pos: BlockPos, neighborPos: BlockPos): BlockState {
         return if (facing.axis.type == Direction.Type.HORIZONTAL)
             state.with(HorizontalConnectingBlock.NORTH, world.getBlockState(pos.south()).block is ConveyorBelt)
                  .with(HorizontalConnectingBlock.SOUTH, world.getBlockState(pos.north()).block is ConveyorBelt)
@@ -72,11 +73,11 @@ class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Mater
     }
 
 
-    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
+    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: EntityContext?): VoxelShape {
         return createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0)
     }
 
-    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
+    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: EntityContext?): VoxelShape {
         return createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0)
     }
 

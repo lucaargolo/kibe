@@ -1,24 +1,19 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
-import com.google.common.math.IntMath.pow
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
-import net.minecraft.block.BlockState
 import net.minecraft.block.entity.LockableContainerBlockEntity
+import net.minecraft.container.Container
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
-import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
+import net.minecraft.util.DefaultedList
 import net.minecraft.util.DyeColor
-import net.minecraft.util.collection.DefaultedList
-import net.minecraft.util.math.MathHelper
 
 class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)), BlockEntityClientSerializable {
 
@@ -58,7 +53,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         return code
     }
 
-    override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
+    override fun createContainer(i: Int, playerInventory: PlayerInventory?): Container? {
         return null
     }
 
@@ -77,8 +72,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         super.markDirty()
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -90,7 +85,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             getPersistentState()!!.fromTag(subTag)
         }
         else {
-            this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
+            this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY)
             Inventories.fromTag(tag, this.inventory)
         }
     }
@@ -101,7 +96,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
         key = tag.getString("key")
         owner = tag.getString("owner")
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
+        this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY)
         Inventories.fromTag(tag, this.inventory)
     }
 
@@ -134,12 +129,12 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         return tag
     }
 
-    override fun size(): Int {
+    override fun getInvSize(): Int {
         return if(hasPersistentState()) getPersistentState()!!.size(getColorCode())
         else inventory.size
     }
 
-    override fun isEmpty(): Boolean {
+    override fun isInvEmpty(): Boolean {
         return if(hasPersistentState()) getPersistentState()!!.isEmpty(getColorCode())
         else {
             val iterator = this.inventory.iterator()
@@ -153,27 +148,27 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
     }
 
-    override fun getStack(slot: Int): ItemStack {
+    override fun getInvStack(slot: Int): ItemStack {
         return if(hasPersistentState()) getPersistentState()!!.getStack(slot, getColorCode())
         else inventory[slot]
     }
 
-    override fun removeStack(slot: Int, amount: Int): ItemStack {
+    override fun takeInvStack(slot: Int, amount: Int): ItemStack {
         return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, amount, getColorCode())
         else Inventories.splitStack(inventory, slot, amount)
     }
 
-    override fun removeStack(slot: Int): ItemStack {
+    override fun removeInvStack(slot: Int): ItemStack {
         return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, getColorCode())
         else Inventories.removeStack(this.inventory, slot)
     }
 
-    override fun setStack(slot: Int, stack: ItemStack?) {
+    override fun setInvStack(slot: Int, stack: ItemStack?) {
         if(hasPersistentState()) getPersistentState()!!.setStack(slot, stack, getColorCode())
         else {
             inventory[slot] = stack
-            if (stack!!.count > maxCountPerStack) {
-                stack.count = maxCountPerStack
+            if (stack!!.count > invMaxStackAmount) {
+                stack.count = invMaxStackAmount
             }
         }
     }
@@ -185,7 +180,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
 
     override fun getContainerName(): Text = TranslatableText("screen.kibe.entangled_chest")
 
-    override fun canPlayerUse(player: PlayerEntity?): Boolean {
+    override fun canPlayerUseInv(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {
             false
         } else {

@@ -18,7 +18,7 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
-import net.minecraft.util.collection.WeightedPicker
+import net.minecraft.util.WeightedPicker
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
@@ -42,9 +42,9 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
-            val entries = (world as ServerWorld).chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos.up())
+            val entries = (world as ServerWorld).chunkManager.chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos.up())
             if (entries.isEmpty()) {
-                player.sendMessage(LiteralText("Nothing can spawn"), false)
+                player.sendMessage(LiteralText("Nothing can spawn"))
                 return ActionResult.SUCCESS
             } else {
                 var names = TranslatableText("chat.kibe.cursed_dirt.spawn")
@@ -52,7 +52,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
                     names.append(entry.type.name)
                     if(index < entries.size-1) names.append(", ")
                 }
-                player.sendMessage(names, false)
+                player.sendMessage(names)
             }
             return ActionResult.SUCCESS
         }
@@ -82,7 +82,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         world.blockTickScheduler.schedule(pos, state.block, random.nextInt(200))
 
         //Dont spawn mobs in peaceful, in non water liquids or when doMobSpawning is set to false
-        if ((world.getFluidState(pos.up()).fluid !is EmptyFluid && world.getFluidState(pos.up()).fluid != Fluids.WATER && world.getFluidState(pos.up()).fluid != Fluids.FLOWING_WATER) || world.difficulty == Difficulty.PEACEFUL || !world.gameRules[GameRules.field_19390].get()) return
+        if ((world.getFluidState(pos.up()).fluid !is EmptyFluid && world.getFluidState(pos.up()).fluid != Fluids.WATER && world.getFluidState(pos.up()).fluid != Fluids.FLOWING_WATER) || world.difficulty == Difficulty.PEACEFUL || !world.gameRules[GameRules.DO_MOB_SPAWNING].get()) return
 
         //Chunk mob cap for avoiding L A G
         val chunkPos = world.getChunk(pos).pos
@@ -101,7 +101,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
                     if (!world.tryLoadEntity(it)) null else it
                 }
                 if(entity is MobEntity) {
-                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnReason.NATURAL, null, null)
+                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnType.NATURAL, null, null)
                 }
                 //mob.spawn(world, tag, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
             }
@@ -135,10 +135,10 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     }
 
     private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
-        val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos)
+        val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(EntityCategory.MONSTER, pos)
         if (spawnList.size == 0) return null
         val entry: Biome.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
-        if (!SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random)) return null
+        if (!SpawnRestriction.canSpawn(entry.type, world, SpawnType.NATURAL, pos, world.random)) return null
         return entry.type
     }
 }

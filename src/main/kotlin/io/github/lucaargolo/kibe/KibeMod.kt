@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.network.PacketContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
+import net.minecraft.container.PlayerContainer
 import net.minecraft.loot.ConstantLootTableRange
 import net.minecraft.loot.UniformLootTableRange
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
@@ -36,12 +37,11 @@ import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.LootingEnchantLootFunction
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
-import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
+import net.minecraft.util.PacketByteBuf
 import java.util.*
 import java.util.function.Consumer
 
@@ -76,7 +76,7 @@ fun initPacketsClient() {
         packetContext.taskQueue.execute {
             if(MinecraftClient.getInstance().currentScreen is VacuumHopperScreen) {
                 val screen = MinecraftClient.getInstance().currentScreen as VacuumHopperScreen
-                screen.screenHandler.lastRecipe = recipe
+                screen.container.lastRecipe = recipe
             }
         }
     }
@@ -84,7 +84,7 @@ fun initPacketsClient() {
 
 fun initExtrasClient() {
     @Suppress("deprecated")
-    ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
+    ClientSpriteRegistryCallback.event(PlayerContainer.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
         registry.register(Identifier(MOD_ID, "block/entangled_chest_runes"))
         (0..15).forEach{
             registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
@@ -104,27 +104,27 @@ fun initLootTables() {
     LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
         if (id.toString().startsWith("minecraft:entities")) {
             val poolBuilder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
-                .with(ItemEntry.builder(CURSED_DROPLETS))
-                .conditionally(
+                .withRolls(ConstantLootTableRange.create(1))
+                .withEntry(ItemEntry.builder(CURSED_DROPLETS))
+                .withCondition(
                     EntityPropertiesLootCondition.builder(
                         LootContext.EntityTarget.THIS,
                         EntityPredicate.Builder.create().effects(EntityEffectPredicate.create().withEffect(CURSED_EFFECT))
                     ))
-                .conditionally(RandomChanceLootCondition.builder(0.05F))
+                .withCondition(RandomChanceLootCondition.builder(0.05F))
                 .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f,1.5f)).build())
-            supplier.pool(poolBuilder)
+            supplier.withPool(poolBuilder)
         }
     })
     //Add cursed droplets to wither skeletons
     LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
         if (id.toString() == "minecraft:entities/wither_skeleton") {
             val poolBuilder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
-                .with(ItemEntry.builder(CURSED_DROPLETS))
-                .conditionally(RandomChanceLootCondition.builder(0.1F))
+                .withRolls(ConstantLootTableRange.create(1))
+                .withEntry(ItemEntry.builder(CURSED_DROPLETS))
+                .withCondition(RandomChanceLootCondition.builder(0.1F))
                 .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f,1.5f)).build())
-            supplier.pool(poolBuilder)
+            supplier.withPool(poolBuilder)
         }
     })
 }

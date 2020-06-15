@@ -14,7 +14,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,12 +36,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(type, world);
     }
 
-//    @Inject(at = @At("HEAD"), method = "setPlayerSpawn", cancellable = true)
-//    private void setPlayerSpawn(CallbackInfo info) {
-//        if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
-//            info.cancel();
-//        }
-//    }
+    @Inject(at = @At("HEAD"), method = "setPlayerSpawn", cancellable = true)
+    private void setPlayerSpawn(CallbackInfo info) {
+        if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
+            info.cancel();
+        }
+    }
 
     @Inject(at = @At("TAIL"), method = "eatFood")
     public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
@@ -139,7 +139,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     bounce.setBounceTick(0);
                 }
 
-                if(!player.isOnGround() && player.age != bounce.getBounceTick()) {
+                if(!player.onGround && player.age != bounce.getBounceTick()) {
                     if(bounce.getLastMovX() != getVelocity().x || bounce.getLastMovZ() != getVelocity().z) {
                         double f = 0.91d + 0.025d;
                         Vec3d velocity = getVelocity();
@@ -150,7 +150,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     }
                 }
 
-                if(bounce.getWasInAir() && player.isOnGround() || player.isTouchingWater()) {
+                if(bounce.getWasInAir() && player.onGround || player.isTouchingWater()) {
                     if(bounce.getTimer() == 0) {
                         bounce.setTimer(player.age);
                     }else if(player.age - bounce.getTimer() > 5){
