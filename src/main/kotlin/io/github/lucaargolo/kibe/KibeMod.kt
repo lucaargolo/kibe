@@ -3,6 +3,7 @@
 package io.github.lucaargolo.kibe
 
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
+import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
@@ -21,6 +22,8 @@ import io.github.lucaargolo.kibe.utils.initTooltip
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
+import net.fabricmc.fabric.api.event.server.ServerStartCallback
+import net.fabricmc.fabric.api.event.world.WorldTickCallback
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
@@ -41,6 +44,7 @@ import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import java.util.*
 import java.util.function.Consumer
@@ -59,6 +63,8 @@ fun init() {
     initLootTables()
     initFluids()
     initCreativeTab()
+    initExtras()
+
 }
 
 fun initClient() {
@@ -80,6 +86,16 @@ fun initPacketsClient() {
             }
         }
     }
+}
+
+fun initExtras() {
+    ServerStartCallback.EVENT.register(ServerStartCallback {  server ->
+        server.worlds.firstOrNull()?.let {world ->
+            @Suppress("TYPE_MISMATCH")
+            //Why is it even triggering a type mismatch here????
+            world.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe:chunk_loaders") }, "kibe:chunk_loaders")
+        }
+    })
 }
 
 fun initExtrasClient() {

@@ -1,6 +1,8 @@
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoader
+import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.entangled.*
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
@@ -32,6 +34,7 @@ val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), ModBlockWi
 val TRASH_CAN = register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), TrashCanContainer::class, TrashCanScreen::class))
 val VACUUM_HOPPER = register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), VacuumHopperEntityRenderer::class, VacuumHopperContainer::class, VacuumHopperScreen::class))
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), ModBlock(LightSource(), false))
+val CHUNK_LOADER = register(Identifier(MOD_ID, "chunk_loader"), ModBlockWithEntity<ChunkLoaderBlockEntity>(ChunkLoader()))
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), ModBlock(Elevator()))
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), ModBlock(Elevator()))
