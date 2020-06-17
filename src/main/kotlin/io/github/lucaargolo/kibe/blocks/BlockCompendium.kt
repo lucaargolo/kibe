@@ -1,6 +1,9 @@
 package io.github.lucaargolo.kibe.blocks
 
+import io.github.lucaargolo.kibe.CLIENT
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoader
+import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.entangled.*
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
@@ -20,16 +23,37 @@ import net.minecraft.util.Identifier
 val blockRegistry = mutableMapOf<Identifier, ModBlock>()
 
 val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
-val REDSTONE_TIMER = register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class))
+val REDSTONE_TIMER =
+    if (CLIENT)
+        register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class, null, null, null))
+    else
+        register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), null, null, null, null))
+
 val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), ModBlock(Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
 val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), ModBlock(Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MaterialColor.DIAMOND).strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
 val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt"), ModBlock(ConveyorBelt(0.125F)))
 val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ModBlock(ConveyorBelt(0.25F)))
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ModBlock(ConveyorBelt(0.5F)))
-val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), EntangledChestEntityRenderer::class, EntangledChestContainer::class, EntangledChestScreen::class, EntangledChestBlockItem::class))
-val TRASH_CAN = register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), TrashCanContainer::class, TrashCanScreen::class))
-val VACUUM_HOPPER = register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), VacuumHopperEntityRenderer::class, VacuumHopperContainer::class, VacuumHopperScreen::class))
+
+val ENTANGLED_CHEST =
+    if(CLIENT)
+        register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), EntangledChestEntityRenderer::class, EntangledChestContainer::class, EntangledChestScreen::class, EntangledChestBlockItem::class))
+    else
+        register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), null, EntangledChestContainer::class, null, EntangledChestBlockItem::class))
+val TRASH_CAN =
+    if(CLIENT)
+        register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), null, TrashCanContainer::class, TrashCanScreen::class, null))
+    else
+        register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), null, TrashCanContainer::class, null, null))
+val VACUUM_HOPPER =
+    if(CLIENT)
+        register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), VacuumHopperEntityRenderer::class, VacuumHopperContainer::class, VacuumHopperScreen::class, null))
+    else
+        register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), null, VacuumHopperContainer::class, null, null))
+
+
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), ModBlock(LightSource(), false))
+val CHUNK_LOADER = register(Identifier(MOD_ID, "chunk_loader"), ModBlockWithEntity<ChunkLoaderBlockEntity>(ChunkLoader(), null, null, null, null))
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), ModBlock(Elevator()))
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), ModBlock(Elevator()))

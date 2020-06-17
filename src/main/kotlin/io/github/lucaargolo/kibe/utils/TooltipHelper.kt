@@ -1,9 +1,6 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.blocks.DIAMOND_SPIKES
-import io.github.lucaargolo.kibe.blocks.IRON_SPIKES
-import io.github.lucaargolo.kibe.blocks.LIGHT_SOURCE
-import io.github.lucaargolo.kibe.blocks.getBlockId
+import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.items.*
 import net.minecraft.block.Block
 import net.minecraft.item.ItemConvertible
@@ -23,6 +20,7 @@ fun initTooltip() {
 
     registerTooltip(IRON_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
+    registerTooltip(CHUNK_LOADER)
 
     registerTooltip(KIBE)
     registerTooltip(GOLDEN_KIBE)

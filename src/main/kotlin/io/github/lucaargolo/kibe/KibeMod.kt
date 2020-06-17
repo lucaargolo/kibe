@@ -3,6 +3,7 @@
 package io.github.lucaargolo.kibe
 
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
+import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
@@ -18,14 +19,18 @@ import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
+import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
+import net.fabricmc.fabric.api.event.server.ServerStartCallback
+import net.fabricmc.fabric.api.event.world.WorldTickCallback
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.network.PacketContext
+import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
@@ -40,6 +45,7 @@ import net.minecraft.loot.function.LootingEnchantLootFunction
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
+
 import net.minecraft.util.Identifier
 import net.minecraft.util.PacketByteBuf
 import java.util.*
@@ -48,6 +54,7 @@ import java.util.function.Consumer
 const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
+val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 
 fun init() {
     initRecipeSerializers()
@@ -59,6 +66,8 @@ fun init() {
     initLootTables()
     initFluids()
     initCreativeTab()
+    initExtras()
+
 }
 
 fun initClient() {
@@ -80,6 +89,16 @@ fun initPacketsClient() {
             }
         }
     }
+}
+
+fun initExtras() {
+    ServerStartCallback.EVENT.register(ServerStartCallback {  server ->
+        server.worlds.firstOrNull()?.let {world ->
+            @Suppress("TYPE_MISMATCH")
+            //Why is it even triggering a type mismatch here????
+            world.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe:chunk_loaders") }, "kibe:chunk_loaders")
+        }
+    })
 }
 
 fun initExtrasClient() {

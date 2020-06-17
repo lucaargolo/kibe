@@ -112,7 +112,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         val activeEffect = CompoundTag()
         activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
         activeEffect.putInt("Amplifier", 1)
-        activeEffect.putInt("Duration", 999999)
+        activeEffect.putInt("Duration", 300)
         val activeEffects = ListTag()
         activeEffects.add(activeEffect)
         val tag = CompoundTag()
