@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items
 
 import io.github.ladysnake.pal.VanillaAbilities
+import io.github.lucaargolo.kibe.CLIENT
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.items.entangled.EntangledBag
 import io.github.lucaargolo.kibe.items.entangled.EntangledBagBakedModel
@@ -63,8 +64,18 @@ val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"),  ModItem(SlimeBoot
 val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"),  ModItem(SlimeSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON))))
 
 val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"),  ModItem(PocketCraftingTable(Settings().maxCount(1))))
-val POCKET_TRASH_CAN      = register(Identifier(MOD_ID, "pocket_trash_can"),  ModItem(PocketTrashCan(Settings().maxCount(1)), PocketTrashCanContainer::class, PocketTrashCanScreen::class))
-val ENTANGLED_BAG         = register(Identifier(MOD_ID, "entangled_bag"),  ModItem(EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), EntangledBagBakedModel(), EntangledBagContainer::class, EntangledBagScreen::class))
+val POCKET_TRASH_CAN =
+    if(CLIENT)
+        register(Identifier(MOD_ID, "pocket_trash_can"),  ModItem(PocketTrashCan(Settings().maxCount(1)), PocketTrashCanContainer::class, PocketTrashCanScreen::class))
+    else
+        register(Identifier(MOD_ID, "pocket_trash_can"),  ModItem(PocketTrashCan(Settings().maxCount(1)), PocketTrashCanContainer::class))
+
+val ENTANGLED_BAG =
+    if(CLIENT)
+        register(Identifier(MOD_ID, "entangled_bag"),  ModItem(EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), EntangledBagBakedModel(), EntangledBagContainer::class, EntangledBagScreen::class))
+    else
+        register(Identifier(MOD_ID, "entangled_bag"),  ModItem(EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), EntangledBagContainer::class))
+
 
 val SLEEPING_BAG = register(Identifier(MOD_ID, "sleeping_bag"), ModItem(SleepingBag(Settings().rarity(Rarity.RARE))))
 

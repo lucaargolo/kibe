@@ -21,43 +21,16 @@ import java.util.function.Supplier
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST", "unused")
-class ModBlockWithEntity<T: BlockEntity>: ModBlock {
+class ModBlockWithEntity<T: BlockEntity>(block: BlockWithEntity, blockEntityRenderer: KClass<*>?, blockEntityScreenHandler: KClass<*>?, blockEntityScreen: KClass<*>?, private var customBlockItem: KClass<*>?) : ModBlock(block) {
 
     var entity: BlockEntityType<T>? = null
         private set
-    private var renderer: KClass<BlockEntityRenderer<T>>? = null
-    private var container: KClass<ScreenHandler>? = null
-    private var containerScreen: KClass<HandledScreen<*>>? = null
-    private var customBlockItem: KClass<BlockItem>? = null
+    private var renderer: KClass<BlockEntityRenderer<T>>? = blockEntityRenderer as KClass<BlockEntityRenderer<T>>?
+    private var container: KClass<ScreenHandler>? = blockEntityScreenHandler as KClass<ScreenHandler>?
+    private var containerScreen: KClass<HandledScreen<*>>? = blockEntityScreen as KClass<HandledScreen<*>>?
 
-    constructor(block: BlockWithEntity) : super(block) {
+    init {
         this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-    }
-
-    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>) : super(block) {
-        this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
-    }
-
-    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>, customBlockItem: KClass<*>) : super(block) {
-        this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
-        this.container = blockEntityScreenHandler as KClass<ScreenHandler>
-        this.containerScreen = blockEntityScreen as KClass<HandledScreen<*>>
-        this.customBlockItem = customBlockItem as KClass<BlockItem>
-    }
-
-    constructor(block: BlockWithEntity, blockEntityRenderer: KClass<*>, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
-        this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.renderer = blockEntityRenderer as KClass<BlockEntityRenderer<T>>
-        this.container = blockEntityScreenHandler as KClass<ScreenHandler>
-        this.containerScreen = blockEntityScreen as KClass<HandledScreen<*>>
-    }
-
-    constructor(block: BlockWithEntity, blockEntityScreenHandler: KClass<*>, blockEntityScreen: KClass<*>) : super(block) {
-        this.entity = BlockEntityType.Builder.create(Supplier { block.createBlockEntity(null) }, block).build(null) as BlockEntityType<T>
-        this.container = blockEntityScreenHandler as KClass<ScreenHandler>
-        this.containerScreen = blockEntityScreen as KClass<HandledScreen<*>>
     }
 
     override fun init(identifier: Identifier) {
