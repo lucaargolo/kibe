@@ -3,7 +3,7 @@
 	"textures": {
 		"0": "kibe:block/chunk_loader_top",
 		"1": "kibe:block/chunk_loader_side",
-		"2": "block:obsidian",
+		"2": "block/obsidian",
 		"particle": "kibe:block/chunk_loader_top"
 	},
 	"elements": [
