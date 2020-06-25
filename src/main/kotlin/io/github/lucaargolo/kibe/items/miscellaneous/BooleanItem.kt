@@ -4,10 +4,8 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
@@ -26,7 +24,7 @@ open class BooleanItem(settings: Settings): Item(settings) {
         }
     }
 
-    override fun hasEnchantmentGlint(stack: ItemStack): Boolean {
+    override fun hasGlint(stack: ItemStack): Boolean {
         return isEnabled(stack)
     }
 

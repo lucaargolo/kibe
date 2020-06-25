@@ -29,7 +29,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         val fluidState = ctx.world.getFluidState(ctx.blockPos)
-        val bl = fluidState.matches(FluidTags.WATER) && fluidState.level == 8
+        val bl = fluidState.isIn(FluidTags.WATER) && fluidState.level == 8
         return super.getPlacementState(ctx)!!.with(SeaPickleBlock.WATERLOGGED, bl)
     }
 

@@ -25,11 +25,7 @@ import net.minecraft.world.World
 
 abstract class Lasso(settings: Settings): Item(settings) {
 
-    override fun appendTooltip(stack: ItemStack?, world: World?, tooltip: MutableList<Text>?, context: TooltipContext?) {
-        super.appendTooltip(stack, world, tooltip, context)
-    }
-
-    override fun hasEnchantmentGlint(stack: ItemStack): Boolean {
+    override fun hasGlint(stack: ItemStack): Boolean {
         return stack.orCreateTag.contains("Entity")
     }
 
