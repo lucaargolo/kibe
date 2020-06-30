@@ -1,21 +1,23 @@
 package io.github.lucaargolo.kibe.utils
 
-import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import java.util.*
 
-class SlimeBounceHandler(entityLiving: LivingEntity, var bounce: Double) {
+class SlimeBounceHandler(playerEntity: PlayerEntity, var bounce: Double) {
 
     var timer = 0
     var wasInAir = false
-    var bounceTick = if (bounce != 0.0) entityLiving.age else 0
+    var bounceTick = if (bounce != 0.0) playerEntity.age else 0
 
     init {
-        if(entityLiving is ServerPlayerEntity) serverBouncingEntities[entityLiving] = this
-        if(entityLiving is ClientPlayerEntity) clientBouncingEntities[entityLiving] = this
+        if(playerEntity is ServerPlayerEntity) {
+            serverBouncingEntities[playerEntity] = this
+        }else{
+            clientBouncingEntities[playerEntity] = this
+        }
     }
 
     var lastMovX: Double = 0.0
@@ -23,8 +25,8 @@ class SlimeBounceHandler(entityLiving: LivingEntity, var bounce: Double) {
 
     companion object {
 
-        var serverBouncingEntities: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap<Entity, SlimeBounceHandler>()
-        var clientBouncingEntities: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap<Entity, SlimeBounceHandler>()
+        var serverBouncingEntities: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap()
+        var clientBouncingEntities: IdentityHashMap<Entity, SlimeBounceHandler> = IdentityHashMap()
 
         fun addBounceHandler(entity: LivingEntity, bounce: Double) {
             if (entity !is PlayerEntity) {
