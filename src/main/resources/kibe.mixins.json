@@ -12,7 +12,8 @@
     "MobSpawnerLogicMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
-    "ThreadedAnvilChunkStorageMixin"
+    "ThreadedAnvilChunkStorageMixin",
+    "WitherRoseBlockMixin"
   ],
   "client": [
     "ItemMixin",
