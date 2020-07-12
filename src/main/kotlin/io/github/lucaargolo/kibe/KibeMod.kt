@@ -119,14 +119,13 @@ fun initPackets() {
                     Direction.UP -> pos.up()
                     Direction.EAST -> pos.east()
                     Direction.NORTH -> pos.north()
-                    Direction.WEST -> pos.east()
+                    Direction.WEST -> pos.west()
                     Direction.SOUTH -> pos.south()
                     else -> pos
                 }
 
                 val newTag = lasso.addToTag(stackTag["Entity"] as CompoundTag)
                 val newEntity = EntityType.loadEntityWithPassengers(newTag, world) {
-                    println(targetPos)
                     it.refreshPositionAndAngles(targetPos.x+.5, targetPos.y+.0, targetPos.z+.5, it.yaw, it.pitch)
                     if (!world.tryLoadEntity(it)) {
                         player.sendMessage(TranslatableText("chat.kibe.lasso.cannot_spawn"), true)
