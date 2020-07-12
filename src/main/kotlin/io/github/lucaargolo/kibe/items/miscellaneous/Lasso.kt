@@ -96,7 +96,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     class DiamondLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: CompoundTag): CompoundTag = tag
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup != SpawnGroup.MISC && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType == EntityType.VILLAGER || (entityType.spawnGroup != SpawnGroup.MISC && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER)
     }
 
 }
