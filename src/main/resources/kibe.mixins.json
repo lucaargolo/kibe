@@ -13,6 +13,7 @@
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
     "ThreadedAnvilChunkStorageMixin",
+    "VillagerEntityMixin",
     "WitherRoseBlockMixin"
   ],
   "client": [

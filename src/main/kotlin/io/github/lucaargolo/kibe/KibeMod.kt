@@ -36,8 +36,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.entity.EntityType
-import net.minecraft.entity.SpawnReason
-import net.minecraft.entity.mob.MobEntity
 import net.minecraft.loot.ConstantLootTableRange
 import net.minecraft.loot.UniformLootTableRange
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
@@ -53,10 +51,10 @@ import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
-import net.minecraft.util.TypedActionResult
-import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import java.util.*
 import java.util.function.Consumer
 
@@ -115,17 +113,31 @@ fun initPackets() {
                 }
             }else if(blockHit != null && stackTag.contains("Entity")) {
                 val pos = blockHit.blockPos
+
+                val targetPos = when(blockHit.side) {
+                    Direction.DOWN -> pos.down(2)
+                    Direction.UP -> pos.up()
+                    Direction.EAST -> pos.east()
+                    Direction.NORTH -> pos.north()
+                    Direction.WEST -> pos.east()
+                    Direction.SOUTH -> pos.south()
+                    else -> pos
+                }
+
                 val newTag = lasso.addToTag(stackTag["Entity"] as CompoundTag)
                 val newEntity = EntityType.loadEntityWithPassengers(newTag, world) {
-                    it.refreshPositionAndAngles(pos.x+.0, pos.y+1.0, pos.z+.0, it.yaw, it.pitch)
-                    if (!world.tryLoadEntity(it)) null else it
+                    println(targetPos)
+                    it.refreshPositionAndAngles(targetPos.x+.5, targetPos.y+.0, targetPos.z+.5, it.yaw, it.pitch)
+                    if (!world.tryLoadEntity(it)) {
+                        player.sendMessage(TranslatableText("chat.kibe.lasso.cannot_spawn"), true)
+                        null
+                    }
+                    else it
                 }
+
                 if(newEntity != null) {
                     stackTag.remove("Entity")
                     stack.tag = stackTag
-                }
-                if(newEntity is MobEntity) {
-                    newEntity.initialize(world, world.getLocalDifficulty(BlockPos(newEntity.pos)), SpawnReason.NATURAL, null, null)
                 }
             }
 

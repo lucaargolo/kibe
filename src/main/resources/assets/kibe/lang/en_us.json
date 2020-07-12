@@ -85,9 +85,9 @@
   "effect.kibe.cursed_effect": "Cursed Effect",
 
   "chat.kibe.entangled_bag.success": "§6Successfully linked bag!",
-
   "chat.kibe.cursed_dirt.nothing": "§cNo mobs are able to spawn",
   "chat.kibe.cursed_dirt.spawn": "§5Given the right conditions, the following mobs can spawn: ",
+  "chat.kibe.lasso.cannot_spawn": "§cThe entity cannot be released in this location!",
 
   "tooltip.kibe.enabled": "§aEnabled",
   "tooltip.kibe.disabled": "§cDisabled",
@@ -118,6 +118,7 @@
 
   "tooltip.kibe.lore.chunk_loader": "§5§oKeeps a 9x9 chunk area loaded.",
 
+  "screen.kibe.chunk_loader": "Chunk Loader",
   "screen.kibe.trash_can": "Trash Can",
   "screen.kibe.vacuum_hopper": "Vacuum Hopper",
   "screen.kibe.entangled_chest": "Entangled Chest",
