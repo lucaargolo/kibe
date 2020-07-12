@@ -23,7 +23,7 @@
   "block.kibe.green_elevator": "Green Elevator",
   "block.kibe.brown_elevator": "Brown Elevator",
   "block.kibe.red_elevator": "Red Elevator",
-  "block.kibe.black_elevator": "Block Elevator",
+  "block.kibe.black_elevator": "Black Elevator",
 
   "block.kibe.chunk_loader": "Chunk Loader",
 
@@ -116,7 +116,7 @@
   "tooltip.kibe.lore.iron_spikes": "§5§oEntities drops regular items",
   "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
 
-  "tooltip.kibe.lore.chunk_loader": "§5§oKeeps a 9x9 chunk area loaded.",
+  "tooltip.kibe.lore.chunk_loader": "§5§oKeeps a 3x3 chunk area loaded.",
 
   "screen.kibe.chunk_loader": "Chunk Loader",
   "screen.kibe.trash_can": "Trash Can",

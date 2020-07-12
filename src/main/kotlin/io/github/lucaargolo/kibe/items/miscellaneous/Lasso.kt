@@ -77,7 +77,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     class GoldenLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: CompoundTag): CompoundTag = tag
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup != SpawnGroup.MONSTER && entityType.spawnGroup != SpawnGroup.MISC
     }
 
     class CursedLasso(settings: Settings): Lasso(settings) {
@@ -91,12 +91,12 @@ abstract class Lasso(settings: Settings): Item(settings) {
             tag.put("ActiveEffects", activeEffects)
             return tag
         }
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER
     }
 
     class DiamondLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: CompoundTag): CompoundTag = tag
-        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup.isAnimal || entityType.spawnGroup == SpawnGroup.MONSTER
+        override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup != SpawnGroup.MISC && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER
     }
 
 }
