@@ -14,7 +14,6 @@ import io.github.lucaargolo.kibe.fluids.initFluidsClient
 import io.github.lucaargolo.kibe.items.CURSED_DROPLETS
 import io.github.lucaargolo.kibe.items.initItems
 import io.github.lucaargolo.kibe.items.initItemsClient
-import io.github.lucaargolo.kibe.items.miscellaneous.Lasso
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -30,12 +29,10 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.network.PacketContext
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
-import net.minecraft.entity.EntityType
 import net.minecraft.loot.ConstantLootTableRange
 import net.minecraft.loot.UniformLootTableRange
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
@@ -43,24 +40,17 @@ import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.LootingEnchantLootFunction
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.TranslatableText
-import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.Direction
 import java.util.*
 import java.util.function.Consumer
 
 const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
-val USE_LASSO = Identifier(MOD_ID, "use_lasso")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 
@@ -74,7 +64,6 @@ fun init() {
     initLootTables()
     initFluids()
     initCreativeTab()
-    initPackets()
     initExtras()
 }
 
@@ -84,64 +73,6 @@ fun initClient() {
     initFluidsClient()
     initExtrasClient()
     initPacketsClient()
-}
-
-fun initPackets() {
-    ServerSidePacketRegistry.INSTANCE.register(USE_LASSO) { packetContext: PacketContext, attachedData: PacketByteBuf ->
-        val hand = attachedData.readEnumConstant(Hand::class.java)
-        val type = attachedData.readInt()
-        val entityUUID = if(type == 1) attachedData.readUuid() else null
-        val blockHit = if(type == 2) attachedData.readBlockHitResult() else null
-        packetContext.taskQueue.execute {
-            val player = packetContext.player as ServerPlayerEntity
-            val world = player.world as ServerWorld
-            val entity = world.getEntity(entityUUID)
-
-            val stack = player.getStackInHand(hand)
-            val stackTag = stack.orCreateTag
-
-            val lasso = stack.item
-            if(lasso !is Lasso) return@execute
-
-            if(entity != null && !stackTag.contains("Entity")) {
-                if(lasso.canStoreEntity(entity.type)) {
-                    val tag = CompoundTag()
-                    entity.saveSelfToTag(tag)
-                    stackTag.put("Entity", tag)
-                    stack.tag = stackTag
-                    entity.remove()
-                }
-            }else if(blockHit != null && stackTag.contains("Entity")) {
-                val pos = blockHit.blockPos
-
-                val targetPos = when(blockHit.side) {
-                    Direction.DOWN -> pos.down(2)
-                    Direction.UP -> pos.up()
-                    Direction.EAST -> pos.east()
-                    Direction.NORTH -> pos.north()
-                    Direction.WEST -> pos.west()
-                    Direction.SOUTH -> pos.south()
-                    else -> pos
-                }
-
-                val newTag = lasso.addToTag(stackTag["Entity"] as CompoundTag)
-                val newEntity = EntityType.loadEntityWithPassengers(newTag, world) {
-                    it.refreshPositionAndAngles(targetPos.x+.5, targetPos.y+.0, targetPos.z+.5, it.yaw, it.pitch)
-                    if (!world.tryLoadEntity(it)) {
-                        player.sendMessage(TranslatableText("chat.kibe.lasso.cannot_spawn"), true)
-                        null
-                    }
-                    else it
-                }
-
-                if(newEntity != null) {
-                    stackTag.remove("Entity")
-                    stack.tag = stackTag
-                }
-            }
-
-        }
-    }
 }
 
 fun initPacketsClient() {

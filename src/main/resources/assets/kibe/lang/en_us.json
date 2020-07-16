@@ -92,6 +92,7 @@
   "tooltip.kibe.enabled": "§aEnabled",
   "tooltip.kibe.disabled": "§cDisabled",
   "tooltip.kibe.overflow": "§cOverflow",
+  "tooltip.kibe.stored": "§9Stored: ",
   "tooltip.kibe.owner": "§9Owner: ",
   "tooltip.kibe.color": "§9Color: ",
 
