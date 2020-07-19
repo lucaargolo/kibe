@@ -84,15 +84,6 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
         key = tag.getString("key")
         owner = tag.getString("owner")
-        if(hasPersistentState()) {
-            val subTag = CompoundTag()
-            subTag.put(getColorCode(), tag)
-            getPersistentState()!!.fromTag(subTag)
-        }
-        else {
-            this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
-            Inventories.fromTag(tag, this.inventory)
-        }
     }
 
     override fun fromClientTag(tag: CompoundTag) {
