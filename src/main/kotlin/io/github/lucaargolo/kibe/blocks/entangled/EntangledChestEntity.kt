@@ -65,9 +65,9 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
     private fun hasPersistentState(): Boolean = hasWorld() && !world!!.isClient
 
     private fun getPersistentState(): EntangledChestState? {
-        return if(hasWorld() && !world!!.isClient) {
-            (world as ServerWorld).persistentStateManager.getOrCreate( {EntangledChestState(key)}, key)
-        }else null
+        return (world as? ServerWorld)?.let { serverWorld ->
+            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledChestState(key)}, key)
+        }
     }
 
     override fun markDirty() {

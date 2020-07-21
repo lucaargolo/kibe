@@ -18,9 +18,9 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
     private fun hasPersistentState(): Boolean = !world.isClient
 
     private fun getPersistentState(): EntangledChestState? {
-        return if(!world.isClient) {
-            (world as ServerWorld).persistentStateManager.getOrCreate( { EntangledChestState(key) }, key)
-        }else null
+        return (world as? ServerWorld)?.let { serverWorld ->
+            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledChestState(key)}, key)
+        }
     }
 
     val key: String = tag.getString("key")
