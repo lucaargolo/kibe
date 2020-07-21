@@ -84,8 +84,7 @@ class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val w
         }
 
         override fun clear() {
-            return if(hasPersistentState()) getPersistentState()!!.clear(colorCode)
-            else inventory.clear()
+            inventory.clear()
         }
     }
 

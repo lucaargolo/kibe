@@ -170,8 +170,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
     }
 
     override fun clear() {
-        return if(hasPersistentState()) getPersistentState()!!.clear(getColorCode())
-        else inventory.clear()
+        inventory.clear()
     }
 
     override fun getContainerName(): Text = TranslatableText("screen.kibe.entangled_chest")
