@@ -12,6 +12,7 @@
     "MobSpawnerLogicMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
+    "ServerWorldMixin",
     "ThreadedAnvilChunkStorageMixin",
     "WitherRoseBlockMixin"
   ],

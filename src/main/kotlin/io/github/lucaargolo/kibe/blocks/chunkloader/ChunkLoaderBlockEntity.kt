@@ -14,7 +14,8 @@ class ChunkLoaderBlockEntity(block: Block): BlockEntity(getEntityType(block)), T
         if(delay >= 40) {
             world?.let { world ->
                 if(!world.isClient) {
-                    val chunkLoaderState = (world as ServerWorld).persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe:chunk_loaders") }, "kibe:chunk_loaders")
+                    //println("hello there, im ticking at ${world.registryKey}, (x: ${pos.x}, y: ${pos.y}, z: ${pos.z})")
+                    val chunkLoaderState = (world as ServerWorld).server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
                     chunkLoaderState.addPos(pos, world)
                 }
             }

@@ -90,11 +90,7 @@ fun initPacketsClient() {
 
 fun initExtras() {
     ServerStartCallback.EVENT.register(ServerStartCallback {  server ->
-        server.worlds.firstOrNull()?.let {world ->
-            @Suppress("TYPE_MISMATCH")
-            //Why is it even triggering a type mismatch here????
-            world.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe:chunk_loaders") }, "kibe:chunk_loaders")
-        }
+        server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     })
 }
 
