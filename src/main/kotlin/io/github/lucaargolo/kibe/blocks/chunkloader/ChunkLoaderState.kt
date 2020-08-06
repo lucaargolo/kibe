@@ -19,18 +19,13 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
 
     fun isItBeingChunkLoaded(world: ServerWorld, chunkPos: ChunkPos): Boolean {
         loadedChunkMap.forEach { (wrldKey, list) ->
-            list.forEach {
-                val chunk = ChunkPos(it)
+            list.forEach { pos ->
                 val chunkList = mutableListOf<ChunkPos>()
-                chunkList.add(chunkPos)
-                chunkList.add(ChunkPos(chunkPos.x+1, chunkPos.z))
-                chunkList.add(ChunkPos(chunkPos.x-1, chunkPos.z))
-                chunkList.add(ChunkPos(chunkPos.x, chunkPos.z+1))
-                chunkList.add(ChunkPos(chunkPos.x, chunkPos.z-1))
-                chunkList.add(ChunkPos(chunkPos.x+1, chunkPos.z+1))
-                chunkList.add(ChunkPos(chunkPos.x+1, chunkPos.z-1))
-                chunkList.add(ChunkPos(chunkPos.x-1, chunkPos.z+1))
-                chunkList.add(ChunkPos(chunkPos.x-1, chunkPos.z-1))
+                val blockEntity = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
+                blockEntity?.enabledChunks?.forEach {
+                    val centerChunkPos = ChunkPos(blockEntity.pos)
+                    chunkList.add(ChunkPos(centerChunkPos.x+it.first, centerChunkPos.z+it.second))
+                }
                 if(chunkList.contains(chunkPos) && world.registryKey == wrldKey)  {
                     return true
                 }
@@ -39,36 +34,37 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
         return false
     }
 
-    private fun setChunksForced(world: ServerWorld, chunkPos: ChunkPos, bool: Boolean) {
-        world.chunkManager.setChunkForced(chunkPos, bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x+1, chunkPos.z), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x-1, chunkPos.z), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x, chunkPos.z+1), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x, chunkPos.z-1), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x+1, chunkPos.z+1), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x+1, chunkPos.z-1), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x-1, chunkPos.z+1), bool)
-        world.chunkManager.setChunkForced(ChunkPos(chunkPos.x-1, chunkPos.z-1), bool)
+    private fun setChunksForced(world: ServerWorld, blockEntity: ChunkLoaderBlockEntity, bool: Boolean) {
+        val centerChunkPos = ChunkPos(blockEntity.pos)
+        blockEntity.enabledChunks.forEach {
+            world.chunkManager.setChunkForced(ChunkPos(centerChunkPos.x+it.first, centerChunkPos.z+it.second), bool)
+        }
     }
 
     fun removePos(pos: BlockPos, world: ServerWorld) {
-        if(loadedChunkMap[world.registryKey] != null && loadedChunkMap[world.registryKey]!!.contains(pos)) {
-            !loadedChunkMap[world.registryKey]!!.remove(pos)
-            setChunksForced(world, ChunkPos(pos), false)
-            markDirty()
+        val blockEntity = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
+        blockEntity?.let {
+            if (loadedChunkMap[world.registryKey] != null && loadedChunkMap[world.registryKey]!!.contains(pos)) {
+                !loadedChunkMap[world.registryKey]!!.remove(pos)
+                setChunksForced(world, blockEntity, false)
+                markDirty()
+            }
         }
     }
 
     fun addPos(pos: BlockPos, world: ServerWorld) {
-        if(loadedChunkMap[world.registryKey] == null) {
-            loadedChunkMap[world.registryKey] = mutableListOf(pos)
-            setChunksForced(world, ChunkPos(pos), true)
-            markDirty()
-        }else{
-            if(!loadedChunkMap[world.registryKey]!!.contains(pos)) {
-                !loadedChunkMap[world.registryKey]!!.add(pos)
-                setChunksForced(world, ChunkPos(pos), true)
+        val blockEntity = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
+        blockEntity?.let {
+            if(loadedChunkMap[world.registryKey] == null) {
+                loadedChunkMap[world.registryKey] = mutableListOf(pos)
+                setChunksForced(world, blockEntity, true)
                 markDirty()
+            }else{
+                if(!loadedChunkMap[world.registryKey]!!.contains(pos)) {
+                    !loadedChunkMap[world.registryKey]!!.add(pos)
+                    setChunksForced(world, blockEntity, true)
+                    markDirty()
+                }
             }
         }
     }
@@ -86,12 +82,12 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
 
     override fun fromTag(tag: CompoundTag) {
         if(loadedChunkMap.keys.size > 0) {
-            loadedChunkMap.forEach { key, pos ->
+            loadedChunkMap.forEach { (key, pos) ->
                 val world = server.getWorld(key)
-                world?.let { world ->
+                world?.let {
                     pos.forEach {
-                        val chunkPos = ChunkPos(it)
-                        setChunksForced(world, chunkPos, false)
+                        val blockEntity = world.getBlockEntity(it) as? ChunkLoaderBlockEntity
+                        blockEntity?.let { setChunksForced(world, blockEntity, false) }
                     }
                 }
 
@@ -101,7 +97,7 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
         tag.keys.forEach { key ->
             val registryKey = RegistryKey.of(Registry.DIMENSION, Identifier(key))
             val world = server.getWorld(registryKey)
-            world?.let { world ->
+            world?.let { _ ->
                 loadedChunkMap[registryKey] = mutableListOf()
                 val listTag = tag.getLongArray(key)
                 listTag.forEach {
@@ -109,8 +105,8 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
                     val blockState = world.getBlockState(blockPos)
                     if(blockState.block is ChunkLoader) {
                         loadedChunkMap[registryKey]!!.add(blockPos)
-                        val chunkPos = ChunkPos(blockPos)
-                        setChunksForced(world, chunkPos, true)
+                        val blockEntity = world.getBlockEntity(blockPos) as? ChunkLoaderBlockEntity
+                        blockEntity?.let { setChunksForced(world, blockEntity, true) }
                     }
                 }
             }

@@ -2,9 +2,12 @@ package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
-import net.minecraft.inventory.Inventory
+import net.minecraft.client.MinecraftClient
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.ItemScatterer
+import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
@@ -16,7 +19,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
     override fun createBlockEntity(world: BlockView?) = ChunkLoaderBlockEntity(this)
 
     override fun getRenderType(state: BlockState?) =  BlockRenderType.MODEL
-    
+
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block) && !world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
@@ -37,5 +40,15 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
         createCuboidShape(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
         createCuboidShape(3.0, 12.0, 3.0, 13.0, 13.0, 13.0)
     )
+
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+        if(world.isClient) {
+            val be = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
+            be?.let {
+                MinecraftClient.getInstance().openScreen(ChunkLoaderScreen(be))
+            }
+        }
+        return ActionResult.SUCCESS
+    }
     
 }
