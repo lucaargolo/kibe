@@ -95,6 +95,9 @@
   "tooltip.kibe.stored": "§9Stored: ",
   "tooltip.kibe.owner": "§9Owner: ",
   "tooltip.kibe.color": "§9Color: ",
+  "tooltip.kibe.torch_percentage": "§9Torch Percentage: ",
+  "tooltip.kibe.chunk_radius": "§9Chunk Radius: ",
+  "tooltip.kibe.suppressed_spawns": "§9Suppressed Spawns: ",
   "tooltip.kibe.chunk_at": "§9Chunk at: ",
   "tooltip.kibe.forced": "§9Forced: ",
 

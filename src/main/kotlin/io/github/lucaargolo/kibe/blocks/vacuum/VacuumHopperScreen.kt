@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import java.awt.Color
 
-class VacuumHopperScreen(container: VacuumHopperContainer, inventory: PlayerInventory, title: Text): HandledScreen<VacuumHopperContainer>(container, inventory, title) {
+class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<VacuumHopperScreenHandler>(screenHandler, inventory, title) {
 
     private val texture = Identifier("kibe:textures/gui/vacuum_hopper.png")
 
@@ -42,10 +42,6 @@ class VacuumHopperScreen(container: VacuumHopperContainer, inventory: PlayerInve
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         drawCenteredString(matrices, textRenderer, title.string,backgroundWidth/2, 6, 0xFFFFFF)
         textRenderer.draw(matrices, playerInventory.displayName, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
-    }
-
-    override fun drawMouseoverTooltip(matrices: MatrixStack?, x: Int, y: Int) {
-        super.drawMouseoverTooltip(matrices, x, y)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {

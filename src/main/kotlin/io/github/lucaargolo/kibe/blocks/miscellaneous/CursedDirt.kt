@@ -47,7 +47,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
                 player.sendMessage(LiteralText("Nothing can spawn"), false)
                 return ActionResult.SUCCESS
             } else {
-                var names = TranslatableText("chat.kibe.cursed_dirt.spawn")
+                val names = TranslatableText("chat.kibe.cursed_dirt.spawn")
                 entries.forEachIndexed { index, entry ->
                     names.append(entry.type.name)
                     if(index < entries.size-1) names.append(", ")

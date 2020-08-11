@@ -13,6 +13,7 @@
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
     "ServerWorldMixin",
+    "HostileEntityMixin",
     "ThreadedAnvilChunkStorageMixin",
     "WitherRoseBlockMixin"
   ],

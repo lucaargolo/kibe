@@ -2,11 +2,11 @@ package io.github.lucaargolo.kibe.blocks.vacuum
 
 import io.github.lucaargolo.kibe.SYNCHRONIZE_LAST_RECIPE_PACKET
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
+import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -25,8 +25,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
 
-
-class VacuumHopperContainer (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(null, syncId) {
+class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(VACUUM_HOPPER)?.handlerType, syncId) {
 
     private var player: PlayerEntity = playerInventory.player
     private var craftingInv = CraftingInventory(this, 1, 1)

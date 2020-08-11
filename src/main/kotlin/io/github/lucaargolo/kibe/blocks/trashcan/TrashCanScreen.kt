@@ -1,14 +1,13 @@
 package io.github.lucaargolo.kibe.blocks.trashcan
 
 import com.mojang.blaze3d.systems.RenderSystem
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
-class TrashCanScreen(container: TrashCanContainer, inventory: PlayerInventory, title: Text): HandledScreen<TrashCanContainer>(container, inventory, title) {
+class TrashCanScreen(screenHandler: TrashCanScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<TrashCanScreenHandler>(screenHandler, inventory, title) {
 
     private val texture = Identifier("kibe:textures/gui/trash_can.png")
 

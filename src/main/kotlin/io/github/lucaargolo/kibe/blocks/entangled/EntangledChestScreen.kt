@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.blocks.entangled
 
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
@@ -10,7 +9,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
-class EntangledChestScreen(container: EntangledChestContainer, inventory: PlayerInventory, title: Text): HandledScreen<EntangledChestContainer>(container, inventory, title) {
+class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<EntangledChestScreenHandler>(screenHandler, inventory, title) {
 
     private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
 

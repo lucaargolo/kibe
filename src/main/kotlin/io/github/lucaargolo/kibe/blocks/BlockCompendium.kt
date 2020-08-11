@@ -1,102 +1,182 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.CLIENT
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorch
+import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
+import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreen
+import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreenHandler
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoader
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.entangled.*
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
-import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanContainer
+import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
 import io.github.lucaargolo.kibe.blocks.vacuum.*
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
 import net.minecraft.block.Block
+import net.minecraft.block.BlockEntityProvider
 import net.minecraft.block.Material
 import net.minecraft.block.MaterialColor
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.render.block.entity.BlockEntityRenderer
+import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.screen.ScreenHandlerContext
+import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.sound.BlockSoundGroup
-import net.minecraft.tag.ItemTags
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
+import java.util.function.Supplier
+import kotlin.reflect.KClass
 
-val blockRegistry = mutableMapOf<Identifier, ModBlock>()
+class ContainerInfo<T: ScreenHandler>(
+    handlerClass: KClass<*>,
+    screenClass: Supplier<KClass<*>>,
+    val identifier: Identifier? = null
+){
 
-val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), ModBlock(CursedDirt()))
-val REDSTONE_TIMER =
-    if (CLIENT)
-        register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), RedstoneTimerEntityRenderer::class, null, null, null))
-    else
-        register(Identifier(MOD_ID, "redstone_timer"), ModBlockWithEntity<RedstoneTimerEntity>(RedstoneTimer(), null, null, null, null))
+    val handlerClass = handlerClass as KClass<T>
+    val screenClass = screenClass as Supplier<KClass<HandledScreen<T>>>
 
-val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), ModBlock(Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
-val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), ModBlock(Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MaterialColor.DIAMOND).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL))))
-val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt"), ModBlock(ConveyorBelt(0.125F)))
-val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ModBlock(ConveyorBelt(0.25F)))
-val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ModBlock(ConveyorBelt(0.5F)))
+    var handlerType: ScreenHandlerType<T>? = null
+    var handler: T? = null
 
-val ENTANGLED_CHEST =
-    if(CLIENT)
-        register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), EntangledChestEntityRenderer::class, EntangledChestContainer::class, EntangledChestScreen::class, EntangledChestBlockItem::class))
-    else
-        register(Identifier(MOD_ID, "entangled_chest"), ModBlockWithEntity<EntangledChestEntity>(EntangledChest(), null, EntangledChestContainer::class, null, EntangledChestBlockItem::class))
-val TRASH_CAN =
-    if(CLIENT)
-        register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), null, TrashCanContainer::class, TrashCanScreen::class, null))
-    else
-        register(Identifier(MOD_ID, "trash_can"), ModBlockWithEntity<TrashCanEntity>(TrashCan(), null, TrashCanContainer::class, null, null))
-val VACUUM_HOPPER =
-    if(CLIENT)
-        register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), VacuumHopperEntityRenderer::class, VacuumHopperContainer::class, VacuumHopperScreen::class, null))
-    else
-        register(Identifier(MOD_ID, "vacuum_hopper"), ModBlockWithEntity<VacuumHopperEntity>(VacuumHopper(), null, VacuumHopperContainer::class, null, null))
+    var title: Text = LiteralText("")
 
+    fun init(blockIdentifier: Identifier) {
+        val id = identifier ?: blockIdentifier
+        title = TranslatableText("screen.$MOD_ID.${id.path}")
+        handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
+            val pos = packetByteBuf.readBlockPos()
+            val player = playerInventory.player
+            val world = player.world
+            val be = world.getBlockEntity(pos)
+            handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, be, ScreenHandlerContext.create(world, pos)) as T
+            handler
+        }
+    }
 
-val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), ModBlock(LightSource(), false))
-val CHUNK_LOADER = register(Identifier(MOD_ID, "chunk_loader"), ModBlockWithEntity<ChunkLoaderBlockEntity>(ChunkLoader(), null, null, null, null))
+    fun initClient() {
+        ScreenRegistry.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T>  }
+    }
 
-val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), ModBlock(Elevator()))
-val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), ModBlock(Elevator()))
-val MAGENTA_ELEVATOR = register(Identifier(MOD_ID, "magenta_elevator"), ModBlock(Elevator()))
-val LIGHT_BLUE_ELEVATOR = register(Identifier(MOD_ID, "light_blue_elevator"), ModBlock(Elevator()))
-val YELLOW_ELEVATOR = register(Identifier(MOD_ID, "yellow_elevator"), ModBlock(Elevator()))
-val LIME_ELEVATOR = register(Identifier(MOD_ID, "lime_elevator"), ModBlock(Elevator()))
-val PINK_ELEVATOR = register(Identifier(MOD_ID, "pink_elevator"), ModBlock(Elevator()))
-val GRAY_ELEVATOR = register(Identifier(MOD_ID, "gray_elevator"), ModBlock(Elevator()))
-val LIGHT_GRAY_ELEVATOR = register(Identifier(MOD_ID, "light_gray_elevator"), ModBlock(Elevator()))
-val CYAN_ELEVATOR = register(Identifier(MOD_ID, "cyan_elevator"), ModBlock(Elevator()))
-val BLUE_ELEVATOR = register(Identifier(MOD_ID, "blue_elevator"), ModBlock(Elevator()))
-val PURPLE_ELEVATOR = register(Identifier(MOD_ID, "purple_elevator"), ModBlock(Elevator()))
-val GREEN_ELEVATOR = register(Identifier(MOD_ID, "green_elevator"), ModBlock(Elevator()))
-val BROWN_ELEVATOR = register(Identifier(MOD_ID, "brown_elevator"), ModBlock(Elevator()))
-val RED_ELEVATOR = register(Identifier(MOD_ID, "red_elevator"), ModBlock(Elevator()))
-val BLACK_ELEVATOR = register(Identifier(MOD_ID, "black_elevator"), ModBlock(Elevator()))
-
-private fun register(identifier: Identifier, block: ModBlock): Block {
-    blockRegistry[identifier] = block
-    return block.block
 }
 
-fun getBlockId(block: Block): Identifier? {
-    blockRegistry.forEach {
-        if(it.value.block == block) return it.key
+class BlockInfo<T: BlockEntity> (
+    val identifier: Identifier,
+    private val block: Block,
+    private val hasBlockItem: Boolean,
+    private val blockItem: KClass<BlockItem>?,
+    var entity: BlockEntityType<T>?,
+    var renderer: KClass<BlockEntityRenderer<T>>?,
+    var containers: List<ContainerInfo<*>>
+){
+
+    fun init() {
+        Registry.register(Registry.BLOCK, identifier, block)
+        if(hasBlockItem) {
+            if(blockItem != null)
+                Registry.register(Registry.ITEM, identifier, blockItem.java.constructors[0].newInstance(block, Item.Settings()) as BlockItem)
+            else
+                Registry.register(Registry.ITEM, identifier, BlockItem(block, Item.Settings()))
+        }
+        if(entity != null) Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier, entity)
+        containers.forEach { it.init(identifier) }
+    }
+
+    fun initClient() {
+        containers.forEach { it.initClient() }
+        if(renderer != null) {
+            BlockEntityRendererRegistry.INSTANCE.register(entity) { it2 ->
+                renderer!!.java.constructors[0].newInstance(it2) as BlockEntityRenderer<T>
+            }
+        }
+    }
+
+}
+
+val blockRegistry = linkedMapOf<Block, BlockInfo<*>>()
+
+fun getBlockId(block: Block) = blockRegistry[block]?.identifier
+fun getEntityType(block: Block) = blockRegistry[block]?.entity
+fun getContainerInfo(block: Block) = blockRegistry[block]?.containers?.get(0)
+fun getContainerInfo(block: Block, identifier: Identifier): ContainerInfo<*>? {
+    blockRegistry[block]?.containers?.forEach {
+        if(it.identifier == identifier)
+            return it
     }
     return null
 }
 
-fun getEntityType(block: Block): BlockEntityType<out BlockEntity>? {
-    blockRegistry.forEach {
-        if(it.value.block == block) return (it.value as ModBlockWithEntity<*>).entity
-    }
-    return null
+fun register(identifier: Identifier, block: Block, hasModBlock: Boolean = true): Block {
+    val info = BlockInfo<BlockEntity>(identifier, block, hasModBlock, null, null, null, listOf())
+    blockRegistry[block] = info
+    return block
 }
+
+fun <T: BlockEntity> registerWithEntity(identifier: Identifier, block: Block, hasModBlock: Boolean = true, blockItem: KClass<*>? = null, renderer: Supplier<KClass<*>>? = null, containers: List<ContainerInfo<*>> = listOf()): Block {
+    val bli = blockItem as? KClass<BlockItem>
+    val ent = (block as? BlockEntityProvider)?.let { BlockEntityType.Builder.create(Supplier { it.createBlockEntity(null) }, block).build(null) as BlockEntityType<T> }
+    val rnd = if(CLIENT) renderer?.let { it.get() as KClass<BlockEntityRenderer<T>> } else null
+    val info = BlockInfo(identifier, block, hasModBlock, bli, ent, rnd, containers)
+    blockRegistry[block] = info
+    return block
+}
+
+val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), CursedDirt())
+val REDSTONE_TIMER = registerWithEntity<RedstoneTimerEntity>(Identifier(MOD_ID, "redstone_timer"), RedstoneTimer(), renderer = Supplier { RedstoneTimerEntityRenderer::class })
+
+val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
+val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MaterialColor.DIAMOND).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
+val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt"), ConveyorBelt(0.125F))
+val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ConveyorBelt(0.25F))
+val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ConveyorBelt(0.5F))
+
+val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = Supplier { EntangledChestEntityRenderer::class }, blockItem = EntangledChestBlockItem::class, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, Supplier { EntangledChestScreen::class })))
+val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(TrashCanScreenHandler::class, Supplier {  TrashCanScreen::class })))
+val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = Supplier { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, Supplier {  VacuumHopperScreen::class })))
+val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, Supplier { BigTorchScreen::class })))
+
+
+val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
+val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())
+
+val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), Elevator())
+val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), Elevator())
+val MAGENTA_ELEVATOR = register(Identifier(MOD_ID, "magenta_elevator"), Elevator())
+val LIGHT_BLUE_ELEVATOR = register(Identifier(MOD_ID, "light_blue_elevator"), Elevator())
+val YELLOW_ELEVATOR = register(Identifier(MOD_ID, "yellow_elevator"), Elevator())
+val LIME_ELEVATOR = register(Identifier(MOD_ID, "lime_elevator"), Elevator())
+val PINK_ELEVATOR = register(Identifier(MOD_ID, "pink_elevator"), Elevator())
+val GRAY_ELEVATOR = register(Identifier(MOD_ID, "gray_elevator"), Elevator())
+val LIGHT_GRAY_ELEVATOR = register(Identifier(MOD_ID, "light_gray_elevator"), Elevator())
+val CYAN_ELEVATOR = register(Identifier(MOD_ID, "cyan_elevator"), Elevator())
+val BLUE_ELEVATOR = register(Identifier(MOD_ID, "blue_elevator"), Elevator())
+val PURPLE_ELEVATOR = register(Identifier(MOD_ID, "purple_elevator"), Elevator())
+val GREEN_ELEVATOR = register(Identifier(MOD_ID, "green_elevator"), Elevator())
+val BROWN_ELEVATOR = register(Identifier(MOD_ID, "brown_elevator"), Elevator())
+val RED_ELEVATOR = register(Identifier(MOD_ID, "red_elevator"), Elevator())
+val BLACK_ELEVATOR = register(Identifier(MOD_ID, "black_elevator"), Elevator())
+
 
 fun initBlocks() {
-    blockRegistry.forEach{ it.value.init(it.key) }
+    blockRegistry.forEach{ it.value.init() }
 }
 
 fun initBlocksClient() {
-    blockRegistry.forEach{ it.value.initClient(it.key) }
+    blockRegistry.forEach{ it.value.initClient() }
 }

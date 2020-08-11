@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.entangled
 import io.github.lucaargolo.kibe.blocks.getBlockId
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
+import io.github.lucaargolo.kibe.utils.ModHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
@@ -94,9 +95,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
             }
         }
         return if(world.getBlockState(pos.up()).isAir) {
-            if (!world.isClient) {
-                ContainerProviderRegistry.INSTANCE.openContainer(getBlockId(this), player as ServerPlayerEntity?) { buf -> buf.writeBlockPos(pos) }
-            }
+            player.openHandledScreen(ModHandlerFactory(this, pos))
             ActionResult.SUCCESS
         }else{
             ActionResult.FAIL

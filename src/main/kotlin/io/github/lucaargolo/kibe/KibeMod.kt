@@ -2,7 +2,9 @@
 
 package io.github.lucaargolo.kibe
 
+import io.github.lucaargolo.kibe.blocks.BIG_TORCH
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
+import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.initBlocks
@@ -15,7 +17,6 @@ import io.github.lucaargolo.kibe.fluids.initFluidsClient
 import io.github.lucaargolo.kibe.items.CURSED_DROPLETS
 import io.github.lucaargolo.kibe.items.initItems
 import io.github.lucaargolo.kibe.items.initItemsClient
-import io.github.lucaargolo.kibe.items.miscellaneous.Lasso
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -33,10 +34,10 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.network.PacketContext
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.fabricmc.loader.launch.common.FabricLauncherBase
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
-import net.minecraft.entity.EntityType
 import net.minecraft.loot.ConstantLootTableRange
 import net.minecraft.loot.UniformLootTableRange
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
@@ -44,25 +45,22 @@ import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.LootingEnchantLootFunction
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.TranslatableText
-import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.math.Direction
-import org.lwjgl.glfw.GLFW
+import net.minecraft.world.World
+import net.minecraft.world.WorldAccess
 import java.util.*
 import java.util.function.Consumer
+import kotlin.collections.LinkedHashMap
 
 const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
+val BIG_TORCH_MAP: LinkedHashMap<WorldAccess?, MutableList<BigTorchBlockEntity>> = linkedMapOf()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
@@ -148,6 +146,7 @@ fun initExtrasClient() {
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_diamond_core"), "inventory"))
     }
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
+    BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutout())
 }
 
 fun initLootTables() {
