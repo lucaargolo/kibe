@@ -29,7 +29,7 @@ public class HostileEntityMixin {
                 ChunkPos torchChunk = new ChunkPos(bigTorchBlockEntity.getPos());
                 ChunkPos spawnChunk = new ChunkPos(pos);
                 int chunkDistance = MathHelper.ceil(MathHelper.sqrt(Math.pow(torchChunk.x - spawnChunk.x, 2) + Math.pow(torchChunk.z - spawnChunk.z, 2)));
-                if(chunkDistance < radius) {
+                if(chunkDistance <= radius) {
 //                    bigTorchBlockEntity.setSuppressedSpawns(bigTorchBlockEntity.getSuppressedSpawns()+1);
 //                    bigTorchBlockEntity.markDirty();
 //                    bigTorchBlockEntity.sync();

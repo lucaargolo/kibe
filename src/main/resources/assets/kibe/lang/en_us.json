@@ -25,6 +25,7 @@
   "block.kibe.red_elevator": "Red Elevator",
   "block.kibe.black_elevator": "Black Elevator",
 
+  "block.kibe.big_torch": "Big Torch",
   "block.kibe.chunk_loader": "Chunk Loader",
 
   "block.kibe.entangled_chest": "Entangled Chest",
@@ -73,6 +74,9 @@
   "item.kibe.red_rune": "Red Rune",
   "item.kibe.black_rune": "Black Rune",
 
+  "item.kibe.wooden_bucket": "Wooden Bucket",
+  "item.kibe.water_wooden_bucket": "Water Wooden Bucket",
+  "item.kibe.void_bucket": "Void Bucket",
   "item.kibe.liquid_xp_bucket": "Liquid Xp Bucket",
 
   "item.kibe.magnet": "Magnet",
@@ -122,8 +126,10 @@
   "tooltip.kibe.lore.iron_spikes": "§5§oEntities drops regular items",
   "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
 
+  "tooltip.kibe.lore.big_torch": "§5§oFill with torches to keep chunks mob-free",
   "tooltip.kibe.lore.chunk_loader": "§5§oLet you keep a 5x5 chunk area loaded.",
 
+  "screen.kibe.big_torch": "Big Torch",
   "screen.kibe.chunk_loader": "Chunk Loader",
   "screen.kibe.trash_can": "Trash Can",
   "screen.kibe.vacuum_hopper": "Vacuum Hopper",

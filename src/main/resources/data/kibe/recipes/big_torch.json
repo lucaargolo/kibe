@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "O",
+    "O"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:coal_block"
+    },
+    "O": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "result": {
+    "item": "kibe:big_torch",
+    "count": 1
+  }
+}

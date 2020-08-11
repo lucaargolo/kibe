@@ -20,6 +20,8 @@ fun initTooltip() {
 
     registerTooltip(IRON_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
+
+    registerTooltip(BIG_TORCH)
     registerTooltip(CHUNK_LOADER)
 
     registerTooltip(KIBE)

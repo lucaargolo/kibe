@@ -3,7 +3,9 @@
   "package": "io.github.lucaargolo.kibe.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BucketItemMixin",
     "CraftingTableContainerMixin",
+    "EndermanEntityMixin",
     "EntityMixin",
     "ExperienceOrbEntityMixin",
     "HostileEntityMixin",
@@ -15,8 +17,7 @@
     "PlayerInventoryMixin",
     "ServerWorldMixin",
     "ThreadedAnvilChunkStorageMixin",
-    "WitherRoseBlockMixin",
-    "BucketItemMixin"
+    "WitherRoseBlockMixin"
   ],
   "client": [
     "ItemMixin",
