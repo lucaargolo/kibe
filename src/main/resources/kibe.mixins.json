@@ -6,6 +6,7 @@
     "CraftingTableContainerMixin",
     "EntityMixin",
     "ExperienceOrbEntityMixin",
+    "HostileEntityMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
@@ -13,9 +14,9 @@
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
     "ServerWorldMixin",
-    "HostileEntityMixin",
     "ThreadedAnvilChunkStorageMixin",
-    "WitherRoseBlockMixin"
+    "WitherRoseBlockMixin",
+    "BucketItemMixin"
   ],
   "client": [
     "ItemMixin",
