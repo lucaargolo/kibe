@@ -1,5 +1,10 @@
 {
   "variants": {
-    "": { "model": "kibe:block/iron_spikes" }
+    "facing=up": { "model": "kibe:block/iron_spikes" },
+    "facing=down": { "model": "kibe:block/iron_spikes", "x": 180 },
+    "facing=north": { "model": "kibe:block/iron_spikes", "x": 90 },
+    "facing=south": { "model": "kibe:block/iron_spikes", "x": 270 },
+    "facing=east": { "model": "kibe:block/iron_spikes", "x": 90, "y": 90 },
+    "facing=west": { "model": "kibe:block/iron_spikes", "x": 270, "y": 90 }
   }
 }
