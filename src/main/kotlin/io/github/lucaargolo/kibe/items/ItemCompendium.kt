@@ -66,6 +66,8 @@ val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"),  ModItem(SlimeSlin
 val WOODEN_BUCKET = register(Identifier(MOD_ID, "wooden_bucket"), ModItem(WoodenBucket.Empty(Settings().maxCount(16))))
 val WATER_WOODEN_BUCKET = register(Identifier(MOD_ID, "water_wooden_bucket"), ModItem(WoodenBucket.Water(Settings().maxCount(1))))
 
+val VOID_BUCKET = register(Identifier(MOD_ID, "void_bucket"), ModItem(VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE))))
+
 val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"),  ModItem(PocketCraftingTable(Settings().maxCount(1))))
 val POCKET_TRASH_CAN =
     if(CLIENT)

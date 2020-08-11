@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
+import io.github.lucaargolo.kibe.items.miscellaneous.VoidBucket;
 import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucket;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
@@ -13,12 +14,17 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BucketItem.class)
 public class BucketItemMixin {
 
+    @SuppressWarnings("ConstantConditions")
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/Fluid;getBucketItem()Lnet/minecraft/item/Item;"), method = "use")
     public Item getBucketItem(Fluid fluid) {
         Item oldBucket = fluid.getBucketItem();
-        if(((Object) this) instanceof WoodenBucket) {
+        Object current = this;
+        if(current instanceof WoodenBucket) {
             if(oldBucket == Items.BUCKET) return ItemCompendiumKt.getWOODEN_BUCKET();
             if(oldBucket == Items.WATER_BUCKET) return ItemCompendiumKt.getWATER_WOODEN_BUCKET();
+        }
+        if(current instanceof VoidBucket) {
+            return ItemCompendiumKt.getVOID_BUCKET();
         }
         return oldBucket;
     }

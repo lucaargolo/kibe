@@ -3,7 +3,6 @@ package io.github.lucaargolo.kibe.blocks.bigtorch
 import io.github.lucaargolo.kibe.utils.ModHandlerFactory
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
@@ -16,17 +15,14 @@ import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.MathHelper
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 import kotlin.math.cos
-import kotlin.math.pow
 import kotlin.math.sin
-import kotlin.math.sqrt
 
-class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).noCollision().strength(0.5f).lightLevel{15}.sounds(BlockSoundGroup.WOOD)) {
+class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).lightLevel{15}.sounds(BlockSoundGroup.WOOD)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_8)
@@ -66,7 +62,11 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).noCollision().st
     }
 
     override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape {
-        return createCuboidShape(7.0, 0.0, 7.0, 9.0, 10.0, 9.0)
+        return createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
+    }
+
+    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape {
+        return createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL

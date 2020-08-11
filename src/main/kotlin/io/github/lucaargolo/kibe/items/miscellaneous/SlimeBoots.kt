@@ -14,6 +14,6 @@ class SlimeBoots(settings: Settings) : ArmorItem(object : ArmorMaterial {
     override fun getEquipSound() = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC
     override fun getName() = "slime"
     override fun getDurability(slot: EquipmentSlot) = 128
-    override fun getEnchantability() = 0
+    override fun getEnchantability() = 9
     override fun getProtectionAmount(slot: EquipmentSlot?) = 2
 }, EquipmentSlot.FEET, settings)

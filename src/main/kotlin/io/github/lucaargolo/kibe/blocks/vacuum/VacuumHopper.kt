@@ -1,12 +1,11 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
-import io.github.lucaargolo.kibe.blocks.getBlockId
+import io.github.lucaargolo.kibe.utils.ModHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.particle.ParticleTypes
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
@@ -22,12 +21,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Mater
     override fun createBlockEntity(view: BlockView?) = VacuumHopperEntity(this)
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        if (!world.isClient) {
-            ContainerProviderRegistry.INSTANCE.openContainer(
-                getBlockId(this),
-                player as ServerPlayerEntity?
-            ) { buf -> buf.writeBlockPos(pos) }
-        }
+        player.openHandledScreen(ModHandlerFactory(this, pos))
         return ActionResult.SUCCESS
     }
 
@@ -36,14 +30,32 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Mater
             val blockEntity = world.getBlockEntity(pos)
             if (blockEntity is Inventory) {
                 ItemScatterer.spawn(world, pos, blockEntity as Inventory?)
-                //world.updateComparators(pos, this)
             }
             super.onStateReplaced(state, world, pos, newState, notify)
         }
     }
 
-    override fun randomDisplayTick(state: BlockState?, world: World?, pos: BlockPos?, random: Random?) {
-        (Blocks.NETHER_PORTAL as NetherPortalBlock).randomDisplayTick(state, world, pos, random)
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
+        repeat(4) {
+            var x = pos.x.toDouble() + random.nextDouble()
+            val y = pos.y.toDouble() + random.nextDouble()
+            var z = pos.z.toDouble() + random.nextDouble()
+
+            var velocityX = (random.nextFloat().toDouble() - 0.5) * 0.5
+            val velocityY = (random.nextFloat().toDouble() - 0.5) * 0.5
+            var velocityZ = (random.nextFloat().toDouble() - 0.5) * 0.5
+
+            val k = random.nextInt(2) * 2 - 1
+            if (!world.getBlockState(pos.west()).isOf(this) && !world.getBlockState(pos.east()).isOf(this)) {
+                x = pos.x.toDouble() + 0.5 + 0.25 * k.toDouble()
+                velocityX = (random.nextFloat() * 2.0f * k.toFloat()).toDouble()
+            } else {
+                z = pos.z.toDouble() + 0.5 + 0.25 * k.toDouble()
+                velocityZ = (random.nextFloat() * 2.0f * k.toFloat()).toDouble()
+            }
+
+            world.addParticle(ParticleTypes.PORTAL, x, y, z, velocityX, velocityY, velocityZ)
+        }
     }
 
     override fun isTranslucent(state: BlockState?, view: BlockView?, pos: BlockPos?): Boolean {
