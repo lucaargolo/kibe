@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 @SuppressWarnings({"SuspiciousMethodCalls"})
 @Mixin(PlayerEntity.class)
@@ -46,7 +45,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Inject(at = @At("TAIL"), method = "eatFood")
     public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
         if(stack.getItem().equals(ItemCompendiumKt.getCURSED_KIBE()) && !world.isClient) {
-            Random r = new Random();
             int x = random.nextInt(64);
             if(x == 0) kill();
         }

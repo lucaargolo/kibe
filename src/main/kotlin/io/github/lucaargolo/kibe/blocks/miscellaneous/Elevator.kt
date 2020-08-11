@@ -11,7 +11,7 @@ class Elevator: Block(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE
 
     companion object {
         fun isElevatorValid(world: World, pos: BlockPos): Boolean {
-            return (world.getBlockState(pos.up()).isAir && world.getBlockState(pos.up().up()).isAir)
+            return (world.getBlockState(pos.up()).getCollisionShape(world, pos.up()).isEmpty && world.getBlockState(pos.up().up()).getCollisionShape(world, pos.up().up()).isEmpty)
         }
     }
 
