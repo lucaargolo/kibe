@@ -45,7 +45,7 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
         inventory.forEach { torchQuantity += it.count }
         torchPercentage = (torchQuantity/(inventory.size*64.0))
         chunkRadius = min(sqrt(torchQuantity/9).toInt(), 8)
-        if(world?.getBlockState(pos) == BIG_TORCH)
+        if(world?.getBlockState(pos)?.block == BIG_TORCH)
             world?.setBlockState(pos, cachedState.with(Properties.LEVEL_8, chunkRadius))
     }
 

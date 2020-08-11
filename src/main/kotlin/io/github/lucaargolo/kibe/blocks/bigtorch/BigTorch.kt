@@ -42,7 +42,6 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).noCollision().st
 
     override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
         (0..state[Properties.LEVEL_8]).forEach { radius ->
-            if(radius == 0) return@forEach
             (1..radius*9).forEach {
                 val x = (cos(it * 180/(radius*9) * Math.PI / 90))
                 val z = (sin(it * 180/(radius*9) * Math.PI / 90))

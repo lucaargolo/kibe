@@ -6,6 +6,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +20,7 @@ import java.util.Random;
 public class HostileEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "isSpawnDark", cancellable = true)
-    private static void isSpawnDark(WorldAccess world, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> info) {
+    private static void isSpawnDark(ServerWorldAccess world, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> info) {
         LinkedHashMap<WorldAccess, List<BigTorchBlockEntity>> bigTorchMap = KibeModKt.getBIG_TORCH_MAP();
         List<BigTorchBlockEntity> list = bigTorchMap.get(world);
         if(list != null) {

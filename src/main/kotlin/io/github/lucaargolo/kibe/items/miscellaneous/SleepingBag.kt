@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import com.mojang.datafixers.util.Either
+import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.HostileEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -61,7 +62,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         }
         if (!player.isCreative) {
             val vec3d = player.pos
-            val list = player.world.getEntities(
+            val list = player.world.getEntitiesByClass(
                 HostileEntity::class.java,
                 Box(
                     vec3d.getX() - 8.0,
