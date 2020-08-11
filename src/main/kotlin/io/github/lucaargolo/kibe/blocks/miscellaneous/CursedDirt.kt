@@ -89,21 +89,20 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         val entityList = world.getEntitiesByType<Entity>(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
         if (entityList.size > 25) return
 
-        //Yay, you've passed all the required conditions, now you only need to decide what mob to spawn and do it
         val mob = getSpawnableMonster(world, pos.up(), random)
         if (mob != null) {
             val location = if(world.getFluidState(pos.up()).fluid is EmptyFluid) SpawnRestriction.Location.ON_GROUND else SpawnRestriction.Location.IN_WATER
-            if(SpawnHelper.canSpawn(location, world, pos.add(0.0, 1.0, 0.0), mob)) {
+            if(SpawnHelper.canSpawn(location, world, pos.up(), mob)) {
                 val tag = getSpawnTag()
                 tag.putString("id", Registry.ENTITY_TYPE.getId(mob).toString())
                 val entity = EntityType.loadEntityWithPassengers(tag, world) {
-                    it.refreshPositionAndAngles(pos.x+.0, pos.y+1.0, pos.z+.0, it.yaw, it.pitch)
+                    it.refreshPositionAndAngles(pos.x+.5, pos.y+1.0, pos.z+.5, it.yaw, it.pitch)
+                    if(it.isInsideWall) null else
                     if (!world.tryLoadEntity(it)) null else it
                 }
                 if(entity is MobEntity) {
                     entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnReason.NATURAL, null, null)
                 }
-                //mob.spawn(world, tag, null, null, pos.add(0.0, 1.0, 0.0), SpawnType.NATURAL, false, false)
             }
         }
     }
