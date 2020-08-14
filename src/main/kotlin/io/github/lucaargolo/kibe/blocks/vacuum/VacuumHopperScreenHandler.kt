@@ -24,6 +24,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
+import kotlin.math.min
 
 class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(VACUUM_HOPPER)?.handlerType, syncId) {
 
@@ -119,7 +120,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
 
     override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
         if(actionType == SlotActionType.QUICK_MOVE && slotId == 0 && slots[0].hasStack()) {
-            var maxCraftSize = entity.liquidXp/lastRecipe!!.xpInput
+            var maxCraftSize = min(slots[1].stack.count, entity.liquidXp/lastRecipe!!.xpInput)
             val maxStackSize = lastRecipe!!.output.maxCount
             if(entity.removeLiquid(maxCraftSize*lastRecipe!!.xpInput)) {
                 slots[1].stack.decrement(maxCraftSize)

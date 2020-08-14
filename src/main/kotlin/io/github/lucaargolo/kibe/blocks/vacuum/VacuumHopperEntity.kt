@@ -9,11 +9,10 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
+import kotlin.math.min
 
 class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), BlockEntityClientSerializable {
 
@@ -22,13 +21,9 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
         private set
 
     fun addLiquid(qnt: Int): Boolean {
-        return if(liquidXp + qnt <= 16000) {
-            liquidXp += qnt
-            markDirty()
-            true
-        }else{
-            false
-        }
+        liquidXp = min(liquidXp+qnt, 16000)
+        markDirty()
+        return true
     }
 
     fun removeLiquid(qnt: Int): Boolean {
@@ -36,9 +31,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
             liquidXp -= qnt
             markDirty()
             true
-        }else{
-            false
-        }
+        }else false
     }
 
     override fun toTag(tag: CompoundTag): CompoundTag {
