@@ -1,0 +1,43 @@
+{
+	"parent": "builtin/generated",
+	"textures": {
+		"layer0": "kibe:item/glider_fabric",
+		"particle": "kibe:item/glider_fabric"
+	},
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [-112.5, 0, -180],
+			"translation": [-6, -9, 7],
+			"scale": [4, 4, 1]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [-112.5, 0, -180],
+			"translation": [-6, -9, 7],
+			"scale": [4, 4, 1]
+		},
+		"firstperson_righthand": {
+			"rotation": [90, 0, -180],
+			"translation": [-9, 12, 16],
+			"scale": [4, 4, 1]
+		},
+		"firstperson_lefthand": {
+			"rotation": [90, 0, -180],
+			"translation": [-9, 12, 16],
+			"scale": [4, 4, 1]
+		},
+		"ground": {
+			"rotation": [90, 0, 90],
+			"scale": [1, 1, 0.25]
+		},
+		"head": {
+			"rotation": [90, 0, -180],
+			"translation": [0, 7.25, -3.25],
+			"scale": [4, 4, 1]
+		},
+		"fixed": {
+			"translation": [0, 0, -0.5],
+			"scale": [1, 1, 0.25]
+		}
+	}
+}

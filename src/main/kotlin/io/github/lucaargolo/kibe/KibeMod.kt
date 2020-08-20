@@ -140,6 +140,10 @@ fun initExtrasClient() {
         }
     })
     ModelLoadingRegistry.INSTANCE.registerAppender { _: ResourceManager?, out: Consumer<ModelIdentifier?> ->
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_fabric"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_inactive"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_background"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_ring"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_gold_core"), "inventory"))

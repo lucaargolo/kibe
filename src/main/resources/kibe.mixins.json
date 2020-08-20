@@ -20,6 +20,9 @@
     "WitherRoseBlockMixin"
   ],
   "client": [
+    "PlayerEntityRendererMixin",
+    "BipedEntityModelMixin",
+    "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin"
   ],

@@ -4,7 +4,9 @@ import io.github.ladysnake.pal.PlayerAbility;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.ModItem;
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing;
+import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
+import io.github.lucaargolo.kibe.utils.GliderHelper;
 import io.github.lucaargolo.kibe.utils.RingAbilitiesKt;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import net.minecraft.entity.Entity;
@@ -35,13 +37,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(type, world);
     }
 
-//    @Inject(at = @At("HEAD"), method = "setPlayerSpawn", cancellable = true)
-//    private void setPlayerSpawn(CallbackInfo info) {
-//        if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
-//            info.cancel();
-//        }
-//    }
-
     @Inject(at = @At("TAIL"), method = "eatFood")
     public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
         if(stack.getItem().equals(ItemCompendiumKt.getCURSED_KIBE()) && !world.isClient) {
@@ -64,6 +59,38 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     private void tick(CallbackInfo info) {
         @SuppressWarnings("ConstantConditions")
         PlayerEntity player = (PlayerEntity) ((Object) this);
+        //Glider logic
+        if(!isOnGround() && !isTouchingWater() && !isFallFlying() && getVelocity().y < 0.0) {
+            ItemStack mainHandStack = player.getMainHandStack();
+            ItemStack offHandStack = player.getOffHandStack();
+            boolean isGliding = (mainHandStack.getItem() instanceof Glider && Glider.Companion.isEnabled(mainHandStack)) || (offHandStack.getItem() instanceof Glider && Glider.Companion.isEnabled(offHandStack));
+            if(isGliding) {
+                GliderHelper.INSTANCE.setPlayerGliding(player, true);
+
+                float hSpeed = 0.05f;
+                float vSpeed = 0.5f;
+
+                if(isSneaking()) {
+                    hSpeed *= 2.5;
+                    vSpeed *= 1.5;
+                }
+
+                Vec3d v = getVelocity();
+                player.setVelocity(v.x, v.y*vSpeed, v.z);
+                v = getVelocity();
+
+                double x = Math.cos(Math.toRadians(player.headYaw + 90)) * hSpeed;
+                double z = Math.sin(Math.toRadians(player.headYaw + 90)) * hSpeed;
+                player.setVelocity(v.x+x, v.y, v.z+z);
+
+                fallDistance = 0f;
+                velocityDirty = true;
+            }else{
+                GliderHelper.INSTANCE.setPlayerGliding(player, false);
+            }
+        }else{
+            GliderHelper.INSTANCE.setPlayerGliding(player, false);
+        }
         //Ring Logic
         if(!world.isClient) {
             for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
@@ -74,7 +101,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 }
             }
 
-            List<ItemStack> enabledRings = new ArrayList();
+            List<ItemStack> enabledRings = new ArrayList<>();
 
             for(ModItem mdi : ItemCompendiumKt.getItemRegistry().values()) {
                 if(mdi.getItem() instanceof AbilityRing) {

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.blocks.miscellaneous.Elevator;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
+import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import net.minecraft.block.Block;
@@ -11,8 +12,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,8 +30,18 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public abstract BlockState getBlockState();
 
+    @Shadow public abstract ItemStack getStackInHand(Hand hand);
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(at = @At("HEAD"), method = "swingHand(Lnet/minecraft/util/Hand;)V", cancellable = true)
+    private void swingHand(Hand hand, CallbackInfo info) {
+        ItemStack stack = this.getStackInHand(hand);
+        if(stack.getItem() instanceof Glider && Glider.Companion.isEnabled(stack)) {
+            info.cancel();
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "isSleepingInBed", cancellable = true)

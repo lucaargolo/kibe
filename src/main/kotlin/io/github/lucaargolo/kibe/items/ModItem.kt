@@ -33,6 +33,11 @@ open class ModItem(item: Item) {
     constructor(): this(Item(Item.Settings()))
 
     @Suppress("UNCHECKED_CAST")
+    constructor(item: Item, bakedModel: BakedModel) : this(item) {
+        this.bakedModel = bakedModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
     constructor(item: Item, container: KClass<*>) : this(item) {
         this.container = container as KClass<ScreenHandler>
     }
