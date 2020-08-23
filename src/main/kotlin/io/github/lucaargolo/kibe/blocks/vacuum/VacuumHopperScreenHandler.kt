@@ -87,7 +87,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             override fun canInsert(itemStack_1: ItemStack?) = false
 
             override fun onTakeItem(playerEntity: PlayerEntity, itemStack: ItemStack): ItemStack? {
-                return if(entity.removeLiquid(lastRecipe!!.xpInput)) {
+                return if(entity.removeLiquidXp(lastRecipe!!.xpInput)) {
                     slots[1].stack.decrement(1)
                     entity.markDirty()
                     super.onTakeItem(playerEntity, itemStack)
@@ -120,9 +120,9 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
 
     override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
         if(actionType == SlotActionType.QUICK_MOVE && slotId == 0 && slots[0].hasStack()) {
-            var maxCraftSize = min(slots[1].stack.count, entity.liquidXp/lastRecipe!!.xpInput)
+            var maxCraftSize = min(slots[1].stack.count, entity.tanks.first().volume.amount().asInt(1000)/lastRecipe!!.xpInput)
             val maxStackSize = lastRecipe!!.output.maxCount
-            if(entity.removeLiquid(maxCraftSize*lastRecipe!!.xpInput)) {
+            if(entity.removeLiquidXp(maxCraftSize*lastRecipe!!.xpInput)) {
                 slots[1].stack.decrement(maxCraftSize)
                 val craftResult = lastRecipe!!.output.item
                 if(maxCraftSize > maxStackSize) {
@@ -149,7 +149,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             val optional: Optional<VacuumHopperRecipe> = world.server!!.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, craftingInventory, world)
             if (optional.isPresent) {
                 val craftingRecipe = optional.get()
-                if (resultInventory.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe) && entity.liquidXp >= craftingRecipe.xpInput) {
+                if (resultInventory.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe) && entity.tanks.first().volume.amount().asInt(1000) >= craftingRecipe.xpInput) {
                     itemStack = craftingRecipe.craft(craftingInventory)
                     lastRecipe = craftingRecipe
                     val passedData = PacketByteBuf(Unpooled.buffer())

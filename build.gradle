@@ -12,7 +12,14 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven { url = "http://maven.fabricmc.net/" }
+    maven {
+        name = "Fabric"
+        url = "http://maven.fabricmc.net/"
+    }
+    maven {
+        name = "BuildCraft"
+        url = "https://mod-buildcraft.com/maven"
+    }
     maven {
         name = "Ladysnake Libs"
         url = 'https://dl.bintray.com/ladysnake/libs'
@@ -31,6 +38,13 @@ dependencies {
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
 
+    modImplementation("alexiil.mc.lib:libblockattributes-core:${project.lba_version}")
+    include("alexiil.mc.lib:libblockattributes-core:${project.lba_version}")
+
+    modImplementation("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
+    include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
+
+    modImplementation "alexiil.mc.mod:simplepipes-all:0.4.0-pre.21"
     modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 }

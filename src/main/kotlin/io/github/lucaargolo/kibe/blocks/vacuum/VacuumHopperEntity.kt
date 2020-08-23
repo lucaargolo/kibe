@@ -1,6 +1,17 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
+import alexiil.mc.lib.attributes.ListenerRemovalToken
+import alexiil.mc.lib.attributes.ListenerToken
+import alexiil.mc.lib.attributes.Simulation
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv
+import alexiil.mc.lib.attributes.fluid.FluidInvTankChangeListener
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.fluids.FluidKeys
+import io.github.lucaargolo.kibe.fluids.LIQUID_XP
+import io.github.lucaargolo.kibe.utils.FluidTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.LockableContainerBlockEntity
@@ -12,50 +23,89 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
-import kotlin.math.min
 
-class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), BlockEntityClientSerializable {
+class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), FixedFluidInv, BlockEntityClientSerializable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
-    var liquidXp: Int = 0
-        private set
 
-    fun addLiquid(qnt: Int): Boolean {
-        liquidXp = min(liquidXp+qnt, 16000)
+    val tanks = listOf(FluidTank(FluidAmount(16)))
+
+    override fun getTankCount() = tanks.size
+
+    override fun isFluidValidForTank(tank: Int, fluidKey: FluidKey?) = tanks[tank].volume.fluidKey == fluidKey || (tanks[tank].volume.fluidKey.isEmpty && fluidKey == LIQUID_XP)
+
+    override fun getMaxAmount_F(tank: Int) = tanks[tank].capacity
+
+    override fun getInvFluid(tank: Int) = tanks[tank].volume
+
+    override fun setInvFluid(tank: Int, to: FluidVolume, simulation: Simulation?): Boolean {
+        return if (isFluidValidForTank(tank, to.fluidKey)) {
+            if (simulation?.isAction == true)
+                tanks[tank].volume = to
+            markDirty()
+            true
+        } else false
+    }
+
+    override fun addListener(p0: FluidInvTankChangeListener?, p1: ListenerRemovalToken?) = ListenerToken {}
+
+    fun addLiquidXp(qnt: Int): Boolean {
+        val currentAmount = tanks[0].volume.amount()
+        val newAmount = FluidAmount.of(currentAmount.asLong(1000) + qnt, 1000)
+        if (newAmount > tanks[0].capacity)
+            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(tanks[0].capacity)
+        else
+            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(newAmount)
         markDirty()
         return true
     }
 
-    fun removeLiquid(qnt: Int): Boolean {
-        return if(liquidXp - qnt >= 0) {
-            liquidXp -= qnt
+    fun removeLiquidXp(qnt: Int): Boolean {
+        val currentAmount = tanks[0].volume.amount()
+        val removeAmount = FluidAmount.of(1000, qnt.toLong())
+        return if(currentAmount >= removeAmount) {
+            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(FluidAmount.of(currentAmount.asLong(1000) - qnt, 1000))
             markDirty()
             true
         }else false
     }
 
+    override fun markDirty() {
+        super.markDirty()
+        if(world?.isClient == false) sync()
+    }
+
     override fun toTag(tag: CompoundTag): CompoundTag {
-        tag.putInt("fluid", liquidXp)
+        val tanksTag = CompoundTag()
+        tanks.forEachIndexed { index, tank ->
+            val tankTag = CompoundTag()
+            tankTag.put("fluids", tank.volume.toTag())
+            tanksTag.put(index.toString(), tankTag)
+        }
+        tag.put("tanks", tanksTag)
         Inventories.toTag(tag, inventory)
         return super.toTag(tag)
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
-        tag.putInt("fluid", liquidXp)
-        Inventories.toTag(tag, inventory)
-        return tag
-    }
+    override fun toClientTag(tag: CompoundTag) = toTag(tag)
 
     override fun fromTag(state: BlockState, tag: CompoundTag) {
         super.fromTag(state, tag)
-        liquidXp = tag.getInt("fluid")
+        val tanksTag = tag.getCompound("tanks")
+        tanksTag.keys.forEachIndexed { idx, key ->
+            val tankTag = tanksTag.getCompound(key)
+            val volume = FluidVolume.fromTag(tankTag.getCompound("fluids"))
+            tanks[idx].volume = volume
+        }
+        //Backwards compatibility
+        if(tag.contains("fluid")) {
+            val liquidXp = tag.getInt("fluid")
+            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(FluidAmount.of(liquidXp.toLong(), 1000))
+        }
         Inventories.fromTag(tag, inventory)
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
-        liquidXp = tag.getInt("fluid")
-        Inventories.fromTag(tag, inventory)
-    }
+    override fun fromClientTag(tag: CompoundTag) = fromTag(vacuumHopper.defaultState, tag)
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack
@@ -126,5 +176,6 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper): LockableContainerBlockEnti
             player!!.squaredDistanceTo(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5) <= 64.0
         }
     }
+
 
 }

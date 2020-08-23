@@ -1,21 +1,13 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
 import com.mojang.blaze3d.systems.RenderSystem
-import io.github.lucaargolo.kibe.fluids.LIQUID_XP
-import io.github.lucaargolo.kibe.fluids.getFluidStill
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
-import java.awt.Color
 
 class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<VacuumHopperScreenHandler>(screenHandler, inventory, title) {
 
@@ -35,7 +27,10 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
         super.render(matrices, mouseX, mouseY, delta)
         drawMouseoverTooltip(matrices, mouseX, mouseY)
         if(mouseX in (startX+100..startX+112) && mouseY in (startY+18..startY+70)) {
-            renderTooltip(matrices, listOf(LiteralText("Liquid Xp"), LiteralText("${handler.entity.liquidXp} / 16000 mB")), mouseX, mouseY)
+            val tank = handler.entity.tanks.first()
+            val stored = tank.volume.amount()
+            val capacity = tank.capacity
+            renderTooltip(matrices, listOf(TranslatableText("block.kibe.liquid_xp"), LiteralText("${stored.asInt(1000)} / ${capacity.asInt(1000)} mB")), mouseX, mouseY)
         }
     }
 
@@ -49,27 +44,9 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, startX, startY, 0, 0, 176, 166)
 
-        val fluid = getFluidStill(LIQUID_XP)!!
-        val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid)
-        val fluidColor = fluidRenderHandler.getFluidColor(MinecraftClient.getInstance().world, MinecraftClient.getInstance().player!!.blockPos, fluid.defaultState)
-        val sprite = fluidRenderHandler.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid.defaultState)[0]
-        val color  = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
-        MinecraftClient.getInstance().textureManager.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
-        val tess = Tessellator.getInstance()
-        val bb = tess.buffer
-        val matrix = matrices.peek().model;
-
-        var percentage = (handler.entity.liquidXp/16000f)*52f
-        (0..(percentage/16).toInt()).forEach { index ->
-            val p = if(percentage > 16f) 16f else percentage
-            bb.begin(7, VertexFormats.POSITION_COLOR_TEXTURE)
-            bb.vertex(matrix, startX+100f, startY+70f-(index*16f), 0f).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(sprite.maxU, sprite.minV).next()
-            bb.vertex(matrix, startX+112f, startY+70f-(index*16f), 0f).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(sprite.minU, sprite.minV).next()
-            bb.vertex(matrix, startX+112f, startY+70f-p-(index*16f), 0f).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(sprite.minU, (sprite.maxV-((16f-p)/1024f)).toFloat()).next()
-            bb.vertex(matrix, startX+100f, startY+70f-p-(index*16f), 0f).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(sprite.maxU, (sprite.maxV-((16f-p)/1024f)).toFloat()).next()
-            tess.draw()
-            percentage -= p
-        }
+        val tank = handler.entity.tanks.first()
+        val percentage = tank.volume.amount().asInt(1000).toDouble()/tank.capacity.asInt(1000).toDouble()
+        tank.volume.renderGuiRect(startX+100.0, startY+70.0-(52.0*percentage), startX+112.0, startY+70.0)
 
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, startX+100, startY+18, 172, 0, 12, 52)

@@ -97,6 +97,8 @@
   "item.kibe.wooden_bucket": "Wooden Bucket",
   "item.kibe.water_wooden_bucket": "Water Wooden Bucket",
   "item.kibe.void_bucket": "Void Bucket",
+
+  "block.kibe.liquid_xp": "Liquid Xp",
   "item.kibe.liquid_xp_bucket": "Liquid Xp Bucket",
 
   "item.kibe.magnet": "Magnet",

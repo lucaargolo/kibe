@@ -4,9 +4,11 @@ import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
+import io.github.lucaargolo.kibe.fluids.getFluidBucket
 import io.github.lucaargolo.kibe.items.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.block.Block
+import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
@@ -35,8 +37,8 @@ fun initCreativeTab() {
         .appendItems{stacks -> order.forEach {
             val itemStack = when(it) {
                 is Item -> ItemStack(it)
-                is Block -> ItemStack(Registry.ITEM.get(getBlockId(it)))
-                is Identifier -> ItemStack(Registry.ITEM.get(Identifier(it.namespace, "${it.path}_bucket")))
+                is Block -> ItemStack(it.asItem())
+                is Fluid -> ItemStack(getFluidBucket(it))
                 else -> ItemStack.EMPTY
             }
             stacks.add(itemStack)
