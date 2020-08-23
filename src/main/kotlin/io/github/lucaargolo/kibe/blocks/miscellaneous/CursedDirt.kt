@@ -25,7 +25,7 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.*
-import net.minecraft.world.biome.SpawnSettings
+import net.minecraft.world.biome.Biome
 import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
@@ -86,7 +86,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
 
         //Chunk mob cap for avoiding L A G
         val chunkPos = world.getChunk(pos).pos
-        val entityList = world.getEntitiesByType<Entity>(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
+        val entityList = world.getEntities<Entity>(null as EntityType<Entity>?, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
         if (entityList.size > 25) return
 
         val mob = getSpawnableMonster(world, pos.up(), random)
@@ -136,7 +136,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
         val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos)
         if (spawnList.size == 0) return null
-        val entry: SpawnSettings.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
+        val entry: Biome.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
         if (!SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random)) return null
         return entry.type
     }

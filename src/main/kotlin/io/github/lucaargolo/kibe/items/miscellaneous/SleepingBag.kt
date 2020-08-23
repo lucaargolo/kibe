@@ -62,7 +62,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         }
         if (!player.isCreative) {
             val vec3d = player.pos
-            val list = player.world.getEntitiesByClass(
+            val list = player.world.getEntities(
                 HostileEntity::class.java,
                 Box(
                     vec3d.getX() - 8.0,

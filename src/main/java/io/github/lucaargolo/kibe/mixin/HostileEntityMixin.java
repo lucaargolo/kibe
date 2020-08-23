@@ -20,7 +20,7 @@ import java.util.Random;
 public class HostileEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "isSpawnDark", cancellable = true)
-    private static void isSpawnDark(ServerWorldAccess world, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> info) {
+    private static void isSpawnDark(WorldAccess world, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> info) {
         LinkedHashMap<WorldAccess, List<BigTorchBlockEntity>> bigTorchMap = KibeModKt.getBIG_TORCH_MAP();
         List<BigTorchBlockEntity> list = bigTorchMap.get(world);
         if(list != null) {
