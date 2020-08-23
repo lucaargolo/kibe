@@ -2,15 +2,13 @@ package io.github.lucaargolo.kibe.items.trashcan
 
 import com.mojang.blaze3d.systems.RenderSystem
 import joptsimple.internal.Strings
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
-class PocketTrashCanScreen(container: PocketTrashCanContainer, inventory: PlayerInventory, title: Text): HandledScreen<PocketTrashCanContainer>(container, inventory, title) {
+class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<PocketTrashCanScreenHandler>(screenHandler, inventory, title) {
 
     private val texture = Identifier("kibe:textures/gui/trash_can.png")
 

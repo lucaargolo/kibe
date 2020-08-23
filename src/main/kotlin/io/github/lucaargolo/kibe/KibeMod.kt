@@ -2,13 +2,10 @@
 
 package io.github.lucaargolo.kibe
 
-import io.github.lucaargolo.kibe.blocks.BIG_TORCH
-import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
+import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
-import io.github.lucaargolo.kibe.blocks.initBlocks
-import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
@@ -140,10 +137,41 @@ fun initExtrasClient() {
         }
     })
     ModelLoadingRegistry.INSTANCE.registerAppender { _: ResourceManager?, out: Consumer<ModelIdentifier?> ->
-        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_fabric"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_active"), "inventory"))
-        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "white_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "white_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "orange_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "orange_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "magenta_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "magenta_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "light_blue_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "light_blue_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "yellow_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "yellow_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "lime_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "lime_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "pink_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "pink_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "gray_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "gray_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "light_gray_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "light_gray_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "cyan_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "cyan_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "blue_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "blue_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "purple_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "purple_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "green_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "green_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "brown_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "brown_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "red_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "red_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "black_glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "black_glider_inactive"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_background"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_ring"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_gold_core"), "inventory"))
@@ -151,6 +179,7 @@ fun initExtrasClient() {
     }
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
     BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutout())
+    BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
 }
 
 fun initLootTables() {

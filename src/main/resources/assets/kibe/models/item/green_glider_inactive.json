@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "kibe:item/glider_inactive"
+    "layer0": "kibe:item/green_glider_inactive"
   }
 }

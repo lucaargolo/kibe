@@ -1,6 +1,8 @@
 package io.github.lucaargolo.kibe.items.entangled
 
 import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestState
+import io.github.lucaargolo.kibe.items.ENTANGLED_BAG
+import io.github.lucaargolo.kibe.items.getContainerInfo
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
@@ -13,7 +15,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class EntangledBagContainer(syncId: Int, playerInventory: PlayerInventory, val world: World, val tag: CompoundTag): ScreenHandler(null, syncId) {
+class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, slot: Int, val world: World, val tag: CompoundTag): ScreenHandler(getContainerInfo(ENTANGLED_BAG)?.handlerType, syncId) {
 
     private fun hasPersistentState(): Boolean = !world.isClient
 

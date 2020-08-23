@@ -1,18 +1,14 @@
 package io.github.lucaargolo.kibe.blocks.entangled
 
-import io.github.lucaargolo.kibe.blocks.getBlockId
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
-import io.github.lucaargolo.kibe.utils.ModHandlerFactory
+import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.Items
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
@@ -95,7 +91,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
             }
         }
         return if(world.getBlockState(pos.up()).isAir) {
-            player.openHandledScreen(ModHandlerFactory(this, pos))
+            player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
             ActionResult.SUCCESS
         }else{
             ActionResult.FAIL

@@ -1,0 +1,7 @@
+{
+	"parent": "kibe:item/glider",
+	"textures": {
+		"layer0": "kibe:item/magenta_glider",
+		"particle": "kibe:item/magenta_glider"
+	}
+}

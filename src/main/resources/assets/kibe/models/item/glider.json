@@ -1,9 +1,5 @@
 {
 	"parent": "builtin/generated",
-	"textures": {
-		"layer0": "kibe:item/glider_fabric",
-		"particle": "kibe:item/glider_fabric"
-	},
 	"gui_light": "front",
 	"display": {
 		"thirdperson_righthand": {

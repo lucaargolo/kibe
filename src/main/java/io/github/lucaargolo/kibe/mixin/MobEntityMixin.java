@@ -26,12 +26,12 @@ public class MobEntityMixin {
     @Inject(at = @At("HEAD"), method = "method_29506", cancellable = true)
     public void method_29506(PlayerEntity playerEntity, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ItemStack stack = playerEntity.getStackInHand(hand);
-        CompoundTag stackTag = stack.getOrCreateTag();
         Item item = stack.getItem();
         if(item instanceof Lasso) {
+            CompoundTag stackTag = stack.getTag();
             MobEntity entity = (MobEntity) ((Object) this);
             Lasso lasso = (Lasso) item;
-            if(!stackTag.contains("Entity")) {
+            if(stackTag != null && !stackTag.contains("Entity")) {
                 if (lasso.canStoreEntity(entity.getType())) {
                     if(entity.isLeashed()) entity.detachLeash(true, true);
                     entity.fallDistance = 0;

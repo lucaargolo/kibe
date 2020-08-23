@@ -25,6 +25,7 @@
   "block.kibe.red_elevator": "Red Elevator",
   "block.kibe.black_elevator": "Black Elevator",
 
+  "block.kibe.cooler": "Cooler",
   "block.kibe.big_torch": "Big Torch",
   "block.kibe.chunk_loader": "Chunk Loader",
 
@@ -73,6 +74,25 @@
   "item.kibe.brown_rune": "Brown Rune",
   "item.kibe.red_rune": "Red Rune",
   "item.kibe.black_rune": "Black Rune",
+
+  "item.kibe.glider_right_wing": "Glider Right Wing",
+  "item.kibe.glider_left_wing": "Glider Left Wing",
+  "item.kibe.white_glider": "White Glider",
+  "item.kibe.orange_glider": "Orange Glider",
+  "item.kibe.magenta_glider": "Magenta Glider",
+  "item.kibe.light_blue_glider": "Light Blue Glider",
+  "item.kibe.yellow_glider": "Yellow Glider",
+  "item.kibe.lime_glider": "Lime Glider",
+  "item.kibe.pink_glider": "Pink Glider",
+  "item.kibe.gray_glider": "Gray Glider",
+  "item.kibe.light_gray_glider": "Light Gray Glider",
+  "item.kibe.cyan_glider": "Cyan Glider",
+  "item.kibe.blue_glider": "Blue Glider",
+  "item.kibe.purple_glider": "Purple Glider",
+  "item.kibe.green_glider": "Green Glider",
+  "item.kibe.brown_glider": "Brown Glider",
+  "item.kibe.red_glider": "Red Glider",
+  "item.kibe.black_glider": "Black Glider",
 
   "item.kibe.wooden_bucket": "Wooden Bucket",
   "item.kibe.water_wooden_bucket": "Water Wooden Bucket",
@@ -126,9 +146,12 @@
   "tooltip.kibe.lore.iron_spikes": "§5§oEntities drops regular items",
   "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
 
+  "tooltip.kibe.lore.cooler": "§5§oAutomatically consumes any food stored in it",
   "tooltip.kibe.lore.big_torch": "§5§oFill with torches to keep chunks mob-free",
   "tooltip.kibe.lore.chunk_loader": "§5§oLet you keep a 5x5 chunk area loaded.",
 
+  "screen.kibe.cooler": "Cooler",
+  "screen.kibe.cooler_item": "Cooler",
   "screen.kibe.big_torch": "Big Torch",
   "screen.kibe.chunk_loader": "Chunk Loader",
   "screen.kibe.trash_can": "Trash Can",

@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.trashcan
 
-import io.github.lucaargolo.kibe.utils.ModHandlerFactory
+import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -18,7 +18,7 @@ class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialC
     override fun createBlockEntity(view: BlockView?): BlockEntity = TrashCanEntity(this)
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        player.openHandledScreen(ModHandlerFactory(this, pos))
+        player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
         return ActionResult.SUCCESS
     }
 

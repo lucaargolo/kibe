@@ -10,6 +10,10 @@ import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreen
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreenHandler
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoader
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
+import io.github.lucaargolo.kibe.blocks.cooler.Cooler
+import io.github.lucaargolo.kibe.blocks.cooler.CoolerBlockEntity
+import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreen
+import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreenHandler
 import io.github.lucaargolo.kibe.blocks.entangled.*
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
@@ -128,11 +132,11 @@ fun register(identifier: Identifier, block: Block, hasModBlock: Boolean = true):
     return block
 }
 
-fun <T: BlockEntity> registerWithEntity(identifier: Identifier, block: Block, hasModBlock: Boolean = true, blockItem: KClass<*>? = null, renderer: Supplier<KClass<*>>? = null, containers: List<ContainerInfo<*>> = listOf()): Block {
+fun <T: BlockEntity> registerWithEntity(identifier: Identifier, block: Block, hasBlockItem: Boolean = true, blockItem: KClass<*>? = null, renderer: Supplier<KClass<*>>? = null, containers: List<ContainerInfo<*>> = listOf()): Block {
     val bli = blockItem as? KClass<BlockItem>
     val ent = (block as? BlockEntityProvider)?.let { BlockEntityType.Builder.create(Supplier { it.createBlockEntity(null) }, block).build(null) as BlockEntityType<T> }
     val rnd = if(CLIENT) renderer?.let { it.get() as KClass<BlockEntityRenderer<T>> } else null
-    val info = BlockInfo(identifier, block, hasModBlock, bli, ent, rnd, containers)
+    val info = BlockInfo(identifier, block, hasBlockItem, bli, ent, rnd, containers)
     blockRegistry[block] = info
     return block
 }
@@ -150,7 +154,7 @@ val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID
 val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(TrashCanScreenHandler::class, Supplier {  TrashCanScreen::class })))
 val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = Supplier { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, Supplier {  VacuumHopperScreen::class })))
 val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, Supplier { BigTorchScreen::class })))
-
+val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, Supplier { CoolerScreen::class })))
 
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())

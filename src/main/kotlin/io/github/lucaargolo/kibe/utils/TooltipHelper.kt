@@ -1,12 +1,12 @@
 package io.github.lucaargolo.kibe.utils
 
+import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.items.*
 import net.minecraft.block.Block
 import net.minecraft.item.ItemConvertible
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
 val tooltipRegistry = mutableMapOf<ItemConvertible, List<Text>>()
@@ -21,6 +21,7 @@ fun initTooltip() {
     registerTooltip(IRON_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
 
+    registerTooltip(COOLER)
     registerTooltip(BIG_TORCH)
     registerTooltip(CHUNK_LOADER)
 

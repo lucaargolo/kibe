@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.mixin;
 
 import io.github.ladysnake.pal.PlayerAbility;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
-import io.github.lucaargolo.kibe.items.ModItem;
+import io.github.lucaargolo.kibe.items.ItemInfo;
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing;
 import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
@@ -103,7 +103,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
             List<ItemStack> enabledRings = new ArrayList<>();
 
-            for(ModItem mdi : ItemCompendiumKt.getItemRegistry().values()) {
+            for(ItemInfo mdi : ItemCompendiumKt.getItemRegistry().values()) {
                 if(mdi.getItem() instanceof AbilityRing) {
                     AbilityRing ring = ((AbilityRing) mdi.getItem());
                     if(player.inventory.contains(new ItemStack(mdi.getItem()))) {

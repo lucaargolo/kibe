@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.bigtorch
 
-import io.github.lucaargolo.kibe.utils.ModHandlerFactory
+import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -48,7 +48,7 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).l
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
-        player.openHandledScreen(ModHandlerFactory(this, pos))
+        player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
         return ActionResult.SUCCESS
     }
 

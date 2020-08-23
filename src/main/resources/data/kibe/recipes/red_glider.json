@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "LiD"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:red_dye"
+    },
+    "L": {
+      "item": "kibe:glider_left_wing"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "kibe:glider_right_wing"
+    }
+  },
+  "result": {
+    "item": "kibe:red_glider",
+    "count": 1
+  }
+}

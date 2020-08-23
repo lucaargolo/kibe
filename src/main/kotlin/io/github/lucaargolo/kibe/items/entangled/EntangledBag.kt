@@ -4,6 +4,7 @@ import io.github.lucaargolo.kibe.blocks.entangled.EntangledChest
 import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntity
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
 import io.github.lucaargolo.kibe.items.getItemId
+import io.github.lucaargolo.kibe.utils.ItemScreenHandlerFactory
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
@@ -67,10 +68,8 @@ class EntangledBag(settings: Settings): Item(settings){
     }
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
-        if(!world.isClient) {
-            val tag = getTag(player.getStackInHand(hand))
-            ContainerProviderRegistry.INSTANCE.openContainer(getItemId(this), player as ServerPlayerEntity?) { buf -> buf.writeCompoundTag(tag) }
-        }
+        val tag = getTag(player.getStackInHand(hand))
+        player.openHandledScreen(ItemScreenHandlerFactory(this, tag))
         return TypedActionResult.success(player.getStackInHand(hand))
     }
 

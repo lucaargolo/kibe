@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "kibe:block/cooler" },
+    "facing=south": { "model": "kibe:block/cooler", "y": 180 },
+    "facing=west":  { "model": "kibe:block/cooler", "y": 270 },
+    "facing=east":  { "model": "kibe:block/cooler", "y": 90 }
+  }
+}

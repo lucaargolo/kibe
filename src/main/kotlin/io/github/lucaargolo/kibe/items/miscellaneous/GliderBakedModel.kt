@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.items.getItemId
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext
@@ -81,7 +82,10 @@ class GliderBakedModel: BakedModel, FabricBakedModel {
             true
         }
 
+        val itemId = getItemId(stack.item) ?: Identifier(MOD_ID, "white_glider")
+
         if(force3d || (isEnabled && !isGui)) {
+
             val handleIdentifier = ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory")
             val handleModel = MinecraftClient.getInstance().bakedModelManager.getModel(handleIdentifier)
 
@@ -90,7 +94,7 @@ class GliderBakedModel: BakedModel, FabricBakedModel {
                 emitter.emit()
             }
 
-            val gliderIdentifier = ModelIdentifier(Identifier(MOD_ID, "glider_fabric"), "inventory")
+            val gliderIdentifier = ModelIdentifier(Identifier(MOD_ID, itemId.path+"_active"), "inventory")
             val gliderModel = MinecraftClient.getInstance().bakedModelManager.getModel(gliderIdentifier)
 
             gliderModel.getQuads(null, null, randSupplier.get()).forEach { q ->
@@ -99,8 +103,8 @@ class GliderBakedModel: BakedModel, FabricBakedModel {
             }
 
         }else{
-            val status = if(isEnabled) "active" else "inactive"
-            val invIdentifier = ModelIdentifier(Identifier(MOD_ID, "glider_$status"), "inventory")
+            val statusId = if(isEnabled) Identifier(MOD_ID, "glider_active") else Identifier(MOD_ID, itemId.path+"_inactive")
+            val invIdentifier = ModelIdentifier(statusId, "inventory")
             val invModel = MinecraftClient.getInstance().bakedModelManager.getModel(invIdentifier)
 
             invModel.getQuads(null, null, randSupplier.get()).forEach { q ->
@@ -124,7 +128,7 @@ class GliderBakedModel: BakedModel, FabricBakedModel {
     override fun hasDepth(): Boolean = false
 
     private val deployedTransform: ModelTransformation? by lazy {
-        loadTransformFromJson(Identifier("kibe:models/item/glider_fabric"))
+        loadTransformFromJson(Identifier("kibe:models/item/glider"))
     }
 
     private val itemTransform: ModelTransformation? by lazy {

@@ -1,0 +1,7 @@
+{
+	"parent": "kibe:item/glider",
+	"textures": {
+		"layer0": "kibe:item/gray_glider",
+		"particle": "kibe:item/gray_glider"
+	}
+}
