@@ -79,7 +79,7 @@ class ContainerInfo<T: ScreenHandler>(
 class ItemInfo (
     val identifier: Identifier,
     val item: Item,
-    private val bakedModel: BakedModel?,
+    private val bakedModel: Supplier<BakedModel>?,
     var containers: List<ContainerInfo<*>>
 ){
 
@@ -96,7 +96,7 @@ class ItemInfo (
                     if(modelIdentifier.namespace == identifier.namespace && modelIdentifier.path == identifier.path) {
                         return@ModelVariantProvider object : UnbakedModel {
                             override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
-                            override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationScreenHandler: ModelBakeSettings, modelId: Identifier) = bakedModel
+                            override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationScreenHandler: ModelBakeSettings, modelId: Identifier) = bakedModel.get()
                             override fun getTextureDependencies(unbakedModelGetter: Function<Identifier, UnbakedModel>?, unresolvedTextureReferences: MutableSet<Pair<String, String>>?): MutableCollection<SpriteIdentifier> = mutableListOf()
                         }
                     }
@@ -166,36 +166,36 @@ val WATER_WOODEN_BUCKET = register(Identifier(MOD_ID, "water_wooden_bucket"), Wo
 val GLIDER_LEFT_WING = register(Identifier(MOD_ID, "glider_left_wing"), Item(Settings()))
 val GLIDER_RIGHT_WING = register(Identifier(MOD_ID, "glider_right_wing"), Item(Settings()))
 
-val WHITE_GLIDER = register(Identifier(MOD_ID, "white_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val ORANGE_GLIDER = register(Identifier(MOD_ID, "orange_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val MAGENTA_GLIDER = register(Identifier(MOD_ID, "magenta_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val LIGHT_BLUE_GLIDER = register(Identifier(MOD_ID, "light_blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val YELLOW_GLIDER = register(Identifier(MOD_ID, "yellow_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val LIME_GLIDER = register(Identifier(MOD_ID, "lime_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val PINK_GLIDER = register(Identifier(MOD_ID, "pink_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val GRAY_GLIDER = register(Identifier(MOD_ID, "gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val LIGHT_GRAY_GLIDER = register(Identifier(MOD_ID, "light_gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val CYAN_GLIDER = register(Identifier(MOD_ID, "cyan_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val BLUE_GLIDER = register(Identifier(MOD_ID, "blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val PURPLE_GLIDER = register(Identifier(MOD_ID, "purple_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val GREEN_GLIDER = register(Identifier(MOD_ID, "green_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val BROWN_GLIDER = register(Identifier(MOD_ID, "brown_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val RED_GLIDER = register(Identifier(MOD_ID, "red_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
-val BLACK_GLIDER = register(Identifier(MOD_ID, "black_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), GliderBakedModel())
+val WHITE_GLIDER = register(Identifier(MOD_ID, "white_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val ORANGE_GLIDER = register(Identifier(MOD_ID, "orange_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val MAGENTA_GLIDER = register(Identifier(MOD_ID, "magenta_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val LIGHT_BLUE_GLIDER = register(Identifier(MOD_ID, "light_blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val YELLOW_GLIDER = register(Identifier(MOD_ID, "yellow_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val LIME_GLIDER = register(Identifier(MOD_ID, "lime_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val PINK_GLIDER = register(Identifier(MOD_ID, "pink_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val GRAY_GLIDER = register(Identifier(MOD_ID, "gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val LIGHT_GRAY_GLIDER = register(Identifier(MOD_ID, "light_gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val CYAN_GLIDER = register(Identifier(MOD_ID, "cyan_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val BLUE_GLIDER = register(Identifier(MOD_ID, "blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val PURPLE_GLIDER = register(Identifier(MOD_ID, "purple_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val GREEN_GLIDER = register(Identifier(MOD_ID, "green_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val BROWN_GLIDER = register(Identifier(MOD_ID, "brown_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val RED_GLIDER = register(Identifier(MOD_ID, "red_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val BLACK_GLIDER = register(Identifier(MOD_ID, "black_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
 
 val VOID_BUCKET = register(Identifier(MOD_ID, "void_bucket"), VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
 
 val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"),  PocketCraftingTable(Settings().maxCount(1)))
 val POCKET_TRASH_CAN = register(Identifier(MOD_ID, "pocket_trash_can"),  PocketTrashCan(Settings().maxCount(1)), containers = listOf(ContainerInfo<PocketTrashCanScreenHandler>(PocketTrashCanScreenHandler::class, Supplier { PocketTrashCanScreen::class })))
 
-val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), bakedModel = EntangledBagBakedModel(), containers = listOf(ContainerInfo<EntangledBagScreenHandler>(EntangledBagScreenHandler::class, Supplier { EntangledBagScreen::class })))
+val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), Supplier { EntangledBagBakedModel() }, listOf(ContainerInfo<EntangledBagScreenHandler>(EntangledBagScreenHandler::class, Supplier { EntangledBagScreen::class })))
 val COOLER = register(Identifier(MOD_ID, "cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), containers = listOf(ContainerInfo<CoolerBlockItemScreenHandler>(CoolerBlockItemScreenHandler::class, Supplier { CoolerBlockItemScreen::class }, identifier = Identifier(MOD_ID, "cooler_item"))))
 
 val SLEEPING_BAG = register(Identifier(MOD_ID, "sleeping_bag"), SleepingBag(Settings().rarity(Rarity.RARE)))
 
 
-fun register(identifier: Identifier, item: Item, bakedModel: BakedModel? = null, containers: List<ContainerInfo<*>> = listOf()): Item {
-    val info = ItemInfo(identifier, item,  bakedModel, containers)
+fun register(identifier: Identifier, item: Item, bakedModel: Supplier<BakedModel>? = null, containers: List<ContainerInfo<*>> = listOf()): Item {
+    val info = ItemInfo(identifier, item, bakedModel, containers)
     itemRegistry[item] = info
     return item
 }
