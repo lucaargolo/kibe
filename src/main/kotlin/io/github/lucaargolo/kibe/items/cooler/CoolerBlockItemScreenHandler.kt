@@ -11,10 +11,11 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
+import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val slot: Int, val world: World, val tag: CompoundTag): ScreenHandler(getContainerInfo(COOLER)?.handlerType, syncId)  {
+class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val hand: Hand, val world: World, val tag: CompoundTag): ScreenHandler(getContainerInfo(COOLER)?.handlerType, syncId)  {
 
     val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
@@ -56,7 +57,10 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
     }
 
     override fun onSlotClick(i: Int, j: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?): ItemStack {
-        val stack = if(i in 0..slots.size && getSlot(i).inventory == playerInventory && getSlot(i).stack == playerInventory.getStack(slot)) ItemStack.EMPTY else super.onSlotClick(i, j, actionType, playerEntity)
+        val stack = if(hand == Hand.MAIN_HAND && i in 0..slots.size && getSlot(i).stack == playerInventory.mainHandStack)
+            ItemStack.EMPTY
+        else
+            super.onSlotClick(i, j, actionType, playerEntity)
         this.onContentChanged(null)
         return stack
     }
@@ -64,14 +68,15 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
     override fun onContentChanged(inventory: Inventory?) {
         super.onContentChanged(inventory)
         Inventories.toTag(tag, rawInventory)
-        val coolerStack = playerInventory.getStack(slot)
-        if(coolerStack.item is CoolerBlockItem) {
+        val coolerStack = playerInventory.player.getStackInHand(hand)
+        if (coolerStack.item is CoolerBlockItem) {
             coolerStack.orCreateTag.put("BlockEntityTag", tag.copy())
         }
     }
 
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
-        if(invSlot in 0..slots.size && getSlot(invSlot).inventory == playerInventory && getSlot(invSlot).stack == playerInventory.getStack(slot)) return ItemStack.EMPTY
+        if(hand == Hand.MAIN_HAND && invSlot in 0..slots.size && getSlot(invSlot).stack == playerInventory.mainHandStack)
+            return ItemStack.EMPTY
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
         if (slot != null && slot.hasStack()) {

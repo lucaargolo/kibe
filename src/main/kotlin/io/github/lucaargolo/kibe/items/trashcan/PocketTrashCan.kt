@@ -12,7 +12,7 @@ class PocketTrashCan(settings: Settings): Item(settings) {
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val tag = player.getStackInHand(hand).orCreateTag
-        player.openHandledScreen(ItemScreenHandlerFactory(this, tag))
+        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag))
         return TypedActionResult.success(player.getStackInHand(hand))
     }
 

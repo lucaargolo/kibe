@@ -44,6 +44,7 @@ import com.mojang.datafixers.util.Pair
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreen
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreenHandler
+import net.minecraft.util.Hand
 
 class ContainerInfo<T: ScreenHandler>(
     handlerClass: KClass<*>,
@@ -63,9 +64,9 @@ class ContainerInfo<T: ScreenHandler>(
         val id = identifier ?: itemIdentifier
         title = TranslatableText("screen.$MOD_ID.${id.path}")
         handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
-            val slot = packetByteBuf.readInt()
+            val hand = packetByteBuf.readEnumConstant(Hand::class.java)
             val tag = packetByteBuf.readCompoundTag()!!
-            handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, slot, playerInventory.player.world, tag) as T
+            handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, hand, playerInventory.player.world, tag) as T
             handler
         }
     }

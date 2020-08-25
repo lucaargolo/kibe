@@ -9,18 +9,19 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.util.Hand
 
-class ItemScreenHandlerFactory(val item: Item, val tag: CompoundTag, val slot: Int = 0): ExtendedScreenHandlerFactory {
+class ItemScreenHandlerFactory(val item: Item, val hand: Hand, val tag: CompoundTag): ExtendedScreenHandlerFactory {
 
     override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity): ScreenHandler {
         val world = player.world
         return getContainerInfo(item)!!.handlerClass.java.constructors[0].newInstance(
-            syncId, playerInv, slot, world, tag
+            syncId, playerInv, hand, world, tag
         ) as ScreenHandler
     }
 
     override fun writeScreenOpeningData(p0: ServerPlayerEntity?, p1: PacketByteBuf?) {
-        p1?.writeInt(slot)
+        p1?.writeEnumConstant(hand)
         p1?.writeCompoundTag(tag)
     }
 

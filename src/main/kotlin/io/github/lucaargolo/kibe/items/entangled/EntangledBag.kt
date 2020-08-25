@@ -69,7 +69,7 @@ class EntangledBag(settings: Settings): Item(settings){
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val tag = getTag(player.getStackInHand(hand))
-        player.openHandledScreen(ItemScreenHandlerFactory(this, tag))
+        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag))
         return TypedActionResult.success(player.getStackInHand(hand))
     }
 
