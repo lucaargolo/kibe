@@ -6,6 +6,7 @@ import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
+import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
@@ -22,6 +23,7 @@ import io.github.lucaargolo.kibe.utils.initTooltip
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
+import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.event.server.ServerStartCallback
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
@@ -31,7 +33,6 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.network.PacketContext
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.fabricmc.loader.launch.common.FabricLauncherBase
-import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
@@ -49,7 +50,6 @@ import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import java.util.*
 import java.util.function.Consumer
@@ -61,6 +61,9 @@ val BIG_TORCH_MAP: LinkedHashMap<WorldAccess?, MutableList<BigTorchBlockEntity>>
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
+val TANK_CUSTOM_MODEL = TankCustomModel()
+
+fun Boolean.toInt() = if (this) 1 else 0
 
 fun init() {
     initRecipeSerializers()
@@ -135,6 +138,7 @@ fun initExtrasClient() {
         (0..15).forEach{
             registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
         }
+        registry.register(Identifier(MOD_ID, "block/tank"))
     })
     ModelLoadingRegistry.INSTANCE.registerAppender { _: ResourceManager?, out: Consumer<ModelIdentifier?> ->
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider"), "inventory"))
@@ -180,6 +184,14 @@ fun initExtrasClient() {
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
     BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutout())
     BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
+    ModelLoadingRegistry.INSTANCE.registerVariantProvider {
+        ModelVariantProvider { modelIdentifier, _ ->
+            if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "tank" && modelIdentifier.variant != "inventory") {
+                return@ModelVariantProvider TANK_CUSTOM_MODEL
+            }
+            return@ModelVariantProvider null
+        }
+    }
 }
 
 fun initLootTables() {

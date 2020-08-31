@@ -44,6 +44,8 @@ import com.mojang.datafixers.util.Pair
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreen
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreenHandler
+import io.github.lucaargolo.kibe.items.tank.TankBlockItem
+import io.github.lucaargolo.kibe.items.tank.TankBlockItemBakedModel
 import net.minecraft.util.Hand
 
 class ContainerInfo<T: ScreenHandler>(
@@ -94,7 +96,7 @@ class ItemInfo (
         if(bakedModel != null) {
             ModelLoadingRegistry.INSTANCE.registerVariantProvider {
                 ModelVariantProvider { modelIdentifier, _ ->
-                    if(modelIdentifier.namespace == identifier.namespace && modelIdentifier.path == identifier.path) {
+                    if(modelIdentifier.namespace == identifier.namespace && modelIdentifier.path == identifier.path && modelIdentifier.variant == "inventory") {
                         return@ModelVariantProvider object : UnbakedModel {
                             override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
                             override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationScreenHandler: ModelBakeSettings, modelId: Identifier) = bakedModel.get()
@@ -191,6 +193,7 @@ val POCKET_TRASH_CAN = register(Identifier(MOD_ID, "pocket_trash_can"),  PocketT
 
 val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), Supplier { EntangledBagBakedModel() }, listOf(ContainerInfo<EntangledBagScreenHandler>(EntangledBagScreenHandler::class, Supplier { EntangledBagScreen::class })))
 val COOLER = register(Identifier(MOD_ID, "cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), containers = listOf(ContainerInfo<CoolerBlockItemScreenHandler>(CoolerBlockItemScreenHandler::class, Supplier { CoolerBlockItemScreen::class }, identifier = Identifier(MOD_ID, "cooler_item"))))
+val TANK = register(Identifier(MOD_ID, "tank"), TankBlockItem(Settings()), Supplier { TankBlockItemBakedModel() } )
 
 val SLEEPING_BAG = register(Identifier(MOD_ID, "sleeping_bag"), SleepingBag(Settings().rarity(Rarity.RARE)))
 

@@ -16,6 +16,9 @@ import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreen
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreenHandler
 import io.github.lucaargolo.kibe.blocks.entangled.*
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
+import io.github.lucaargolo.kibe.blocks.tank.Tank
+import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
+import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
@@ -158,6 +161,7 @@ val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"),
 
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())
+val TANK = registerWithEntity<TankBlockEntity>(Identifier(MOD_ID, "tank"), Tank(), hasBlockItem = false, renderer = Supplier { TankBlockEntityRenderer::class })
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), Elevator())
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), Elevator())

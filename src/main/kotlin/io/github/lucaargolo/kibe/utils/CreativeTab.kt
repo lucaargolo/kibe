@@ -1,6 +1,9 @@
 package io.github.lucaargolo.kibe.utils
 
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
@@ -9,9 +12,11 @@ import io.github.lucaargolo.kibe.items.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluid
+import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
@@ -34,14 +39,32 @@ fun initCreativeTab() {
     CREATIVE_TAB = FabricItemGroupBuilder
         .create(Identifier(MOD_ID, "creative_tab"))
         .icon { ItemStack(KIBE) }
-        .appendItems{stacks -> order.forEach {
-            val itemStack = when(it) {
-                is Item -> ItemStack(it)
-                is Block -> ItemStack(it.asItem())
-                is Fluid -> ItemStack(getFluidBucket(it))
-                else -> ItemStack.EMPTY
+        .appendItems{stacks ->
+            Registry.FLUID.forEach { fluid ->
+                val itemStack = ItemStack(TANK)
+                if(fluid == Fluids.EMPTY) {
+                    stacks.add(itemStack)
+                }else if(fluid.isStill(fluid.defaultState)) {
+                    val tag = itemStack.orCreateTag
+                    val blockEntityTag = CompoundTag()
+                    val tanksTag = CompoundTag()
+                    val tankTag = CompoundTag()
+                    tankTag.put("fluids", FluidKeys.get(fluid).withAmount(FluidAmount(16)).toTag())
+                    tanksTag.put("0", tankTag)
+                    blockEntityTag.put("tanks", tanksTag)
+                    tag.put("BlockEntityTag", blockEntityTag)
+                    stacks.add(itemStack)
+                }
             }
-            stacks.add(itemStack)
-        }}.build()
+            order.forEach {
+                val itemStack = when(it) {
+                    is Item -> ItemStack(it)
+                    is Block -> ItemStack(it.asItem())
+                    is Fluid -> ItemStack(getFluidBucket(it))
+                    else -> ItemStack.EMPTY
+                }
+                stacks.add(itemStack)
+            }
+        }.build()
 }
 
