@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import net.minecraft.block.Block
 import net.minecraft.client.item.TooltipContext

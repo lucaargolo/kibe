@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack

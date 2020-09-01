@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune

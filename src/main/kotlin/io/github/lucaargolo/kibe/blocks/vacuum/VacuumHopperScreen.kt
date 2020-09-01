@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
+import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
 class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<VacuumHopperScreenHandler>(screenHandler, inventory, title) {
@@ -30,7 +31,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
             val tank = handler.entity.tanks.first()
             val stored = tank.volume.amount()
             val capacity = tank.capacity
-            renderTooltip(matrices, listOf(TranslatableText("block.kibe.liquid_xp"), LiteralText("${stored.asInt(1000)} / ${capacity.asInt(1000)} mB")), mouseX, mouseY)
+            renderTooltip(matrices, listOf(tank.volume.name, LiteralText("${stored.asInt(1000)} / ${capacity.asInt(1000)} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
         }
     }
 

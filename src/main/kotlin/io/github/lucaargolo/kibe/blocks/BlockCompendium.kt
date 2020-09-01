@@ -14,7 +14,7 @@ import io.github.lucaargolo.kibe.blocks.cooler.Cooler
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerBlockEntity
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreen
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreenHandler
-import io.github.lucaargolo.kibe.blocks.entangled.*
+import io.github.lucaargolo.kibe.blocks.entangledchest.*
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.tank.Tank
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity

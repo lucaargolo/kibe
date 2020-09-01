@@ -1,6 +1,5 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.blocks.entangledchest
 
-import com.google.common.math.IntMath.pow
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
@@ -10,15 +9,12 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.collection.DefaultedList
-import net.minecraft.util.math.MathHelper
 
 class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)), BlockEntityClientSerializable {
 

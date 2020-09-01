@@ -4,10 +4,10 @@ package io.github.lucaargolo.kibe.items
 
 import io.github.ladysnake.pal.VanillaAbilities
 import io.github.lucaargolo.kibe.MOD_ID
-import io.github.lucaargolo.kibe.items.entangled.EntangledBag
-import io.github.lucaargolo.kibe.items.entangled.EntangledBagBakedModel
-import io.github.lucaargolo.kibe.items.entangled.EntangledBagScreenHandler
-import io.github.lucaargolo.kibe.items.entangled.EntangledBagScreen
+import io.github.lucaargolo.kibe.items.entangledbag.EntangledBag
+import io.github.lucaargolo.kibe.items.entangledbag.EntangledBagBakedModel
+import io.github.lucaargolo.kibe.items.entangledbag.EntangledBagScreenHandler
+import io.github.lucaargolo.kibe.items.entangledbag.EntangledBagScreen
 import io.github.lucaargolo.kibe.items.miscellaneous.*
 import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCan
 import io.github.lucaargolo.kibe.items.trashcan.PocketTrashCanScreenHandler

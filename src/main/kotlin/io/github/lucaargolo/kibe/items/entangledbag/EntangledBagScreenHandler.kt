@@ -1,6 +1,6 @@
-package io.github.lucaargolo.kibe.items.entangled
+package io.github.lucaargolo.kibe.items.entangledbag
 
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestState
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChestState
 import io.github.lucaargolo.kibe.items.ENTANGLED_BAG
 import io.github.lucaargolo.kibe.items.getContainerInfo
 import net.minecraft.entity.player.PlayerEntity

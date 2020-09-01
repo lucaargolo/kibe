@@ -1,8 +1,8 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import com.google.common.collect.ImmutableList
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
-import io.github.lucaargolo.kibe.items.entangled.EntangledBagScreen
+import io.github.lucaargolo.kibe.items.entangledbag.EntangledBagScreen
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.ModelPart

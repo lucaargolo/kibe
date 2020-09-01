@@ -1,7 +1,5 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.KibeModKt;
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntityRenderer;
 import io.github.lucaargolo.kibe.effects.EffectCompendiumKt;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

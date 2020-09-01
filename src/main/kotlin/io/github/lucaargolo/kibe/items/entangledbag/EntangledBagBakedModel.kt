@@ -1,7 +1,7 @@
-package io.github.lucaargolo.kibe.items.entangled
+package io.github.lucaargolo.kibe.items.entangledbag
 
 import io.github.lucaargolo.kibe.MOD_ID
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChest
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.block.BlockState

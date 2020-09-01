@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.tank
 import alexiil.mc.lib.attributes.AttributeList
 import alexiil.mc.lib.attributes.AttributeProvider
 import alexiil.mc.lib.attributes.fluid.FluidAttributes
+import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
@@ -46,34 +47,8 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
         }
     }
 
-    //Shamelessly stolen from Industrial Revolution
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        val itemStack = player.getStackInHand(hand)
-        val item = itemStack?.item
-        if (item is BucketItem) {
-            val tankEntity = world.getBlockEntity(pos) as? TankBlockEntity ?: return ActionResult.FAIL
-            val bucketFluid = (item as BucketItemAccessor).fluid
-            val tank = tankEntity.tanks[0]
-            if (tank.volume.amount() >= FluidAmount.BUCKET && bucketFluid == Fluids.EMPTY) {
-                val bucket = tank.volume.fluidKey.rawFluid?.bucketItem
-                val extractable = FluidAttributes.EXTRACTABLE.get(world, pos)
-                val volume = tank.volume.fluidKey.withAmount(FluidAmount.BUCKET)
-                if (bucket != null && !extractable.extract(volume.amount()).isEmpty && !player.isCreative) {
-                    itemStack.decrement(1)
-                    player.inventory?.insertStack(ItemStack(bucket))
-                }
-            } else if (bucketFluid != Fluids.EMPTY) {
-                val volume = FluidKeys.get(bucketFluid).withAmount(FluidAmount.BUCKET)
-                val insertable = FluidAttributes.INSERTABLE.get(world, pos)
-                if (insertable.insert(volume).isEmpty && !player.isCreative) {
-                    itemStack.decrement(1)
-                    player.inventory?.insertStack(ItemStack(Items.BUCKET))
-                }
-            }
-            tankEntity.markDirtyAndSync()
-            return ActionResult.SUCCESS
-        }
-        return ActionResult.FAIL
+        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { FluidInvUtil.interactHandWithTank(it, player, hand).asActionResult() } ?: ActionResult.FAIL
     }
 
 }

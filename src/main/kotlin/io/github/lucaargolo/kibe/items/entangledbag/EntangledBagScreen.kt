@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.blocks.entangled
+package io.github.lucaargolo.kibe.items.entangledbag
 
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
@@ -7,9 +7,10 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 
-class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<EntangledChestScreenHandler>(screenHandler, inventory, title) {
+class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<EntangledBagScreenHandler>(screenHandler, inventory, title) {
 
     private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
 
@@ -30,8 +31,9 @@ class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory
     }
 
     private fun drawRunes() {
-        handler.entity.runeColors.forEach { (n, color) ->
-            itemRenderer.renderGuiItemIcon(ItemStack(Rune.getRuneByColor(color)), startX+87+(n-1)*10, startY+2)
+        (1..8).forEach {
+            val color = DyeColor.byName(handler.tag.getString("rune$it"), DyeColor.WHITE)
+            itemRenderer.renderGuiItemIcon(ItemStack(Rune.getRuneByColor(color)), startX+87+(it-1)*10, startY+2)
         }
     }
 
@@ -45,5 +47,13 @@ class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, startX, startY, 0, 0, 176, 166)
     }
+
+    fun hasSameColors(map: MutableMap<Int, DyeColor>): Boolean {
+        map.forEach { (key, value) ->
+            if(value != DyeColor.byName(handler.tag.getString("rune$key"), DyeColor.WHITE)) return false
+        }
+        return true
+    }
+
 
 }

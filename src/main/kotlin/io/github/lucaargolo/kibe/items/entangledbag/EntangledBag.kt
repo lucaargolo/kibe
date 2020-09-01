@@ -1,23 +1,17 @@
-package io.github.lucaargolo.kibe.items.entangled
+package io.github.lucaargolo.kibe.items.entangledbag
 
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChest
-import io.github.lucaargolo.kibe.blocks.entangled.EntangledChestEntity
-import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
-import io.github.lucaargolo.kibe.items.getItemId
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChestEntity
 import io.github.lucaargolo.kibe.utils.ItemScreenHandlerFactory
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.*
 import net.minecraft.util.*
 import net.minecraft.world.World
-import java.util.*
 
 class EntangledBag(settings: Settings): Item(settings){
 

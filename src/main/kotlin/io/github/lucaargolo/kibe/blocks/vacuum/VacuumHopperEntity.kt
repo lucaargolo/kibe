@@ -9,7 +9,6 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import io.github.lucaargolo.kibe.fluids.FluidKeys
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.utils.FluidTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
@@ -53,9 +52,9 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
         val currentAmount = tanks[0].volume.amount()
         val newAmount = FluidAmount.of(currentAmount.asLong(1000) + qnt, 1000)
         if (newAmount > tanks[0].capacity)
-            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(tanks[0].capacity)
+            tanks[0].volume = LIQUID_XP.key.withAmount(tanks[0].capacity)
         else
-            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(newAmount)
+            tanks[0].volume = LIQUID_XP.key.withAmount(newAmount)
         markDirty()
         return true
     }
@@ -64,7 +63,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
         val currentAmount = tanks[0].volume.amount()
         val removeAmount = FluidAmount.of(1000, qnt.toLong())
         return if(currentAmount >= removeAmount) {
-            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(FluidAmount.of(currentAmount.asLong(1000) - qnt, 1000))
+            tanks[0].volume = LIQUID_XP.key.withAmount(FluidAmount.of(currentAmount.asLong(1000) - qnt, 1000))
             markDirty()
             true
         }else false
@@ -100,7 +99,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
         //Backwards compatibility
         if(tag.contains("fluid")) {
             val liquidXp = tag.getInt("fluid")
-            tanks[0].volume = FluidKeys.LIQUID_XP.withAmount(FluidAmount.of(liquidXp.toLong(), 1000))
+            tanks[0].volume = LIQUID_XP.key.withAmount(FluidAmount.of(liquidXp.toLong(), 1000))
         }
         Inventories.fromTag(tag, inventory)
     }
