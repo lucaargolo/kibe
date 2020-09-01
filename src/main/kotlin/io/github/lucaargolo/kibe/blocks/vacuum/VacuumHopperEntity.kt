@@ -114,7 +114,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
                 inventory[id] = modifiableStack
                 modifiableStack = ItemStack.EMPTY
             }else{
-                if(stk.item == modifiableStack.item) {
+                if(ItemStack.areItemsEqual(stk, modifiableStack) && ItemStack.areTagsEqual(stk, modifiableStack)) {
                     if(stk.count+modifiableStack.count > stk.maxCount) {
                         val aux = stk.maxCount-stk.count
                         stk.count = stk.maxCount

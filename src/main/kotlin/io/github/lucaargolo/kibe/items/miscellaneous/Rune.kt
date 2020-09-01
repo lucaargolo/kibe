@@ -19,7 +19,7 @@ class Rune(val color: DyeColor, settings: Settings): Item(settings) {
 
     companion object {
         fun getRuneByColor(color: DyeColor): Rune {
-            itemRegistry.forEach { (_, modItem) -> if(modItem.item is Rune && (modItem.item as Rune).color == color) return modItem.item as Rune }
+            itemRegistry.forEach { (_, modItem) -> if(modItem.item is Rune && modItem.item.color == color) return modItem.item }
             return WHITE_RUNE as Rune
         }
     }
