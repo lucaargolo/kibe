@@ -12,7 +12,6 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
 import net.minecraft.fluid.Fluids
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import java.awt.Color
@@ -25,8 +24,8 @@ class TankBlockEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEnt
 
     override fun render(entity: TankBlockEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
-        val tank = entity.tanks[0]
-        val fluid = tank.volume.rawFluid ?: Fluids.EMPTY
+        val fluidInv = entity.fluidInv
+        val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
 
         val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
         val fluidColor = fluidRenderHandler.getFluidColor(entity.world, entity.pos, fluid.defaultState)
@@ -37,7 +36,7 @@ class TankBlockEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEnt
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
-        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, tank.volume.amount().asLong(1L)/1f)
+        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, fluidInv.getInvFluid(0).amount().asLong(1L)/1f)
         entity.lastRenderedFluid = p
 
         val partUv = UV(sprite)

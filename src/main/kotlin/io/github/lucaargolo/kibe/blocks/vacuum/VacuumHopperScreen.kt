@@ -31,7 +31,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
             val tank = handler.entity.tanks.first()
             val stored = tank.volume.amount()
             val capacity = tank.capacity
-            renderTooltip(matrices, listOf(tank.volume.name, LiteralText("${stored.asInt(1000)} / ${capacity.asInt(1000)} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
+            renderTooltip(matrices, listOf(if(tank.volume.isEmpty) TranslatableText("tooltip.kibe.empty") else tank.volume.name, LiteralText("${stored.asInt(1000)} / ${capacity.asInt(1000)} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
         }
     }
 

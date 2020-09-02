@@ -34,6 +34,7 @@ abstract public class ExperienceOrbEntityMixin extends Entity {
                     if(distance < 1.0) {
                         ((VacuumHopperEntity) blockEntity).addLiquidXp(amount*10);
                         this.destroy();
+                        break;
                     }
                     Vec3d vel = this.getPos().reverseSubtract(vecPos).normalize().multiply(0.1);
                     this.addVelocity(vel.x, vel.y, vel.z);

@@ -1,16 +1,15 @@
 package io.github.lucaargolo.kibe.blocks.tank
 
-import alexiil.mc.lib.attributes.ListenerRemovalToken
-import alexiil.mc.lib.attributes.ListenerToken
 import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FixedFluidInv
-import alexiil.mc.lib.attributes.fluid.FluidInvTankChangeListener
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
+import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import io.github.lucaargolo.kibe.utils.FluidTank
+import io.github.lucaargolo.kibe.utils.minus
+import io.github.lucaargolo.kibe.utils.plus
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -19,70 +18,71 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 import net.minecraft.util.math.Direction
+import java.math.RoundingMode
 
-class TankBlockEntity(val tank: Tank): BlockEntity(getEntityType(tank)), FixedFluidInv, Tickable, BlockEntityClientSerializable {
+class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, BlockEntityClientSerializable {
 
-    val tanks = listOf(FluidTank(FluidAmount(16)))
     var lastRenderedFluid = 0f
     var tickDelay = 0
 
-    override fun getTankCount() = tanks.size
+    val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
 
-    override fun isFluidValidForTank(tank: Int, fluidKey: FluidKey?) = tanks[tank].volume.fluidKey == fluidKey || tanks[tank].volume.fluidKey.isEmpty
-
-    override fun getMaxAmount_F(tank: Int) = tanks[tank].capacity
-
-    override fun getInvFluid(tank: Int) = tanks[tank].volume
-
-    override fun setInvFluid(tank: Int, to: FluidVolume, simulation: Simulation?): Boolean {
-        return if (isFluidValidForTank(tank, to.fluidKey)) {
-            if (simulation?.isAction == true)
-                tanks[tank].volume = to
+    var volume: FluidVolume
+        get() = fluidInv.getInvFluid(0)
+        set(value) {
+            fluidInv.setInvFluid(0, value, Simulation.ACTION)
             markDirtyAndSync()
-            true
-        } else false
-    }
+        }
 
-    override fun addListener(p0: FluidInvTankChangeListener?, p1: ListenerRemovalToken?) = ListenerToken {}
+    val fluidKey: FluidKey
+        get() = volume.fluidKey
+
+    var amount: FluidAmount
+        get() = volume.amount()
+        set(value) {
+            fluidInv.setInvFluid(0, fluidKey.withAmount(value), Simulation.ACTION)
+            markDirtyAndSync()
+        }
+
+    val isEmpty: Boolean
+        get() = volume.isEmpty
+
+    val capacity: FluidAmount
+        get() = fluidInv.tankCapacity_F
 
     override fun tick() {
         if(tickDelay++ < 10) return else tickDelay = 0
         val world = world ?: return
         Direction.values().forEach {
             if(it == Direction.UP) return@forEach
-            val be = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
-            if(it == Direction.DOWN && (be.tanks[0].volume.isEmpty || be.tanks[0].volume.fluidKey == tanks[0].volume.fluidKey)) {
-                if(be.tanks[0].volume.amount().add(tanks[0].volume.amount()) <= be.tanks[0].capacity) {
-                    be.tanks[0].volume = tanks[0].volume.fluidKey.withAmount(be.tanks[0].volume.amount().add(tanks[0].volume.amount()))
-                    be.markDirtyAndSync()
-                    tanks[0].volume = FluidKeys.EMPTY.withAmount(FluidAmount.ZERO)
-                    markDirtyAndSync()
+            val otherTank = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
+
+            if(it == Direction.DOWN && (otherTank.isEmpty || otherTank.fluidKey == this.fluidKey)) {
+                if(otherTank.amount + this.amount <= otherTank.capacity) {
+                    otherTank.volume = this.fluidKey.withAmount(otherTank.amount + this.amount)
+                    this.amount = FluidAmount.ZERO
                 }else{
-                    val dif = be.tanks[0].capacity.sub(be.tanks[0].volume.amount())
-                    be.tanks[0].volume = be.tanks[0].volume.fluidKey.withAmount(be.tanks[0].capacity)
-                    be.markDirtyAndSync()
-                    tanks[0].volume = tanks[0].volume.fluidKey.withAmount(tanks[0].volume.amount().sub(dif))
-                    markDirtyAndSync()
+                    val dif = otherTank.capacity - otherTank.amount
+                    otherTank.volume = this.fluidKey.withAmount(otherTank.capacity)
+                    this.amount -= dif
                 }
             }
-            if((be.tanks[0].volume.isEmpty || be.tanks[0].volume.fluidKey == tanks[0].volume.fluidKey) && tanks[0].volume.amount() > be.tanks[0].volume.amount()) {
-                var dif = be.tanks[0].volume.amount().add(tanks[0].volume.amount()).div(2).sub(be.tanks[0].volume.amount())
-                if(dif < FluidAmount.of(10, 1000)) return@forEach
-                if(dif > FluidAmount.BOTTLE) dif = FluidAmount.BOTTLE
-                be.tanks[0].volume = tanks[0].volume.fluidKey.withAmount(be.tanks[0].volume.amount().add(dif))
-                be.markDirtyAndSync()
-                tanks[0].volume = tanks[0].volume.fluidKey.withAmount(tanks[0].volume.amount().sub(dif))
-                markDirtyAndSync()
+
+            if((otherTank.isEmpty || otherTank.fluidKey == this.fluidKey) && this.amount > otherTank.amount) {
+                var dif = (this.amount - otherTank.amount).roundedDiv(2L)
+                dif = FluidAmount.of(dif.asLong(1000), 1000)
+                if(dif > FluidAmount.of(10, 1000)) {
+                    if(dif > FluidAmount.BOTTLE) dif = FluidAmount.BOTTLE
+                    otherTank.volume = this.fluidKey.withAmount(otherTank.amount + dif)
+                    this.amount -= dif
+                }
             }
         }
-        val volume = tanks[0].volume
-        val fluid = volume.fluidKey.rawFluid ?: Fluids.EMPTY
-        val blockState = fluid.defaultState.blockState
-        val l = blockState.luminance
-        val p = volume.amount().asLong(1L)/16f
-        val x = (l*p).toInt()
-        if(x != cachedState[Properties.LEVEL_15]) {
-            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, x))
+
+        val fluid = if(this.isEmpty) Fluids.EMPTY else this.fluidKey.rawFluid ?: Fluids.EMPTY
+        val luminance = fluid.defaultState.blockState.luminance
+        if(luminance != cachedState[Properties.LEVEL_15]) {
+            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
         }
     }
 
@@ -92,30 +92,25 @@ class TankBlockEntity(val tank: Tank): BlockEntity(getEntityType(tank)), FixedFl
             sync()
     }
 
+    private var broken = false
+
+    fun markBroken() {
+        broken = true
+    }
+
     override fun toTag(tag: CompoundTag): CompoundTag {
-        val tanksTag = CompoundTag()
-        tanks.forEachIndexed { index, tank ->
-            val tankTag = CompoundTag()
-            tankTag.put("fluids", tank.volume.toTag())
-            tanksTag.put(index.toString(), tankTag)
-        }
-        tag.put("tanks", tanksTag)
-        return super.toTag(tag)
+        tag.put("fluidInv", fluidInv.toTag())
+        return if(broken) tag else super.toTag(tag)
     }
 
 
     override fun fromTag(state: BlockState, tag: CompoundTag) {
         super.fromTag(state, tag)
-        val tanksTag = tag.getCompound("tanks")
-        tanksTag.keys.forEachIndexed { idx, key ->
-            val tankTag = tanksTag.getCompound(key)
-            val volume = FluidVolume.fromTag(tankTag.getCompound("fluids"))
-            tanks[idx].volume = volume
-        }
+        fluidInv.fromTag(tag.getCompound("fluidInv"))
     }
 
     override fun toClientTag(tag: CompoundTag) = toTag(tag)
 
-    override fun fromClientTag(tag: CompoundTag) = fromTag(tank.defaultState, tag)
+    override fun fromClientTag(tag: CompoundTag) = fromTag(TANK.defaultState, tag)
 
 }

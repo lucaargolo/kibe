@@ -162,6 +162,7 @@ val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"),
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())
 val TANK = registerWithEntity<TankBlockEntity>(Identifier(MOD_ID, "tank"), Tank(), hasBlockItem = false, renderer = Supplier { TankBlockEntityRenderer::class })
+val XP_SHOWER = registerWithEntity<XpShowerBlockEntity>(Identifier(MOD_ID, "xp_shower"), XpShower())
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), Elevator())
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), Elevator())

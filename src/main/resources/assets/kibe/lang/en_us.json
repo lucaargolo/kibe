@@ -116,6 +116,7 @@
   "chat.kibe.cursed_dirt.spawn": "§5Given the right conditions, the following mobs can spawn: ",
   "chat.kibe.lasso.cannot_spawn": "§cThe entity cannot be released in this location!",
 
+  "tooltip.kibe.empty": "Empty",
   "tooltip.kibe.enabled": "§aEnabled",
   "tooltip.kibe.disabled": "§cDisabled",
   "tooltip.kibe.overflow": "§cOverflow",

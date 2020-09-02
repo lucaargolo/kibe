@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.items.tank
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.TANK_CUSTOM_MODEL
 import io.github.lucaargolo.kibe.utils.FluidTank
@@ -42,20 +43,14 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         val stackTag = stack.orCreateTag
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
 
-        val dummyTank = FluidTank(FluidAmount(16))
-
-        val tanksTag = blockEntityTag.getCompound("tanks")
-        tanksTag.keys.forEach {  key ->
-            val tankTag = tanksTag.getCompound(key)
-            val volume = FluidVolume.fromTag(tankTag.getCompound("fluids"))
-            dummyTank.volume = volume
-        }
+        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+        dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))
 
         val player = MinecraftClient.getInstance().player
         val world = player?.world
         val pos = player?.blockPos
 
-        val fluid = dummyTank.volume.rawFluid ?: Fluids.EMPTY
+        val fluid = dummyFluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
         val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
         val fluidColor = fluidRenderHandler.getFluidColor(world, pos, fluid.defaultState)
         val fluidSprite = fluidRenderHandler.getFluidSprites(world, pos, fluid.defaultState)[0]
@@ -68,7 +63,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
         val emitter = context.emitter
 
-        val p = dummyTank.volume.amount().asLong(1L)/16f
+        val p = dummyFluidInv.getInvFluid(0).amount().asLong(1L)/16f
         emitter.draw(Direction.UP, fluidSprite, 0f, 0f, 1f, 1f, (1f-p)+0.001f )
         emitter.draw(Direction.DOWN, fluidSprite, 0f, 0f, 1f, 1f, 0.001f)
         emitter.draw(Direction.NORTH, fluidSprite, 0f, 0f, 1f, p, 0.001f)

@@ -1,6 +1,8 @@
 package io.github.lucaargolo.kibe.utils
 
+import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.TANK
@@ -47,11 +49,9 @@ fun initCreativeTab() {
                 }else if(fluid.isStill(fluid.defaultState)) {
                     val tag = itemStack.orCreateTag
                     val blockEntityTag = CompoundTag()
-                    val tanksTag = CompoundTag()
-                    val tankTag = CompoundTag()
-                    tankTag.put("fluids", FluidKeys.get(fluid).withAmount(FluidAmount(16)).toTag())
-                    tanksTag.put("0", tankTag)
-                    blockEntityTag.put("tanks", tanksTag)
+                    val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+                    fluidInv.setInvFluid(0, FluidKeys.get(fluid).withAmount(FluidAmount(16)), Simulation.ACTION)
+                    blockEntityTag.put("fluidInv", fluidInv.toTag())
                     tag.put("BlockEntityTag", blockEntityTag)
                     stacks.add(itemStack)
                 }

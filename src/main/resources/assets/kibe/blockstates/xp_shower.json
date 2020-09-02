@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "kibe:block/xp_shower_horizontal" },
+    "facing=south": { "model": "kibe:block/xp_shower_horizontal", "y": 180},
+    "facing=west": { "model": "kibe:block/xp_shower_horizontal", "y": 270},
+    "facing=east": { "model": "kibe:block/xp_shower_horizontal", "y": 90 },
+    "facing=up": { "model": "kibe:block/xp_shower_vertical"},
+    "facing=down": { "model": "kibe:block/xp_shower_vertical"}
+  }
+}

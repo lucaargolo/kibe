@@ -2,10 +2,13 @@ package io.github.lucaargolo.kibe.blocks.tank
 
 import alexiil.mc.lib.attributes.AttributeList
 import alexiil.mc.lib.attributes.AttributeProvider
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv
 import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -33,12 +36,22 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
 
     override fun addAllAttributes(world: World, pos: BlockPos?, state: BlockState?, to: AttributeList<*>) {
         (world.getBlockEntity(pos) as? TankBlockEntity)?.let {
-            to.offer(it)
+            to.offer(it.fluidInv)
         }
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { FluidInvUtil.interactHandWithTank(it, player, hand).asActionResult() } ?: ActionResult.FAIL
+        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let {
+            println("Fluid before: "+it.fluidInv.toTag().toString())
+            val result = FluidInvUtil.interactHandWithTank(it.fluidInv as FixedFluidInv, player, hand).asActionResult()
+            println("Fluid after: "+it.fluidInv.toTag().toString())
+            return@let result
+        } ?: ActionResult.FAIL
+    }
+
+    override fun afterBreak(world: World?, player: PlayerEntity?, pos: BlockPos?, state: BlockState?, blockEntity: BlockEntity?, stack: ItemStack?) {
+        (blockEntity as? TankBlockEntity)?.markBroken()
+        super.afterBreak(world, player, pos, state, blockEntity, stack)
     }
 
 }
