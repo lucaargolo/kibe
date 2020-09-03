@@ -98,72 +98,72 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
         }
     }
 
-    private fun getRuneByPos(x: Double, z: Double, direction: Direction): Int? {
-        val int = when(x) {
-            in 0.6875..0.8125 -> {
-                when(z) {
-                    in 0.6875..0.8125 -> 1
-                    in 0.4375..0.5625 -> 8
-                    in 0.1875..0.3125 -> 7
-                    else -> null
-                }
-            }
-            in 0.4375..0.5625 -> {
-                when(z) {
-                    in 0.6875..0.8125 -> 2
-                    in 0.1875..0.3125 -> 6
-                    else -> null
-                }
-            }
-            in 0.1875..0.3125 -> {
-                when(z) {
-                    in 0.6875..0.8125 -> 3
-                    in 0.4375..0.5625 -> 4
-                    in 0.1875..0.3125 -> 5
-                    else -> null
-                }
-            }
-            else -> null
-        }
-        return if(int == null) null
-        else {
-            when(direction) {
-                Direction.SOUTH -> int
-                Direction.EAST -> if (int + 2 > 8) (int+2)-8 else (int+2)
-                Direction.NORTH -> if (int + 4 > 8) (int+4)-8 else (int+4)
-                Direction.WEST -> if (int + 6 > 8) (int+6)-8 else (int+6)
-                else -> null
-            }
-        }
-    }
-
-    private fun getRunesShape(): VoxelShape {
-        return VoxelShapes.union(
-            VoxelShapes.union(
-                VoxelShapes.union(
-                    createCuboidShape(11.0, 14.0, 11.0, 13.0, 16.0, 13.0),
-                    createCuboidShape(11.0, 14.0, 7.0, 13.0, 16.0, 9.0)
-                ),
-                VoxelShapes.union(
-                    createCuboidShape(11.0, 14.0, 3.0, 13.0, 16.0, 5.0),
-                    createCuboidShape(7.0, 14.0, 3.0, 9.0, 16.0, 5.0)
-                )
-            ),
-            VoxelShapes.union(
-                VoxelShapes.union(
-                    createCuboidShape(3.0, 14.0, 3.0, 5.0, 16.0, 5.0),
-                    createCuboidShape(3.0, 14.0, 7.0, 5.0, 16.0, 9.0)
-                ),
-                VoxelShapes.union(
-                    createCuboidShape(3.0, 14.0, 11.0, 5.0, 16.0, 13.0),
-                    createCuboidShape(7.0, 14.0, 11.0, 9.0, 16.0, 13.0)
-                )
-            )
-        )
-    }
-
     companion object {
         const val DEFAULT_KEY = "entangledchest-global"
+
+        fun getRuneByPos(x: Double, z: Double, direction: Direction): Int? {
+            val int = when(x) {
+                in 0.6875..0.8125 -> {
+                    when(z) {
+                        in 0.6875..0.8125 -> 1
+                        in 0.4375..0.5625 -> 8
+                        in 0.1875..0.3125 -> 7
+                        else -> null
+                    }
+                }
+                in 0.4375..0.5625 -> {
+                    when(z) {
+                        in 0.6875..0.8125 -> 2
+                        in 0.1875..0.3125 -> 6
+                        else -> null
+                    }
+                }
+                in 0.1875..0.3125 -> {
+                    when(z) {
+                        in 0.6875..0.8125 -> 3
+                        in 0.4375..0.5625 -> 4
+                        in 0.1875..0.3125 -> 5
+                        else -> null
+                    }
+                }
+                else -> null
+            }
+            return if(int == null) null
+            else {
+                when(direction) {
+                    Direction.SOUTH -> int
+                    Direction.EAST -> if (int + 2 > 8) (int+2)-8 else (int+2)
+                    Direction.NORTH -> if (int + 4 > 8) (int+4)-8 else (int+4)
+                    Direction.WEST -> if (int + 6 > 8) (int+6)-8 else (int+6)
+                    else -> null
+                }
+            }
+        }
+
+        fun getRunesShape(): VoxelShape {
+            return VoxelShapes.union(
+                VoxelShapes.union(
+                    VoxelShapes.union(
+                        createCuboidShape(11.0, 14.0, 11.0, 13.0, 16.0, 13.0),
+                        createCuboidShape(11.0, 14.0, 7.0, 13.0, 16.0, 9.0)
+                    ),
+                    VoxelShapes.union(
+                        createCuboidShape(11.0, 14.0, 3.0, 13.0, 16.0, 5.0),
+                        createCuboidShape(7.0, 14.0, 3.0, 9.0, 16.0, 5.0)
+                    )
+                ),
+                VoxelShapes.union(
+                    VoxelShapes.union(
+                        createCuboidShape(3.0, 14.0, 3.0, 5.0, 16.0, 5.0),
+                        createCuboidShape(3.0, 14.0, 7.0, 5.0, 16.0, 9.0)
+                    ),
+                    VoxelShapes.union(
+                        createCuboidShape(3.0, 14.0, 11.0, 5.0, 16.0, 13.0),
+                        createCuboidShape(7.0, 14.0, 11.0, 9.0, 16.0, 13.0)
+                    )
+                )
+            )
+        }
     }
 
 }

@@ -41,9 +41,13 @@ import java.util.function.Supplier
 import java.util.function.Function
 import kotlin.reflect.KClass
 import com.mojang.datafixers.util.Pair
+import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreen
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreenHandler
+import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItem
+import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItemBakedModel
+import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItemBakedModel
 import io.github.lucaargolo.kibe.items.tank.TankBlockItem
 import io.github.lucaargolo.kibe.items.tank.TankBlockItemBakedModel
 import net.minecraft.util.Hand
@@ -191,6 +195,8 @@ val VOID_BUCKET = register(Identifier(MOD_ID, "void_bucket"), VoidBucket(Setting
 val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"),  PocketCraftingTable(Settings().maxCount(1)))
 val POCKET_TRASH_CAN = register(Identifier(MOD_ID, "pocket_trash_can"),  PocketTrashCan(Settings().maxCount(1)), containers = listOf(ContainerInfo<PocketTrashCanScreenHandler>(PocketTrashCanScreenHandler::class, Supplier { PocketTrashCanScreen::class })))
 
+val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), EntangledChestBlockItem(Settings()), Supplier { EntangledChestBlockItemBakedModel() })
+val ENTANGLED_TANK = register(Identifier(MOD_ID, "entangled_tank"), EntangledTankBlockItem(Settings()), Supplier { EntangledTankBlockItemBakedModel() })
 val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), Supplier { EntangledBagBakedModel() }, listOf(ContainerInfo<EntangledBagScreenHandler>(EntangledBagScreenHandler::class, Supplier { EntangledBagScreen::class })))
 val COOLER = register(Identifier(MOD_ID, "cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), containers = listOf(ContainerInfo<CoolerBlockItemScreenHandler>(CoolerBlockItemScreenHandler::class, Supplier { CoolerBlockItemScreen::class }, identifier = Identifier(MOD_ID, "cooler_item"))))
 val TANK = register(Identifier(MOD_ID, "tank"), TankBlockItem(Settings()), Supplier { TankBlockItemBakedModel() } )

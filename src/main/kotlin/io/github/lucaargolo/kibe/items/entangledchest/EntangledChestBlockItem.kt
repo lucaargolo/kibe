@@ -1,5 +1,7 @@
-package io.github.lucaargolo.kibe.blocks.entangledchest
+package io.github.lucaargolo.kibe.items.entangledchest
 
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import net.minecraft.block.Block
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
@@ -14,7 +16,7 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.Rarity
 import net.minecraft.world.World
 
-class EntangledChestBlockItem(block: Block, settings: Settings): BlockItem(block, settings.rarity(Rarity.RARE)) {
+class EntangledChestBlockItem(settings: Settings): BlockItem(ENTANGLED_CHEST, settings.rarity(Rarity.RARE)) {
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)

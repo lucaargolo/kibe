@@ -5,11 +5,13 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.blocks.COOLER
-import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.getFluidBucket
+import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.items.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.block.Block
@@ -27,7 +29,7 @@ var CREATIVE_TAB: ItemGroup? = null
 fun initCreativeTab() {
     val order = arrayOf(
         CURSED_DIRT, CURSED_DROPLETS, CURSED_SEEDS, CURSED_LASSO, GOLDEN_LASSO, DIAMOND_LASSO,
-        ENTANGLED_CHEST, ENTANGLED_BAG, POCKET_TRASH_CAN, POCKET_CRAFTING_TABLE, REDSTONE_TIMER, TRASH_CAN, VACUUM_HOPPER, LIQUID_XP,
+        ENTANGLED_CHEST, ENTANGLED_BAG, ENTANGLED_TANK, POCKET_TRASH_CAN, POCKET_CRAFTING_TABLE, REDSTONE_TIMER, TRASH_CAN, VACUUM_HOPPER, LIQUID_XP,
         MAGNET, DIAMOND_RING, ANGEL_RING, MAGMA_RING, WATER_RING, LIGHT_RING, GLIDER_LEFT_WING, GLIDER_RIGHT_WING,
         WHITE_GLIDER, ORANGE_GLIDER, MAGENTA_GLIDER, LIGHT_BLUE_GLIDER, YELLOW_GLIDER, LIME_GLIDER, PINK_GLIDER, GRAY_GLIDER,
         LIGHT_GRAY_GLIDER, CYAN_GLIDER, BLUE_GLIDER, PURPLE_GLIDER, GREEN_GLIDER, BROWN_GLIDER, RED_GLIDER, BLACK_GLIDER,

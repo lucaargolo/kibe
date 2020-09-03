@@ -15,6 +15,8 @@ import io.github.lucaargolo.kibe.blocks.cooler.CoolerBlockEntity
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreen
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreenHandler
 import io.github.lucaargolo.kibe.blocks.entangledchest.*
+import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
+import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.tank.Tank
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
@@ -24,6 +26,7 @@ import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
 import io.github.lucaargolo.kibe.blocks.vacuum.*
+import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItem
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
@@ -153,7 +156,8 @@ val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt")
 val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ConveyorBelt(0.25F))
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ConveyorBelt(0.5F))
 
-val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = Supplier { EntangledChestEntityRenderer::class }, blockItem = EntangledChestBlockItem::class, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, Supplier { EntangledChestScreen::class })))
+val ENTANGLED_TANK = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_tank"), EntangledTank(), renderer = Supplier { EntangledTankEntityRenderer::class }, hasBlockItem = false)
+val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = Supplier { EntangledChestEntityRenderer::class }, hasBlockItem = false, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, Supplier { EntangledChestScreen::class })))
 val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(TrashCanScreenHandler::class, Supplier {  TrashCanScreen::class })))
 val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = Supplier { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, Supplier {  VacuumHopperScreen::class })))
 val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, Supplier { BigTorchScreen::class })))

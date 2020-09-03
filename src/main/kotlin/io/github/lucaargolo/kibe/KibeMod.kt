@@ -6,6 +6,7 @@ import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
+import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
@@ -18,8 +19,10 @@ import io.github.lucaargolo.kibe.items.initItemsClient
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
+import io.github.lucaargolo.kibe.utils.EntangledTankCache
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
+import io.netty.buffer.Unpooled
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
@@ -48,6 +51,8 @@ import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldAccess
@@ -59,6 +64,9 @@ const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 val BIG_TORCH_MAP: LinkedHashMap<WorldAccess?, MutableList<BigTorchBlockEntity>> = linkedMapOf()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
+val MARK_ENTANGLED_TANK_DIRTY_S2C = Identifier(MOD_ID, "mark_entangled_tank_dirty")
+val SYNC_ENTANGLED_TANK_S2C = Identifier(MOD_ID, "sync_entangled_tank")
+val REQUEST_ENTANGLED_TANK_SYNC_C2S = Identifier(MOD_ID, "request_entangled_tank_sync")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 val TANK_CUSTOM_MODEL = TankCustomModel()
@@ -110,6 +118,21 @@ fun initPackets() {
             }
         }
     }
+    ServerSidePacketRegistry.INSTANCE.register(REQUEST_ENTANGLED_TANK_SYNC_C2S) { packetContext: PacketContext, attachedData: PacketByteBuf ->
+        val key = attachedData.readString(32767)
+        val colorCode = attachedData.readString(32767)
+        packetContext.taskQueue.execute {
+            val player = packetContext.player as ServerPlayerEntity
+            val serverWorld = player.serverWorld
+            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
+            val fluidInv = state.getOrCreateInventory(colorCode)
+            val passedData = PacketByteBuf(Unpooled.buffer())
+            passedData.writeString(key)
+            passedData.writeString(colorCode)
+            passedData.writeCompoundTag(fluidInv.toTag())
+            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SYNC_ENTANGLED_TANK_S2C, passedData)
+        }
+    }
 }
 
 fun initPacketsClient() {
@@ -121,6 +144,21 @@ fun initPacketsClient() {
                 val screen = MinecraftClient.getInstance().currentScreen as VacuumHopperScreen
                 screen.screenHandler.lastRecipe = recipe
             }
+        }
+    }
+    ClientSidePacketRegistry.INSTANCE.register(MARK_ENTANGLED_TANK_DIRTY_S2C) { packetContext: PacketContext, attachedData: PacketByteBuf ->
+        val key = attachedData.readString()
+        val colorCode = attachedData.readString()
+        packetContext.taskQueue.execute {
+            EntangledTankCache.markDirty(key, colorCode)
+        }
+    }
+    ClientSidePacketRegistry.INSTANCE.register(SYNC_ENTANGLED_TANK_S2C) { packetContext: PacketContext, attachedData: PacketByteBuf ->
+        val key = attachedData.readString()
+        val colorCode = attachedData.readString()
+        val newFluidInvTag = attachedData.readCompoundTag()
+        packetContext.taskQueue.execute {
+            EntangledTankCache.updateClientFluidInv(key, colorCode, newFluidInvTag!!)
         }
     }
 }
@@ -184,6 +222,7 @@ fun initExtrasClient() {
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
     BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutout())
     BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
+    BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getTranslucent())
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
         ModelVariantProvider { modelIdentifier, _ ->
             if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "tank" && modelIdentifier.variant != "inventory") {

@@ -175,7 +175,7 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
         val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
-        val lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.world, blockEntity.pos)
+        val lightAbove = blockEntity.world?.let { WorldRenderer.getLightmapCoordinates(it, blockEntity.pos) } ?: light
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
 
         val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
@@ -213,7 +213,8 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         val popup = if(
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == blockEntity.pos &&
-            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune) 1 else 0
+            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
+        ) 1 else 0
 
 
         (1..8).forEach {
