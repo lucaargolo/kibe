@@ -4,7 +4,6 @@ import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.blocks.getEntityType
@@ -18,7 +17,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 import net.minecraft.util.math.Direction
-import java.math.RoundingMode
 
 class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, BlockEntityClientSerializable {
 
@@ -26,6 +24,10 @@ class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, B
     var tickDelay = 0
 
     val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+
+    init {
+        fluidInv.addListener ( { _, _, _, _ -> markDirtyAndSync() }, {  })
+    }
 
     var volume: FluidVolume
         get() = fluidInv.getInvFluid(0)

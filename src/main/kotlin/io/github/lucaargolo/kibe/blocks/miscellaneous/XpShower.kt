@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
@@ -10,24 +11,42 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
+import net.minecraft.world.World
+import java.util.*
 
 class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
 
     override fun createBlockEntity(world: BlockView?) = XpShowerBlockEntity(this)
 
     init {
-        defaultState = stateManager.defaultState.with(Properties.FACING, Direction.SOUTH)
+        defaultState = stateManager.defaultState.with(Properties.FACING, Direction.SOUTH).with(Properties.ENABLED, false)
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
         builder.add(Properties.FACING)
+        builder.add(Properties.ENABLED)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         var side = ctx.side
-        if(side == Direction.DOWN)
-            side = Direction.UP
-        return defaultState.with(Properties.FACING, side)
+        if(side == Direction.DOWN) side = Direction.UP
+        return defaultState.with(Properties.FACING, side).with(Properties.ENABLED, ctx.world.isReceivingRedstonePower(ctx.blockPos))
+    }
+
+    override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos?, block: Block?, fromPos: BlockPos?, notify: Boolean) {
+        if (!world.isClient) {
+            val isEnabled = state[Properties.ENABLED]
+            if (isEnabled != world.isReceivingRedstonePower(pos)) {
+                if (isEnabled) world.blockTickScheduler.schedule(pos, this, 4)
+                else world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
+            }
+        }
+    }
+
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: Random?) {
+        if (state[Properties.ENABLED] && !world.isReceivingRedstonePower(pos)) {
+            world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
+        }
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
@@ -44,8 +63,8 @@ class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialC
             createCuboidShape(6.5, 10.0, 6.5, 9.5, 11.0, 9.5)
         )
         val duct = VoxelShapes.union(
-            createCuboidShape(7.5, 11.0, 7.5, 8.5, if(hrz) 15.0 else 16.0, 8.5),
-            when(dir) {
+            createCuboidShape(7.5, 11.0, 7.5, 8.5, if (hrz) 15.0 else 16.0, 8.5),
+            when (dir) {
                 Direction.NORTH -> createCuboidShape(7.5, 14.0, 8.5, 8.5, 15.0, 16.0)
                 Direction.SOUTH -> createCuboidShape(7.5, 14.0, 0.0, 8.5, 15.0, 7.5)
                 Direction.WEST -> createCuboidShape(8.5, 14.0, 7.5, 16.0, 15.0, 8.5)

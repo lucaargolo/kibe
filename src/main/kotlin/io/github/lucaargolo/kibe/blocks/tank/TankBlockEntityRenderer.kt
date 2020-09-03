@@ -36,7 +36,7 @@ class TankBlockEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEnt
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
-        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, fluidInv.getInvFluid(0).amount().asLong(1L)/1f)
+        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, fluidInv.getInvFluid(0).amount().asLong(1000L)/1000f)
         entity.lastRenderedFluid = p
 
         val partUv = UV(sprite)

@@ -8,15 +8,18 @@ import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.ExperienceOrbEntity
+import net.minecraft.entity.MovementType
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 
 class XpShowerBlockEntity(xpShower: XpShower): BlockEntity(getEntityType(xpShower)), Tickable {
 
     var tickDelay = 0
 
     override fun tick() {
+        if(cachedState[Properties.ENABLED]) return
         val world = world ?: return
         if(tickDelay++ < 5) return else tickDelay = 0
         var dir = cachedState[Properties.FACING]
@@ -32,7 +35,12 @@ class XpShowerBlockEntity(xpShower: XpShower): BlockEntity(getEntityType(xpShowe
             val toExtractAmount = FluidAmount.of(j*10L, 1000L)
             val extractedVolume = extractable.attemptExtraction({ fluidKey: FluidKey -> fluidKey == LIQUID_XP.key }, toExtractAmount, Simulation.ACTION)
             val extractedAmount = extractedVolume.amount().asInt(1000)/10
-            if(extractedAmount > 0) this.world!!.spawnEntity(ExperienceOrbEntity(world, pos.x+.5, pos.y+.5, pos.z+.5, extractedAmount))
+            if(extractedAmount > 0) {
+                val entity = ExperienceOrbEntity(world, pos.x+.5, pos.y+.2, pos.z+.5, extractedAmount)
+                entity.move(MovementType.SELF, Vec3d(0.0, 0.0, 0.0))
+                entity.setVelocity(0.0, -0.5, 0.0)
+                world.spawnEntity(entity)
+            }
         }
 
     }

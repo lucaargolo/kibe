@@ -41,12 +41,7 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let {
-            println("Fluid before: "+it.fluidInv.toTag().toString())
-            val result = FluidInvUtil.interactHandWithTank(it.fluidInv as FixedFluidInv, player, hand).asActionResult()
-            println("Fluid after: "+it.fluidInv.toTag().toString())
-            return@let result
-        } ?: ActionResult.FAIL
+        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { FluidInvUtil.interactHandWithTank(it.fluidInv as FixedFluidInv, player, hand).asActionResult() } ?: ActionResult.FAIL
     }
 
     override fun afterBreak(world: World?, player: PlayerEntity?, pos: BlockPos?, state: BlockState?, blockEntity: BlockEntity?, stack: ItemStack?) {
