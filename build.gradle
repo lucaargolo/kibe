@@ -44,7 +44,7 @@ dependencies {
     modImplementation("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
     include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
 
-    modImplementation "alexiil.mc.mod:simplepipes-all:0.4.0-pre.21"
+    modImplementation "alexiil.mc.mod:simplepipes-all:0.4.1-pre.1"
     modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 }

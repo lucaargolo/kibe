@@ -71,7 +71,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        val poss = player.rayTrace(4.5, 1.0F, false).pos
+        val poss = player.raycast(4.5, 1.0F, false).pos
 
         return (world.getBlockEntity(pos) as? EntangledTankEntity)?.let { tank ->
             if ((poss.y - pos.y) > 0.9375) {

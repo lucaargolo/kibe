@@ -20,14 +20,14 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
-import net.minecraft.world.RayTraceContext
+import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
 class VoidBucket(settings: Settings): Item(settings) {
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack> {
         val itemStack = user.getStackInHand(hand)
-        val hitResult: HitResult = rayTrace(world, user, RayTraceContext.FluidHandling.SOURCE_ONLY)
+        val hitResult: HitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY)
 
         return (hitResult as? BlockHitResult)?.let { blockHitResult ->
             val dir = blockHitResult.side

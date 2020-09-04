@@ -16,15 +16,15 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
-import net.minecraft.world.RayTraceContext
+import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
 open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {
         val itemStack = user.getStackInHand(hand)
-        val hitResult: HitResult = rayTrace(world, user,
-            if (this.fluid === Fluids.EMPTY) RayTraceContext.FluidHandling.SOURCE_ONLY else RayTraceContext.FluidHandling.NONE
+        val hitResult: HitResult = raycast(world, user,
+            if (this.fluid === Fluids.EMPTY) RaycastContext.FluidHandling.SOURCE_ONLY else RaycastContext.FluidHandling.NONE
         )
 
         return (hitResult as? BlockHitResult)?.let { blockHitResult ->

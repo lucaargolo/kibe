@@ -40,7 +40,7 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
-import net.minecraft.world.RayTraceContext
+import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
 class EntangledBucket(settings: Settings): Item(settings)  {
@@ -82,8 +82,8 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         val hasSpace = (fluidInv.getInvFluid(0).amount() + FluidAmount.BUCKET) <= fluidInv.tankCapacity_F
         val hasBucket = fluidInv.getInvFluid(0).amount() >= FluidAmount.BUCKET
 
-        val hitResult: HitResult = rayTrace(world, user,
-            if (hasSpace) RayTraceContext.FluidHandling.SOURCE_ONLY else RayTraceContext.FluidHandling.NONE
+        val hitResult: HitResult = raycast(world, user,
+            if (hasSpace) RaycastContext.FluidHandling.SOURCE_ONLY else RaycastContext.FluidHandling.NONE
         )
 
         return (hitResult as? BlockHitResult)?.let { blockHitResult ->

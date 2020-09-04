@@ -61,7 +61,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
     override fun createBlockEntity(view: BlockView?) = EntangledChestEntity(this)
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        val poss = player.rayTrace(4.5, 1.0F, false).pos
+        val poss = player.raycast(4.5, 1.0F, false).pos
         if((poss.y-pos.y) > 0.9375) {
             if(player.getStackInHand(hand).item is Rune) {
                 val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])

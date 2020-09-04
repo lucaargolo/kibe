@@ -40,7 +40,7 @@ class SleepingBag(settings: Settings): Item(settings) {
     }
 
     private fun customTrySleep(player: PlayerEntity): Either<PlayerEntity.SleepFailureReason, Unit> {
-        val rayTraceContext = player.rayTrace(4.5, 1.0f, false)
+        val rayTraceContext = player.raycast(4.5, 1.0f, false)
         val sleepingPos = rayTraceContext.run {
             if(this.type == HitResult.Type.BLOCK) {
                 return@run BlockPos(this.pos)

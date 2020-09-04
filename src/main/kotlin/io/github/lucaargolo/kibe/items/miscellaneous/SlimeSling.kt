@@ -11,7 +11,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.UseAction
 import net.minecraft.util.hit.HitResult
-import net.minecraft.world.RayTraceContext
+import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
 
@@ -47,7 +47,7 @@ class SlimeSling(settings: Settings): Item(settings) {
             f = 6f
         }
 
-        val mop = rayTrace(world, entity, RayTraceContext.FluidHandling.NONE)
+        val mop = raycast(world, entity, RaycastContext.FluidHandling.NONE)
 
         if(mop != null && mop.type == HitResult.Type.BLOCK) {
 
