@@ -47,7 +47,7 @@ class EntangledBag(settings: Settings): Item(settings){
         return ActionResult.PASS
     }
 
-    fun getTag(stack: ItemStack): CompoundTag {
+    private fun getTag(stack: ItemStack): CompoundTag {
         return if(stack.hasTag()) {
             stack.orCreateTag
         }else{

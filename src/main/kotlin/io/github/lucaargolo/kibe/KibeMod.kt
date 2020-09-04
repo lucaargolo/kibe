@@ -214,15 +214,20 @@ fun initExtrasClient() {
         out.accept(ModelIdentifier(Identifier(MOD_ID, "red_glider_inactive"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "black_glider_active"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "black_glider_inactive"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_ring"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_background"), "inventory"))
-        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_ring"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_gold_core"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bag_diamond_core"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_background"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_fluid"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_foreground"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_gold_core"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_diamond_core"), "inventory"))
     }
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
     BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutout())
     BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
-    BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getTranslucent())
+    BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutout())
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
         ModelVariantProvider { modelIdentifier, _ ->
             if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "tank" && modelIdentifier.variant != "inventory") {

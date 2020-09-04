@@ -30,16 +30,21 @@
   "block.kibe.big_torch": "Big Torch",
   "block.kibe.chunk_loader": "Chunk Loader",
 
+  "block.kibe.entangled_tank": "Entangled Tank",
   "block.kibe.entangled_chest": "Entangled Chest",
   "block.kibe.trash_can": "Trash Can",
   "block.kibe.vacuum_hopper": "Vacuum Hopper",
   "block.kibe.redstone_timer": "Redstone Timer",
+  "block.kibe.xp_shower": "Xp Shower",
+  "block.kibe.xp_drain": "Xp Drain",
+
 
   "item.kibe.kibe": "Kibe",
   "item.kibe.golden_kibe": "Golden Kibe",
   "item.kibe.diamond_kibe": "Diamond Kibe",
   "item.kibe.cursed_kibe": "Cursed Kibe",
 
+  "item.kibe.entangled_bucket": "Entangled Bucket",
   "item.kibe.entangled_bag": "Entangled Bag",
   "item.kibe.pocket_trash_can": "Pocket Trash Can",
   "item.kibe.pocket_crafting_table": "Pocket Crafting Table",
@@ -111,6 +116,7 @@
 
   "effect.kibe.cursed_effect": "Cursed Effect",
 
+  "chat.kibe.entangled_bucket.success": "§6Successfully linked bucket!",
   "chat.kibe.entangled_bag.success": "§6Successfully linked bag!",
   "chat.kibe.cursed_dirt.nothing": "§cNo mobs are able to spawn",
   "chat.kibe.cursed_dirt.spawn": "§5Given the right conditions, the following mobs can spawn: ",

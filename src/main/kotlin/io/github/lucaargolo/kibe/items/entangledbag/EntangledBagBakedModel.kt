@@ -77,7 +77,7 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
             quad.spriteColor(0, color, color, color, color)
             true
         }
-        val ring = ModelIdentifier(Identifier(MOD_ID, "entangled_bag_ring"), "inventory")
+        val ring = ModelIdentifier(Identifier(MOD_ID, "entangled_ring"), "inventory")
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q.vertexData, 0, true)
