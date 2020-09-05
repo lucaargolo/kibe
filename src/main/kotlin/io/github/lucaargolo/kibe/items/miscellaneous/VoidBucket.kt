@@ -1,25 +1,22 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FluidAttributes
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.items.VOID_BUCKET
+import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
-import net.minecraft.tag.FluidTags
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
@@ -34,11 +31,7 @@ class VoidBucket(settings: Settings): Item(settings) {
             val pos = blockHitResult.blockPos
             val offsetPos = pos.offset(dir)
 
-            val extractable = FluidAttributes.EXTRACTABLE.get(world, pos)
-            val attemptExtraction = extractable.attemptExtraction({true}, FluidAmount.BUCKET, Simulation.SIMULATE)
-            if(attemptExtraction.amount() == FluidAmount.BUCKET) {
-                val extraction = extractable.attemptExtraction({true}, FluidAmount.BUCKET, Simulation.ACTION)
-                user.playSound(if (extraction.rawFluid?.isIn(FluidTags.LAVA) == true) SoundEvents.ITEM_BUCKET_FILL_LAVA else SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
+            if(fakeInteraction(world, pos, blockHitResult)) {
                 return TypedActionResult.success(itemStack)
             }
 
@@ -60,6 +53,17 @@ class VoidBucket(settings: Settings): Item(settings) {
             TypedActionResult.fail(itemStack)
 
         } ?: TypedActionResult.pass(itemStack)
+    }
+
+    private fun fakeInteraction(world: World, pos: BlockPos, blockHitResult: BlockHitResult): Boolean {
+        val fakePlayer = FakePlayerEntity(world)
+        fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(Items.BUCKET))
+        val blockState = world.getBlockState(pos)
+        val block = blockState.block
+        block.onUse(blockState, world, pos, fakePlayer, Hand.MAIN_HAND, blockHitResult)
+        val resultStack = fakePlayer.getStackInHand(Hand.MAIN_HAND)
+        val resultItem = resultStack.item
+        return resultItem != Items.BUCKET
     }
 
 }

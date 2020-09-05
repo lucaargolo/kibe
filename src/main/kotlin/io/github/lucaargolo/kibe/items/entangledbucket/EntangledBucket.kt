@@ -2,15 +2,19 @@ package io.github.lucaargolo.kibe.items.entangledbucket
 
 import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.FluidAttributes
+import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
+import alexiil.mc.lib.attributes.fluid.mixin.impl.BucketItemMixin
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.REQUEST_ENTANGLED_TANK_SYNC_C2S
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntity
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.items.ENTANGLED_BUCKET
+import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
 import io.github.lucaargolo.kibe.utils.EntangledTankCache
+import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import io.github.lucaargolo.kibe.utils.plus
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
@@ -19,11 +23,9 @@ import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
-import net.minecraft.item.BucketItem
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.*
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
@@ -40,6 +42,7 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
@@ -91,37 +94,36 @@ class EntangledBucket(settings: Settings): Item(settings)  {
             val pos = blockHitResult.blockPos
             val offsetPos = pos.offset(dir)
 
-            if(!user.isSneaking) {
-                val extractable = FluidAttributes.EXTRACTABLE.get(world, pos)
-                val attemptExtraction = extractable.attemptExtraction({it.rawFluid == fluid || fluid == Fluids.EMPTY}, FluidAmount.BUCKET, Simulation.SIMULATE)
-                if(hasSpace && attemptExtraction.amount() == FluidAmount.BUCKET) {
-                    val extraction = extractable.attemptExtraction({it.rawFluid == fluid || fluid == Fluids.EMPTY}, FluidAmount.BUCKET, Simulation.ACTION)
-                    user.playSound(if (fluid.isIn(FluidTags.LAVA)) SoundEvents.ITEM_BUCKET_FILL_LAVA else SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
+            var fakeBucketItem = fluid.bucketItem as? BucketItem ?: Items.BUCKET as BucketItem
+            if(user.isSneaking) fakeBucketItem = Items.BUCKET as BucketItem
+
+            if(fakeBucketItem == Items.BUCKET && hasSpace) {
+                val interact = fakeInteraction(fakeBucketItem, world, pos, blockHitResult)
+                if(interact != null) {
+                    user.playSound(if (interact.isIn(FluidTags.LAVA)) SoundEvents.ITEM_BUCKET_FILL_LAVA else SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
                     if (!world.isClient) {
                         val serverWorld = world as ServerWorld
                         val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({ EntangledTankState(serverWorld, key) }, key)
                         val stateInv = state.getOrCreateInventory(colorCode)
-                        stateInv.attemptInsertion(extraction, Simulation.ACTION)
+                        stateInv.attemptInsertion(FluidKeys.get(interact).withAmount(FluidAmount.BUCKET), Simulation.ACTION)
                         state.markDirty(colorCode)
                     }
                     return TypedActionResult.success(itemStack)
                 }
-            }
-
-            val insertable = FluidAttributes.INSERTABLE.get(world, pos)
-            val attemptInsertion = if(fluid != Fluids.EMPTY) insertable.attemptInsertion(FluidKeys.get(fluid).withAmount(FluidAmount.BUCKET), Simulation.SIMULATE) else null
-            if(hasSpace && attemptInsertion?.isEmpty == true) {
-                insertable.attemptInsertion(FluidKeys.get(fluid).withAmount(FluidAmount.BUCKET), Simulation.ACTION)
-                val soundEvent = if (fluid.isIn(FluidTags.LAVA)) SoundEvents.ITEM_BUCKET_EMPTY_LAVA else SoundEvents.ITEM_BUCKET_EMPTY
-                world.playSound(user, pos, soundEvent, SoundCategory.BLOCKS, 1.0f, 1.0f)
-                if (!world.isClient) {
-                    val serverWorld = world as ServerWorld
-                    val state = serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
-                    val stateInv = state.getOrCreateInventory(colorCode)
-                    stateInv.attemptExtraction({it.rawFluid == fluid}, FluidAmount.BUCKET, Simulation.ACTION)
-                    state.markDirty(colorCode)
+            }else if(fakeBucketItem != Items.BUCKET && hasBucket) {
+                val interact = fakeInteraction(fakeBucketItem, world, pos, blockHitResult)
+                if(interact != null) {
+                    val soundEvent = if (fluid.isIn(FluidTags.LAVA)) SoundEvents.ITEM_BUCKET_EMPTY_LAVA else SoundEvents.ITEM_BUCKET_EMPTY
+                    world.playSound(user, pos, soundEvent, SoundCategory.BLOCKS, 1.0f, 1.0f)
+                    if (!world.isClient) {
+                        val serverWorld = world as ServerWorld
+                        val state = serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
+                        val stateInv = state.getOrCreateInventory(colorCode)
+                        stateInv.attemptExtraction({it.rawFluid == fluid}, FluidAmount.BUCKET, Simulation.ACTION)
+                        state.markDirty(colorCode)
+                    }
+                    return TypedActionResult.success(itemStack)
                 }
-                return TypedActionResult.success(itemStack)
             }
 
             if (world.canPlayerModifyAt(user, pos) && user.canPlaceOn(offsetPos, dir, itemStack)) {
@@ -171,6 +173,18 @@ class EntangledBucket(settings: Settings): Item(settings)  {
 
         } ?: TypedActionResult.pass(itemStack)
 
+    }
+
+    private fun fakeInteraction(bucketItem: BucketItem, world: World, pos: BlockPos, blockHitResult: BlockHitResult): Fluid? {
+        val fakePlayer = FakePlayerEntity(world)
+        fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(bucketItem))
+        val blockState = world.getBlockState(pos)
+        val block = blockState.block
+        block.onUse(blockState, world, pos, fakePlayer, Hand.MAIN_HAND, blockHitResult)
+        val resultStack = fakePlayer.getStackInHand(Hand.MAIN_HAND)
+        val resultItem = resultStack.item
+        val success = resultItem is BucketItem && ((bucketItem == Items.BUCKET && resultItem != Items.BUCKET) || (bucketItem != Items.BUCKET && resultItem == Items.BUCKET))
+        return if(success) (resultItem as BucketItemAccessor).fluid else null
     }
 
     override fun useOnBlock(context: ItemUsageContext): ActionResult {

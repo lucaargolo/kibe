@@ -28,6 +28,7 @@ var CREATIVE_TAB: ItemGroup? = null
 
 fun initCreativeTab() {
     val order = arrayOf(
+        KIBE, CURSED_KIBE, GOLDEN_KIBE, DIAMOND_KIBE,
         CURSED_DIRT, CURSED_DROPLETS, CURSED_SEEDS, CURSED_LASSO, GOLDEN_LASSO, DIAMOND_LASSO,
         ENTANGLED_CHEST, ENTANGLED_BAG, ENTANGLED_TANK, ENTANGLED_BUCKET, POCKET_TRASH_CAN, POCKET_CRAFTING_TABLE, REDSTONE_TIMER, TRASH_CAN, VACUUM_HOPPER, LIQUID_XP, XP_SHOWER, XP_DRAIN,
         MAGNET, DIAMOND_RING, ANGEL_RING, MAGMA_RING, WATER_RING, LIGHT_RING, GLIDER_LEFT_WING, GLIDER_RIGHT_WING,
@@ -38,26 +39,11 @@ fun initCreativeTab() {
         SLIME_BOOTS, SLIME_SLING, SLEEPING_BAG, COOLER, BIG_TORCH, CHUNK_LOADER, IRON_SPIKES, DIAMOND_SPIKES, REGULAR_CONVEYOR_BELT, FAST_CONVEYOR_BELT, EXPRESS_CONVEYOR_BELT,
         WHITE_ELEVATOR, ORANGE_ELEVATOR, MAGENTA_ELEVATOR, LIGHT_BLUE_ELEVATOR, YELLOW_ELEVATOR, LIME_ELEVATOR, PINK_ELEVATOR, GRAY_ELEVATOR,
         LIGHT_GRAY_ELEVATOR, CYAN_ELEVATOR, BLUE_ELEVATOR, PURPLE_ELEVATOR, GREEN_ELEVATOR, BROWN_ELEVATOR, RED_ELEVATOR, BLACK_ELEVATOR,
-        KIBE, CURSED_KIBE, GOLDEN_KIBE, DIAMOND_KIBE
     )
     CREATIVE_TAB = FabricItemGroupBuilder
         .create(Identifier(MOD_ID, "creative_tab"))
         .icon { ItemStack(KIBE) }
         .appendItems{stacks ->
-            Registry.FLUID.forEach { fluid ->
-                val itemStack = ItemStack(TANK)
-                if(fluid == Fluids.EMPTY) {
-                    stacks.add(itemStack)
-                }else if(fluid.isStill(fluid.defaultState)) {
-                    val tag = itemStack.orCreateTag
-                    val blockEntityTag = CompoundTag()
-                    val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
-                    fluidInv.setInvFluid(0, FluidKeys.get(fluid).withAmount(FluidAmount(16)), Simulation.ACTION)
-                    blockEntityTag.put("fluidInv", fluidInv.toTag())
-                    tag.put("BlockEntityTag", blockEntityTag)
-                    stacks.add(itemStack)
-                }
-            }
             order.forEach {
                 val itemStack = when(it) {
                     is Item -> ItemStack(it)
@@ -66,6 +52,23 @@ fun initCreativeTab() {
                     else -> ItemStack.EMPTY
                 }
                 stacks.add(itemStack)
+            }
+            Registry.FLUID.forEach { fluid ->
+                val itemStack = ItemStack(TANK)
+                if(fluid == Fluids.EMPTY) {
+                    stacks.add(itemStack)
+                }else if(fluid.isStill(fluid.defaultState)) {
+                    val key = FluidKeys.get(fluid)
+                    if(!key.entry.isEmpty) {
+                        val tag = itemStack.orCreateTag
+                        val blockEntityTag = CompoundTag()
+                        val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+                        fluidInv.setInvFluid(0, key.withAmount(FluidAmount(16)), Simulation.ACTION)
+                        blockEntityTag.put("fluidInv", fluidInv.toTag())
+                        tag.put("BlockEntityTag", blockEntityTag)
+                        stacks.add(itemStack)
+                    }
+                }
             }
         }.build()
 }
