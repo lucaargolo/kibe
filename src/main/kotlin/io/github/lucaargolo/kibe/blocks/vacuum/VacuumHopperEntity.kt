@@ -10,10 +10,14 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
+import io.github.lucaargolo.kibe.mixin.ExperienceOrbEntityAccessor
 import io.github.lucaargolo.kibe.utils.FluidTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.LockableContainerBlockEntity
+import net.minecraft.entity.Entity
+import net.minecraft.entity.ExperienceOrbEntity
+import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
@@ -21,9 +25,13 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
+import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
+import net.minecraft.util.math.Vec3d
 
-class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), FixedFluidInv, BlockEntityClientSerializable {
+class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), FixedFluidInv, BlockEntityClientSerializable, Tickable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
@@ -173,6 +181,28 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
             false
         } else {
             player!!.squaredDistanceTo(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5) <= 64.0
+        }
+    }
+
+    override fun tick() {
+        val world = world ?: return
+        val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
+        val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
+        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+        val validEntities = world.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+        validEntities.forEach {
+            val distance: Double = it.pos.distanceTo(vecPos)
+            if (distance < 1.0) {
+                if(it is ExperienceOrbEntity) {
+                    addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
+                    it.remove()
+                }
+                if(it is ItemEntity) {
+                    it.stack = addStack(it.stack)
+                }
+            }
+            val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
+            it.addVelocity(vel.x, vel.y, vel.z)
         }
     }
 
