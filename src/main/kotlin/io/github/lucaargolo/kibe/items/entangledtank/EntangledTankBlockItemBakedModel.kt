@@ -110,7 +110,7 @@ class EntangledTankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
             val emitter = itemRenderContext.emitter
 
-            val tankGlassIdentifier = ModelIdentifier(Identifier(MOD_ID, "entangled_tank"), "facing=north")
+            val tankGlassIdentifier = ModelIdentifier(Identifier(MOD_ID, "entangled_tank"), "facing=north,level=0")
             val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
 
             tankGlassModel.getQuads(null, null, randSupplier.get()).forEach { q ->

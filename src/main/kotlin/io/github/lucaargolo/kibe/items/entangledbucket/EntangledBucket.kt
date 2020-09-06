@@ -7,6 +7,7 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.mixin.impl.BucketItemMixin
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
+import io.github.lucaargolo.kibe.CLIENT
 import io.github.lucaargolo.kibe.REQUEST_ENTANGLED_TANK_SYNC_C2S
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntity
@@ -210,7 +211,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
     private fun getFluidInv(tag: CompoundTag): SimpleFixedFluidInv {
         val key = tag.getString("key")
         val colorCode = tag.getString("colorCode")
-        if(EntangledTankCache.isDirty(key, colorCode)) {
+        if(CLIENT && EntangledTankCache.isDirty(key, colorCode)) {
             val passedData = PacketByteBuf(Unpooled.buffer())
             passedData.writeString(key)
             passedData.writeString(colorCode)

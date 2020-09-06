@@ -3,7 +3,6 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.MARK_ENTANGLED_TANK_DIRTY_S2C
-import io.github.lucaargolo.kibe.SYNC_ENTANGLED_TANK_S2C
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.minecraft.nbt.CompoundTag

@@ -8,11 +8,15 @@ import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
+import net.minecraft.util.Tickable
 
-class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest)), BlockEntityClientSerializable {
+class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest)), BlockEntityClientSerializable, Tickable {
 
     var lastRenderedFluid = 0f
     var fluidInv = object: SimpleFixedFluidInv(1, FluidAmount(16)) {
@@ -82,7 +86,7 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
     override fun toTag(tag: CompoundTag): CompoundTag {
         super.toTag(tag)
         (1..8).forEach {
-            tag.putString("rune$it", runeColors[it]!!.getName())
+            tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
@@ -90,11 +94,20 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
             var subTag = CompoundTag()
             subTag = persistentState!!.toTag(subTag)
             subTag = subTag.getCompound(colorCode)
-            tag.put("tanks", subTag.get("tanks"))
+            tag.put("tanks", subTag.get("tanks") ?: ListTag())
         }
         else fluidInv.toTag(tag)
         return tag
     }
 
     override fun toClientTag(tag: CompoundTag) = toTag(tag)
+
+    override fun tick() {
+        val world = world ?: return
+        val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        val luminance = fluid.defaultState.blockState.luminance
+        if(luminance != cachedState[Properties.LEVEL_15]) {
+            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
+        }
+    }
 }

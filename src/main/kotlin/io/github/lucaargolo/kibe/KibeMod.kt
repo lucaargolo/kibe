@@ -52,7 +52,6 @@ import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldAccess
@@ -69,7 +68,7 @@ val SYNC_ENTANGLED_TANK_S2C = Identifier(MOD_ID, "sync_entangled_tank")
 val REQUEST_ENTANGLED_TANK_SYNC_C2S = Identifier(MOD_ID, "request_entangled_tank_sync")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
-val TANK_CUSTOM_MODEL = TankCustomModel()
+var TANK_CUSTOM_MODEL: Any? = null
 
 fun Boolean.toInt() = if (this) 1 else 0
 
@@ -231,7 +230,9 @@ fun initExtrasClient() {
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
         ModelVariantProvider { modelIdentifier, _ ->
             if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "tank" && modelIdentifier.variant != "inventory") {
-                return@ModelVariantProvider TANK_CUSTOM_MODEL
+                val model = TankCustomModel()
+                TANK_CUSTOM_MODEL = model
+                return@ModelVariantProvider model
             }
             return@ModelVariantProvider null
         }

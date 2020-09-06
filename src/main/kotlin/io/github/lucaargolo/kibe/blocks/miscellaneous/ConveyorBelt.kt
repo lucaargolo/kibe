@@ -18,7 +18,7 @@ import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import kotlin.math.abs
 
-class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
+class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
@@ -41,7 +41,10 @@ class ConveyorBelt(private val speed: Float): Block(FabricBlockSettings.of(Mater
         val adjustmentSpeed = speed*(desiredPos.distanceTo(entity.pos))
         val adjustmentVec3d = Vec3d(if (abs(entity.pos.x-desiredPos.x) > adjustmentFactor) MathHelper.sign((entity.pos.x-desiredPos.x)*-1).toDouble() else 0.0, 0.0, if (abs(entity.pos.z-desiredPos.z) > adjustmentFactor) MathHelper.sign((entity.pos.z-desiredPos.z)*-1).toDouble() else 0.0)
         if (entity.y - pos.y > 0.3 || (entity is PlayerEntity && entity.isSneaking)) return
-        entity.velocity = Vec3d(if(direction.offsetX == 0) adjustmentVec3d.x*adjustmentSpeed else direction.offsetX.toDouble()*speed, 0.0, if(direction.offsetZ == 0) adjustmentVec3d.z*adjustmentSpeed else direction.offsetZ.toDouble()*speed)
+        val finalVel = Vec3d(if(direction.offsetX == 0) adjustmentVec3d.x*adjustmentSpeed else direction.offsetX.toDouble(), 0.0, if(direction.offsetZ == 0) adjustmentVec3d.z*adjustmentSpeed else direction.offsetZ.toDouble())
+        val currentVel = entity.velocity
+
+        entity.velocity = Vec3d(MathHelper.lerp(speed, currentVel.x, finalVel.x), 0.0, MathHelper.lerp(speed, currentVel.z, finalVel.z))
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {

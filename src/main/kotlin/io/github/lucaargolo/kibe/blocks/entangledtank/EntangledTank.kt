@@ -5,7 +5,6 @@ import alexiil.mc.lib.attributes.AttributeProvider
 import alexiil.mc.lib.attributes.fluid.FixedFluidInv
 import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
-import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -24,14 +23,15 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F)), AttributeProvider {
+class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F).lightLevel { state -> state[Properties.LEVEL_15] }), AttributeProvider {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
+        stateManager.add(Properties.LEVEL_15)
         stateManager.add(Properties.HORIZONTAL_FACING)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing)
+        return defaultState.with(Properties.LEVEL_15, 0).with(Properties.HORIZONTAL_FACING, ctx.playerFacing)
     }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {

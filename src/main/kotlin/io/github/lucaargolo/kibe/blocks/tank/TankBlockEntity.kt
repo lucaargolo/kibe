@@ -53,8 +53,13 @@ class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, B
         get() = fluidInv.tankCapacity_F
 
     override fun tick() {
-        if(tickDelay++ < 10) return else tickDelay = 0
         val world = world ?: return
+        val fluid = if(this.isEmpty) Fluids.EMPTY else this.fluidKey.rawFluid ?: Fluids.EMPTY
+        val luminance = fluid.defaultState.blockState.luminance
+        if(luminance != cachedState[Properties.LEVEL_15]) {
+            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
+        }
+        if(tickDelay++ < 10) return else tickDelay = 0
         Direction.values().forEach {
             if(it == Direction.UP) return@forEach
             val otherTank = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
@@ -79,12 +84,6 @@ class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, B
                     this.amount -= dif
                 }
             }
-        }
-
-        val fluid = if(this.isEmpty) Fluids.EMPTY else this.fluidKey.rawFluid ?: Fluids.EMPTY
-        val luminance = fluid.defaultState.blockState.luminance
-        if(luminance != cachedState[Properties.LEVEL_15]) {
-            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
         }
     }
 

@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.TANK_CUSTOM_MODEL
+import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.utils.FluidTank
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
@@ -38,7 +39,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        TANK_CUSTOM_MODEL.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
+        (TANK_CUSTOM_MODEL as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 
         val stackTag = stack.orCreateTag
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
