@@ -64,7 +64,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         }
         tag.putString("colorCode", colorCode)
         tooltip.add(color)
-        val fluidInv = getFluidInv(tag)
+        val fluidInv = getFluidInv(world, tag)
         if(!fluidInv.getInvFluid(0).isEmpty)
             tooltip.add(fluidInv.getInvFluid(0).fluidKey.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${fluidInv.getInvFluid(0).amount().asInt(1000)}mB")))
     }
@@ -81,8 +81,8 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         }
         tag.putString("colorCode", colorCode)
 
-        val fluidInv = getFluidInv(tag)
-        val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        val fluidInv = getFluidInv(world, tag)
+        val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
         val hasSpace = (fluidInv.getInvFluid(0).amount() + FluidAmount.BUCKET) <= fluidInv.tankCapacity_F
         val hasBucket = fluidInv.getInvFluid(0).amount() >= FluidAmount.BUCKET
 
@@ -155,13 +155,13 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                         val bucketItem = fluid.bucketItem as BucketItem
                         if (bucketItem.placeFluid(user, world, interactablePos, blockHitResult)) {
                             bucketItem.onEmptied(world, itemStack, interactablePos)
-                            if (user is ServerPlayerEntity) {
-                                val serverWorld = user.serverWorld
+                            if (!world.isClient) {
+                                val serverWorld = world as ServerWorld
                                 val state = serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
                                 val stateInv = state.getOrCreateInventory(colorCode)
                                 stateInv.attemptExtraction({it.rawFluid == fluid}, FluidAmount.BUCKET, Simulation.ACTION)
                                 state.markDirty(colorCode)
-                                Criteria.PLACED_BLOCK.trigger(user, interactablePos, itemStack)
+                                Criteria.PLACED_BLOCK.trigger(user as ServerPlayerEntity, interactablePos, itemStack)
                             }
                             user.incrementStat(Stats.USED.getOrCreateStat(this))
                             return TypedActionResult.success(itemStack)
@@ -208,16 +208,21 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         return ActionResult.PASS
     }
 
-    private fun getFluidInv(tag: CompoundTag): SimpleFixedFluidInv {
+    private fun getFluidInv(world: World?, tag: CompoundTag): SimpleFixedFluidInv {
         val key = tag.getString("key")
         val colorCode = tag.getString("colorCode")
-        if(CLIENT && EntangledTankCache.isDirty(key, colorCode)) {
+        val fluidInv = if(world?.isClient != false && EntangledTankCache.isDirty(key, colorCode)) {
             val passedData = PacketByteBuf(Unpooled.buffer())
             passedData.writeString(key)
             passedData.writeString(colorCode)
             ClientSidePacketRegistry.INSTANCE.sendToServer(REQUEST_ENTANGLED_TANK_SYNC_C2S, passedData)
+            EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
+        }else if(world is ServerWorld) {
+            val state = world.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(world, key) }, key)
+            state.getOrCreateInventory(colorCode)
+        }else {
+            EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
         }
-        val fluidInv = EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
         fluidInv.toTag(tag)
         return fluidInv
     }
