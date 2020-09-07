@@ -14,7 +14,7 @@
   "block.kibe.light_blue_elevator": "淡蓝色电梯",
   "block.kibe.yellow_elevator": "黄色电梯",
   "block.kibe.lime_elevator": "黄绿色电梯",
-  "block.kibe.pink_elevator": "粉色电梯",
+  "block.kibe.pink_elevator": "粉红色电梯",
   "block.kibe.gray_elevator": "灰色电梯",
   "block.kibe.light_gray_elevator": "淡灰色电梯",
   "block.kibe.cyan_elevator": "青色电梯",
@@ -24,19 +24,27 @@
   "block.kibe.brown_elevator": "棕色电梯",
   "block.kibe.red_elevator": "红色电梯",
   "block.kibe.black_elevator": "黑色电梯",
-
+  
+  "block.kibe.tank": "储罐",
+  "block.kibe.cooler": "冷藏箱",
+  "block.kibe.big_torch": "大号火把",
   "block.kibe.chunk_loader": "区块加载器",
 
+  "block.kibe.entangled_tank": "纠缠储罐",
   "block.kibe.entangled_chest": "纠缠箱",
   "block.kibe.trash_can": "垃圾桶",
   "block.kibe.vacuum_hopper": "真空吸物漏斗",
   "block.kibe.redstone_timer": "红石定时器",
+  "block.kibe.xp_shower": "经验花洒",
+  "block.kibe.xp_drain": "经验地漏",
+  "block.kibe.fluid_hopper": "吸液漏斗",  
 
   "item.kibe.kibe": "羊肉面饼",
   "item.kibe.golden_kibe": "金羊肉面饼",
   "item.kibe.diamond_kibe": "钻石羊肉面饼",
   "item.kibe.cursed_kibe": "诅咒羊肉面饼",
 
+  "item.kibe.entangled_bucket": "纠缠桶",  
   "item.kibe.entangled_bag": "纠缠袋",
   "item.kibe.pocket_trash_can": "便携垃圾桶",
   "item.kibe.pocket_crafting_table": "便携工作台",
@@ -62,7 +70,7 @@
   "item.kibe.light_blue_rune": "淡蓝色符文",
   "item.kibe.yellow_rune": "黄色符文",
   "item.kibe.lime_rune": "黄绿色符文",
-  "item.kibe.pink_rune": "粉色符文",
+  "item.kibe.pink_rune": "粉红色符文",
   "item.kibe.gray_rune": "灰色符文",
   "item.kibe.light_gray_rune": "淡灰色符文",
   "item.kibe.cyan_rune": "青色符文",
@@ -72,7 +80,31 @@
   "item.kibe.brown_rune": "棕色符文",
   "item.kibe.red_rune": "红色符文",
   "item.kibe.black_rune": "黑色符文",
+  
+  "item.kibe.glider_right_wing": "滑翔翼右翼",
+  "item.kibe.glider_left_wing": "滑翔翼左翼",
+  "item.kibe.white_glider": "白色滑翔翼",
+  "item.kibe.orange_glider": "橙色滑翔翼",
+  "item.kibe.magenta_glider": "品红色滑翔翼",
+  "item.kibe.light_blue_glider": "淡蓝色滑翔翼",
+  "item.kibe.yellow_glider": "黄色滑翔翼",
+  "item.kibe.lime_glider": "黄绿色滑翔翼",
+  "item.kibe.pink_glider": "粉红色滑翔翼",
+  "item.kibe.gray_glider": "灰色滑翔翼",
+  "item.kibe.light_gray_glider": "淡灰色滑翔翼",
+  "item.kibe.cyan_glider": "青色滑翔翼",
+  "item.kibe.blue_glider": "蓝色滑翔翼",
+  "item.kibe.purple_glider": "紫色滑翔翼",
+  "item.kibe.green_glider": "绿色滑翔翼",
+  "item.kibe.brown_glider": "棕色滑翔翼",
+  "item.kibe.red_glider": "红色滑翔翼",
+  "item.kibe.black_glider": "黑色滑翔翼",
 
+  "item.kibe.wooden_bucket": "木桶",
+  "item.kibe.water_wooden_bucket": "木制水桶",
+  "item.kibe.void_bucket": "虚空桶",
+
+  "block.kibe.liquid_xp": "液态经验",
   "item.kibe.liquid_xp_bucket": "液态经验桶",
 
   "item.kibe.magnet": "磁铁",
@@ -84,20 +116,28 @@
 
   "effect.kibe.cursed_effect": "诅咒效果",
 
+  "chat.kibe.entangled_bucket.success": "§6成功链接桶！",  
   "chat.kibe.entangled_bag.success": "§6成功链接纠缠袋!",
 
   "chat.kibe.cursed_dirt.nothing": "§c没有可以生成的怪物",
   "chat.kibe.cursed_dirt.spawn": "§5满足条件时可生成以下怪物: ",
+  "chat.kibe.lasso.cannot_spawn": "§c你不能在这里释放实体！",
 
+  "tooltip.kibe.empty": "空",
   "tooltip.kibe.enabled": "§a已启用",
   "tooltip.kibe.disabled": "§c已禁用",
   "tooltip.kibe.overflow": "§c溢出",
   "tooltip.kibe.owner": "§9持有者: ",
   "tooltip.kibe.color": "§9颜色: ",
-
+  "tooltip.kibe.torch_percentage": "§9火把几率：",
+  "tooltip.kibe.chunk_radius": "§9区块半径：",
+  "tooltip.kibe.suppressed_spawns": "§9阻止生成：",
+  "tooltip.kibe.chunk_at": "§9区块位置：",
+  "tooltip.kibe.forced": "§9强制：",
+  
   "tooltip.kibe.overflowed": "§4§o已启用多个戒指",
-  "tooltip.kibe.shift2enable": "§9§oShift+点击 启用",
-  "tooltip.kibe.shift2disable": "§9§oShift+点击 关闭",
+  "tooltip.kibe.shift2enable": "§9§oShift+右键 启用",
+  "tooltip.kibe.shift2disable": "§9§oShift+右键 关闭",
 
   "tooltip.kibe.lore.rune": "§5§o用于更改纠缠箱代码",
 
@@ -113,11 +153,17 @@
   "tooltip.kibe.lore.cursed_lasso.2": "§4§o小心！它们可能受到了诅咒",
   "tooltip.kibe.lore.diamond_lasso": "§5§o可套住大部分生物的套索",
 
-  "tooltip.kibe.lore.iron_spikes": "§5§o实体掉落普通物品",
-  "tooltip.kibe.lore.diamond_spikes": "§5§o实体掉落经验，玩家仅凋零物品",
+  "tooltip.kibe.lore.iron_spikes": "§5§o扎死实体掉落普通物品",
+  "tooltip.kibe.lore.diamond_spikes": "§5§o扎死实体掉落经验，扎死玩家仅掉落物品",
+  "tooltip.kibe.lore.cooler": "§5§o自动使用储藏在里面的食物",
+  "tooltip.kibe.lore.big_torch": "§5§o照亮大地，防止刷怪",
+  "tooltip.kibe.lore.chunk_loader": "§5§o保持加载5x5个区块",
 
-  "tooltip.kibe.lore.chunk_loader": "§5§o保持加载9x9个区块",
 
+  "screen.kibe.cooler": "冷藏箱",
+  "screen.kibe.cooler_item": "冷藏箱",
+  "screen.kibe.big_torch": "大号火把",
+  "screen.kibe.chunk_loader": "区块加载器",
   "screen.kibe.trash_can": "垃圾桶",
   "screen.kibe.vacuum_hopper": "真空吸物漏斗",
   "screen.kibe.entangled_chest": "纠缠箱",
