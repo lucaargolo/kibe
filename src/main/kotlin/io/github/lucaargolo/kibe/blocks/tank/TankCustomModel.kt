@@ -83,14 +83,16 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun Direction.getUp(): Direction {
         return when(this) {
-            Direction.UP, Direction.DOWN -> Direction.NORTH
+            Direction.UP -> Direction.NORTH
+            Direction.DOWN -> Direction.SOUTH
             else -> Direction.UP
         }
     }
 
     private fun Direction.getDown(): Direction {
         return when(this) {
-            Direction.UP, Direction.DOWN -> Direction.SOUTH
+            Direction.UP -> Direction.SOUTH
+            Direction.DOWN -> Direction.NORTH
             else -> Direction.DOWN
         }
     }

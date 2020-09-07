@@ -40,7 +40,7 @@ class TankBlockEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEnt
         entity.lastRenderedFluid = p
 
         val partUv = UV(sprite)
-        partUv.maxV -= (16f-p)/1024
+        partUv.maxV -= (sprite.maxV - sprite.minV)*((16f-p)/16f)
         p /= 16f
         p -= 0.001f
 

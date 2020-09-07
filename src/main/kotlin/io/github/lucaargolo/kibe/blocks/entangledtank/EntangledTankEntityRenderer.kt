@@ -149,7 +149,7 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
         entity.lastRenderedFluid = p
 
         val partUv = TankBlockEntityRenderer.UV(sprite)
-        partUv.maxV -= (16f-p)/1024
+        partUv.maxV -= (sprite.maxV - sprite.minV)*((16f-p)/16f)
         p /= 16f
         p = MathHelper.lerp(p, 0.126f, 0.874f)
 
