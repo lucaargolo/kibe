@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "kibe:block/fluid_hopper"
+    },
+    "facing=east": {
+      "model": "kibe:block/fluid_hopper_side",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "kibe:block/fluid_hopper_side"
+    },
+    "facing=south": {
+      "model": "kibe:block/fluid_hopper_side",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "kibe:block/fluid_hopper_side",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "block/hopper_side",
+  "textures": {
+    "particle": "kibe:block/fluid_hopper_outside",
+    "top": "block/hopper_top",
+    "side": "kibe:block/fluid_hopper_outside",
+    "inside": "block/hopper_inside"
+  }
+}
