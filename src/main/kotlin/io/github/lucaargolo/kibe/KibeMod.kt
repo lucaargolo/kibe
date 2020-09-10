@@ -3,6 +3,9 @@
 package io.github.lucaargolo.kibe
 
 import io.github.lucaargolo.kibe.blocks.*
+import io.github.lucaargolo.kibe.blocks.COOLER
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
@@ -13,9 +16,10 @@ import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.fluids.initFluidsClient
-import io.github.lucaargolo.kibe.items.CURSED_DROPLETS
-import io.github.lucaargolo.kibe.items.initItems
-import io.github.lucaargolo.kibe.items.initItemsClient
+import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItemDynamicRenderer
+import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItemDynamicRenderer
+import io.github.lucaargolo.kibe.items.miscellaneous.GliderDynamicRenderer
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -27,8 +31,9 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
-import net.fabricmc.fabric.api.event.server.ServerStartCallback
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
@@ -135,6 +140,25 @@ fun initPackets() {
 }
 
 fun initPacketsClient() {
+    BuiltinItemRendererRegistry.INSTANCE.register(ENTANGLED_CHEST, EntangledChestBlockItemDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(ENTANGLED_TANK, EntangledTankBlockItemDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(WHITE_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(ORANGE_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(MAGENTA_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(LIGHT_BLUE_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(YELLOW_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(LIME_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(PINK_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(GRAY_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(LIGHT_GRAY_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(CYAN_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(BLUE_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(PURPLE_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(GREEN_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(BROWN_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(RED_GLIDER, GliderDynamicRenderer())
+    BuiltinItemRendererRegistry.INSTANCE.register(BLACK_GLIDER, GliderDynamicRenderer())
+
     ClientSidePacketRegistry.INSTANCE.register(SYNCHRONIZE_LAST_RECIPE_PACKET) { packetContext: PacketContext, attachedData: PacketByteBuf ->
         val id = attachedData.readIdentifier()
         val recipe = VACUUM_HOPPER_RECIPE_SERIALIZER.read(id, attachedData)
@@ -163,14 +187,15 @@ fun initPacketsClient() {
 }
 
 fun initExtras() {
-    ServerStartCallback.EVENT.register(ServerStartCallback {  server ->
+    ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
-    })
+    }
 }
 
 fun initExtrasClient() {
     @Suppress("deprecated")
     ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
+        registry.register(Identifier(MOD_ID, "block/entangled_chest"))
         registry.register(Identifier(MOD_ID, "block/entangled_chest_runes"))
         (0..15).forEach{
             registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
@@ -178,9 +203,9 @@ fun initExtrasClient() {
         registry.register(Identifier(MOD_ID, "block/tank"))
     })
     ModelLoadingRegistry.INSTANCE.registerAppender { _: ResourceManager?, out: Consumer<ModelIdentifier?> ->
-        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider"), "inventory"))
-        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "redstone_timer_structure"), ""))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_active"), "inventory"))
+        out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "white_glider_active"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "white_glider_inactive"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "orange_glider_active"), "inventory"))

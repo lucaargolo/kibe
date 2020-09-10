@@ -1,5 +1,4 @@
 {
-	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "kibe:block/entangled_chest",
@@ -43,16 +42,5 @@
 		"fixed": {
 			"rotation": [0, 180, 0]
 		}
-	},
-	"groups": [
-		{
-			"name": "plates",
-			"origin": [13, 22, 9],
-			"children": []
-		},
-		{
-			"name": "group",
-			"origin": [15, 22, 15],
-			"children": []
-		}, 0]
+	}
 }

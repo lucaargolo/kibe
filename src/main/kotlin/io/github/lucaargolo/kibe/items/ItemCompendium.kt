@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "unused")
 
 package io.github.lucaargolo.kibe.items
 
@@ -48,8 +48,6 @@ import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreenHandler
 import io.github.lucaargolo.kibe.items.entangledbucket.EntangledBucket
 import io.github.lucaargolo.kibe.items.entangledbucket.EntangledBucketBakedModel
 import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItem
-import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItemBakedModel
-import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItemBakedModel
 import io.github.lucaargolo.kibe.items.tank.TankBlockItem
 import io.github.lucaargolo.kibe.items.tank.TankBlockItemBakedModel
 import net.minecraft.util.Hand
@@ -175,34 +173,34 @@ val WATER_WOODEN_BUCKET = register(Identifier(MOD_ID, "water_wooden_bucket"), Wo
 val GLIDER_LEFT_WING = register(Identifier(MOD_ID, "glider_left_wing"), Item(Settings()))
 val GLIDER_RIGHT_WING = register(Identifier(MOD_ID, "glider_right_wing"), Item(Settings()))
 
-val WHITE_GLIDER = register(Identifier(MOD_ID, "white_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val ORANGE_GLIDER = register(Identifier(MOD_ID, "orange_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val MAGENTA_GLIDER = register(Identifier(MOD_ID, "magenta_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val LIGHT_BLUE_GLIDER = register(Identifier(MOD_ID, "light_blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val YELLOW_GLIDER = register(Identifier(MOD_ID, "yellow_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val LIME_GLIDER = register(Identifier(MOD_ID, "lime_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val PINK_GLIDER = register(Identifier(MOD_ID, "pink_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val GRAY_GLIDER = register(Identifier(MOD_ID, "gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val LIGHT_GRAY_GLIDER = register(Identifier(MOD_ID, "light_gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val CYAN_GLIDER = register(Identifier(MOD_ID, "cyan_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val BLUE_GLIDER = register(Identifier(MOD_ID, "blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val PURPLE_GLIDER = register(Identifier(MOD_ID, "purple_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val GREEN_GLIDER = register(Identifier(MOD_ID, "green_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val BROWN_GLIDER = register(Identifier(MOD_ID, "brown_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val RED_GLIDER = register(Identifier(MOD_ID, "red_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
-val BLACK_GLIDER = register(Identifier(MOD_ID, "black_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), Supplier { GliderBakedModel() })
+val WHITE_GLIDER = register(Identifier(MOD_ID, "white_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val ORANGE_GLIDER = register(Identifier(MOD_ID, "orange_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val MAGENTA_GLIDER = register(Identifier(MOD_ID, "magenta_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val LIGHT_BLUE_GLIDER = register(Identifier(MOD_ID, "light_blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val YELLOW_GLIDER = register(Identifier(MOD_ID, "yellow_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val LIME_GLIDER = register(Identifier(MOD_ID, "lime_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val PINK_GLIDER = register(Identifier(MOD_ID, "pink_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val GRAY_GLIDER = register(Identifier(MOD_ID, "gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val LIGHT_GRAY_GLIDER = register(Identifier(MOD_ID, "light_gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val CYAN_GLIDER = register(Identifier(MOD_ID, "cyan_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val BLUE_GLIDER = register(Identifier(MOD_ID, "blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val PURPLE_GLIDER = register(Identifier(MOD_ID, "purple_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val GREEN_GLIDER = register(Identifier(MOD_ID, "green_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val BROWN_GLIDER = register(Identifier(MOD_ID, "brown_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val RED_GLIDER = register(Identifier(MOD_ID, "red_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+val BLACK_GLIDER = register(Identifier(MOD_ID, "black_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val VOID_BUCKET = register(Identifier(MOD_ID, "void_bucket"), VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
 
 val POCKET_CRAFTING_TABLE = register(Identifier(MOD_ID, "pocket_crafting_table"),  PocketCraftingTable(Settings().maxCount(1)))
-val POCKET_TRASH_CAN = register(Identifier(MOD_ID, "pocket_trash_can"),  PocketTrashCan(Settings().maxCount(1)), containers = listOf(ContainerInfo<PocketTrashCanScreenHandler>(PocketTrashCanScreenHandler::class, Supplier { PocketTrashCanScreen::class })))
+val POCKET_TRASH_CAN = register(Identifier(MOD_ID, "pocket_trash_can"),  PocketTrashCan(Settings().maxCount(1)), containers = listOf(ContainerInfo<PocketTrashCanScreenHandler>(PocketTrashCanScreenHandler::class, { PocketTrashCanScreen::class })))
 
-val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), EntangledChestBlockItem(Settings()), Supplier { EntangledChestBlockItemBakedModel() })
-val ENTANGLED_TANK = register(Identifier(MOD_ID, "entangled_tank"), EntangledTankBlockItem(Settings()), Supplier { EntangledTankBlockItemBakedModel() })
-val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), Supplier { EntangledBagBakedModel() }, listOf(ContainerInfo<EntangledBagScreenHandler>(EntangledBagScreenHandler::class, Supplier { EntangledBagScreen::class })))
-val ENTANGLED_BUCKET = register(Identifier(MOD_ID, "entangled_bucket"),  EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)), Supplier { EntangledBucketBakedModel() })
-val COOLER = register(Identifier(MOD_ID, "cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), containers = listOf(ContainerInfo<CoolerBlockItemScreenHandler>(CoolerBlockItemScreenHandler::class, Supplier { CoolerBlockItemScreen::class }, identifier = Identifier(MOD_ID, "cooler_item"))))
-val TANK = register(Identifier(MOD_ID, "tank"), TankBlockItem(Settings()), Supplier { TankBlockItemBakedModel() } )
+val ENTANGLED_CHEST = register(Identifier(MOD_ID, "entangled_chest"), EntangledChestBlockItem(Settings()))
+val ENTANGLED_TANK = register(Identifier(MOD_ID, "entangled_tank"), EntangledTankBlockItem(Settings()))
+val ENTANGLED_BAG = register(Identifier(MOD_ID, "entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), { EntangledBagBakedModel() }, listOf(ContainerInfo<EntangledBagScreenHandler>(EntangledBagScreenHandler::class, { EntangledBagScreen::class })))
+val ENTANGLED_BUCKET = register(Identifier(MOD_ID, "entangled_bucket"),  EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)), { EntangledBucketBakedModel() })
+val COOLER = register(Identifier(MOD_ID, "cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), containers = listOf(ContainerInfo<CoolerBlockItemScreenHandler>(CoolerBlockItemScreenHandler::class, { CoolerBlockItemScreen::class }, identifier = Identifier(MOD_ID, "cooler_item"))))
+val TANK = register(Identifier(MOD_ID, "tank"), TankBlockItem(Settings()), { TankBlockItemBakedModel() } )
 
 val SLEEPING_BAG = register(Identifier(MOD_ID, "sleeping_bag"), SleepingBag(Settings().rarity(Rarity.RARE)))
 

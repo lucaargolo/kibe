@@ -7,8 +7,13 @@ import java.util.function.Supplier
 
 object EntangledTankCache {
 
-    private val isDirtyMap = linkedMapOf<Pair<String, String>, Boolean>()
-    private val fluidInvMap = linkedMapOf<Pair<String, String>, SimpleFixedFluidInv>()
+    private var isDirtyMap = linkedMapOf<Pair<String, String>, Boolean>()
+    private var fluidInvMap = linkedMapOf<Pair<String, String>, SimpleFixedFluidInv>()
+
+    fun reset() {
+        isDirtyMap = linkedMapOf()
+        fluidInvMap = linkedMapOf()
+    }
 
     fun markDirty(key: String, colorCode: String) {
         isDirtyMap[Pair(key, colorCode)] = true

@@ -39,7 +39,9 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        (TANK_CUSTOM_MODEL as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
+        try {
+            (TANK_CUSTOM_MODEL as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
+        }catch (ignored: Exception) { }
 
         val stackTag = stack.orCreateTag
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")

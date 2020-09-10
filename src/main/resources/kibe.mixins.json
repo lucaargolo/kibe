@@ -20,6 +20,7 @@
     "WitherRoseBlockMixin"
   ],
   "client": [
+    "MinecraftClientMixin",
     "BipedEntityModelMixin",
     "HeldItemRendererMixin",
     "ItemMixin",

@@ -1,6 +1,6 @@
 {
-	"parent": "block/cube_all",
+	"parent": "builtin/entity",
 	"textures": {
-		"all": "kibe:block/redstone_timer"
+		"particle": "kibe:block/redstone_timer"
 	}
 }

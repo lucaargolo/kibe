@@ -1,3 +1,6 @@
 {
-  "parent": "kibe:block/redstone_timer"
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "kibe:block/redstone_timer"
+  }
 }

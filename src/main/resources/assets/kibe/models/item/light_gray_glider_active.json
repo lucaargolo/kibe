@@ -1,5 +1,5 @@
 {
-	"parent": "kibe:item/glider",
+	"parent": "builtin/generated",
 	"textures": {
 		"layer0": "kibe:item/light_gray_glider",
 		"particle": "kibe:item/light_gray_glider"
