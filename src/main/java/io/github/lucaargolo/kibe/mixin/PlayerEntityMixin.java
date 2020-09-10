@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.ladysnake.pal.PlayerAbility;
+import io.github.ladysnake.pal.impl.PlayerAbilityView;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.ItemInfo;
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing;
@@ -92,7 +93,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             GliderHelper.INSTANCE.setPlayerGliding(player, false);
         }
         //Ring Logic
-        if(!world.isClient) {
+        if(!world.isClient && this instanceof PlayerAbilityView) {
             for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
                 if(pa.isEnabledFor(player)) {
                     StatusEffect se = RingAbilitiesKt.getPotionToAbilityMap().get(pa);
@@ -111,7 +112,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                         for (List<ItemStack> list : combinedInventory) {
                             for (ItemStack itemStack : list) {
                                 if (itemStack.getItem().equals(ring)) {
-                                    if(itemStack.hasTag() && itemStack.getTag().contains("enabled") && itemStack.getTag().getBoolean("enabled")) {
+                                    if(itemStack.hasTag() && itemStack.getOrCreateTag().contains("enabled") && itemStack.getOrCreateTag().getBoolean("enabled")) {
                                         enabledRings.add(itemStack);
                                     }else{
                                         //Is disabled in inventory
@@ -133,7 +134,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
             if(enabledRings.size() > 1) {
                 for(ItemStack stack : enabledRings) {
-                    stack.getTag().putBoolean("unique", false);
+                    stack.getOrCreateTag().putBoolean("unique", false);
                     AbilityRing ring = ((AbilityRing) stack.getItem());
                     //Overflow
                     if(RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
@@ -142,7 +143,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 }
             }else{
                 for(ItemStack stack : enabledRings) {
-                    stack.getTag().putBoolean("unique", true);
+                    stack.getOrCreateTag().putBoolean("unique", true);
                     AbilityRing ring = ((AbilityRing) stack.getItem());
                     RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
                 }
