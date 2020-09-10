@@ -13,6 +13,7 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
+import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -67,7 +68,12 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                 val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
                 if(int != null) {
                     if(!world.isClient) {
-                        (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = (player.getStackInHand(hand).item as Rune).color
+                        val oldColor = (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int]
+                        val newColor = (player.getStackInHand(hand).item as Rune).color
+                        if(oldColor != newColor) {
+                            (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = newColor
+                            player.getStackInHand(hand).decrement(1)
+                        }
                         (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
                         (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
                     }
@@ -75,8 +81,8 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                 }
             }
             if(player.getStackInHand(hand).item == Items.DIAMOND) {
-                var x = poss.x-pos.x
-                var z = poss.z-pos.z
+                val x = poss.x-pos.x
+                val z = poss.z-pos.z
                 if((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
                     if((world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
                         if(!world.isClient) {
@@ -85,6 +91,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                             (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
                             (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
                         }
+                        player.getStackInHand(hand).decrement(1)
                         return ActionResult.CONSUME
                     }
                 }

@@ -79,7 +79,12 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                     val int = EntangledChest.getRuneByPos((poss.x - pos.x), (poss.z - pos.z), state[Properties.HORIZONTAL_FACING])
                     if (int != null) {
                         if (!world.isClient) {
-                            tank.runeColors[int] = (player.getStackInHand(hand).item as Rune).color
+                            val oldColor = tank.runeColors[int]
+                            val newColor = (player.getStackInHand(hand).item as Rune).color
+                            if(oldColor != newColor) {
+                                tank.runeColors[int] = newColor
+                                player.getStackInHand(hand).decrement(1)
+                            }
                         }
                         tank.markDirtyAndSync()
                         return ActionResult.CONSUME
@@ -95,6 +100,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                                 tank.key = "entangledtank-${player.uuid}"
                             }
                             tank.markDirtyAndSync()
+                            player.getStackInHand(hand).decrement(1)
                             return ActionResult.CONSUME
                         }
                     }
