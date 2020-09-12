@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "texture": "block/stone"
+  },
   "elements": [
     {
       "from": [4, 11, 7.5],

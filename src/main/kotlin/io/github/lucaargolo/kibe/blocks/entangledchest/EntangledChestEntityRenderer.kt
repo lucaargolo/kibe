@@ -123,7 +123,7 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
             screen.hasSameColors(blockEntity.runeColors)
         }else false
 
-        if((isChestScreenOpen || isBagScreenOpen) && blockEntity.world!!.getBlockState(blockEntity.pos.up()).isAir) {
+        if((isChestScreenOpen || isBagScreenOpen) && blockEntity.world?.getBlockState(blockEntity.pos.up())?.isAir == true) {
             if(!isScreenOpen) {
                 isScreenOpen = true
                 when(currentState){
