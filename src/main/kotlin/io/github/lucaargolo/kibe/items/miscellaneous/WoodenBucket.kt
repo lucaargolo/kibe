@@ -44,7 +44,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                             if (!world.isClient) {
                                 Criteria.FILLED_BUCKET.trigger(user as ServerPlayerEntity, ItemStack(WATER_WOODEN_BUCKET))
                             }
-                            return TypedActionResult.method_29237(itemStack2, world.isClient())
+                            return TypedActionResult.success(itemStack2, world.isClient())
                         }
                     }
                 } else {
@@ -55,7 +55,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                             Criteria.PLACED_BLOCK.trigger(user, interactablePos, itemStack)
                         }
                         user.incrementStat(Stats.USED.getOrCreateStat(this))
-                        return TypedActionResult.method_29237(this.getEmptiedStack(itemStack, user), world.isClient())
+                        return TypedActionResult.success(this.getEmptiedStack(itemStack, user), world.isClient())
                     }
                 }
             }

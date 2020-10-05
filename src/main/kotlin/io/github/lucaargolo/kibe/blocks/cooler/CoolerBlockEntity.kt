@@ -37,16 +37,7 @@ class CoolerBlockEntity(cooler: Cooler): BlockEntity(getEntityType(cooler)), Blo
 
     override fun size() = inventory.size
 
-    override fun isEmpty(): Boolean {
-        val iterator = this.inventory.iterator()
-        var itemStack: ItemStack
-        do {
-            if (iterator.hasNext())
-                return true
-            itemStack = iterator.next()
-        } while(itemStack.isEmpty)
-        return false
-    }
+    override fun isEmpty() = inventory.all { it.isEmpty }
 
     override fun getStack(slot: Int) = inventory[slot]
 

@@ -22,7 +22,7 @@ import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).lightLevel{15}.sounds(BlockSoundGroup.WOOD)) {
+class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_8)

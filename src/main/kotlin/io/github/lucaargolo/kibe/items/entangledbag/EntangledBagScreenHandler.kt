@@ -39,16 +39,7 @@ class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, h
 
         override fun isEmpty(): Boolean {
             return if(hasPersistentState()) getPersistentState()!!.isEmpty(colorCode)
-            else {
-                val iterator = inventory.iterator()
-                var itemStack: ItemStack
-                do {
-                    if (iterator.hasNext())
-                        return true
-                    itemStack = iterator.next()
-                } while(itemStack.isEmpty)
-                return false
-            }
+            else inventory.all { it.isEmpty }
         }
 
         override fun getStack(slot: Int): ItemStack {

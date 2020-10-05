@@ -44,14 +44,7 @@ class EntangledChestState(key: String) : PersistentState(key) {
 
     fun isEmpty(colorCode: String): Boolean {
         if(!hasInventory(colorCode)) createInventory(colorCode)
-        val iterator = inventoryMap[colorCode]!!.iterator()
-        var itemStack: ItemStack
-        do {
-            if (iterator.hasNext())
-                return true
-            itemStack = iterator.next()
-        } while(itemStack.isEmpty)
-        return false
+        return inventoryMap[colorCode]!!.all { it.isEmpty }
     }
 
     fun getStack(slot: Int, colorCode: String): ItemStack {

@@ -32,16 +32,7 @@ class PocketTrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory,
             inventory[slot] = ItemStack.EMPTY
         }
 
-        override fun isEmpty(): Boolean {
-            val iterator = inventory.iterator()
-            var itemStack: ItemStack
-            do {
-                if (iterator.hasNext())
-                    return true
-                itemStack = iterator.next()
-            } while(itemStack.isEmpty)
-            return false
-        }
+        override fun isEmpty() = inventory.all { it.isEmpty }
 
         override fun removeStack(slot: Int, amount: Int): ItemStack {
             return ItemStack.EMPTY

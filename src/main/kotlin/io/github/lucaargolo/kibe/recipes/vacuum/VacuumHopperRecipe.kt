@@ -27,7 +27,7 @@ class VacuumHopperRecipe(private val id: Identifier, private val output: ItemSta
 
     override fun getOutput(): ItemStack = output
 
-    override fun getRecipeKindIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.stackForRender
+    override fun getRecipeKindIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.defaultStack
 
     override fun getPreviewInputs() = input
 
