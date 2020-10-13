@@ -2,6 +2,9 @@
 
 package io.github.lucaargolo.kibe
 
+import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
@@ -14,6 +17,7 @@ import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
+import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.fluids.initFluidsClient
 import io.github.lucaargolo.kibe.items.*
@@ -44,6 +48,7 @@ import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
+import net.minecraft.item.Items
 import net.minecraft.loot.ConstantLootTableRange
 import net.minecraft.loot.UniformLootTableRange
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
@@ -190,6 +195,8 @@ fun initExtras() {
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }
+    FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
+    FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
 }
 
 fun initExtrasClient() {

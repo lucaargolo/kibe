@@ -69,7 +69,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
 
     fun removeLiquidXp(qnt: Int): Boolean {
         val currentAmount = tanks[0].volume.amount()
-        val removeAmount = FluidAmount.of(1000, qnt.toLong())
+        val removeAmount = FluidAmount.of(qnt.toLong(), 1000)
         return if(currentAmount >= removeAmount) {
             tanks[0].volume = LIQUID_XP.key.withAmount(FluidAmount.of(currentAmount.asLong(1000) - qnt, 1000))
             markDirty()

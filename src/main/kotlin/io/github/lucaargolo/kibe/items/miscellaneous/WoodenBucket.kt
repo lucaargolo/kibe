@@ -23,7 +23,8 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {
         val itemStack = user.getStackInHand(hand)
-        val hitResult: HitResult = raycast(world, user,
+        val hitResult: HitResult = raycast(
+            world, user,
             if (this.fluid === Fluids.EMPTY) RaycastContext.FluidHandling.SOURCE_ONLY else RaycastContext.FluidHandling.NONE
         )
 
@@ -31,6 +32,12 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
             val dir = blockHitResult.side
             val pos = blockHitResult.blockPos
             val offsetPos = pos.offset(dir)
+
+            if (hitResult.type == HitResult.Type.MISS) {
+                return TypedActionResult.pass(itemStack)
+            } else if (hitResult.type != HitResult.Type.BLOCK) {
+                return TypedActionResult.pass(itemStack)
+            }
 
             if (world.canPlayerModifyAt(user, pos) && user.canPlaceOn(offsetPos, dir, itemStack)) {
                 val blockState = world.getBlockState(pos)
@@ -45,6 +52,8 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                                 Criteria.FILLED_BUCKET.trigger(user as ServerPlayerEntity, ItemStack(WATER_WOODEN_BUCKET))
                             }
                             return TypedActionResult.success(itemStack2, world.isClient())
+                        }else{
+                            (fluid.bucketItem as? BucketItem)?.placeFluid(user, world, pos, blockHitResult)
                         }
                     }
                 } else {
