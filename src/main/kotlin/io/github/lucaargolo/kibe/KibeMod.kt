@@ -5,14 +5,17 @@ package io.github.lucaargolo.kibe
 import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
-import io.github.lucaargolo.kibe.blocks.*
+import io.github.lucaargolo.kibe.blocks.BIG_TORCH
 import io.github.lucaargolo.kibe.blocks.COOLER
-import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
+import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
+import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
+import io.github.lucaargolo.kibe.blocks.initBlocks
+import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
@@ -28,9 +31,13 @@ import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
 import io.github.lucaargolo.kibe.utils.EntangledTankCache
+import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
 import io.netty.buffer.Unpooled
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig
+import me.sargunvohra.mcmods.autoconfig1u.annotation.Config
+import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
@@ -64,14 +71,13 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.world.WorldAccess
+import net.minecraft.util.registry.RegistryKey
+import net.minecraft.world.World
 import java.util.*
 import java.util.function.Consumer
-import kotlin.collections.LinkedHashMap
 
 const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
-val BIG_TORCH_MAP: LinkedHashMap<WorldAccess?, MutableList<BigTorchBlockEntity>> = linkedMapOf()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val MARK_ENTANGLED_TANK_DIRTY_S2C = Identifier(MOD_ID, "mark_entangled_tank_dirty")
 val SYNC_ENTANGLED_TANK_S2C = Identifier(MOD_ID, "sync_entangled_tank")
@@ -79,6 +85,7 @@ val REQUEST_ENTANGLED_TANK_SYNC_C2S = Identifier(MOD_ID, "request_entangled_tank
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 var TANK_CUSTOM_MODEL: Any? = null
+var MOD_CONFIG: ModConfig = ModConfig()
 
 fun Boolean.toInt() = if (this) 1 else 0
 
@@ -133,7 +140,7 @@ fun initPackets() {
         packetContext.taskQueue.execute {
             val player = packetContext.player as ServerPlayerEntity
             val serverWorld = player.serverWorld
-            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
+            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({ EntangledTankState(serverWorld, key) }, key)
             val fluidInv = state.getOrCreateInventory(colorCode)
             val passedData = PacketByteBuf(Unpooled.buffer())
             passedData.writeString(key)
@@ -192,6 +199,8 @@ fun initPacketsClient() {
 }
 
 fun initExtras() {
+    AutoConfig.register(ModConfig::class.java) { cfg: Config, cls: Class<ModConfig> -> JanksonConfigSerializer(cfg, cls) }
+    MOD_CONFIG = AutoConfig.getConfigHolder(ModConfig::class.java).config;
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }
@@ -204,7 +213,7 @@ fun initExtrasClient() {
     ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
         registry.register(Identifier(MOD_ID, "block/entangled_chest"))
         registry.register(Identifier(MOD_ID, "block/entangled_chest_runes"))
-        (0..15).forEach{
+        (0..15).forEach {
             registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
         }
         registry.register(Identifier(MOD_ID, "block/tank"))
@@ -282,9 +291,10 @@ fun initLootTables() {
                     EntityPropertiesLootCondition.builder(
                         LootContext.EntityTarget.THIS,
                         EntityPredicate.Builder.create().effects(EntityEffectPredicate.create().withEffect(CURSED_EFFECT))
-                    ))
+                    )
+                )
                 .conditionally(RandomChanceLootCondition.builder(0.05F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f,1.5f)).build())
+                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
     })
@@ -295,7 +305,7 @@ fun initLootTables() {
                 .rolls(ConstantLootTableRange.create(1))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(RandomChanceLootCondition.builder(0.1F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f,1.5f)).build())
+                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
     })

@@ -35,6 +35,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
+    modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
+    include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
+
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
 
@@ -47,6 +50,7 @@ dependencies {
     modImplementation "alexiil.mc.mod:simplepipes-all:0.4.1-pre.1"
     modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+
 }
 
 processResources {

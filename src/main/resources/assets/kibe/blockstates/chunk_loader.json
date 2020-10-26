@@ -1,5 +1,6 @@
 {
   "variants": {
-    "": { "model": "kibe:block/chunk_loader" }
+    "enabled=true": { "model": "kibe:block/chunk_loader" },
+    "enabled=false": { "model": "kibe:block/chunk_loader_disabled" }
   }
 }

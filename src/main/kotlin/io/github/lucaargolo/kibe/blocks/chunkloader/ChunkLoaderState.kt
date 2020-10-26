@@ -12,10 +12,14 @@ import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
+import java.util.*
 
 class ChunkLoaderState(val server: MinecraftServer, val key: String): PersistentState(key){
 
-    var loadedChunkMap: MutableMap<RegistryKey<World>, MutableList<BlockPos>> = mutableMapOf();
+    var loadedChunkMap: MutableMap<RegistryKey<World>, MutableList<BlockPos>> = mutableMapOf()
+    var loadersPerUUID: MutableMap<String, Int> = mutableMapOf()
+
+    fun getLoaded(uuid: UUID) = loadersPerUUID.getOrDefault(uuid.toString(), 0)
 
     fun isItBeingChunkLoaded(world: ServerWorld, chunkPos: ChunkPos): Boolean {
         loadedChunkMap.forEach { (wrldKey, list) ->
@@ -35,6 +39,11 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
     }
 
     private fun setChunksForced(world: ServerWorld, blockEntity: ChunkLoaderBlockEntity, bool: Boolean) {
+        if(bool) {
+            loadersPerUUID[blockEntity.ownerUUID] = loadersPerUUID.getOrDefault(blockEntity.ownerUUID, 0)+1
+        }else {
+            loadersPerUUID[blockEntity.ownerUUID] = loadersPerUUID.getOrDefault(blockEntity.ownerUUID, 1)-1
+        }
         val centerChunkPos = ChunkPos(blockEntity.pos)
         blockEntity.enabledChunks.forEach {
             world.chunkManager.setChunkForced(ChunkPos(centerChunkPos.x+it.first, centerChunkPos.z+it.second), bool)

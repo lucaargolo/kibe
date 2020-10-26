@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.bigtorch
 
-import io.github.lucaargolo.kibe.BIG_TORCH_MAP
 import io.github.lucaargolo.kibe.blocks.BIG_TORCH
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
@@ -12,14 +11,17 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Direction
-import java.util.*
+import net.minecraft.util.registry.RegistryKey
+import net.minecraft.world.World
+import kotlin.collections.LinkedHashSet
 import kotlin.math.min
 import kotlin.math.sqrt
+
 
 class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorch)), BlockEntityClientSerializable, SidedInventory, Tickable {
 
@@ -27,16 +29,14 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
 
     var torchPercentage = 0.0
     var chunkRadius = 0
-    //var suppressedSpawns = 0
 
     var count = 0
     override fun tick() {
         if(count++ == 40) {
             count = 0
-            if(BIG_TORCH_MAP[getWorld()].isNullOrEmpty())
-                BIG_TORCH_MAP[getWorld()] = mutableListOf(this)
-            else
-                BIG_TORCH_MAP[getWorld()]!!.add(this)
+            world?.let {
+                addSuppressedChunks(it.registryKey, this.getSuppressedChunks())
+            }
         }
     }
 
@@ -44,19 +44,21 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
         var torchQuantity = 0.0
         inventory.forEach { torchQuantity += it.count }
         torchPercentage = (torchQuantity/(inventory.size*64.0))
-        chunkRadius = min(sqrt(torchQuantity/9).toInt(), 8)
+        world?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        chunkRadius = min(sqrt(torchQuantity / 9).toInt(), 8)
+        world?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         if(world?.getBlockState(pos)?.block == BIG_TORCH)
             world?.setBlockState(pos, cachedState.with(Properties.LEVEL_8, chunkRadius))
+    }
+
+    override fun markRemoved() {
+        world?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        super.markRemoved()
     }
 
     override fun markDirty() {
         super.markDirty()
         updateValues()
-    }
-
-    override fun markRemoved() {
-        super.markRemoved()
-        BIG_TORCH_MAP[getWorld()]?.remove(this)
     }
 
     override fun toTag(tag: CompoundTag): CompoundTag {
@@ -112,5 +114,44 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
     override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = stack.item == Items.TORCH
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = true
+
+    private fun getSuppressedChunks(): LinkedHashSet<ChunkPos> {
+        val chunks = linkedSetOf<ChunkPos>()
+        val centerChunk = ChunkPos(pos)
+        for (x in (centerChunk.x - chunkRadius) until (centerChunk.x + chunkRadius)) {
+            for (z in (centerChunk.z - chunkRadius) until (centerChunk.z + chunkRadius)) {
+                chunks.add(ChunkPos(x, z))
+            }
+        }
+        return chunks
+    }
+
+    companion object {
+        private val suppressedChunkMap = linkedMapOf<RegistryKey<World>, LinkedHashSet<ChunkPos>>()
+        private var isException = false
+
+        fun setException(boolean: Boolean) {
+            isException = boolean
+        }
+
+        fun addSuppressedChunks(registryKey: RegistryKey<World>, linkedHashSet: LinkedHashSet<ChunkPos>) {
+            val set = suppressedChunkMap[registryKey] ?: linkedSetOf()
+            set.addAll(linkedHashSet)
+            suppressedChunkMap[registryKey] = set
+        }
+
+        fun removeSuppressedChunks(registryKey: RegistryKey<World>, linkedHashSet: LinkedHashSet<ChunkPos>) {
+            suppressedChunkMap[registryKey]?.removeAll(linkedHashSet)
+        }
+
+        fun isChunkSuppressed(registryKey: RegistryKey<World>, chunkPos: ChunkPos): Boolean {
+            if(isException) {
+                isException = false
+                return false
+            }
+            val set = suppressedChunkMap[registryKey] ?: linkedSetOf()
+            return set.contains(chunkPos)
+        }
+    }
 
 }

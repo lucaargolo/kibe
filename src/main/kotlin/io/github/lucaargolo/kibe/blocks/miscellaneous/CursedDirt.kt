@@ -1,5 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.MOD_CONFIG
+import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -87,7 +89,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         //Chunk mob cap for avoiding L A G
         val chunkPos = world.getChunk(pos).pos
         val entityList = world.getEntitiesByType<Entity>(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
-        if (entityList.size > 25) return
+        if (entityList.size > MOD_CONFIG.miscellaneousModule.cursedDirtMobCap) return
 
         val mob = getSpawnableMonster(world, pos.up(), random)
         if (mob != null) {
@@ -137,7 +139,9 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos)
         if (spawnList.size == 0) return null
         val entry: SpawnSettings.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
+        BigTorchBlockEntity.setException(true)
         if (!SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random)) return null
+        BigTorchBlockEntity.setException(false)
         return entry.type
     }
 }

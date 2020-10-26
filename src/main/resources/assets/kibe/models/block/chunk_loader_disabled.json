@@ -1,0 +1,9 @@
+{
+	"parent": "kibe:block/chunk_loader",
+	"textures": {
+		"0": "kibe:block/chunk_loader_top_disabled",
+		"1": "kibe:block/chunk_loader_side_disabled",
+		"2": "block/obsidian",
+		"particle": "kibe:block/chunk_loader_top_disabled"
+	}
+}

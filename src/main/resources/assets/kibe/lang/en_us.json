@@ -121,6 +121,10 @@
   "chat.kibe.cursed_dirt.nothing": "§cNo mobs are able to spawn",
   "chat.kibe.cursed_dirt.spawn": "§5Given the right conditions, the following mobs can spawn: ",
   "chat.kibe.lasso.cannot_spawn": "§cThe entity cannot be released in this location!",
+  "chat.kibe.chunk_loader.none": "§cThe chunk loader should not be offline!",
+  "chat.kibe.chunk_loader.owner_long_gone": "§cThe chunk loader is offline because it's owner have been offline for a long time",
+  "chat.kibe.chunk_loader.owner_offline": "§cThe chunk loader is offline because it's owner is offline",
+  "chat.kibe.chunk_loader.too_many_loaders": "§cThe chunk loader is offline because it's owner already reached the limit of active chunk loaders",
 
   "tooltip.kibe.empty": "Empty",
   "tooltip.kibe.enabled": "§aEnabled",
@@ -169,5 +173,12 @@
   "screen.kibe.entangled_chest": "Entangled Chest",
   "screen.kibe.entangled_bag": "Entangled Bag",
   "screen.kibe.pocket_trash_can": "Pocket Trash Can",
-  "screen.kibe.pocket_crafting_table": "Pocket Crafting Table"
+  "screen.kibe.pocket_crafting_table": "Pocket Crafting Table",
+
+  "text.autoconfig.kibe.category.miscellaneous": "Miscellaneous",
+  "text.autoconfig.kibe.option.miscellaneousModule.cursedDirtMobCap": "Cursed Dirt Mob Cap",
+  "text.autoconfig.kibe.category.chunk_loader": "Chunk Loader",
+  "text.autoconfig.kibe.option.chunkLoaderModule.checkForPlayer": "Check for Player",
+  "text.autoconfig.kibe.option.chunkLoaderModule.maxPerPlayer": "Max per Player",
+  "text.autoconfig.kibe.option.chunkLoaderModule.maxOfflineTime": "Max Offline Time"
 }
