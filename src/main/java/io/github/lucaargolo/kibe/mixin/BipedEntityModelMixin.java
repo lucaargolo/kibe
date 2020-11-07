@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BipedEntityModelMixin<T extends LivingEntity> {
 
     @Shadow public ModelPart rightArm;
-    @Shadow public ModelPart leftArm;
+    @Shadow public ModelPart field_27433;
 
     @Shadow public ModelPart rightLeg;
 
@@ -34,9 +34,9 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
                 this.rightArm.pitch = -0.35F;
                 this.rightArm.roll = 0F;
                 this.rightArm.yaw = 0F;
-                this.leftArm.pitch = -0.35F;
-                this.leftArm.roll = 0F;
-                this.leftArm.yaw = 0F;
+                this.field_27433.pitch = -0.35F;
+                this.field_27433.roll = 0F;
+                this.field_27433.yaw = 0F;
             }
             boolean isGliding = GliderHelper.INSTANCE.isPlayerGliding(player);
             if(isGliding) {
@@ -45,7 +45,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
                 this.rightLeg.yaw = 0F;
                 this.leftLeg.pitch = 0F;
                 this.leftLeg.roll = 0F;
-                this.leftArm.yaw = 0F;
+                this.field_27433.yaw = 0F;
             }
         }
     }

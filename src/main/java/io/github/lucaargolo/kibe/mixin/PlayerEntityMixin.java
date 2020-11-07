@@ -107,8 +107,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             for(ItemInfo mdi : ItemCompendiumKt.getItemRegistry().values()) {
                 if(mdi.getItem() instanceof AbilityRing) {
                     AbilityRing ring = ((AbilityRing) mdi.getItem());
-                    if(player.inventory.contains(new ItemStack(mdi.getItem()))) {
-                        List<DefaultedList<ItemStack>> combinedInventory = ((PlayerInventoryMixin) player.inventory).getCombinedInventory();
+                    if(player.getInventory().contains(new ItemStack(mdi.getItem()))) {
+                        List<DefaultedList<ItemStack>> combinedInventory = ((PlayerInventoryMixin) player.getInventory()).getCombinedInventory();
                         for (List<ItemStack> list : combinedInventory) {
                             for (ItemStack itemStack : list) {
                                 if (itemStack.getItem().equals(ring)) {

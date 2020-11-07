@@ -25,13 +25,13 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.World
 
-class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContainerBlockEntity(getEntityType(vacuumHopper)), FixedFluidInv, BlockEntityClientSerializable, Tickable {
+class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(vacuumHopper), pos, state), FixedFluidInv, BlockEntityClientSerializable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
@@ -96,8 +96,8 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
 
     override fun toClientTag(tag: CompoundTag) = toTag(tag)
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         val tanksTag = tag.getCompound("tanks")
         tanksTag.keys.forEachIndexed { idx, key ->
             val tankTag = tanksTag.getCompound(key)
@@ -112,7 +112,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
         Inventories.fromTag(tag, inventory)
     }
 
-    override fun fromClientTag(tag: CompoundTag) = fromTag(vacuumHopper.defaultState, tag)
+    override fun fromClientTag(tag: CompoundTag) = fromTag(tag)
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack
@@ -175,27 +175,27 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
         }
     }
 
-    override fun tick() {
-        val world = world ?: return
-        val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
-        val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
-        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-        val validEntities = world.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
-        validEntities.forEach {
-            val distance: Double = it.pos.distanceTo(vecPos)
-            if (distance < 1.0) {
-                if(it is ExperienceOrbEntity) {
-                    addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
-                    it.remove()
+    companion object {
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: VacuumHopperEntity) {
+            val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
+            val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
+            val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+            val validEntities = world.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+            validEntities.forEach {
+                val distance: Double = it.pos.distanceTo(vecPos)
+                if (distance < 1.0) {
+                    if(it is ExperienceOrbEntity) {
+                        entity.addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
+                        it.remove(Entity.RemovalReason.KILLED)
+                    }
+                    if(it is ItemEntity) {
+                        it.stack = entity.addStack(it.stack)
+                    }
                 }
-                if(it is ItemEntity) {
-                    it.stack = addStack(it.stack)
-                }
+                val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
+                it.addVelocity(vel.x, vel.y, vel.z)
             }
-            val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
-            it.addVelocity(vel.x, vel.y, vel.z)
         }
     }
-
 
 }

@@ -15,8 +15,9 @@ import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 
-class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)), BlockEntityClientSerializable {
+class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var runeColors = mutableMapOf<Int, DyeColor>()
@@ -73,8 +74,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         super.markDirty()
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }

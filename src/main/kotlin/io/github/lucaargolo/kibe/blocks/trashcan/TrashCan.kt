@@ -13,9 +13,11 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
 
-    override fun createBlockEntity(view: BlockView?): BlockEntity = TrashCanEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return TrashCanEntity(this, blockPos, blockState)
+    }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos))

@@ -5,7 +5,6 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
-import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.minus
 import io.github.lucaargolo.kibe.utils.plus
@@ -15,10 +14,11 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Tickable
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.world.World
 
-class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, BlockEntityClientSerializable {
+class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(tank), pos, state), BlockEntityClientSerializable {
 
     var lastRenderedFluid = 0f
     var tickDelay = 0
@@ -52,41 +52,6 @@ class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, B
     val capacity: FluidAmount
         get() = fluidInv.tankCapacity_F
 
-    override fun tick() {
-        val world = world ?: return
-        val fluid = if(this.isEmpty) Fluids.EMPTY else this.fluidKey.rawFluid ?: Fluids.EMPTY
-        val luminance = fluid.defaultState.blockState.luminance
-        if(luminance != cachedState[Properties.LEVEL_15]) {
-            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
-        }
-        if(tickDelay++ < 10) return else tickDelay = 0
-        Direction.values().forEach {
-            if(it == Direction.UP) return@forEach
-            val otherTank = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
-
-            if(it == Direction.DOWN && (otherTank.isEmpty || otherTank.fluidKey == this.fluidKey)) {
-                if(otherTank.amount + this.amount <= otherTank.capacity) {
-                    otherTank.volume = this.fluidKey.withAmount(otherTank.amount + this.amount)
-                    this.amount = FluidAmount.ZERO
-                }else{
-                    val dif = otherTank.capacity - otherTank.amount
-                    otherTank.volume = this.fluidKey.withAmount(otherTank.capacity)
-                    this.amount -= dif
-                }
-            }
-
-            if((otherTank.isEmpty || otherTank.fluidKey == this.fluidKey) && this.amount > otherTank.amount) {
-                var dif = (this.amount - otherTank.amount).roundedDiv(2L)
-                dif = FluidAmount.of(dif.asLong(1000), 1000)
-                if(dif > FluidAmount.of(10, 1000)) {
-                    if(dif > FluidAmount.BOTTLE) dif = FluidAmount.BOTTLE
-                    otherTank.volume = this.fluidKey.withAmount(otherTank.amount + dif)
-                    this.amount -= dif
-                }
-            }
-        }
-    }
-
     fun markDirtyAndSync() {
         markDirty()
         if(world?.isClient == false)
@@ -105,13 +70,51 @@ class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, B
     }
 
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         fluidInv.fromTag(tag.getCompound("fluidInv"))
     }
 
     override fun toClientTag(tag: CompoundTag) = toTag(tag)
 
-    override fun fromClientTag(tag: CompoundTag) = fromTag(TANK.defaultState, tag)
+    override fun fromClientTag(tag: CompoundTag) = fromTag(tag)
+
+    companion object {
+
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: TankBlockEntity) {
+            val fluid = if(entity.isEmpty) Fluids.EMPTY else entity.fluidKey.rawFluid ?: Fluids.EMPTY
+            val luminance = fluid.defaultState.blockState.luminance
+            if(luminance != state[Properties.LEVEL_15]) {
+                world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))
+            }
+            if(entity.tickDelay++ < 10) return else entity.tickDelay = 0
+            Direction.values().forEach {
+                if(it == Direction.UP) return@forEach
+                val otherTank = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
+
+                if(it == Direction.DOWN && (otherTank.isEmpty || otherTank.fluidKey == entity.fluidKey)) {
+                    if(otherTank.amount + entity.amount <= otherTank.capacity) {
+                        otherTank.volume = entity.fluidKey.withAmount(otherTank.amount + entity.amount)
+                        entity.amount = FluidAmount.ZERO
+                    }else{
+                        val dif = otherTank.capacity - otherTank.amount
+                        otherTank.volume = entity.fluidKey.withAmount(otherTank.capacity)
+                        entity.amount -= dif
+                    }
+                }
+
+                if((otherTank.isEmpty || otherTank.fluidKey == entity.fluidKey) && entity.amount > otherTank.amount) {
+                    var dif = (entity.amount - otherTank.amount).roundedDiv(2L)
+                    dif = FluidAmount.of(dif.asLong(1000), 1000)
+                    if(dif > FluidAmount.of(10, 1000)) {
+                        if(dif > FluidAmount.BOTTLE) dif = FluidAmount.BOTTLE
+                        otherTank.volume = entity.fluidKey.withAmount(otherTank.amount + dif)
+                        entity.amount -= dif
+                    }
+                }
+            }
+        }
+
+    }
 
 }

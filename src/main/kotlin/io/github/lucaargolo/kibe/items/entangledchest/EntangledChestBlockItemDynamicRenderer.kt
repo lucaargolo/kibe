@@ -7,18 +7,19 @@ import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChestEntityRende
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
+import net.minecraft.util.math.BlockPos
 
 class EntangledChestBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
     override fun render(stack: ItemStack, mode: ModelTransformation.Mode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
-        val dummyChest = EntangledChestEntity(ENTANGLED_CHEST as EntangledChest)
+        val dummyChest = EntangledChestEntity(ENTANGLED_CHEST as EntangledChest, BlockPos.ORIGIN, ENTANGLED_CHEST.defaultState)
         stack.tag?.getCompound("BlockEntityTag")?.let { dummyChest.fromClientTag(it) }
 
-        val dummyRenderer = EntangledChestEntityRenderer(BlockEntityRenderDispatcher.INSTANCE)
+        val dummyRenderer = EntangledChestEntityRenderer(BlockEntityRendererFactory.Arguments(MinecraftClient.getInstance().method_31975(), MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().method_31974(), MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyChest, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)
     }
 }

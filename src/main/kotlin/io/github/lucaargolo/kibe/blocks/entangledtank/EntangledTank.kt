@@ -9,6 +9,9 @@ import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.Items
@@ -38,7 +41,13 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
         return BlockRenderType.MODEL
     }
 
-    override fun createBlockEntity(world: BlockView?) = EntangledTankEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return EntangledTankEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> EntangledTankEntity.tick(wrld, pos, state, blockEntity as EntangledTankEntity) }
+    }
 
     override fun addAllAttributes(world: World, pos: BlockPos?, state: BlockState?, to: AttributeList<*>) {
         (world.getBlockEntity(pos) as? EntangledTankEntity)?.let {

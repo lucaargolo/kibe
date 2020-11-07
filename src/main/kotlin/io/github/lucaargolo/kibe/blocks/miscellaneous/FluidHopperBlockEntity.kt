@@ -11,9 +11,10 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.HopperBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.util.Tickable
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
-class FluidHopperBlockEntity(block: FluidHopper): BlockEntity(getEntityType(block)), Tickable {
+class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(block), pos, state) {
 
     val fluidInv = SimpleFixedFluidInv(1, FluidAmount(1))
     private var volume
@@ -22,38 +23,39 @@ class FluidHopperBlockEntity(block: FluidHopper): BlockEntity(getEntityType(bloc
             fluidInv.setInvFluid(0, value, Simulation.ACTION)
         }
 
-    override fun tick() {
-        val world = world ?: return
-        if(!cachedState[HopperBlock.ENABLED]) return
-        val direction = cachedState[HopperBlock.FACING]
-
-        val extractable = FluidAttributes.EXTRACTABLE.get(world, pos.up())
-        val insertable = FluidAttributes.INSERTABLE.get(world, pos.add(direction.vector))
-
-        if(volume.isEmpty) {
-            volume = extractable.attemptAnyExtraction(FluidAmount.of(50, 1000), Simulation.ACTION)
-        }else {
-            if(volume.amount() <= FluidAmount.of(950, 1000)) {
-                val extracted = extractable.attemptExtraction({it == volume.fluidKey}, FluidAmount.of(50, 1000), Simulation.ACTION)
-                volume = volume.withAmount(volume.amount()+extracted.amount())
-            }
-        }
-
-        if(!volume.isEmpty && volume.amount() >= FluidAmount.of(50, 1000)) {
-            val notInserted = insertable.attemptInsertion(volume.fluidKey.withAmount(FluidAmount.of(50, 1000)), Simulation.ACTION)
-            val insertedAmount = FluidAmount.of(50, 1000) - notInserted.amount()
-            volume = volume.withAmount(volume.amount()-insertedAmount)
-        }
-    }
-
     override fun toTag(tag: CompoundTag): CompoundTag {
         super.toTag(tag)
         fluidInv.toTag(tag)
         return tag
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         fluidInv.fromTag(tag)
+    }
+
+    companion object {
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: FluidHopperBlockEntity) {
+            if(!state[HopperBlock.ENABLED]) return
+            val direction = state[HopperBlock.FACING]
+
+            val extractable = FluidAttributes.EXTRACTABLE.get(world, pos.up())
+            val insertable = FluidAttributes.INSERTABLE.get(world, pos.add(direction.vector))
+
+            if(entity.volume.isEmpty) {
+                entity.volume = extractable.attemptAnyExtraction(FluidAmount.of(50, 1000), Simulation.ACTION)
+            }else {
+                if(entity.volume.amount() <= FluidAmount.of(950, 1000)) {
+                    val extracted = extractable.attemptExtraction({it == entity.volume.fluidKey}, FluidAmount.of(50, 1000), Simulation.ACTION)
+                    entity.volume = entity.volume.withAmount(entity.volume.amount()+extracted.amount())
+                }
+            }
+
+            if(!entity.volume.isEmpty && entity.volume.amount() >= FluidAmount.of(50, 1000)) {
+                val notInserted = insertable.attemptInsertion(entity.volume.fluidKey.withAmount(FluidAmount.of(50, 1000)), Simulation.ACTION)
+                val insertedAmount = FluidAmount.of(50, 1000) - notInserted.amount()
+                entity.volume = entity.volume.withAmount(entity.volume.amount()-insertedAmount)
+            }
+        }
     }
 }

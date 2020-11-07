@@ -3,6 +3,9 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -14,9 +17,15 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).requiresTool().strength(1.5F, 6.0F).nonOpaque()) {
+class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F).nonOpaque()) {
 
-    override fun createBlockEntity(view: BlockView?) = RedstoneTimerEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return RedstoneTimerEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> RedstoneTimerEntity.tick(wrld, pos, state, blockEntity as RedstoneTimerEntity) }
+    }
 
     override fun emitsRedstonePower(state: BlockState) = true
 

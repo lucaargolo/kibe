@@ -2,6 +2,9 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
@@ -14,9 +17,15 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
 
-    override fun createBlockEntity(world: BlockView?) = XpShowerBlockEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return XpShowerBlockEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> XpShowerBlockEntity.tick(wrld, pos, state, blockEntity as XpShowerBlockEntity) }
+    }
 
     init {
         defaultState = stateManager.defaultState.with(Properties.FACING, Direction.SOUTH).with(Properties.ENABLED, false)

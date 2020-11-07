@@ -7,6 +7,8 @@ import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.sound.BlockSoundGroup
@@ -16,7 +18,6 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
 class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F).nonOpaque().lightLevel { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)), AttributeProvider {
@@ -30,7 +31,13 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
         super.appendProperties(builder)
     }
 
-    override fun createBlockEntity(world: BlockView?) = TankBlockEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return TankBlockEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> TankBlockEntity.tick(wrld, pos, state, blockEntity as TankBlockEntity) }
+    }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
 

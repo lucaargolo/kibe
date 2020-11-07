@@ -2,6 +2,9 @@ package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -26,7 +29,13 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
         defaultState = stateManager.defaultState.with(Properties.ENABLED, false)
     }
 
-    override fun createBlockEntity(world: BlockView?) = ChunkLoaderBlockEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return ChunkLoaderBlockEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> ChunkLoaderBlockEntity.tick(wrld, pos, state, blockEntity as ChunkLoaderBlockEntity) }
+    }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
         builder.add(Properties.ENABLED)

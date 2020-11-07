@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BucketItemAccessor",
+    "Class5600Mixin",
     "CraftingTableContainerMixin",
     "EndermanEntityMixin",
     "EntityMixin",
@@ -20,11 +21,11 @@
     "WitherRoseBlockMixin"
   ],
   "client": [
-    "MinecraftClientMixin",
     "BipedEntityModelMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
+    "MinecraftClientMixin",
     "PlayerEntityRendererMixin"
   ],
   "injectors": {

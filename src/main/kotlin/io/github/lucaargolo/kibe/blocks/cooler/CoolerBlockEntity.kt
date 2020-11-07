@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.cooler
 
-import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
@@ -11,9 +10,10 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 
-class CoolerBlockEntity(cooler: Cooler): BlockEntity(getEntityType(cooler)), BlockEntityClientSerializable, SidedInventory {
+class CoolerBlockEntity(cooler: Cooler, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(cooler), pos, state), BlockEntityClientSerializable, SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
@@ -22,8 +22,8 @@ class CoolerBlockEntity(cooler: Cooler): BlockEntity(getEntityType(cooler)), Blo
         return super.toTag(tag)
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         Inventories.fromTag(tag, inventory)
     }
 
@@ -32,7 +32,7 @@ class CoolerBlockEntity(cooler: Cooler): BlockEntity(getEntityType(cooler)), Blo
     }
 
     override fun fromClientTag(tag: CompoundTag) {
-        fromTag(COOLER.defaultState, tag)
+        fromTag(tag)
     }
 
     override fun size() = inventory.size

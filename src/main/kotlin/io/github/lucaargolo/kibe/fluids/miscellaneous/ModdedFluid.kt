@@ -31,8 +31,7 @@ abstract class ModdedFluid(formatting: Formatting = Formatting.WHITE): FlowableF
     }
 
     override fun beforeBreakingBlock(world: WorldAccess, pos: BlockPos, state: BlockState) {
-        val blockEntity = if (state.block.hasBlockEntity()) world.getBlockEntity(pos) else null
-        Block.dropStacks(state, world, pos, blockEntity)
+        Block.dropStacks(state, world, pos, world.getBlockEntity(pos))
     }
 
     override fun canBeReplacedWith(fluidState: FluidState, blockView: BlockView, blockPos: BlockPos, fluid: Fluid, direction: Direction): Boolean {

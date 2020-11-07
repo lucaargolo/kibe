@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
-import net.minecraft.block.MaterialColor
+import net.minecraft.block.MapColor
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.screen.Screen
@@ -32,14 +32,14 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
         val image = NativeImage(NativeImage.Format.ABGR, 256, 256, false)
         (chunkPos.startX-32..chunkPos.endX+32).forEach {  x ->
             (chunkPos.startZ-32..chunkPos.endZ+32).forEach { z ->
-                var color = MaterialColor.WHITE
+                var color = MapColor.WHITE
                 var y = 256
                 while(y >= 0) {
                     val innerPos = BlockPos(x, y, z)
                     val state = world.getBlockState(innerPos)
                     if(!state.isAir) {
                         //println("block: ${state.block.name} x: $x z: $z")
-                        color = state.getTopMaterialColor(world, innerPos)
+                        color = state.getMapColor(world, innerPos)
                         break
                     }
                     else y--
@@ -83,7 +83,6 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
     }
 
     private fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight)
     }

@@ -23,7 +23,7 @@ class EntangledBag(settings: Settings): Item(settings){
         (1..8).forEach {
             val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
             val text = LiteralText("■")
-            text.style = text.style.withColor(TextColor.fromRgb(dc.materialColor.color))
+            text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
             color.append(text)
         }
         tooltip.add(color)

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.effects.EffectCompendiumKt;
 import io.github.lucaargolo.kibe.items.miscellaneous.Lasso;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -39,7 +40,7 @@ public class MobEntityMixin {
                     entity.saveSelfToTag(tag);
                     stackTag.put("Entity", tag);
                     stack.setTag(stackTag);
-                    entity.remove();
+                    entity.remove(Entity.RemovalReason.DISCARDED);
                     info.setReturnValue(ActionResult.SUCCESS);
                 }
             }

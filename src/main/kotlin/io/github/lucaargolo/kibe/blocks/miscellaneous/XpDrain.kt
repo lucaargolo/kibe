@@ -17,7 +17,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.pow
 
-class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
         if(!world.isClient && entity is PlayerEntity) {

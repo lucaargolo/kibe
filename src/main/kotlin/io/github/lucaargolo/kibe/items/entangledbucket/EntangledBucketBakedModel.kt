@@ -120,7 +120,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
             var sumb = 0
             (1..8).forEach {
                 val dye = DyeColor.byName(stack.tag!!.getString("rune$it"), DyeColor.WHITE)
-                val dyeColor = Color(dye.materialColor.color)
+                val dyeColor = Color(dye.mapColor.color)
                 sumr += dyeColor.red
                 sumg += dyeColor.green
                 sumb += dyeColor.blue

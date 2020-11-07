@@ -29,12 +29,13 @@ class EntangledTankState(val world: ServerWorld, val key: String): PersistentSta
             ServerSidePacketRegistry.INSTANCE.sendToPlayer(it, MARK_ENTANGLED_TANK_DIRTY_S2C, passedData)
         }
         server.worlds.forEach {
-            it.blockEntities.forEach { blockEntity ->
-                (blockEntity as? EntangledTankEntity)?.let { entangledTankEntity ->
-                    if(entangledTankEntity.colorCode == colorCode)
-                        entangledTankEntity.sync()
-                }
-            }
+            println("conserte isso depois gayyyy")
+//            it.blockEntities.forEach { blockEntity ->
+//                (blockEntity as? EntangledTankEntity)?.let { entangledTankEntity ->
+//                    if(entangledTankEntity.colorCode == colorCode)
+//                        entangledTankEntity.sync()
+//                }
+//            }
         }
         super.markDirty()
     }

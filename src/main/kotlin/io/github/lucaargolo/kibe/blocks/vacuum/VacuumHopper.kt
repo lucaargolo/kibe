@@ -5,6 +5,9 @@ import alexiil.mc.lib.attributes.AttributeProvider
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.particle.ParticleTypes
@@ -18,9 +21,15 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), AttributeProvider {
+class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), AttributeProvider {
 
-    override fun createBlockEntity(view: BlockView?) = VacuumHopperEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return VacuumHopperEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> VacuumHopperEntity.tick(wrld, pos, state, blockEntity as VacuumHopperEntity) }
+    }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos))

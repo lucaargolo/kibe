@@ -170,8 +170,8 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
 
     override fun close(player: PlayerEntity?) {
         super.close(player)
-        context.run { world: World, _: BlockPos ->
-            dropInventory(player, world, craftingInv)
+        context.run { _: World, _: BlockPos ->
+            dropInventory(player, craftingInv)
         }
     }
 

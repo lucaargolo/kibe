@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableList
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Matrix4f
 import java.util.*
 import java.util.stream.IntStream
 
-class VacuumHopperEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<VacuumHopperEntity>(dispatcher) {
+class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<VacuumHopperEntity> {
 
     @Suppress("UnstableApiUsage")
     private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj { i: Int -> RenderLayer.getEndPortal(i + 1) }.collect(
@@ -20,7 +20,7 @@ class VacuumHopperEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Block
 
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         matrices.push()
-        val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
+        val d = blockEntity.pos.getSquaredDistance(arg.renderDispatcher.camera.pos, true)
         val m = matrices.peek().model
         renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
         for (l in 1 until getLayersToRender(d)) {

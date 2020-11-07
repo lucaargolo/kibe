@@ -43,7 +43,7 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
             val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
             val text = LiteralText("■")
-            text.style = text.style.withColor(TextColor.fromRgb(dc.materialColor.color))
+            text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
             color.append(text)
         }
         tooltip.add(color)

@@ -78,7 +78,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
         get() = (if(fluid == Fluids.WATER) Items.WATER_BUCKET else Items.BUCKET) as BucketItem
 
     private fun getEmptiedStack(stack: ItemStack?, player: PlayerEntity): ItemStack? {
-        return if (!player.abilities.creativeMode) ItemStack(WOODEN_BUCKET) else stack
+        return if (!player.isCreative) ItemStack(WOODEN_BUCKET) else stack
     }
 
     class Empty(settings: Settings): WoodenBucket(Fluids.EMPTY, settings)

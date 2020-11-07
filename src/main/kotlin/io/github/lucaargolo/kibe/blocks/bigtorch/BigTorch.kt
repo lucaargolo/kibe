@@ -3,6 +3,8 @@ package io.github.lucaargolo.kibe.blocks.bigtorch
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
@@ -28,8 +30,12 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).l
         stateManager.add(Properties.LEVEL_8)
     }
 
-    override fun createBlockEntity(world: BlockView?): BlockEntity? {
-        return BigTorchBlockEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return BigTorchBlockEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, state: BlockState?, type: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return BlockEntityTicker { wrld, pos, stt, blockEntity -> BigTorchBlockEntity.tick(wrld, pos, stt, blockEntity as BigTorchBlockEntity) }
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {

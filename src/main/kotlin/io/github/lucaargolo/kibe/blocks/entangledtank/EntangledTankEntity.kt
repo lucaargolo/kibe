@@ -14,9 +14,10 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
-import net.minecraft.util.Tickable
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
-class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest)), BlockEntityClientSerializable, Tickable {
+class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
 
     var lastRenderedFluid = 0f
     var fluidInv = object: SimpleFixedFluidInv(1, FluidAmount(16)) {
@@ -65,8 +66,8 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         super.markDirty()
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -102,12 +103,15 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
 
     override fun toClientTag(tag: CompoundTag) = toTag(tag)
 
-    override fun tick() {
-        val world = world ?: return
-        val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
-        val luminance = fluid.defaultState.blockState.luminance
-        if(luminance != cachedState[Properties.LEVEL_15]) {
-            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
+    companion object {
+
+        fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: EntangledTankEntity) {
+            val fluid = if(blockEntity.fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else blockEntity.fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+            val luminance = fluid.defaultState.blockState.luminance
+            if(luminance != state[Properties.LEVEL_15]) {
+                world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))
+            }
         }
+
     }
 }

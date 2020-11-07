@@ -12,6 +12,7 @@ import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
@@ -29,7 +30,7 @@ import java.util.*
 import java.util.function.Function
 import java.util.stream.IntStream
 
-class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<EntangledChestEntity>(dispatcher) {
+class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<EntangledChestEntity> {
 
     @Suppress("UnstableApiUsage")
     private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj {
@@ -53,210 +54,210 @@ class EntangledChestEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Blo
         var counter = 0f
     }
 
-    private val bottomModel = ModelPart(64, 64, 0, 0)
-    private val topModel = ModelPart(64, 64, 0, 0)
-
-    init {
-        bottomModel.addCuboid(1F, 0F, 1F, 14F, 10F, 14F) // CHEST_BOTTOM
-
-        topModel.setTextureOffset(32, 43)
-        topModel.addCuboid(1F, 14F, 1F, 2F, 1F, 14F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 0)
-        topModel.addCuboid(3F, 14F, 1F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 3)
-        topModel.addCuboid(7F, 14F, 1F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 6)
-        topModel.addCuboid(11F, 14F, 1F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 31)
-        topModel.addCuboid(11F, 14F, 13F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 28)
-        topModel.addCuboid(7F, 14F, 13F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 25)
-        topModel.addCuboid(3F, 14F, 13F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 17)
-        topModel.addCuboid(3F, 14F, 9F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 9)
-        topModel.addCuboid(3F, 14F, 5F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 14)
-        topModel.addCuboid(11F, 14F, 5F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(58, 12)
-        topModel.addCuboid(7F, 14F, 5F, 2F, 1F, 1F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(56, 22)
-        topModel.addCuboid(11F, 14F, 9F, 2F, 1F, 2F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(58, 20)
-        topModel.addCuboid(7F, 14F, 10F, 2F, 1F, 1F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(0, 43)
-        topModel.addCuboid(13F, 14F, 1F, 2F, 1F, 14F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(16, 42)
-        topModel.addCuboid(10F, 14F, 1F, 1F, 1F, 14F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(0, 0)
-        topModel.addCuboid(9F, 14F, 1F, 1F, 1F, 6F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(0, 24)
-        topModel.addCuboid(6F, 14F, 1F, 1F, 1F, 6F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(0, 31)
-        topModel.addCuboid(6F, 14F, 9F, 1F, 1F, 6F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(0, 7)
-        topModel.addCuboid(9F, 14F, 9F, 1F, 1F, 6F) // CHEST_TOP_PLATE
-        topModel.setTextureOffset(16, 42)
-        topModel.addCuboid(5F, 14F, 1F, 1F, 1F, 14F) // CHEST_TOP_PLATE
-    }
+//    private val bottomModel = ModelPart(64, 64, 0, 0)
+//    private val topModel = ModelPart(64, 64, 0, 0)
+//
+//    init {
+//        bottomModel.addCuboid(1F, 0F, 1F, 14F, 10F, 14F) // CHEST_BOTTOM
+//
+//        topModel.setTextureOffset(32, 43)
+//        topModel.addCuboid(1F, 14F, 1F, 2F, 1F, 14F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 0)
+//        topModel.addCuboid(3F, 14F, 1F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 3)
+//        topModel.addCuboid(7F, 14F, 1F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 6)
+//        topModel.addCuboid(11F, 14F, 1F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 31)
+//        topModel.addCuboid(11F, 14F, 13F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 28)
+//        topModel.addCuboid(7F, 14F, 13F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 25)
+//        topModel.addCuboid(3F, 14F, 13F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 17)
+//        topModel.addCuboid(3F, 14F, 9F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 9)
+//        topModel.addCuboid(3F, 14F, 5F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 14)
+//        topModel.addCuboid(11F, 14F, 5F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(58, 12)
+//        topModel.addCuboid(7F, 14F, 5F, 2F, 1F, 1F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(56, 22)
+//        topModel.addCuboid(11F, 14F, 9F, 2F, 1F, 2F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(58, 20)
+//        topModel.addCuboid(7F, 14F, 10F, 2F, 1F, 1F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(0, 43)
+//        topModel.addCuboid(13F, 14F, 1F, 2F, 1F, 14F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(16, 42)
+//        topModel.addCuboid(10F, 14F, 1F, 1F, 1F, 14F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(0, 0)
+//        topModel.addCuboid(9F, 14F, 1F, 1F, 1F, 6F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(0, 24)
+//        topModel.addCuboid(6F, 14F, 1F, 1F, 1F, 6F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(0, 31)
+//        topModel.addCuboid(6F, 14F, 9F, 1F, 1F, 6F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(0, 7)
+//        topModel.addCuboid(9F, 14F, 9F, 1F, 1F, 6F) // CHEST_TOP_PLATE
+//        topModel.setTextureOffset(16, 42)
+//        topModel.addCuboid(5F, 14F, 1F, 1F, 1F, 14F) // CHEST_TOP_PLATE
+//    }
 
     override fun render(blockEntity: EntangledChestEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-
-        var context = Context()
-
-        if(contextMap.contains(blockEntity.pos)) {
-            context = contextMap[blockEntity.pos]!!
-        }else{
-            contextMap[blockEntity.pos] = context
-        }
-
-        var isScreenOpen = context.isScreenOpen
-        var currentState = context.currentState
-        var counter = context.counter
-
-        val screen = MinecraftClient.getInstance().currentScreen
-        val isChestScreenOpen = if(screen is EntangledChestScreen) {
-            screen.screenHandler.entity.runeColors == blockEntity.runeColors
-        }else false
-        val isBagScreenOpen = if(screen is EntangledBagScreen) {
-            screen.hasSameColors(blockEntity.runeColors)
-        }else false
-
-        if((isChestScreenOpen || isBagScreenOpen) && blockEntity.world?.getBlockState(blockEntity.pos.up())?.isAir == true) {
-            if(!isScreenOpen) {
-                isScreenOpen = true
-                when(currentState){
-                    AnimationState.DOWN -> {
-                        currentState = AnimationState.GOING_UP
-                        counter = 0f
-                    }
-                    AnimationState.GOING_DOWN -> {
-                        currentState = AnimationState.GOING_UP
-                        counter = 30f-counter
-                    }
-                    else -> print("AAAAAAAAAAAAAAAAaaa")
-                }
-            }
-        }else{
-            if(isScreenOpen) {
-                isScreenOpen = false
-                when(currentState){
-                    AnimationState.UP -> {
-                        currentState = AnimationState.GOING_DOWN
-                        counter = 0f
-                    }
-                    AnimationState.GOING_UP -> {
-                        currentState = AnimationState.GOING_DOWN
-                        counter = 30f-counter
-                    }
-                    else -> print("BBBBBBBBBBBbbb")
-                }
-            }
-        }
-
-        val world = blockEntity.world
-        val blockState =
-            if (world != null) blockEntity.cachedState else (
-                ENTANGLED_CHEST.defaultState.with(
-                Properties.HORIZONTAL_FACING,
-                Direction.SOUTH
-            ))
-
-        matrices.push()
-        val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
-        matrices.translate(0.5, 0.5, 0.5)
-        matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f))
-        matrices.translate(-0.5, -0.5, -0.5)
-
-        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
-        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
-
-        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
-        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
-
-        val lightAbove = blockEntity.world?.let { WorldRenderer.getLightmapCoordinates(it, blockEntity.pos) } ?: light
-        bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
-
-        val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
-        var m = matrices.peek().model
-        renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
-        for (l in 1 until getLayersToRender(d)) {
-            renderMiddleDownPart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
-        }
-
-        matrices.translate(0.5, 0.0, 0.5)
-        when(currentState) {
-            AnimationState.GOING_UP -> {
-                counter += tickDelta
-                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(counter*6))
-                matrices.translate(0.0, counter/90.0, 0.0)
-                if(counter >= 30f) currentState = AnimationState.UP
-            }
-            AnimationState.GOING_DOWN -> {
-                counter += tickDelta
-                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360-counter*6))
-                matrices.translate(0.0, 0.333-counter/90.0, 0.0)
-                if(counter >= 30f) currentState = AnimationState.DOWN
-            }
-            AnimationState.UP -> {
-                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360f))
-                matrices.translate(0.0, 30.0/90.0, 0.0)
-                counter = 0f
-            }
-            AnimationState.DOWN -> {
-                counter = 0f
-            }
-        }
-        matrices.translate(-0.5, 0.0, -0.5)
-
-        val popup = if(
-            MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
-            (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == blockEntity.pos &&
-            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
-        ) 1 else 0
-
-
-        (1..8).forEach {
-            val rune = ModelPart(32, 32, 0, 0)
-            rune.setTextureOffset(getRuneTextureU(blockEntity.runeColors[it]!!), getRuneTextureV(blockEntity.runeColors[it]!!))
-            when(it) {
-                1 -> rune.addCuboid(11f, 13f+popup, 11f, 2f, 2f, 2f)
-                2 -> rune.addCuboid(7f, 13f+popup, 11f, 2f, 2f, 2f)
-                3 -> rune.addCuboid(3f, 13f+popup, 11f, 2f, 2f, 2f)
-                4 -> rune.addCuboid(3f, 13f+popup, 7f, 2f, 2f, 2f)
-                5 -> rune.addCuboid(3f, 13f+popup, 3f, 2f, 2f, 2f)
-                6 -> rune.addCuboid(7f, 13f+popup, 3f, 2f, 2f, 2f)
-                7 -> rune.addCuboid(11f, 13f+popup, 3f, 2f, 2f, 2f)
-                8 -> rune.addCuboid(11f, 13f+popup, 7f, 2f, 2f, 2f)
-            }
-            rune.render(matrices, runesConsumer, lightAbove, overlay)
-        }
-
-        val upuv = if(blockEntity.key != "entangledchest-global") -10 else 0;
-
-        val core = ModelPart(64, 64, 0, 0)
-        core.setTextureOffset(58, 50+upuv)
-        core.addCuboid(9f, 14f, 7f, 1f, 2f, 2f)
-        core.setTextureOffset(52, 44+upuv)
-        core.addCuboid(7f, 14f, 6f, 2f, 2f, 4f)
-        core.setTextureOffset(52, 50+upuv)
-        core.addCuboid(6f, 14f, 7f, 1f, 2f, 2f)
-        core.render(matrices, chestConsumer, lightAbove, overlay)
-
-        topModel.render(matrices, chestConsumer, lightAbove, overlay)
-
-        m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
-        for (l in 1 until getLayersToRender(d)) {
-            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
-        }
-
-        contextMap[blockEntity.pos]!!.isScreenOpen = isScreenOpen
-        contextMap[blockEntity.pos]!!.currentState = currentState
-        contextMap[blockEntity.pos]!!.counter = counter
-
-        matrices.pop()
+//
+//        var context = Context()
+//
+//        if(contextMap.contains(blockEntity.pos)) {
+//            context = contextMap[blockEntity.pos]!!
+//        }else{
+//            contextMap[blockEntity.pos] = context
+//        }
+//
+//        var isScreenOpen = context.isScreenOpen
+//        var currentState = context.currentState
+//        var counter = context.counter
+//
+//        val screen = MinecraftClient.getInstance().currentScreen
+//        val isChestScreenOpen = if(screen is EntangledChestScreen) {
+//            screen.screenHandler.entity.runeColors == blockEntity.runeColors
+//        }else false
+//        val isBagScreenOpen = if(screen is EntangledBagScreen) {
+//            screen.hasSameColors(blockEntity.runeColors)
+//        }else false
+//
+//        if((isChestScreenOpen || isBagScreenOpen) && blockEntity.world?.getBlockState(blockEntity.pos.up())?.isAir == true) {
+//            if(!isScreenOpen) {
+//                isScreenOpen = true
+//                when(currentState){
+//                    AnimationState.DOWN -> {
+//                        currentState = AnimationState.GOING_UP
+//                        counter = 0f
+//                    }
+//                    AnimationState.GOING_DOWN -> {
+//                        currentState = AnimationState.GOING_UP
+//                        counter = 30f-counter
+//                    }
+//                    else -> print("AAAAAAAAAAAAAAAAaaa")
+//                }
+//            }
+//        }else{
+//            if(isScreenOpen) {
+//                isScreenOpen = false
+//                when(currentState){
+//                    AnimationState.UP -> {
+//                        currentState = AnimationState.GOING_DOWN
+//                        counter = 0f
+//                    }
+//                    AnimationState.GOING_UP -> {
+//                        currentState = AnimationState.GOING_DOWN
+//                        counter = 30f-counter
+//                    }
+//                    else -> print("BBBBBBBBBBBbbb")
+//                }
+//            }
+//        }
+//
+//        val world = blockEntity.world
+//        val blockState =
+//            if (world != null) blockEntity.cachedState else (
+//                ENTANGLED_CHEST.defaultState.with(
+//                Properties.HORIZONTAL_FACING,
+//                Direction.SOUTH
+//            ))
+//
+//        matrices.push()
+//        val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
+//        matrices.translate(0.5, 0.5, 0.5)
+//        matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f))
+//        matrices.translate(-0.5, -0.5, -0.5)
+//
+//        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
+//        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+//
+//        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
+//        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+//
+//        val lightAbove = blockEntity.world?.let { WorldRenderer.getLightmapCoordinates(it, blockEntity.pos) } ?: light
+//        bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
+//
+//        val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
+//        var m = matrices.peek().model
+//        renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
+//        for (l in 1 until getLayersToRender(d)) {
+//            renderMiddleDownPart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
+//        }
+//
+//        matrices.translate(0.5, 0.0, 0.5)
+//        when(currentState) {
+//            AnimationState.GOING_UP -> {
+//                counter += tickDelta
+//                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(counter*6))
+//                matrices.translate(0.0, counter/90.0, 0.0)
+//                if(counter >= 30f) currentState = AnimationState.UP
+//            }
+//            AnimationState.GOING_DOWN -> {
+//                counter += tickDelta
+//                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360-counter*6))
+//                matrices.translate(0.0, 0.333-counter/90.0, 0.0)
+//                if(counter >= 30f) currentState = AnimationState.DOWN
+//            }
+//            AnimationState.UP -> {
+//                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360f))
+//                matrices.translate(0.0, 30.0/90.0, 0.0)
+//                counter = 0f
+//            }
+//            AnimationState.DOWN -> {
+//                counter = 0f
+//            }
+//        }
+//        matrices.translate(-0.5, 0.0, -0.5)
+//
+//        val popup = if(
+//            MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
+//            (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == blockEntity.pos &&
+//            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
+//        ) 1 else 0
+//
+//
+//        (1..8).forEach {
+//            val rune = ModelPart(32, 32, 0, 0)
+//            rune.setTextureOffset(getRuneTextureU(blockEntity.runeColors[it]!!), getRuneTextureV(blockEntity.runeColors[it]!!))
+//            when(it) {
+//                1 -> rune.addCuboid(11f, 13f+popup, 11f, 2f, 2f, 2f)
+//                2 -> rune.addCuboid(7f, 13f+popup, 11f, 2f, 2f, 2f)
+//                3 -> rune.addCuboid(3f, 13f+popup, 11f, 2f, 2f, 2f)
+//                4 -> rune.addCuboid(3f, 13f+popup, 7f, 2f, 2f, 2f)
+//                5 -> rune.addCuboid(3f, 13f+popup, 3f, 2f, 2f, 2f)
+//                6 -> rune.addCuboid(7f, 13f+popup, 3f, 2f, 2f, 2f)
+//                7 -> rune.addCuboid(11f, 13f+popup, 3f, 2f, 2f, 2f)
+//                8 -> rune.addCuboid(11f, 13f+popup, 7f, 2f, 2f, 2f)
+//            }
+//            rune.render(matrices, runesConsumer, lightAbove, overlay)
+//        }
+//
+//        val upuv = if(blockEntity.key != "entangledchest-global") -10 else 0;
+//
+//        val core = ModelPart(64, 64, 0, 0)
+//        core.setTextureOffset(58, 50+upuv)
+//        core.addCuboid(9f, 14f, 7f, 1f, 2f, 2f)
+//        core.setTextureOffset(52, 44+upuv)
+//        core.addCuboid(7f, 14f, 6f, 2f, 2f, 4f)
+//        core.setTextureOffset(52, 50+upuv)
+//        core.addCuboid(6f, 14f, 7f, 1f, 2f, 2f)
+//        core.render(matrices, chestConsumer, lightAbove, overlay)
+//
+//        topModel.render(matrices, chestConsumer, lightAbove, overlay)
+//
+//        m = matrices.peek().model
+//        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
+//        for (l in 1 until getLayersToRender(d)) {
+//            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
+//        }
+//
+//        contextMap[blockEntity.pos]!!.isScreenOpen = isScreenOpen
+//        contextMap[blockEntity.pos]!!.currentState = currentState
+//        contextMap[blockEntity.pos]!!.counter = counter
+//
+//        matrices.pop()
     }
 
     private fun getRuneTextureV(color: DyeColor): Int {

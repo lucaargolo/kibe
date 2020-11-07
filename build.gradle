@@ -27,6 +27,10 @@ repositories {
     mavenLocal()
 }
 
+minecraft {
+    accessWidener "src/main/resources/kibe.accesswidener"
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -47,9 +51,9 @@ dependencies {
     modImplementation("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
     include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
 
-    modImplementation "alexiil.mc.mod:simplepipes-all:0.4.1-pre.1"
     modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
-    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+    //modImplementation "alexiil.mc.mod:simplepipes-all:0.4.1-pre.1"
+    //modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
 }
 

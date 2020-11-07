@@ -12,18 +12,17 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.World
-import kotlin.collections.LinkedHashSet
 import kotlin.math.min
 import kotlin.math.sqrt
 
 
-class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorch)), BlockEntityClientSerializable, SidedInventory, Tickable {
+class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(bigTorch), pos, state), BlockEntityClientSerializable, SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
@@ -31,14 +30,6 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
     var chunkRadius = 0
 
     var count = 0
-    override fun tick() {
-        if(count++ == 40) {
-            count = 0
-            world?.let {
-                addSuppressedChunks(it.registryKey, this.getSuppressedChunks())
-            }
-        }
-    }
 
     fun updateValues() {
         var torchQuantity = 0.0
@@ -67,8 +58,8 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
         return super.toTag(tag)
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag?) {
+        super.fromTag(tag)
         //suppressedSpawns = tag.getInt("suppressedSpawns")
         Inventories.fromTag(tag, inventory)
         updateValues()
@@ -79,7 +70,7 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
     }
 
     override fun fromClientTag(tag: CompoundTag) {
-        fromTag(BIG_TORCH.defaultState, tag)
+        fromTag(tag)
     }
 
     override fun size() = inventory.size
@@ -129,6 +120,13 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
     companion object {
         private val suppressedChunkMap = linkedMapOf<RegistryKey<World>, LinkedHashSet<ChunkPos>>()
         private var isException = false
+
+        fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: BigTorchBlockEntity) {
+            if(blockEntity.count++ == 40) {
+                blockEntity.count = 0
+                addSuppressedChunks(world.registryKey, blockEntity.getSuppressedChunks())
+            }
+        }
 
         fun setException(boolean: Boolean) {
             isException = boolean

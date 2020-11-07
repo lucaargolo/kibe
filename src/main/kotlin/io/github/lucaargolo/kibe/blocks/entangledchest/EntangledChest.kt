@@ -6,6 +6,7 @@ import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.Items
@@ -13,7 +14,6 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
-import net.minecraft.util.TypedActionResult
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -59,7 +59,9 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
         return createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
     }
 
-    override fun createBlockEntity(view: BlockView?) = EntangledChestEntity(this)
+    override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
+        return EntangledChestEntity(this, blockPos, blockState)
+    }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         val poss = player.raycast(4.5, 1.0F, false).pos

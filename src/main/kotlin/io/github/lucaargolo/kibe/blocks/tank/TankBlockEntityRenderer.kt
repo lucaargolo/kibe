@@ -5,8 +5,8 @@ import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderLayers
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.util.math.Vector3f
@@ -16,7 +16,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import java.awt.Color
 
-class TankBlockEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<TankBlockEntity>(dispatcher) {
+class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<TankBlockEntity> {
 
     class UV(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
         constructor(sprite: Sprite): this(sprite.minU, sprite.minV, sprite.maxU, sprite.maxV)

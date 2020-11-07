@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.trashcan
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import net.minecraft.block.BlockState
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -10,8 +11,9 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 
-class TrashCanEntity(trashCan: TrashCan): LockableContainerBlockEntity(getEntityType(trashCan)) {
+class TrashCanEntity(trashCan: TrashCan, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(trashCan), pos, state) {
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 

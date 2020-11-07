@@ -5,17 +5,17 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Tickable
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
-class RedstoneTimerEntity(private val timer: RedstoneTimer): BlockEntity(getEntityType(timer)), BlockEntityClientSerializable, Tickable {
+class RedstoneTimerEntity(private val timer: RedstoneTimer, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(timer), pos, state), BlockEntityClientSerializable {
 
     var current = 0
     var level = 0
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
+    override fun fromTag(tag: CompoundTag) {
+        super.fromTag(tag)
         current = tag.getInt("current")
         level = tag.getInt("level")
     }
@@ -37,16 +37,17 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer): BlockEntity(getEnti
         return tag
     }
 
-    override fun tick() {
-        val isEnabled = world!!.getBlockState(pos)[Properties.ENABLED]
-        val delay = level*4
-        current++
-        if(current >= delay){
-            current = 0
-            world!!.setBlockState(pos, timer.defaultState.with(Properties.ENABLED, !isEnabled))
-            level = delay/4
+    companion object {
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: RedstoneTimerEntity) {
+            val isEnabled = world.getBlockState(pos)[Properties.ENABLED]
+            val delay = entity.level*4
+            entity.current++
+            if(entity.current >= delay){
+                entity.current = 0
+                world.setBlockState(pos, state.with(Properties.ENABLED, !isEnabled))
+                entity.level = delay/4
+            }
         }
-
     }
 
 }

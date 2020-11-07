@@ -13,15 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MobSpawnerLogic.class)
 public abstract class MobSpawnerLogicMixin {
 
-    @Shadow
-    public abstract World getWorld();
-
-    @Shadow
-    public abstract BlockPos getPos();
-
     @Inject(at = @At("HEAD"), method = "isPlayerInRange", cancellable = true)
-    private void isPlayerInRange(CallbackInfoReturnable<Boolean> info) {
-        boolean returnValue = this.getWorld().getBlockState(this.getPos().down()).getBlock() instanceof CursedDirt;
+    private void isPlayerInRange(World world, BlockPos blockPos, CallbackInfoReturnable<Boolean> info) {
+        boolean returnValue = world.getBlockState(blockPos.down()).getBlock() instanceof CursedDirt;
         if(returnValue) info.setReturnValue(true);
     }
 }

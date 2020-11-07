@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.math.MatrixStack
@@ -57,12 +57,11 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         val fluidInv = EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
         fluidInv.toTag(tag)
 
-        val dummyTank = EntangledTankEntity(ENTANGLED_TANK as EntangledTank)
+        val dummyTank = EntangledTankEntity(ENTANGLED_TANK as EntangledTank, MinecraftClient.getInstance().player?.blockPos ?: BlockPos.ORIGIN, ENTANGLED_TANK.defaultState)
         dummyTank.fromClientTag(tag)
-        dummyTank.pos = MinecraftClient.getInstance().player?.blockPos ?: BlockPos.ORIGIN
         dummyTank.lastRenderedFluid = dummyTank.fluidInv.getInvFluid(0).amount().asLong(1000L) / 1000f
 
-        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRenderDispatcher.INSTANCE)
+        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Arguments(MinecraftClient.getInstance().method_31975(), MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().method_31974(), MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyTank, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)
 
         val tankGlassIdentifier = ModelIdentifier(Identifier(MOD_ID, "entangled_tank"), "facing=north,level=0")
