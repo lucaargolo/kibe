@@ -63,8 +63,8 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun Direction.getLeft(): Direction {
         return when(this) {
-            Direction.NORTH -> Direction.EAST
-            Direction.SOUTH -> Direction.WEST
+            Direction.NORTH -> Direction.WEST
+            Direction.SOUTH -> Direction.EAST
             Direction.EAST -> Direction.NORTH
             Direction.WEST -> Direction.SOUTH
             Direction.UP, Direction.DOWN -> Direction.EAST
@@ -73,8 +73,8 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun Direction.getRight(): Direction {
         return when(this) {
-            Direction.NORTH -> Direction.WEST
-            Direction.SOUTH -> Direction.EAST
+            Direction.NORTH -> Direction.EAST
+            Direction.SOUTH -> Direction.WEST
             Direction.EAST -> Direction.SOUTH
             Direction.WEST -> Direction.NORTH
             Direction.UP, Direction.DOWN -> Direction.WEST
