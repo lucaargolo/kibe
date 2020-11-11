@@ -52,12 +52,12 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.network.PacketContext
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.fabricmc.loader.launch.common.FabricLauncherBase
+import net.minecraft.class_5662
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.item.Items
 import net.minecraft.loot.ConstantLootTableRange
-import net.minecraft.loot.UniformLootTableRange
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
 import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
@@ -71,8 +71,6 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.registry.RegistryKey
-import net.minecraft.world.World
 import java.util.*
 import java.util.function.Consumer
 
@@ -140,7 +138,7 @@ fun initPackets() {
         packetContext.taskQueue.execute {
             val player = packetContext.player as ServerPlayerEntity
             val serverWorld = player.serverWorld
-            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({ EntangledTankState(serverWorld, key) }, key)
+            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
             val fluidInv = state.getOrCreateInventory(colorCode)
             val passedData = PacketByteBuf(Unpooled.buffer())
             passedData.writeString(key)
@@ -202,7 +200,7 @@ fun initExtras() {
     AutoConfig.register(ModConfig::class.java) { cfg: Config, cls: Class<ModConfig> -> JanksonConfigSerializer(cfg, cls) }
     MOD_CONFIG = AutoConfig.getConfigHolder(ModConfig::class.java).config;
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
-        server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+        server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, server)}, { ChunkLoaderState(server) }, "kibe_chunk_loaders")
     }
     FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
     FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
@@ -285,7 +283,7 @@ fun initLootTables() {
     LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
         if (id.toString().startsWith("minecraft:entities")) {
             val poolBuilder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
+                .rolls(ConstantLootTableRange.method_32448(1f))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(
                     EntityPropertiesLootCondition.builder(
@@ -294,7 +292,7 @@ fun initLootTables() {
                     )
                 )
                 .conditionally(RandomChanceLootCondition.builder(0.05F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f, 1.5f)).build())
+                .withFunction(LootingEnchantLootFunction.builder(class_5662.method_32462(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
     })
@@ -302,10 +300,10 @@ fun initLootTables() {
     LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
         if (id.toString() == "minecraft:entities/wither_skeleton") {
             val poolBuilder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
+                .rolls(ConstantLootTableRange.method_32448(1f))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(RandomChanceLootCondition.builder(0.1F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f, 1.5f)).build())
+                .withFunction(LootingEnchantLootFunction.builder(class_5662.method_32462(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
     })

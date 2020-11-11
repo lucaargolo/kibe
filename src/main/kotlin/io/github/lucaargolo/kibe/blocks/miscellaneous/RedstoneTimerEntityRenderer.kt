@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import java.util.*
 
-class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<RedstoneTimerEntity> {
+class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<RedstoneTimerEntity> {
 
     companion object {
         val selectorModelLayers = mutableListOf<EntityModelLayer>()

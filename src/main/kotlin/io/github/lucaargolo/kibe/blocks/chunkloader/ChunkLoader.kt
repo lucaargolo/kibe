@@ -49,7 +49,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
         if ((!state.isOf(newState.block) || !newState[Properties.ENABLED]) && !world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
             if (blockEntity is ChunkLoaderBlockEntity) {
-                val chunkLoaderState = (world as ServerWorld).server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+                val chunkLoaderState = (world as ServerWorld).server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState.createFromTag(it, world.server) }, {ChunkLoaderState(world.server)}, "kibe_chunk_loaders")
                 chunkLoaderState.removePos(pos, world)
             }
         }

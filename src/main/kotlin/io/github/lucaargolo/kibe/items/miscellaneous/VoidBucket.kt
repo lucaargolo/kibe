@@ -39,7 +39,7 @@ class VoidBucket(settings: Settings): Item(settings) {
                 val blockState = world.getBlockState(pos)
                 if (blockState.block is FluidDrainable) {
                     val fluid = (blockState.block as FluidDrainable).tryDrainFluid(world, pos, blockState)
-                    if(fluid != Fluids.EMPTY) {
+                    if(fluid.item != Fluids.EMPTY.bucketItem) {
                         user.incrementStat(Stats.USED.getOrCreateStat(this))
                         user.playSound(SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
                         if (!world.isClient) {

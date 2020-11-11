@@ -44,7 +44,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                 if (this.fluid == Fluids.EMPTY) {
                     if (blockState.block is FluidDrainable) {
                         val fluid = (blockState.block as FluidDrainable).tryDrainFluid(world, pos, blockState)
-                        if (fluid == Fluids.WATER) {
+                        if (fluid.item == Fluids.WATER.bucketItem) {
                             user.incrementStat(Stats.USED.getOrCreateStat(this))
                             user.playSound(SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
                             val itemStack2 = ItemUsage.method_30012(itemStack, user, ItemStack(WATER_WOODEN_BUCKET))
@@ -53,7 +53,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                             }
                             return TypedActionResult.success(itemStack2, world.isClient())
                         }else{
-                            (fluid.bucketItem as? BucketItem)?.placeFluid(user, world, pos, blockHitResult)
+                            (fluid.item as? BucketItem)?.placeFluid(user, world, pos, blockHitResult)
                         }
                     }
                 } else {

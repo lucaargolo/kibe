@@ -63,7 +63,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
 
     private fun getPersistentState(): EntangledChestState? {
         return (world as? ServerWorld)?.let { serverWorld ->
-            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledChestState(key)}, key)
+            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledChestState.createFromTag(it)}, {EntangledChestState()} , key)
         }
     }
 

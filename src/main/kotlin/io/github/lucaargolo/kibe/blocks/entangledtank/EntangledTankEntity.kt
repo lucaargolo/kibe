@@ -52,7 +52,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
 
     val persistentState: EntangledTankState?
         get() = (world as? ServerWorld)?.let { serverWorld ->
-            serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
+            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledTankState.createFromTag(it, serverWorld, key )}, { EntangledTankState(serverWorld, key) }, key)
         }
 
     fun markDirtyAndSync() {

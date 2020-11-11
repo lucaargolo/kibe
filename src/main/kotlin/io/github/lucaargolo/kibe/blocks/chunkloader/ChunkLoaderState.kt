@@ -14,7 +14,7 @@ import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 import java.util.*
 
-class ChunkLoaderState(val server: MinecraftServer, val key: String): PersistentState(key){
+class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
 
     var loadedChunkMap: MutableMap<RegistryKey<World>, MutableList<BlockPos>> = mutableMapOf()
     var loadersPerUUID: MutableMap<String, Int> = mutableMapOf()
@@ -89,36 +89,40 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
         return tag;
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        if(loadedChunkMap.keys.size > 0) {
-            loadedChunkMap.forEach { (key, pos) ->
-                val world = server.getWorld(key)
-                world?.let {
-                    pos.forEach {
-                        val blockEntity = world.getBlockEntity(it) as? ChunkLoaderBlockEntity
-                        blockEntity?.let { setChunksForced(world, blockEntity, false) }
+    companion object {
+        fun createFromTag(tag: CompoundTag, server: MinecraftServer): ChunkLoaderState {
+            val state = ChunkLoaderState(server)
+            if(state.loadedChunkMap.keys.size > 0) {
+                state.loadedChunkMap.forEach { (key, pos) ->
+                    val world = server.getWorld(key)
+                    world?.let {
+                        pos.forEach {
+                            val blockEntity = world.getBlockEntity(it) as? ChunkLoaderBlockEntity
+                            blockEntity?.let { state.setChunksForced(world, blockEntity, false) }
+                        }
                     }
-                }
 
+                }
             }
-        }
-        loadedChunkMap = mutableMapOf()
-        tag.keys.forEach { key ->
-            val registryKey = RegistryKey.of(Registry.DIMENSION, Identifier(key))
-            val world = server.getWorld(registryKey)
-            world?.let { _ ->
-                loadedChunkMap[registryKey] = mutableListOf()
-                val listTag = tag.getLongArray(key)
-                listTag.forEach {
-                    val blockPos = BlockPos.fromLong(it)
-                    val blockState = world.getBlockState(blockPos)
-                    if(blockState.block is ChunkLoader) {
-                        loadedChunkMap[registryKey]!!.add(blockPos)
-                        val blockEntity = world.getBlockEntity(blockPos) as? ChunkLoaderBlockEntity
-                        blockEntity?.let { setChunksForced(world, blockEntity, true) }
+            state.loadedChunkMap = mutableMapOf()
+            tag.keys.forEach { key ->
+                val registryKey = RegistryKey.of(Registry.DIMENSION, Identifier(key))
+                val world = server.getWorld(registryKey)
+                world?.let { _ ->
+                    state.loadedChunkMap[registryKey] = mutableListOf()
+                    val listTag = tag.getLongArray(key)
+                    listTag.forEach {
+                        val blockPos = BlockPos.fromLong(it)
+                        val blockState = world.getBlockState(blockPos)
+                        if(blockState.block is ChunkLoader) {
+                            state.loadedChunkMap[registryKey]!!.add(blockPos)
+                            val blockEntity = world.getBlockEntity(blockPos) as? ChunkLoaderBlockEntity
+                            blockEntity?.let { state.setChunksForced(world, blockEntity, true) }
+                        }
                     }
                 }
             }
+            return state;
         }
     }
 

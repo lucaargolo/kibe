@@ -11,7 +11,7 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.PersistentState
 
-class EntangledTankState(val world: ServerWorld, val key: String): PersistentState(key) {
+class EntangledTankState(val world: ServerWorld, val key: String): PersistentState() {
 
     private var fluidInvMap = mutableMapOf<String, SimpleFixedFluidInv>()
 
@@ -33,7 +33,7 @@ class EntangledTankState(val world: ServerWorld, val key: String): PersistentSta
             val tickers = (it as WorldMixin).blockEntityTickers
             tickers.forEach { invoker ->
                 (it.getBlockEntity(invoker.pos) as? EntangledTankEntity)?.let { entangledTankEntity ->
-                    if(entangledTankEntity.colorCode == colorCode)
+                    if (entangledTankEntity.colorCode == colorCode)
                         entangledTankEntity.sync();
                 }
             }
@@ -45,19 +45,25 @@ class EntangledTankState(val world: ServerWorld, val key: String): PersistentSta
         return fluidInvMap[colorCode] ?: createInventory(colorCode)
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        tag.keys.forEach {
-            val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
-            tempFluidInv.fromTag(tag.getCompound(it))
-            fluidInvMap[it] = tempFluidInv
-        }
-    }
-
     override fun toTag(tag: CompoundTag): CompoundTag {
         fluidInvMap.forEach { (colorCode, fluidInv) ->
             tag.put(colorCode, fluidInv.toTag())
         }
         return tag
+    }
+
+    companion object {
+
+        fun createFromTag(tag: CompoundTag, world: ServerWorld, key: String): EntangledTankState {
+            val state = EntangledTankState(world, key)
+            tag.keys.forEach {
+                val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+                tempFluidInv.fromTag(tag.getCompound(it))
+                state.fluidInvMap[it] = tempFluidInv
+            }
+            return state
+        }
+
     }
 
 }

@@ -28,7 +28,7 @@ import net.minecraft.util.math.Matrix4f
 import java.util.*
 import java.util.stream.IntStream
 
-class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<EntangledChestEntity> {
+class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledChestEntity> {
 
     companion object {
         val helper = EntangledRendererHelper("entangled_chest")
