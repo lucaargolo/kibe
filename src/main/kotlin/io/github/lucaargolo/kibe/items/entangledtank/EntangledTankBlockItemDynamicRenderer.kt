@@ -61,7 +61,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         dummyTank.fromClientTag(tag)
         dummyTank.lastRenderedFluid = dummyTank.fluidInv.getInvFluid(0).amount().asLong(1000L) / 1000f
 
-        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Arguments(MinecraftClient.getInstance().method_31975(), MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().method_31974(), MinecraftClient.getInstance().textRenderer))
+        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().method_31975(), MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().method_31974(), MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyTank, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)
 
         val tankGlassIdentifier = ModelIdentifier(Identifier(MOD_ID, "entangled_tank"), "facing=north,level=0")

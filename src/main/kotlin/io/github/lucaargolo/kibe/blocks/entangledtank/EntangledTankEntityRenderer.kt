@@ -28,7 +28,7 @@ import net.minecraft.util.math.MathHelper
 import java.awt.Color
 import java.util.function.Function
 
-class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<EntangledTankEntity> {
+class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledTankEntity> {
 
     companion object {
         val helper = EntangledRendererHelper("entangled_tank")

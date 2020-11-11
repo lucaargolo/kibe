@@ -18,7 +18,7 @@ public class ServerWorldMixin {
     @SuppressWarnings("ConstantConditions")
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getForcedChunks()Lit/unimi/dsi/fastutil/longs/LongSet;"), method = "tick")
     public LongSet redirectGetForcedChunksOnTick(ServerWorld serverWorld) {
-        ChunkLoaderState chunkLoaderState = this.server.getOverworld().getPersistentStateManager().getOrCreate(() -> new ChunkLoaderState(this.server, "kibe_chunk_loaders"),"kibe_chunk_loaders");
+        ChunkLoaderState chunkLoaderState = this.server.getOverworld().getPersistentStateManager().getOrCreate(tag -> ChunkLoaderState.Companion.createFromTag(tag, this.server), () -> new ChunkLoaderState(this.server),"kibe_chunk_loaders");
         LongSet longSet = serverWorld.getForcedChunks();
         if(longSet.isEmpty() && chunkLoaderState.getLoadedChunkMap().get(((ServerWorld) ((Object) this)).getRegistryKey()) != null && !chunkLoaderState.getLoadedChunkMap().get(((ServerWorld) ((Object) this)).getRegistryKey()).isEmpty())
             return new LongOpenHashSet(new long[]{0L});

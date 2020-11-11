@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.PersistentState
 
-class EntangledChestState(key: String) : PersistentState(key) {
+class EntangledChestState : PersistentState() {
 
     private var inventoryMap = mutableMapOf<String, DefaultedList<ItemStack>>()
 
@@ -16,14 +16,6 @@ class EntangledChestState(key: String) : PersistentState(key) {
 
     private fun hasInventory(colorCode: String): Boolean {
         return inventoryMap[colorCode] != null
-    }
-
-    override fun fromTag(tag: CompoundTag) {
-        tag.keys.forEach {
-            val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
-            Inventories.fromTag(tag.get(it) as CompoundTag, tempInventory)
-            inventoryMap[it] = tempInventory
-        }
     }
 
     override fun toTag(tag: CompoundTag): CompoundTag {
@@ -75,6 +67,16 @@ class EntangledChestState(key: String) : PersistentState(key) {
         inventoryMap[colorCode]!!.clear()
     }
 
-
+    companion object {
+        fun createFromTag(tag: CompoundTag): EntangledChestState {
+            val state = EntangledChestState()
+            tag.keys.forEach {
+                val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
+                Inventories.fromTag(tag.get(it) as CompoundTag, tempInventory)
+                state.inventoryMap[it] = tempInventory
+            }
+            return state
+        }
+    }
 
 }

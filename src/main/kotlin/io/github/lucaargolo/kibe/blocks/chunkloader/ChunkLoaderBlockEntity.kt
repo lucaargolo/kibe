@@ -103,7 +103,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
                         DisabledReason.TOO_MANY_LOADERS -> {
                             playerUUID?.let { validUUID ->
                                 (world as? ServerWorld)?.let { world ->
-                                    val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+                                    val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, world.server)}, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
                                     if(chunkLoaderState.getLoaded(validUUID) < MOD_CONFIG.chunkLoaderModule.maxPerPlayer || MOD_CONFIG.chunkLoaderModule.maxPerPlayer < 0) {
                                         world.setBlockState(pos, state.with(Properties.ENABLED, true))
                                         blockEntity.disabledReason = DisabledReason.NONE
@@ -121,7 +121,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
                     }
 
                     (world as? ServerWorld)?.let { serverWorld ->
-                        val chunkLoaderState = serverWorld.server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(serverWorld.server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+                        val chunkLoaderState = serverWorld.server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, serverWorld.server)}, { ChunkLoaderState(serverWorld.server) }, "kibe_chunk_loaders")
 
                         playerUUID?.let { validUUID ->
                             val player = serverWorld.server.playerManager.getPlayer(validUUID)

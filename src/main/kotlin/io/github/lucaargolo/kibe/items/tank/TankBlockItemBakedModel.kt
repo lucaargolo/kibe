@@ -2,8 +2,10 @@ package io.github.lucaargolo.kibe.items.tank
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.TANK_CUSTOM_MODEL
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
+import io.github.lucaargolo.kibe.utils.FluidTank
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
@@ -23,6 +25,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockRenderView
+import java.awt.Color
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -54,9 +57,10 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
         val fluidColor = fluidRenderHandler.getFluidColor(world, pos, fluid.defaultState)
         val fluidSprite = fluidRenderHandler.getFluidSprites(world, pos, fluid.defaultState)[0]
+        val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255)).rgb
 
         context.pushTransform { quad ->
-            quad.spriteColor(0, fluidColor, fluidColor, fluidColor, fluidColor)
+            quad.spriteColor(0, color, color, color, color)
             true
         }
 

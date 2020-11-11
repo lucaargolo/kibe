@@ -11,7 +11,7 @@ import net.minecraft.util.math.Matrix4f
 import java.util.*
 import java.util.stream.IntStream
 
-class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<VacuumHopperEntity> {
+class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<VacuumHopperEntity> {
 
     @Suppress("UnstableApiUsage")
     private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj { i: Int -> RenderLayer.getEndPortal(i + 1) }.collect(

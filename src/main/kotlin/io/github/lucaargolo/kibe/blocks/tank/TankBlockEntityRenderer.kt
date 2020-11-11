@@ -16,7 +16,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import java.awt.Color
 
-class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<TankBlockEntity> {
+class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<TankBlockEntity> {
 
     class UV(var minU: Float, var minV: Float, var maxU: Float, var maxV: Float) {
         constructor(sprite: Sprite): this(sprite.minU, sprite.minV, sprite.maxU, sprite.maxV)
