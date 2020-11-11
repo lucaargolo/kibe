@@ -88,7 +88,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
 
         //Chunk mob cap for avoiding L A G
         val chunkPos = world.getChunk(pos).pos
-        val entityList = world.getEntitiesByType<Entity>(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
+        val entityList = world.getOtherEntities(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
         if (entityList.size > MOD_CONFIG.miscellaneousModule.cursedDirtMobCap) return
 
         val mob = getSpawnableMonster(world, pos.up(), random)

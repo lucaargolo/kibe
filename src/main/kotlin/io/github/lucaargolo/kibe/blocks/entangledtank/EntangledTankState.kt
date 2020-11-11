@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.MARK_ENTANGLED_TANK_DIRTY_S2C
+import io.github.lucaargolo.kibe.mixin.WorldMixin
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
 import net.minecraft.nbt.CompoundTag
@@ -29,13 +30,13 @@ class EntangledTankState(val world: ServerWorld, val key: String): PersistentSta
             ServerSidePacketRegistry.INSTANCE.sendToPlayer(it, MARK_ENTANGLED_TANK_DIRTY_S2C, passedData)
         }
         server.worlds.forEach {
-            println("conserte isso depois gayyyy")
-//            it.blockEntities.forEach { blockEntity ->
-//                (blockEntity as? EntangledTankEntity)?.let { entangledTankEntity ->
-//                    if(entangledTankEntity.colorCode == colorCode)
-//                        entangledTankEntity.sync()
-//                }
-//            }
+            val tickers = (it as WorldMixin).blockEntityTickers
+            tickers.forEach { invoker ->
+                (it.getBlockEntity(invoker.pos) as? EntangledTankEntity)?.let { entangledTankEntity ->
+                    if(entangledTankEntity.colorCode == colorCode)
+                        entangledTankEntity.sync();
+                }
+            }
         }
         super.markDirty()
     }

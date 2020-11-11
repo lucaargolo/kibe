@@ -19,7 +19,7 @@ class Magnet(settings: Settings): BooleanItem(settings) {
             val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
             val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
             val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-            val validEntities = world.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+            val validEntities = world.getOtherEntities(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
             validEntities.forEach {
                 val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
                 it.addVelocity(vel.x, vel.y, vel.z)

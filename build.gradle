@@ -39,8 +39,19 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
-    include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
+    modApi("me.shedaniel.cloth:config-2:${project.cloth_config_version}") {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
+    include("me.shedaniel.cloth:config-2:${project.cloth_config_version}") {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
+
+    modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}") {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
+    include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}") {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
 
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"

@@ -18,7 +18,8 @@
     "ServerWorldMixin",
     "ShapedRecipeMixin",
     "ThreadedAnvilChunkStorageMixin",
-    "WitherRoseBlockMixin"
+    "WitherRoseBlockMixin",
+    "WorldMixin"
   ],
   "client": [
     "BipedEntityModelMixin",

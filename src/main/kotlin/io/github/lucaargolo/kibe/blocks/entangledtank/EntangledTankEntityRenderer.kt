@@ -3,10 +3,10 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
+import io.github.lucaargolo.kibe.utils.EntangledRendererHelper
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.minecraft.*
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
@@ -31,103 +31,13 @@ import java.util.function.Function
 class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Arguments): BlockEntityRenderer<EntangledTankEntity> {
 
     companion object {
-        val bottomModelLayer = EntityModelLayers.register("entangled_tank", "bottom")
-        val topModelLayer = EntityModelLayers.register("entangled_tank", "top")
-
-        val runeLayers: List<EntityModelLayer> = listOf<EntityModelLayer>(
-            EntityModelLayers.register("entangled_tank", "rune1"),
-            EntityModelLayers.register("entangled_tank", "rune2"),
-            EntityModelLayers.register("entangled_tank", "rune3"),
-            EntityModelLayers.register("entangled_tank", "rune4"),
-            EntityModelLayers.register("entangled_tank", "rune5"),
-            EntityModelLayers.register("entangled_tank", "rune6"),
-            EntityModelLayers.register("entangled_tank", "rune7"),
-            EntityModelLayers.register("entangled_tank", "rune8")
-        )
-
-        val coreModelLayer = EntityModelLayers.register("entangled_tank", "core")
-
-        fun setupBottomModel(): class_5607 {
-            val lv = class_5609()
-            val lv2 = lv.method_32111()
-            lv2.method_32117("bottom", class_5606.method_32108().method_32101(0, 0).method_32097(1.0f, 0.0f, 1.0f, 14.0f, 1.0f, 14.0f), class_5603.field_27701)
-            return class_5607.method_32110(lv, 64, 64)
-        }
-
-        fun setupTopModel(): class_5607 {
-            val lv = class_5609()
-            val lv2 = lv.method_32111()
-            lv2.method_32117("top1", class_5606.method_32108().method_32101(32, 43).method_32097(1F, 14F, 1F, 2F, 1F, 14F), class_5603.field_27701)
-            lv2.method_32117("top2", class_5606.method_32108().method_32101(56, 0).method_32097(3F, 14F, 1F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top3", class_5606.method_32108().method_32101(56, 3).method_32097(7F, 14F, 1F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top4", class_5606.method_32108().method_32101(56, 6).method_32097(11F, 14F, 1F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top5", class_5606.method_32108().method_32101(56, 31).method_32097(11F, 14F, 13F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top6", class_5606.method_32108().method_32101(56, 28).method_32097(7F, 14F, 13F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top7", class_5606.method_32108().method_32101(56, 25).method_32097(3F, 14F, 13F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top8", class_5606.method_32108().method_32101(56, 17).method_32097(3F, 14F, 9F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top9", class_5606.method_32108().method_32101(56, 9).method_32097(3F, 14F, 5F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top10", class_5606.method_32108().method_32101(56, 14).method_32097(11F, 14F, 5F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top11", class_5606.method_32108().method_32101(58, 12).method_32097(7F, 14F, 5F, 2F, 1F, 1F), class_5603.field_27701)
-            lv2.method_32117("top12", class_5606.method_32108().method_32101(56, 22).method_32097(11F, 14F, 9F, 2F, 1F, 2F), class_5603.field_27701)
-            lv2.method_32117("top13", class_5606.method_32108().method_32101(58, 20).method_32097(7F, 14F, 10F, 2F, 1F, 1F), class_5603.field_27701)
-            lv2.method_32117("top14", class_5606.method_32108().method_32101(0, 43).method_32097(13F, 14F, 1F, 2F, 1F, 14F), class_5603.field_27701)
-            lv2.method_32117("top15", class_5606.method_32108().method_32101(16, 42).method_32097(10F, 14F, 1F, 1F, 1F, 14F), class_5603.field_27701)
-            lv2.method_32117("top16", class_5606.method_32108().method_32101(0, 0).method_32097(9F, 14F, 1F, 1F, 1F, 6F), class_5603.field_27701)
-            lv2.method_32117("top17", class_5606.method_32108().method_32101(0, 24).method_32097(6F, 14F, 1F, 1F, 1F, 6F), class_5603.field_27701)
-            lv2.method_32117("top18", class_5606.method_32108().method_32101(0, 31).method_32097(6F, 14F, 9F, 1F, 1F, 6F), class_5603.field_27701)
-            lv2.method_32117("top19", class_5606.method_32108().method_32101(0, 7).method_32097(9F, 14F, 9F, 1F, 1F, 6F), class_5603.field_27701)
-            lv2.method_32117("top20", class_5606.method_32108().method_32101(16, 42).method_32097(5F, 14F, 1F, 1F, 1F, 14F), class_5603.field_27701)
-            return class_5607.method_32110(lv, 64, 64)
-        }
-
-        fun setupRuneModel(runeId: Int): class_5607 {
-            val lv = class_5609()
-            val lv2 = lv.method_32111()
-            when(runeId) {
-                0 -> lv2.method_32117("rune1", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(11f, 13f, 11f, 2f, 2f, 2f), class_5603.field_27701)
-                1 -> lv2.method_32117("rune2", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(7f, 13f, 11f, 2f, 2f, 2f), class_5603.field_27701)
-                2 -> lv2.method_32117("rune3", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(3f, 13f, 11f, 2f, 2f, 2f), class_5603.field_27701)
-                3 -> lv2.method_32117("rune4", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(3f, 13f, 7f, 2f, 2f, 2f), class_5603.field_27701)
-                4 -> lv2.method_32117("rune5", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(3f, 13f, 3f, 2f, 2f, 2f), class_5603.field_27701)
-                5 -> lv2.method_32117("rune6", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(7f, 13f, 3f, 2f, 2f, 2f), class_5603.field_27701)
-                6 -> lv2.method_32117("rune7", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(11f, 13f, 3f, 2f, 2f, 2f), class_5603.field_27701)
-                7 -> lv2.method_32117("rune8", class_5606.method_32108().method_32101(getRuneTextureU(DyeColor.WHITE), getRuneTextureV(DyeColor.WHITE)).method_32097(11f, 13f, 7f, 2f, 2f, 2f), class_5603.field_27701)
-            }
-            return class_5607.method_32110(lv, 32, 32)
-        }
-
-        fun setupCoreModel(): class_5607 {
-            val lv = class_5609()
-            val lv2 = lv.method_32111()
-            lv2.method_32117("idk", class_5606.method_32108().method_32101(58, 50).method_32097(9f, 14f, 7f, 1f, 2f, 2f), class_5603.field_27701)
-            lv2.method_32117("what", class_5606.method_32108().method_32101(52, 44).method_32097(7f, 14f, 6f, 2f, 2f, 4f), class_5603.field_27701)
-            lv2.method_32117("amdoing", class_5606.method_32108().method_32101(52, 50).method_32097(6f, 14f, 7f, 1f, 2f, 2f), class_5603.field_27701)
-            return class_5607.method_32110(lv, 64, 64)
-        }
-
-        private fun getRuneTextureV(color: DyeColor): Int {
-            return if(color.id >= 8) (color.id-8)*4 else color.id*4
-        }
-
-        private fun getRuneTextureU(color: DyeColor): Int {
-            return if(color.id >= 8) 8 else 0
-        }
-
+        val helper = EntangledRendererHelper("entangled_tank")
     }
 
-    private val bottomModel = arg.getLayerModelPart(bottomModelLayer)
-    private val topModel = arg.getLayerModelPart(topModelLayer)
-    private val runeModels = arrayListOf<ModelPart>(
-        arg.getLayerModelPart(runeLayers[0]),
-        arg.getLayerModelPart(runeLayers[1]),
-        arg.getLayerModelPart(runeLayers[2]),
-        arg.getLayerModelPart(runeLayers[3]),
-        arg.getLayerModelPart(runeLayers[4]),
-        arg.getLayerModelPart(runeLayers[5]),
-        arg.getLayerModelPart(runeLayers[6]),
-        arg.getLayerModelPart(runeLayers[7])
-    )
-    private val coreModel = arg.getLayerModelPart(coreModelLayer)
+    private val bottomModel = arg.getLayerModelPart(helper.bottomModelLayer)
+    private val topModel = arg.getLayerModelPart(helper.topModelLayer)
+    private val coreModelGold = arg.getLayerModelPart(helper.coreModelLayerGold)
+    private val coreModelDiamond = arg.getLayerModelPart(helper.coreModelLayerDiamond)
 
     override fun render(entity: EntangledTankEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
@@ -142,10 +52,10 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Ar
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
-        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
         val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
-        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
@@ -154,14 +64,19 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Ar
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
             MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
-        ) 1 else 0
+        ) 0.0625 else 0.0
 
-        (1..8).forEach {
-            val rune = runeModels[it-1]
-            rune.render(matrices, runesConsumer, lightAbove, overlay)
+        (1..8).forEach { runeId ->
+            val runeModelLayer = entity.runeColors[runeId]?.let { helper.getRuneLayer(runeId, it) }
+            matrices.translate(0.0, popup, 0.0)
+            runeModelLayer?.let {
+                val rune = arg.getLayerModelPart(runeModelLayer)
+                rune.render(matrices, runesConsumer, lightAbove, overlay)
+            }
+            matrices.translate(0.0, -popup, 0.0)
         }
 
-        val upUV = if(entity.key != EntangledTank.DEFAULT_KEY) -10 else 0;
+        val coreModel = if(entity.key != EntangledTank.DEFAULT_KEY) coreModelDiamond else coreModelGold
 
         coreModel.render(matrices, chestConsumer, lightAbove, overlay)
 
