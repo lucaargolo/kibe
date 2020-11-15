@@ -3,21 +3,22 @@ package io.github.lucaargolo.kibe.mixin;
 import io.github.ladysnake.pal.PlayerAbility;
 import io.github.ladysnake.pal.impl.PlayerAbilityView;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
-import io.github.lucaargolo.kibe.items.ItemInfo;
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing;
 import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
+import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed;
 import io.github.lucaargolo.kibe.utils.GliderHelper;
 import io.github.lucaargolo.kibe.utils.RingAbilitiesKt;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
+import kotlin.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,16 +27,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-@SuppressWarnings({"SuspiciousMethodCalls"})
+@SuppressWarnings({"SuspiciousMethodCalls", "UnstableApiUsage"})
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEntityMixed {
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> type, World world) {
         super(type, world);
+    }
+
+    @Override
+    public List<Pair<ItemStack, Long>> getKibe$activeRingsList() {
+        return kibe$activeRingsList;
     }
 
     @Inject(at = @At("TAIL"), method = "eatFood")
@@ -92,63 +96,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         }else{
             GliderHelper.INSTANCE.setPlayerGliding(player, false);
         }
-        //Ring Logic
-        if(!world.isClient && this instanceof PlayerAbilityView) {
-            for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
-                if(pa.isEnabledFor(player)) {
-                    StatusEffect se = RingAbilitiesKt.getPotionToAbilityMap().get(pa);
-                    StatusEffectInstance sei = new StatusEffectInstance(se, 100);
-                    player.addStatusEffect(sei);
-                }
-            }
-
-            List<ItemStack> enabledRings = new ArrayList<>();
-
-            for(ItemInfo mdi : ItemCompendiumKt.getItemRegistry().values()) {
-                if(mdi.getItem() instanceof AbilityRing) {
-                    AbilityRing ring = ((AbilityRing) mdi.getItem());
-                    if(player.inventory.contains(new ItemStack(mdi.getItem()))) {
-                        List<DefaultedList<ItemStack>> combinedInventory = ((PlayerInventoryMixin) player.inventory).getCombinedInventory();
-                        for (List<ItemStack> list : combinedInventory) {
-                            for (ItemStack itemStack : list) {
-                                if (itemStack.getItem().equals(ring)) {
-                                    if(itemStack.hasTag() && itemStack.getOrCreateTag().contains("enabled") && itemStack.getOrCreateTag().getBoolean("enabled")) {
-                                        enabledRings.add(itemStack);
-                                    }else{
-                                        //Is disabled in inventory
-                                        if(RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
-                                            RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }else{
-                        //Is not in inventory
-                        if(RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
-                            RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
-                        }
-                    }
-                }
-            }
-
-            if(enabledRings.size() > 1) {
-                for(ItemStack stack : enabledRings) {
-                    stack.getOrCreateTag().putBoolean("unique", false);
-                    AbilityRing ring = ((AbilityRing) stack.getItem());
-                    //Overflow
-                    if(RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
-                        RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
-                    }
-                }
-            }else{
-                for(ItemStack stack : enabledRings) {
-                    stack.getOrCreateTag().putBoolean("unique", true);
-                    AbilityRing ring = ((AbilityRing) stack.getItem());
-                    RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
-                }
-            }
-        }
         //Slime Boots Logic
         Iterator<Entity> keyIt;
         if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntities().keySet().iterator();
@@ -189,6 +136,51 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 }
             }
         }
+        //Ring logic
+        if(!world.isClient && this instanceof PlayerAbilityView) {
+            for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
+                if(pa.isEnabledFor(player)) {
+                    StatusEffect se = RingAbilitiesKt.getPotionToAbilityMap().get(pa);
+                    StatusEffectInstance sei = new StatusEffectInstance(se, 100);
+                    player.addStatusEffect(sei);
+                }
+            }
+
+            LinkedHashMap<AbilityRing, List<ItemStack>> ringMap = new LinkedHashMap<>();
+            for (Pair<ItemStack, Long> pair : kibe$activeRingsList) {
+                ItemStack ringStack = pair.getFirst();
+                Item ringItem = ringStack.getItem();
+                if (ringItem instanceof AbilityRing && ringStack.getOrCreateTag().getBoolean("enabled")) {
+                    ringMap.computeIfAbsent((AbilityRing) ringItem, k -> new ArrayList<>());
+                    ringMap.get(ringItem).add(ringStack);
+                }
+            }
+            AbilityRing.Companion.getRINGS().forEach(ring -> {
+                if (ringMap.containsKey(ring)) {
+                    if (ringMap.size() == 1 && ringMap.get(ring).size() == 1) {
+                        RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
+                        ItemStack ringStack = ringMap.get(ring).get(0);
+                        if (!ringStack.getOrCreateTag().getBoolean("unique")) {
+                            ringStack.getOrCreateTag().putBoolean("unique", true);
+                        }
+                    } else {
+                        if (RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
+                            RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
+                        }
+                        for (ItemStack ringStack : ringMap.get(ring)) {
+                            if (ringStack.getOrCreateTag().getBoolean("unique")) {
+                                ringStack.getOrCreateTag().putBoolean("unique", false);
+                            }
+                        }
+                    }
+                } else {
+                    if (RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
+                        RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
+                    }
+                }
+            });
+        }
+
     }
 
 }

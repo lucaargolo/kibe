@@ -18,6 +18,7 @@ import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
+import io.github.lucaargolo.kibe.compat.initTrinketsCompat
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
@@ -71,8 +72,6 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.registry.RegistryKey
-import net.minecraft.world.World
 import java.util.*
 import java.util.function.Consumer
 
@@ -84,6 +83,7 @@ val SYNC_ENTANGLED_TANK_S2C = Identifier(MOD_ID, "sync_entangled_tank")
 val REQUEST_ENTANGLED_TANK_SYNC_C2S = Identifier(MOD_ID, "request_entangled_tank_sync")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
+val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
 var TANK_CUSTOM_MODEL: Any? = null
 var MOD_CONFIG: ModConfig = ModConfig()
 
@@ -101,6 +101,9 @@ fun init() {
     initCreativeTab()
     initPackets()
     initExtras()
+    if(TRINKET) {
+        initTrinketsCompat()
+    }
 }
 
 fun initClient() {

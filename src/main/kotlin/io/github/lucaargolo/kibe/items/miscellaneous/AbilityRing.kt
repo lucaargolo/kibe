@@ -1,15 +1,27 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.ladysnake.pal.PlayerAbility
+import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
-import net.minecraft.util.Formatting
 import net.minecraft.world.World
 
-class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanItem(settings) {
+@Suppress("LeakingThis")
+open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanItem(settings) {
+
+    init {
+        RINGS.add(this)
+    }
+
+    override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
+        (entity as? PlayerEntityMixed)?.let {
+            try { it.`kibe$activeRingsList`.removeAll { pair -> pair.second != world.time } } catch (e: Exception) { }
+            it.`kibe$activeRingsList`.add(Pair(stack, world.time))
+        }
+    }
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
@@ -34,6 +46,8 @@ class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanItem(s
         return tag.contains("enabled") && tag.getBoolean("enabled") && tag.contains("unique") && tag.getBoolean("unique")
     }
 
-
+    companion object {
+        val RINGS = mutableListOf<AbilityRing>()
+    }
 
 }
