@@ -5,6 +5,7 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
+import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.minus
@@ -56,7 +57,7 @@ class TankBlockEntity(tank: Tank): BlockEntity(getEntityType(tank)), Tickable, B
         val world = world ?: return
         val fluid = if(this.isEmpty) Fluids.EMPTY else this.fluidKey.rawFluid ?: Fluids.EMPTY
         val luminance = fluid.defaultState.blockState.luminance
-        if(luminance != cachedState[Properties.LEVEL_15]) {
+        if(luminance != cachedState[Properties.LEVEL_15] && MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
             world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
         }
         if(tickDelay++ < 10) return else tickDelay = 0

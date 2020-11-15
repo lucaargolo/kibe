@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
+import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
@@ -106,7 +107,7 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         val world = world ?: return
         val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
         val luminance = fluid.defaultState.blockState.luminance
-        if(luminance != cachedState[Properties.LEVEL_15]) {
+        if(luminance != cachedState[Properties.LEVEL_15] && MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
             world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
         }
     }
