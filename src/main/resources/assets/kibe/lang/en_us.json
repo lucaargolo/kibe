@@ -176,6 +176,7 @@
   "screen.kibe.pocket_crafting_table": "Pocket Crafting Table",
 
   "text.autoconfig.kibe.category.miscellaneous": "Miscellaneous",
+  "text.autoconfig.kibe.option.miscellaneousModule.tanksChangeLight": "Tanks Change Light",
   "text.autoconfig.kibe.option.miscellaneousModule.cursedDirtMobCap": "Cursed Dirt Mob Cap",
   "text.autoconfig.kibe.category.chunk_loader": "Chunk Loader",
   "text.autoconfig.kibe.option.chunkLoaderModule.checkForPlayer": "Check for Player",

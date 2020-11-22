@@ -39,21 +39,23 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         (1..8).forEach {
             runeColors[it] = DyeColor.WHITE
         }
+        updateColorCode()
     }
 
-    val colorCode: String
-        get() {
-            var code = ""
-            (1..8).forEach {
-                code += runeColors[it]?.id?.let { int -> Integer.toHexString(int) }
-            }
-            return code
-        }
+    var colorCode = ""
 
     val persistentState: EntangledTankState?
         get() = (world as? ServerWorld)?.let { serverWorld ->
             serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(serverWorld, key) }, key)
         }
+
+    fun updateColorCode() {
+        var code = ""
+        (1..8).forEach {
+            code += runeColors[it]?.id?.let { int -> Integer.toHexString(int) }
+        }
+        colorCode = code
+    }
 
     fun markDirtyAndSync() {
         super.markDirty()
@@ -71,6 +73,7 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
+        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
     }
@@ -79,6 +82,7 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
+        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
         fluidInv.fromTag(tag)

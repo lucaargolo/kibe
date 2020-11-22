@@ -83,6 +83,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                             val newColor = (player.getStackInHand(hand).item as Rune).color
                             if(oldColor != newColor) {
                                 tank.runeColors[int] = newColor
+                                tank.updateColorCode()
                                 player.getStackInHand(hand).decrement(1)
                             }
                         }

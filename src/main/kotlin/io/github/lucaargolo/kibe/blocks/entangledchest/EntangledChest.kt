@@ -72,6 +72,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                         val newColor = (player.getStackInHand(hand).item as Rune).color
                         if(oldColor != newColor) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = newColor
+                            (world.getBlockEntity(pos) as EntangledChestEntity).updateColorCode()
                             player.getStackInHand(hand).decrement(1)
                         }
                         (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
