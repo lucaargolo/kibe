@@ -23,7 +23,6 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import java.awt.Color
-import java.util.function.Function
 
 class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEntityRenderer<EntangledTankEntity>(dispatcher) {
 
@@ -88,10 +87,10 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
-        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
         val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
-        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, Function { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
@@ -133,8 +132,13 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
 
         matrices.pop()
 
-        val fluidInv = entity.fluidInv
-        val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        (MinecraftClient.getInstance().player)?.let { player ->
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
+            list.add(Pair(entity.key, entity.colorCode))
+            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
+        }
+        val fluidInv = EntangledTankState.CLIENT_STATES[entity.key]?.fluidInvMap?.get(entity.colorCode)
+        val fluid = fluidInv?.getInvFluid(0)?.rawFluid ?: Fluids.EMPTY
 
         val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
         val fluidColor = fluidRenderHandler.getFluidColor(entity.world, entity.pos, fluid.defaultState)
@@ -145,7 +149,7 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
-        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, fluidInv.getInvFluid(0).amount().asLong(1000L)/1000f)
+        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, (fluidInv?.getInvFluid(0)?.amount()?.asLong(1000L) ?: 0L)/1000f)
         entity.lastRenderedFluid = p
 
         val partUv = TankBlockEntityRenderer.UV(sprite)

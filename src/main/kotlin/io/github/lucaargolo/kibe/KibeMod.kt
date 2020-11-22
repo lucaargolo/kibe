@@ -2,15 +2,16 @@
 
 package io.github.lucaargolo.kibe
 
+import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.BIG_TORCH
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
-import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
@@ -31,7 +32,6 @@ import io.github.lucaargolo.kibe.items.miscellaneous.GliderDynamicRenderer
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
-import io.github.lucaargolo.kibe.utils.EntangledTankCache
 import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
@@ -41,11 +41,13 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.Config
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
@@ -78,9 +80,8 @@ import java.util.function.Consumer
 const val MOD_ID = "kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
-val MARK_ENTANGLED_TANK_DIRTY_S2C = Identifier(MOD_ID, "mark_entangled_tank_dirty")
-val SYNC_ENTANGLED_TANK_S2C = Identifier(MOD_ID, "sync_entangled_tank")
-val REQUEST_ENTANGLED_TANK_SYNC_C2S = Identifier(MOD_ID, "request_entangled_tank_sync")
+val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
+val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_states")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
@@ -137,21 +138,20 @@ fun initPackets() {
             }
         }
     }
-    ServerSidePacketRegistry.INSTANCE.register(REQUEST_ENTANGLED_TANK_SYNC_C2S) { packetContext: PacketContext, attachedData: PacketByteBuf ->
-        val key = attachedData.readString(32767)
-        val colorCode = attachedData.readString(32767)
+
+    ServerSidePacketRegistry.INSTANCE.register(REQUEST_DIRTY_TANK_STATES) { packetContext: PacketContext, attachedData: PacketByteBuf ->
+        val list = linkedSetOf<Pair<String, String>>()
+        val qnt = attachedData.readInt()
+        repeat(qnt) {
+            val first = attachedData.readString(32767)
+            val second = attachedData.readString(32767)
+            list.add(Pair(first, second))
+        }
         packetContext.taskQueue.execute {
-            val player = packetContext.player as ServerPlayerEntity
-            val serverWorld = player.serverWorld
-            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({ EntangledTankState(serverWorld, key) }, key)
-            val fluidInv = state.getOrCreateInventory(colorCode)
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeString(key)
-            passedData.writeString(colorCode)
-            passedData.writeCompoundTag(fluidInv.toTag())
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SYNC_ENTANGLED_TANK_S2C, passedData)
+            (packetContext.player as? ServerPlayerEntity)?.let { player -> EntangledTankState.SERVER_PLAYER_REQUESTS[player] = list}
         }
     }
+
 }
 
 fun initPacketsClient() {
@@ -184,21 +184,27 @@ fun initPacketsClient() {
             }
         }
     }
-    ClientSidePacketRegistry.INSTANCE.register(MARK_ENTANGLED_TANK_DIRTY_S2C) { packetContext: PacketContext, attachedData: PacketByteBuf ->
-        val key = attachedData.readString()
-        val colorCode = attachedData.readString()
-        packetContext.taskQueue.execute {
-            EntangledTankCache.markDirty(key, colorCode)
+
+    ClientSidePacketRegistry.INSTANCE.register(SYNCHRONIZE_DIRTY_TANK_STATES) { packetContext: PacketContext, attachedData: PacketByteBuf ->
+        val tot = attachedData.readInt()
+        repeat(tot) {
+            val key = attachedData.readString()
+            val qnt = attachedData.readInt()
+            val map = mutableMapOf<String, FluidVolume>()
+            repeat(qnt) {
+                val colorCode = attachedData.readString()
+                val fluidVolume = FluidVolume.fromMcBuffer(attachedData)
+                map[colorCode] = fluidVolume
+            }
+            packetContext.taskQueue.execute {
+                val state = EntangledTankState.getOrCreateClientState(key)
+                map.forEach { (colorCode, fluidVolume) ->
+                    state.getOrCreateInventory(colorCode).setInvFluid(0, fluidVolume, Simulation.ACTION)
+                }
+            }
         }
     }
-    ClientSidePacketRegistry.INSTANCE.register(SYNC_ENTANGLED_TANK_S2C) { packetContext: PacketContext, attachedData: PacketByteBuf ->
-        val key = attachedData.readString()
-        val colorCode = attachedData.readString()
-        val newFluidInvTag = attachedData.readCompoundTag()
-        packetContext.taskQueue.execute {
-            EntangledTankCache.updateClientFluidInv(key, colorCode, newFluidInvTag!!)
-        }
-    }
+
 }
 
 fun initExtras() {
@@ -207,12 +213,57 @@ fun initExtras() {
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }
+    ServerTickEvents.END_SERVER_TICK.register { server ->
+        EntangledTankState.SERVER_PLAYER_REQUESTS.forEach { (player, requests) ->
+            val finalMap = mutableMapOf<String, MutableMap<String, FluidVolume>>()
+            requests.forEach {
+                val key = it.first
+                val state = server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(server.overworld, key) }, key)
+
+                val colorCode = it.second
+                val fluidVolume = state.getOrCreateInventory(colorCode).getInvFluid(0)
+
+                val secondMap = finalMap[key] ?: mutableMapOf()
+                secondMap[colorCode] = fluidVolume
+                finalMap[key] = secondMap
+            }
+            val passedData = PacketByteBuf(Unpooled.buffer())
+            passedData.writeInt(finalMap.size)
+            finalMap.forEach { (key, secondMap) ->
+                passedData.writeString(key, 32767)
+                passedData.writeInt(secondMap.size)
+                secondMap.forEach { (colorCode, fluidVolume) ->
+                    passedData.writeString(colorCode, 32767)
+                    fluidVolume.toMcBuffer(passedData)
+                }
+            }
+            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SYNCHRONIZE_DIRTY_TANK_STATES, passedData)
+        }
+    }
     FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
     FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
 }
 
 fun initExtrasClient() {
     @Suppress("deprecated")
+    ClientTickEvents.END_CLIENT_TICK.register { client ->
+        client.player?.let { player ->
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player]
+            list?.size?.let { qnt ->
+                if(qnt > 0) {
+                    val passedData = PacketByteBuf(Unpooled.buffer())
+                    passedData.writeInt(qnt)
+                    list.forEach {
+                        passedData.writeString(it.first)
+                        passedData.writeString(it.second)
+                    }
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(REQUEST_DIRTY_TANK_STATES, passedData)
+                }
+            }
+
+        }
+
+    }
     ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
         registry.register(Identifier(MOD_ID, "block/entangled_chest"))
         registry.register(Identifier(MOD_ID, "block/entangled_chest_runes"))

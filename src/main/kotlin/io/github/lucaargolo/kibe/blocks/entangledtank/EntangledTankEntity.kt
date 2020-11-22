@@ -26,7 +26,7 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         }
         override fun setInvFluid(tank: Int, to: FluidVolume?, simulation: Simulation?): Boolean {
             val bl = persistentState?.getOrCreateInventory(colorCode)?.setInvFluid(tank, to, simulation) ?: super.setInvFluid(tank, to, simulation)
-            markDirtyAndSync()
+            markDirty()
             return bl
         }
     }
@@ -56,7 +56,7 @@ class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest
         }
 
     fun markDirtyAndSync() {
-        markDirty()
+        super.markDirty()
         if(world?.isClient == false)
             sync()
     }

@@ -1,20 +1,14 @@
 package io.github.lucaargolo.kibe.items.entangledbucket
 
 import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FluidAttributes
-import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import alexiil.mc.lib.attributes.fluid.mixin.impl.BucketItemMixin
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
-import io.github.lucaargolo.kibe.CLIENT
-import io.github.lucaargolo.kibe.REQUEST_ENTANGLED_TANK_SYNC_C2S
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntity
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.items.ENTANGLED_BUCKET
 import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
-import io.github.lucaargolo.kibe.utils.EntangledTankCache
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import io.github.lucaargolo.kibe.utils.plus
 import io.netty.buffer.Unpooled
@@ -22,6 +16,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluid
@@ -46,6 +41,7 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
+import kotlin.Pair
 
 class EntangledBucket(settings: Settings): Item(settings)  {
 
@@ -211,17 +207,16 @@ class EntangledBucket(settings: Settings): Item(settings)  {
     private fun getFluidInv(world: World?, tag: CompoundTag): SimpleFixedFluidInv {
         val key = tag.getString("key")
         val colorCode = tag.getString("colorCode")
-        val fluidInv = if(world?.isClient != false && EntangledTankCache.isDirty(key, colorCode)) {
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeString(key)
-            passedData.writeString(colorCode)
-            ClientSidePacketRegistry.INSTANCE.sendToServer(REQUEST_ENTANGLED_TANK_SYNC_C2S, passedData)
-            EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
-        }else if(world is ServerWorld) {
+        val fluidInv = if(world is ServerWorld) {
             val state = world.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(world, key) }, key)
             state.getOrCreateInventory(colorCode)
         }else {
-            EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
+            (MinecraftClient.getInstance().player)?.let { player ->
+                val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
+                list.add(Pair(key, colorCode))
+                EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
+            }
+            EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         }
         fluidInv.toTag(tag)
         return fluidInv
