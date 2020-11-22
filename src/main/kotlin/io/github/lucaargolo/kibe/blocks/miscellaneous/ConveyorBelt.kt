@@ -75,16 +75,15 @@ class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.of(Mate
     }
 
 
-    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
-        return createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0)
-    }
+    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
-        return createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0)
-    }
+    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCullingShape(state: BlockState?, view: BlockView?, pos: BlockPos?): VoxelShape {
-        return createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    override fun getCullingShape(state: BlockState?, view: BlockView?, pos: BlockPos?): VoxelShape = EMPTY
+
+    companion object {
+        private val SHAPE = createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0)
+        private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
 }

@@ -62,14 +62,14 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).l
         }
     }
 
-    override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape {
-        return createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
-    }
-
-    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape {
-        return createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
-    }
-
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
+
+    override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
+    }
 
 }

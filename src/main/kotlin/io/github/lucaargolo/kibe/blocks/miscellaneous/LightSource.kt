@@ -61,8 +61,10 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ti
         return BlockRenderType.INVISIBLE
     }
 
-    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-        return createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
+    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
     }
 
 }

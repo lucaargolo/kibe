@@ -31,12 +31,12 @@ class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialC
     }
 
 
-    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-        return Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
-    }
+    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-        return Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
+    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
     }
 
 }

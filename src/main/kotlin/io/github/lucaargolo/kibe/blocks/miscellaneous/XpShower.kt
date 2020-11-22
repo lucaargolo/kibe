@@ -51,28 +51,36 @@ class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MaterialC
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
 
-    override fun getOutlineShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?) = getShape(state)
+    override fun getOutlineShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?) = getShape(state[Properties.FACING])
 
-    override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?) = getShape(state)
+    override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?) = getShape(state[Properties.FACING])
 
-    private fun getShape(state: BlockState): VoxelShape {
-        val dir = state[Properties.FACING]
-        val hrz = dir != Direction.UP
-        val head = VoxelShapes.union(
-            createCuboidShape(3.5, 9.0, 3.5, 12.5, 10.0, 12.5),
-            createCuboidShape(6.5, 10.0, 6.5, 9.5, 11.0, 9.5)
-        )
-        val duct = VoxelShapes.union(
-            createCuboidShape(7.5, 11.0, 7.5, 8.5, if (hrz) 15.0 else 16.0, 8.5),
-            when (dir) {
-                Direction.NORTH -> createCuboidShape(7.5, 14.0, 8.5, 8.5, 15.0, 16.0)
-                Direction.SOUTH -> createCuboidShape(7.5, 14.0, 0.0, 8.5, 15.0, 7.5)
-                Direction.WEST -> createCuboidShape(8.5, 14.0, 7.5, 16.0, 15.0, 8.5)
-                Direction.EAST -> createCuboidShape(0.0, 14.0, 7.5, 7.5, 15.0, 8.5)
-                else -> VoxelShapes.empty()
+    companion object {
+        private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+
+        init {
+            Direction.values().forEach {
+                val hrz = it != Direction.UP
+                val head = VoxelShapes.union(
+                    createCuboidShape(3.5, 9.0, 3.5, 12.5, 10.0, 12.5),
+                    createCuboidShape(6.5, 10.0, 6.5, 9.5, 11.0, 9.5)
+                )
+                val duct = VoxelShapes.union(
+                    createCuboidShape(7.5, 11.0, 7.5, 8.5, if (hrz) 15.0 else 16.0, 8.5),
+                    when (it) {
+                        Direction.NORTH -> createCuboidShape(7.5, 14.0, 8.5, 8.5, 15.0, 16.0)
+                        Direction.SOUTH -> createCuboidShape(7.5, 14.0, 0.0, 8.5, 15.0, 7.5)
+                        Direction.WEST -> createCuboidShape(8.5, 14.0, 7.5, 16.0, 15.0, 8.5)
+                        Direction.EAST -> createCuboidShape(0.0, 14.0, 7.5, 7.5, 15.0, 8.5)
+                        else -> VoxelShapes.empty()
+                    }
+                )
+                SHAPES[it] = VoxelShapes.union(head, duct)
             }
-        )
-        return VoxelShapes.union(head, duct)
+        }
+
+        private fun getShape(facing: Direction) = SHAPES[facing] ?: EMPTY
     }
 
 }

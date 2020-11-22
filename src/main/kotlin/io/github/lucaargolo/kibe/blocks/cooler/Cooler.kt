@@ -4,14 +4,12 @@ import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
-import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -36,17 +34,26 @@ class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MaterialCol
         return ActionResult.SUCCESS
     }
 
-    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
+    override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
 
     override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
 
-    private fun getShape(facing: Direction): VoxelShape {
-        return when(facing) {
-            Direction.EAST, Direction.WEST -> createCuboidShape(5.0, 0.0, 1.0, 11.0, 12.0, 15.0)
-            else -> createCuboidShape(1.0, 0.0, 5.0, 15.0, 12.0, 11.0)
-        }
-    }
+    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
 
-    override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+    companion object {
+        private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+
+        init {
+            Direction.values().forEach {
+                SHAPES[it] = when(it) {
+                    Direction.EAST, Direction.WEST -> createCuboidShape(5.0, 0.0, 1.0, 11.0, 12.0, 15.0)
+                    else -> createCuboidShape(1.0, 0.0, 5.0, 15.0, 12.0, 11.0)
+                }
+            }
+        }
+
+        fun getShape(direction: Direction): VoxelShape = SHAPES[direction] ?: EMPTY
+    }
 
 }

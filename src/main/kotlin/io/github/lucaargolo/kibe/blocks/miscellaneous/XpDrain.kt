@@ -65,11 +65,11 @@ class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE)
         }
     }
 
-    override fun getOutlineShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
-        return createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
-    }
+    override fun getOutlineShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
-        return createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
+    override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
     }
 }
