@@ -52,6 +52,7 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).l
         return ActionResult.SUCCESS
     }
 
+    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {

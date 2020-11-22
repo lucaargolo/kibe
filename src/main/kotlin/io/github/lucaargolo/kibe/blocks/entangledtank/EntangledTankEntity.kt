@@ -20,7 +20,7 @@ import net.minecraft.util.Tickable
 class EntangledTankEntity(chest: EntangledTank): BlockEntity(getEntityType(chest)), BlockEntityClientSerializable, Tickable {
 
     var lastRenderedFluid = 0f
-    var fluidInv = object: SimpleFixedFluidInv(1, FluidAmount(16)) {
+    var fluidInv = object: SimpleFixedFluidInv(1, FluidAmount.ofWhole(16)) {
         override fun getInvFluid(tank: Int): FluidVolume {
             return persistentState?.getOrCreateInventory(colorCode)?.getInvFluid(tank) ?: super.getInvFluid(tank)
         }

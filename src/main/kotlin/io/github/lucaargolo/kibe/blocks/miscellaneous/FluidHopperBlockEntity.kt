@@ -15,7 +15,7 @@ import net.minecraft.util.Tickable
 
 class FluidHopperBlockEntity(block: FluidHopper): BlockEntity(getEntityType(block)), Tickable {
 
-    val fluidInv = SimpleFixedFluidInv(1, FluidAmount(1))
+    val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(1))
     private var volume
         get() = fluidInv.getInvFluid(0)
         set(value) {

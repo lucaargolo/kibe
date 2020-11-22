@@ -30,7 +30,6 @@ class CoolerBlockItemScreen(handler: CoolerBlockItemScreenHandler, inventory: Pl
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, x, y, 0, 0, 176, 131)
     }

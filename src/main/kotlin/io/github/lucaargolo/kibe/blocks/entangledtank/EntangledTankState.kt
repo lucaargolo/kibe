@@ -14,11 +14,11 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
     var fluidInvMap = mutableMapOf<String, SimpleFixedFluidInv>()
 
     init {
-        SERVER_STATES[key] = this;
+        SERVER_STATES[key] = this
     }
 
     private fun createInventory(colorCode: String): SimpleFixedFluidInv {
-        val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+        val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
         fluidInvMap[colorCode] = fluidInv
         return fluidInv
     }
@@ -34,7 +34,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
 
     override fun fromTag(tag: CompoundTag) {
         tag.keys.forEach {
-            val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+            val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
             tempFluidInv.fromTag(tag.getCompound(it))
             fluidInvMap[it] = tempFluidInv
         }

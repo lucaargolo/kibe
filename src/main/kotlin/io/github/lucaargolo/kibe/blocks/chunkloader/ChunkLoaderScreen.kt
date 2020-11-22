@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
-import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
@@ -18,7 +17,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
-
 
 class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("screen.kibe.chunk_loader")) {
 
@@ -78,12 +76,13 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
 
     private val texture = Identifier("kibe:textures/gui/chunk_loader.png")
 
+    @Suppress("UNUSED_PARAMETER")
     private fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         textRenderer.draw(matrices, title, (x+47 - textRenderer.getWidth(title) / 2f), y+6f, 4210752)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight)
     }

@@ -38,7 +38,7 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         super.appendTooltip(stack, world, tooltip, context)
         val stackTag = stack.tag ?: return
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
-        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
         dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))
         if(!dummyFluidInv.getInvFluid(0).isEmpty)
             tooltip.add(dummyFluidInv.getInvFluid(0).fluidKey.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${dummyFluidInv.getInvFluid(0).amount().asInt(1000)}mB")))

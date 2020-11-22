@@ -39,7 +39,7 @@ class EntangledBag(settings: Settings): Item(settings){
             (1..8).forEach {
                 newTag.putString("rune$it", blockEntityTag.getString("rune$it"))
             }
-            newTag.putString("colorCode", blockEntity.getColorCode())
+            newTag.putString("colorCode", blockEntity.colorCode)
             context.stack.tag = newTag
             if(!context.world.isClient) context.player!!.sendMessage(TranslatableText("chat.kibe.entangled_bag.success"), true)
             return ActionResult.SUCCESS

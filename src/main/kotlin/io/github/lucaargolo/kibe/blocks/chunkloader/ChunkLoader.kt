@@ -33,9 +33,10 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext?): BlockState? {
-        return defaultState.with(Properties.ENABLED, true);
+        return defaultState.with(Properties.ENABLED, true)
     }
 
+    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, notify: Boolean) {
         if ((!state.isOf(newState.block) || !newState[Properties.ENABLED]) && !world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
@@ -72,7 +73,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
                 if (state[Properties.ENABLED]) {
                     MinecraftClient.getInstance().openScreen(ChunkLoaderScreen(be))
                 } else {
-                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.toLowerCase()}"), false);
+                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.toLowerCase()}"), false)
                 }
             }
         }

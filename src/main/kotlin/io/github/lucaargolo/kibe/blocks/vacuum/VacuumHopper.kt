@@ -27,6 +27,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Mater
         return ActionResult.SUCCESS
     }
 
+    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             val blockEntity = world.getBlockEntity(pos)

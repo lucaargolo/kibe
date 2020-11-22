@@ -172,6 +172,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
 
     }
 
+    @Suppress("DEPRECATION")
     private fun fakeInteraction(bucketItem: BucketItem, world: World, pos: BlockPos, blockHitResult: BlockHitResult): Fluid? {
         val fakePlayer = FakePlayerEntity(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(bucketItem))

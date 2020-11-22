@@ -55,6 +55,7 @@ class VoidBucket(settings: Settings): Item(settings) {
         } ?: TypedActionResult.pass(itemStack)
     }
 
+    @Suppress("DEPRECATION")
     private fun fakeInteraction(world: World, pos: BlockPos, blockHitResult: BlockHitResult): Boolean {
         val fakePlayer = FakePlayerEntity(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(Items.BUCKET))
