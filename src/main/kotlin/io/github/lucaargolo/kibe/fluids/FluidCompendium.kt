@@ -1,8 +1,6 @@
 package io.github.lucaargolo.kibe.fluids
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
-import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.fluids.miscellaneous.LiquidXpFluid
 import io.github.lucaargolo.kibe.fluids.miscellaneous.ModdedFluid
@@ -29,8 +27,6 @@ import net.minecraft.item.Items
 import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceType
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.text.TranslatableText
-import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
@@ -47,17 +43,12 @@ private fun register(identifier: Identifier, fluid: ModdedFluid): ModdedFluid {
     return fluid
 }
 
-fun getFluidBucket(fluid: Fluid): Item? {
+fun getFluidBucket(fluid: Fluid): Item {
     val fluidIdentifier = Registry.FLUID.getId(fluid)
-    return Registry.ITEM.get(
-        Identifier(
-            fluidIdentifier.namespace,
-            "${fluidIdentifier.path.replace("flowing_", "")}_bucket"
-        )
-    )
+    return Registry.ITEM.get(Identifier(fluidIdentifier.namespace, "${fluidIdentifier.path.replace("flowing_", "")}_bucket"))
 }
 
-fun getFluidBlock(fluid: Fluid): Block? {
+fun getFluidBlock(fluid: Fluid): Block {
     val fluidIdentifier = Registry.FLUID.getId(fluid)
     return Registry.BLOCK.get(Identifier(fluidIdentifier.namespace, fluidIdentifier.path.replace("flowing_", "")))
 }

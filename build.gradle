@@ -45,6 +45,9 @@ dependencies {
 
     modImplementation "com.github.emilyploszaj:trinkets:${trinkets_version}"
 
+    modImplementation("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
+    include("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
+
     modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
     include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
 
@@ -87,24 +90,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
     from "LICENSE"
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
-    }
-
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
-    }
 }
 
 compileKotlin.kotlinOptions.jvmTarget = "1.8"

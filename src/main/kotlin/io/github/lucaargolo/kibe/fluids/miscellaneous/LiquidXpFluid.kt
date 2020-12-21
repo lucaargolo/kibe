@@ -13,10 +13,9 @@ abstract class LiquidXpFluid: ModdedFluid(Formatting.GREEN) {
 
     override fun getStill() = LIQUID_XP
     override fun getFlowing() = LIQUID_XP_FLOWING
-    override fun getBucketItem() = getFluidBucket(LIQUID_XP)
 
     override fun toBlockState(fluidState: FluidState): BlockState {
-        return getFluidBlock(LIQUID_XP)!!.defaultState.with(Properties.LEVEL_15, method_15741(fluidState))
+        return fluidBlock.defaultState.with(Properties.LEVEL_15, method_15741(fluidState))
     }
 
     class Flowing : LiquidXpFluid() {
