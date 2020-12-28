@@ -45,7 +45,7 @@ class SleepingBag(settings: Settings): Item(settings) {
             if(this.type == HitResult.Type.BLOCK) {
                 return@run BlockPos(this.pos)
             }else{
-                return@run BlockPos.ORIGIN
+                return@run player.blockPos
             }
         }
         if (player.isSleeping || !player.isAlive) {
