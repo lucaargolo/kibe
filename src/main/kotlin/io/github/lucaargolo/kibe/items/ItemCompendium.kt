@@ -169,6 +169,8 @@ val BLACK_RUNE      = register(Identifier(MOD_ID, "black_rune"),  Rune(DyeColor.
 val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"),  SlimeBoots(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"),  SlimeSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 
+val TORCH_SLING = register(Identifier(MOD_ID, "torch_sling"),  TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+
 val WOODEN_BUCKET = register(Identifier(MOD_ID, "wooden_bucket"), WoodenBucket.Empty(Settings().maxCount(16)))
 val WATER_WOODEN_BUCKET = register(Identifier(MOD_ID, "water_wooden_bucket"), WoodenBucket.Water(Settings().maxCount(1)))
 

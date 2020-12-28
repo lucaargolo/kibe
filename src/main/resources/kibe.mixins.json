@@ -25,7 +25,8 @@
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

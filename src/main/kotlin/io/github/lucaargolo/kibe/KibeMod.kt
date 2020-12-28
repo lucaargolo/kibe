@@ -20,6 +20,8 @@ import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.compat.initTrinketsCompat
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
+import io.github.lucaargolo.kibe.entities.initEntities
+import io.github.lucaargolo.kibe.entities.initEntitiesClient
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.fluids.initFluidsClient
@@ -94,6 +96,7 @@ fun init() {
     initTooltip()
     initBlocks()
     initItems()
+    initEntities()
     initEffects()
     initLootTables()
     initFluids()
@@ -108,6 +111,7 @@ fun init() {
 fun initClient() {
     initBlocksClient()
     initItemsClient()
+    initEntitiesClient()
     initFluidsClient()
     initExtrasClient()
     initPacketsClient()
