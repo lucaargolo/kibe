@@ -7,16 +7,14 @@ import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
-import io.github.lucaargolo.kibe.blocks.BIG_TORCH
+import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
-import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeCustomModel
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
-import io.github.lucaargolo.kibe.blocks.initBlocks
-import io.github.lucaargolo.kibe.blocks.initBlocksClient
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.compat.initTrinketsCompat
@@ -318,12 +316,16 @@ fun initExtrasClient() {
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_gold_core"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_diamond_core"), "inventory"))
     }
+    BlockRenderLayerMap.INSTANCE.putBlock(DRAWBRIDGE, RenderLayer.getCutoutMipped())
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
-    BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutout())
+    BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutoutMipped())
     BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
-    BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutout())
+    BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutoutMipped())
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
         ModelVariantProvider { modelIdentifier, _ ->
+            if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "drawbridge") {
+                return@ModelVariantProvider DrawbridgeCustomModel()
+            }
             if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "tank" && modelIdentifier.variant != "inventory") {
                 val model = TankCustomModel()
                 TANK_CUSTOM_MODEL = model

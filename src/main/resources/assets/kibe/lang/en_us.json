@@ -29,6 +29,7 @@
   "block.kibe.cooler": "Cooler",
   "block.kibe.big_torch": "Big Torch",
   "block.kibe.chunk_loader": "Chunk Loader",
+  "block.kibe.drawbridge": "Drawbridge",
 
   "block.kibe.entangled_tank": "Entangled Tank",
   "block.kibe.entangled_chest": "Entangled Chest",
@@ -168,6 +169,7 @@
   "screen.kibe.cooler_item": "Cooler",
   "screen.kibe.big_torch": "Big Torch",
   "screen.kibe.chunk_loader": "Chunk Loader",
+  "screen.kibe.drawbridge": "Drawbridge",
   "screen.kibe.trash_can": "Trash Can",
   "screen.kibe.vacuum_hopper": "Vacuum Hopper",
   "screen.kibe.entangled_chest": "Entangled Chest",

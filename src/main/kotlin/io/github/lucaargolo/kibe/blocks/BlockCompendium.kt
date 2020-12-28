@@ -14,6 +14,10 @@ import io.github.lucaargolo.kibe.blocks.cooler.Cooler
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerBlockEntity
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreen
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreenHandler
+import io.github.lucaargolo.kibe.blocks.drawbridge.Drawbridge
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeBlockEntity
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeScreen
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeScreenHandler
 import io.github.lucaargolo.kibe.blocks.entangledchest.*
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
@@ -162,6 +166,7 @@ val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can
 val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = Supplier { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, Supplier {  VacuumHopperScreen::class })))
 val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, Supplier { BigTorchScreen::class })))
 val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, Supplier { CoolerScreen::class })))
+val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, Supplier { DrawbridgeScreen::class })))
 
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())
