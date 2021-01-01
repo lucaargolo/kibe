@@ -20,8 +20,8 @@ class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(setti
 
     override fun tick(player: PlayerEntity, stack: ItemStack) {
         (player as? PlayerEntityMixed)?.let {
-            try { it.`kibe$activeRingsList`.removeAll { pair -> pair.second != player.world.time } } catch (e: Exception) { }
-            it.`kibe$activeRingsList`.add(Pair(stack, player.world.time))
+            try { it.kibe_activeRingsList.removeAll { pair -> pair.second != player.world.time } } catch (e: Exception) { }
+            it.kibe_activeRingsList.add(Pair(stack, player.world.time))
         }
     }
 

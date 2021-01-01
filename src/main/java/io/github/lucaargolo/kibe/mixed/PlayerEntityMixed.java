@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface PlayerEntityMixed {
 
-    List<Pair<ItemStack, Long>> kibe$activeRingsList = new ArrayList<>();
-
-    List<Pair<ItemStack, Long>> getKibe$activeRingsList();
+    List<Pair<ItemStack, Long>> getKibe_activeRingsList();
 
 }

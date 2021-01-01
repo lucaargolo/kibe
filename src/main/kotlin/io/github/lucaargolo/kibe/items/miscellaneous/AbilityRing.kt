@@ -18,8 +18,8 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         (entity as? PlayerEntityMixed)?.let {
-            try { it.`kibe$activeRingsList`.removeAll { pair -> pair.second != world.time } } catch (e: Exception) { }
-            it.`kibe$activeRingsList`.add(Pair(stack, world.time))
+            try { it.kibe_activeRingsList.removeAll { pair -> pair.second != world.time } } catch (e: Exception) { }
+            it.kibe_activeRingsList.add(Pair(stack, world.time))
         }
     }
 

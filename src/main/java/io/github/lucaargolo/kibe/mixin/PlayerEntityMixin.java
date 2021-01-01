@@ -37,9 +37,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         super(type, world);
     }
 
+    private final List<Pair<ItemStack, Long>> kibe_activeRingsList = new ArrayList<>();
+
     @Override
-    public List<Pair<ItemStack, Long>> getKibe$activeRingsList() {
-        return kibe$activeRingsList;
+    public List<Pair<ItemStack, Long>> getKibe_activeRingsList() {
+        return kibe_activeRingsList;
     }
 
     @Inject(at = @At("TAIL"), method = "eatFood")
@@ -147,7 +149,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             }
 
             LinkedHashMap<AbilityRing, List<ItemStack>> ringMap = new LinkedHashMap<>();
-            for (Pair<ItemStack, Long> pair : kibe$activeRingsList) {
+            for (Pair<ItemStack, Long> pair : kibe_activeRingsList) {
                 ItemStack ringStack = pair.getFirst();
                 Item ringItem = ringStack.getItem();
                 if (ringItem instanceof AbilityRing && ringStack.getOrCreateTag().getBoolean("enabled")) {

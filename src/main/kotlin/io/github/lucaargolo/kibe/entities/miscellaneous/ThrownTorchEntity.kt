@@ -9,6 +9,7 @@ import net.minecraft.item.*
 import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.util.hit.EntityHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.world.World
 
@@ -22,6 +23,15 @@ class ThrownTorchEntity: ThrownItemEntity {
 
     override fun getDefaultItem(): Item = Items.TORCH
 
+    private val serverStack: ItemStack
+        get() = if (item.isEmpty) ItemStack(this.defaultItem) else item
+
+    override fun onEntityHit(entityHitResult: EntityHitResult) {
+        val finalPos = entityHitResult.pos
+        ItemScatterer.spawn(world, finalPos.x, finalPos.y, finalPos.z, ItemStack(serverStack.item))
+        super.onEntityHit(entityHitResult)
+    }
+
     override fun onBlockHit(blockHitResult: BlockHitResult) {
         val playerEntity = (owner as? PlayerEntity) ?: return
 
@@ -29,8 +39,8 @@ class ThrownTorchEntity: ThrownItemEntity {
         val hitSide = blockHitResult.side
         val finalPos = hitPos.add(hitSide.vector)
 
-        if((stack.item as? BlockItem)?.place(ItemPlacementContext(playerEntity, Hand.MAIN_HAND, stack, blockHitResult))?.isAccepted != true) {
-            ItemScatterer.spawn(world, finalPos.x + 0.0, finalPos.y + 0.0, finalPos.z + 0.0, ItemStack(stack.item))
+        if((serverStack.item as? BlockItem)?.place(ItemPlacementContext(playerEntity, Hand.MAIN_HAND, serverStack, blockHitResult))?.isAccepted != true) {
+            ItemScatterer.spawn(world, finalPos.x + 0.0, finalPos.y + 0.0, finalPos.z + 0.0, ItemStack(serverStack.item))
         }
         super.onBlockHit(blockHitResult)
     }
