@@ -11,8 +11,6 @@ import io.github.lucaargolo.kibe.items.ENTANGLED_BUCKET
 import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import io.github.lucaargolo.kibe.utils.plus
-import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
@@ -23,7 +21,6 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.*
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory

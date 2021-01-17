@@ -7,7 +7,7 @@ import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.CraftingInventory
@@ -43,17 +43,17 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             return entity.isEmpty
         }
 
-        override fun getStack(slot: Int): ItemStack? {
+        override fun getStack(slot: Int): ItemStack {
             return entity.getStack(slot)
         }
 
-        override fun removeStack(slot: Int): ItemStack? {
+        override fun removeStack(slot: Int): ItemStack {
             val stack: ItemStack = entity.removeStack(slot)
             onContentChanged(this)
             return stack
         }
 
-        override fun removeStack(slot: Int, amount: Int): ItemStack? {
+        override fun removeStack(slot: Int, amount: Int): ItemStack {
             val stack: ItemStack = entity.removeStack(slot, amount)
             onContentChanged(this)
             return stack
@@ -155,7 +155,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
                     val passedData = PacketByteBuf(Unpooled.buffer())
                     passedData.writeIdentifier(craftingRecipe.id)
                     VACUUM_HOPPER_RECIPE_SERIALIZER.write(passedData, craftingRecipe)
-                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SYNCHRONIZE_LAST_RECIPE_PACKET , passedData)
+                    ServerPlayNetworking.send(player, SYNCHRONIZE_LAST_RECIPE_PACKET , passedData)
                 }
             }
             resultInventory.setStack(0, itemStack)

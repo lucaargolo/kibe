@@ -1,8 +1,11 @@
 package io.github.lucaargolo.kibe.blocks.drawbridge
 
+import io.github.lucaargolo.kibe.SYNCHRONIZE_DRAWBRIDGE_COVER
 import io.github.lucaargolo.kibe.blocks.DRAWBRIDGE
 import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -13,10 +16,13 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
+import net.minecraft.server.network.ServerPlayNetworkHandler
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class DrawbridgeScreenHandler(syncId: Int, playerInventory: PlayerInventory, val entity: DrawbridgeBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(DRAWBRIDGE)?.handlerType, syncId)  {
+class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: DrawbridgeBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(DRAWBRIDGE)?.handlerType, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 
@@ -57,7 +63,10 @@ class DrawbridgeScreenHandler(syncId: Int, playerInventory: PlayerInventory, val
         val block = (inventory.getStack(1).item as? BlockItem)?.block ?: DRAWBRIDGE
         if(entity.lastRenderedCoverBlock != block) {
             entity.lastRenderedCoverBlock = block
-            MinecraftClient.getInstance().worldRenderer.updateBlock(entity.world, entity.pos, entity.cachedState, entity.cachedState, 0)
+            val playerEntity = playerInventory.player as? ServerPlayerEntity ?: return
+            val buf = PacketByteBufs.create()
+            buf.writeBlockPos(entity.pos)
+            ServerPlayNetworking.send(playerEntity, SYNCHRONIZE_DRAWBRIDGE_COVER, buf)
         }
     }
 

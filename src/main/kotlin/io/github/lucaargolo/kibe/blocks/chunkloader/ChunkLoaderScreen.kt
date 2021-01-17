@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
 import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.MaterialColor
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
@@ -120,7 +120,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
             passedData.writeInt(x)
             passedData.writeInt(z)
             passedData.writeBlockPos(entity.pos)
-            ClientSidePacketRegistry.INSTANCE.sendToServer(CHUNK_MAP_CLICK, passedData)
+            ClientPlayNetworking.send(CHUNK_MAP_CLICK, passedData)
             return true
         }
         return super.mouseClicked(mouseX, mouseY, button)
