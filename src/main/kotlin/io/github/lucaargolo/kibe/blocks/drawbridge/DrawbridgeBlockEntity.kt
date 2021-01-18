@@ -8,12 +8,14 @@ import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.state.property.Properties
@@ -22,7 +24,6 @@ import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
-import java.lang.IllegalArgumentException
 
 class DrawbridgeBlockEntity(drawbridge: Drawbridge): BlockEntity(getEntityType(drawbridge)), BlockEntityClientSerializable, SidedInventory, Tickable {
 
@@ -32,7 +33,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge): BlockEntity(getEntityType(d
     var extendedBlocks = 0
     var state = State.CONTRACTED
 
-    var lastRenderedCoverBlock = DRAWBRIDGE
+    var lastCoverBlock = DRAWBRIDGE
 
     enum class State {
         CONTRACTED,
@@ -147,7 +148,15 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge): BlockEntity(getEntityType(d
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registry.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
-        Inventories.toTag(tag, inventory)
+        val listTag = ListTag()
+        for (i in inventory.indices) {
+            val itemStack = inventory[i]
+            val compoundTag = CompoundTag()
+            compoundTag.putByte("Slot", i.toByte())
+            itemStack.toTag(compoundTag)
+            listTag.add(compoundTag)
+        }
+        tag.put("Items", listTag)
         return super.toTag(tag)
     }
 
@@ -169,6 +178,8 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge): BlockEntity(getEntityType(d
 
     override fun fromClientTag(tag: CompoundTag) {
         fromTag(DRAWBRIDGE.defaultState, tag)
+        println(tag)
+        MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }
 
     override fun size() = inventory.size

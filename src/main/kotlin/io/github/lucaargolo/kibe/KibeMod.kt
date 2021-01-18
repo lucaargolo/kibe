@@ -80,7 +80,6 @@ val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
 val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_states")
 val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
-val SYNCHRONIZE_DRAWBRIDGE_COVER = Identifier(MOD_ID, "synchronize_drawbridge_cover")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
 var TANK_CUSTOM_MODEL: Any? = null
@@ -181,14 +180,6 @@ fun initPacketsClient() {
                     state.getOrCreateInventory(colorCode).setInvFluid(0, fluidVolume, Simulation.ACTION)
                 }
             }
-        }
-    }
-
-    ClientPlayNetworking.registerGlobalReceiver(SYNCHRONIZE_DRAWBRIDGE_COVER) { client, handler, buf, _ ->
-        val pos = buf.readBlockPos()
-        client.execute {
-            val state = handler.world.getBlockState(pos)
-            client.worldRenderer.updateBlock(handler.world, pos, state, state, 0)
         }
     }
 

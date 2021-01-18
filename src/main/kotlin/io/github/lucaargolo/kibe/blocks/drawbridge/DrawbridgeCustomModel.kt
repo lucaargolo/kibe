@@ -70,7 +70,12 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         (world.getBlockEntity(pos) as? DrawbridgeBlockEntity)?.let {  blockEntity ->
             val coverState = (blockEntity.inventory[1].item as? BlockItem)?.block?.defaultState ?: return@let
             val model = MinecraftClient.getInstance().bakedModelManager.blockModels.getModel(coverState)
-            model.emitFromVanilla(context, randomSupplier) { quad -> !quad.hasColor() }
+            if(model == this) {
+                return@let
+            }else if(model is FabricBakedModel) {
+                model.emitBlockQuads(world, state, pos, randomSupplier, context)
+            }
+            model.emitFromVanilla(state, context, randomSupplier) { quad -> !quad.hasColor() }
 
             context.pushTransform { q ->
                 val rawColor = ColorProviderRegistry.BLOCK[coverState.block]!!.getColor(coverState, world, pos, 0)
@@ -79,7 +84,7 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
                 true
             }
 
-            model.emitFromVanilla(context, randomSupplier) { quad -> quad.hasColor() }
+            model.emitFromVanilla(state, context, randomSupplier) { quad -> quad.hasColor() }
             context.popTransform()
             return
         }
@@ -100,17 +105,17 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Suppress("DEPRECATION")
-    private fun BakedModel.emitFromVanilla(context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {
+    private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {
         val emitter = context.emitter
         Direction.values().forEach { dir ->
-            getQuads(null, dir, randSupplier.get()).forEach { quad ->
+            getQuads(state, dir, randSupplier.get()).forEach { quad ->
                 if (shouldEmit(quad)) {
                     emitter.fromVanilla(quad.vertexData, 0, false)
                     emitter.emit()
                 }
             }
         }
-        getQuads(null, null, randSupplier.get()).forEach { quad ->
+        getQuads(state, null, randSupplier.get()).forEach { quad ->
             if (shouldEmit(quad)) {
                 emitter.fromVanilla(quad.vertexData, 0, false)
                 emitter.emit()
