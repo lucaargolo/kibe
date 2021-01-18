@@ -250,7 +250,7 @@ fun initExtrasClient() {
         }
         registry.register(Identifier(MOD_ID, "block/tank"))
     })
-    ModelLoadingRegistry.INSTANCE.registerAppender { _: ResourceManager?, out: Consumer<ModelIdentifier?> ->
+    ModelLoadingRegistry.INSTANCE.registerModelProvider { _: ResourceManager, out: Consumer<Identifier> ->
         out.accept(ModelIdentifier(Identifier(MOD_ID, "redstone_timer_structure"), ""))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_active"), "inventory"))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory"))
