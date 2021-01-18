@@ -178,7 +178,6 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge): BlockEntity(getEntityType(d
 
     override fun fromClientTag(tag: CompoundTag) {
         fromTag(DRAWBRIDGE.defaultState, tag)
-        println(tag)
         MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }
 
