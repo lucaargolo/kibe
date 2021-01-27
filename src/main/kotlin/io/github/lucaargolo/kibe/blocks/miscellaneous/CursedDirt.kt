@@ -140,8 +140,9 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         if (spawnList.size == 0) return null
         val entry: SpawnSettings.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
         BigTorchBlockEntity.setException(true)
-        if (!SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random)) return null
-        BigTorchBlockEntity.setException(false)
-        return entry.type
+        SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random).let {
+            BigTorchBlockEntity.setException(false)
+            return if(it) entry.type else null
+        }
     }
 }
