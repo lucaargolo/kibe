@@ -50,6 +50,8 @@ class Spikes(private val damage: Float, private val isPlayer: Boolean, settings:
 
     override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.FACING])
 
+    override fun getCullingShape(state: BlockState?, world: BlockView?, pos: BlockPos?): VoxelShape = EMPTY
+
     companion object {
         private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         private val SHAPES = mutableMapOf<Direction, VoxelShape>()
