@@ -15,7 +15,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.util.math.Vector3f
+import net.minecraft.util.math.Vec3f
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Hand
@@ -126,7 +126,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         matrices.push()
         val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
         matrices.translate(0.5, 0.5, 0.5)
-        matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f))
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
@@ -149,18 +149,18 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         when(currentState) {
             AnimationState.GOING_UP -> {
                 counter += tickDelta
-                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(counter*6))
+                matrices.multiply(Vec3f(0F, 1F, 0F).getDegreesQuaternion(counter*6))
                 matrices.translate(0.0, counter/90.0, 0.0)
                 if(counter >= 30f) currentState = AnimationState.UP
             }
             AnimationState.GOING_DOWN -> {
                 counter += tickDelta
-                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360-counter*6))
+                matrices.multiply(Vec3f(0F, 1F, 0F).getDegreesQuaternion(360-counter*6))
                 matrices.translate(0.0, 0.333-counter/90.0, 0.0)
                 if(counter >= 30f) currentState = AnimationState.DOWN
             }
             AnimationState.UP -> {
-                matrices.multiply(Vector3f(0F, 1F, 0F).getDegreesQuaternion(360f))
+                matrices.multiply(Vec3f(0F, 1F, 0F).getDegreesQuaternion(360f))
                 matrices.translate(0.0, 30.0/90.0, 0.0)
                 counter = 0f
             }

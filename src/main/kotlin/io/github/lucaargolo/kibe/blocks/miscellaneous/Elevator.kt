@@ -7,7 +7,7 @@ import net.minecraft.block.Material
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class Elevator: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class Elevator: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY).requiresTool().strength(1.5F, 6.0F)) {
 
     companion object {
         fun isElevatorValid(world: World, pos: BlockPos): Boolean {

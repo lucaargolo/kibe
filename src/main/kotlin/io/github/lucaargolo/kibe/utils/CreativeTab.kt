@@ -63,8 +63,8 @@ fun initCreativeTab() {
                     if(!key.entry.isEmpty) {
                         val tag = itemStack.orCreateTag
                         val blockEntityTag = CompoundTag()
-                        val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
-                        fluidInv.setInvFluid(0, key.withAmount(FluidAmount(16)), Simulation.ACTION)
+                        val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
+                        fluidInv.setInvFluid(0, key.withAmount(FluidAmount.ofWhole(16)), Simulation.ACTION)
                         blockEntityTag.put("fluidInv", fluidInv.toTag())
                         tag.put("BlockEntityTag", blockEntityTag)
                         stacks.add(itemStack)

@@ -18,6 +18,8 @@ class ModConfig: GlobalData() {
 
     @Config(name = "miscellaneous")
     class MiscellaneousModule: ConfigData {
+        @Comment("Should fluid changing inside tanks update the block's luminance.")
+        var tanksChangeLights: Boolean = true
         @Comment("How many mobs can the Cursed Dirt spawn in a chunk.")
         var cursedDirtMobCap: Int = 25
     }

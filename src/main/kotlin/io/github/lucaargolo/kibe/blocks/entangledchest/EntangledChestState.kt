@@ -18,7 +18,7 @@ class EntangledChestState : PersistentState() {
         return inventoryMap[colorCode] != null
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun toNbt(tag: CompoundTag): CompoundTag {
         inventoryMap.forEach { (colorCode, inventory) ->
             val subTag = CompoundTag()
             Inventories.toTag(subTag, inventory)

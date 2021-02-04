@@ -2,42 +2,29 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import io.github.lucaargolo.kibe.MARK_ENTANGLED_TANK_DIRTY_S2C
-import io.github.lucaargolo.kibe.mixin.WorldMixin
-import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
+import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.PacketByteBuf
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.PersistentState
 
-class EntangledTankState(val world: ServerWorld, val key: String): PersistentState() {
+class EntangledTankState(val world: ServerWorld?, val key: String): PersistentState() {
 
-    private var fluidInvMap = mutableMapOf<String, SimpleFixedFluidInv>()
+    var dirtyColors = mutableListOf<String>()
+    var fluidInvMap = mutableMapOf<String, SimpleFixedFluidInv>()
+
+    init {
+        SERVER_STATES[key] = this
+    }
 
     private fun createInventory(colorCode: String): SimpleFixedFluidInv {
-        val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+        val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
         fluidInvMap[colorCode] = fluidInv
         return fluidInv
     }
 
     fun markDirty(colorCode: String) {
-        val server = world.server
-        server.playerManager.playerList.forEach {
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeString(key)
-            passedData.writeString(colorCode)
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(it, MARK_ENTANGLED_TANK_DIRTY_S2C, passedData)
-        }
-        server.worlds.forEach {
-            val tickers = (it as WorldMixin).blockEntityTickers
-            tickers.forEach { invoker ->
-                (it.getBlockEntity(invoker.pos) as? EntangledTankEntity)?.let { entangledTankEntity ->
-                    if (entangledTankEntity.colorCode == colorCode)
-                        entangledTankEntity.sync();
-                }
-            }
-        }
+        dirtyColors.add(colorCode)
         super.markDirty()
     }
 
@@ -45,7 +32,7 @@ class EntangledTankState(val world: ServerWorld, val key: String): PersistentSta
         return fluidInvMap[colorCode] ?: createInventory(colorCode)
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun toNbt(tag: CompoundTag): CompoundTag {
         fluidInvMap.forEach { (colorCode, fluidInv) ->
             tag.put(colorCode, fluidInv.toTag())
         }
@@ -54,15 +41,31 @@ class EntangledTankState(val world: ServerWorld, val key: String): PersistentSta
 
     companion object {
 
+        val SERVER_STATES = mutableMapOf<String, EntangledTankState>()
+        val CLIENT_STATES = mutableMapOf<String, EntangledTankState>()
+        val SERVER_PLAYER_REQUESTS = mutableMapOf<ServerPlayerEntity, LinkedHashSet<Pair<String, String>>>()
+        val CLIENT_PLAYER_REQUESTS = mutableMapOf<ClientPlayerEntity, LinkedHashSet<Pair<String, String>>>()
+
+        fun getOrCreateClientState(key: String): EntangledTankState {
+            CLIENT_STATES[key]?.let {
+                return it
+            }
+            EntangledTankState(null, key).let {
+                CLIENT_STATES[key] = it
+                return it
+            }
+        }
+
         fun createFromTag(tag: CompoundTag, world: ServerWorld, key: String): EntangledTankState {
             val state = EntangledTankState(world, key)
             tag.keys.forEach {
-                val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+                val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
                 tempFluidInv.fromTag(tag.getCompound(it))
                 state.fluidInvMap[it] = tempFluidInv
             }
             return state
         }
+
 
     }
 

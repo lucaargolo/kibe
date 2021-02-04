@@ -46,7 +46,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         val stackTag = stack.orCreateTag
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
 
-        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
         dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))
 
         val player = MinecraftClient.getInstance().player

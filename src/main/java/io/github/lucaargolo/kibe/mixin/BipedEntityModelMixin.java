@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,12 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BipedEntityModel.class)
 public class BipedEntityModelMixin<T extends LivingEntity> {
 
-    @Shadow public ModelPart rightArm;
-    @Shadow public ModelPart field_27433;
+    @Final @Shadow public ModelPart rightArm;
+    @Final @Shadow public ModelPart leftArm;
 
-    @Shadow public ModelPart rightLeg;
-
-    @Shadow public ModelPart leftLeg;
+    @Final @Shadow public ModelPart rightLeg;
+    @Final @Shadow public ModelPart leftLeg;
 
     @Inject(at = @At("TAIL"), method = "setAngles")
     private void setAngles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo info) {
@@ -34,9 +34,9 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
                 this.rightArm.pitch = -0.35F;
                 this.rightArm.roll = 0F;
                 this.rightArm.yaw = 0F;
-                this.field_27433.pitch = -0.35F;
-                this.field_27433.roll = 0F;
-                this.field_27433.yaw = 0F;
+                this.leftArm.pitch = -0.35F;
+                this.leftArm.roll = 0F;
+                this.leftArm.yaw = 0F;
             }
             boolean isGliding = GliderHelper.INSTANCE.isPlayerGliding(player);
             if(isGliding) {
@@ -45,7 +45,7 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
                 this.rightLeg.yaw = 0F;
                 this.leftLeg.pitch = 0F;
                 this.leftLeg.roll = 0F;
-                this.field_27433.yaw = 0F;
+                this.leftArm.yaw = 0F;
             }
         }
     }

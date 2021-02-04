@@ -13,7 +13,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY).requiresTool().strength(1.5F, 6.0F)) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return TrashCanEntity(this, blockPos, blockState)
@@ -33,12 +33,12 @@ class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.
     }
 
 
-    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-        return Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
-    }
+    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-        return Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
+    override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
     }
 
 }

@@ -24,6 +24,18 @@ repositories {
         name = "Ladysnake Libs"
         url = 'https://dl.bintray.com/ladysnake/libs'
     }
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
+    maven {
+        name = "NerdHubMC"
+        url = "https://maven.abusedmaster.xyz/"
+    }
+    maven {
+        name = "Terraformers MC"
+        url = "https://maven.terraformersmc.com/releases/"
+    }
     mavenLocal()
 }
 
@@ -39,19 +51,13 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modApi("me.shedaniel.cloth:config-2:${project.cloth_config_version}") {
-        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
-    }
-    include("me.shedaniel.cloth:config-2:${project.cloth_config_version}") {
-        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
-    }
+    modImplementation "com.github.emilyploszaj:trinkets:${trinkets_version}"
 
-    modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}") {
-        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
-    }
-    include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}") {
-        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
-    }
+    modImplementation("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
+    include("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
+
+    modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
+    include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
 
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
@@ -62,8 +68,8 @@ dependencies {
     modImplementation("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
     include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
 
-    modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
     //modImplementation "alexiil.mc.mod:simplepipes-all:0.4.1-pre.1"
+    modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
     //modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
 }

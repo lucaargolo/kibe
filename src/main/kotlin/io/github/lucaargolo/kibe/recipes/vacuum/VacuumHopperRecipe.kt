@@ -39,7 +39,7 @@ class VacuumHopperRecipe(private val id: Identifier, private val output: ItemSta
             val itemStack: ItemStack = inv.getStack(j)
             if (!itemStack.isEmpty) {
                 ++i
-                recipeFinder.method_20478(itemStack, 1)
+                recipeFinder.addItem(itemStack, 1)
             }
         }
 

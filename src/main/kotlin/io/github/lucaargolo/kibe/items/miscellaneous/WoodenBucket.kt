@@ -47,7 +47,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                         if (fluid.item == Fluids.WATER.bucketItem) {
                             user.incrementStat(Stats.USED.getOrCreateStat(this))
                             user.playSound(SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
-                            val itemStack2 = ItemUsage.method_30012(itemStack, user, ItemStack(WATER_WOODEN_BUCKET))
+                            val itemStack2 = ItemUsage.exchangeStack(itemStack, user, ItemStack(WATER_WOODEN_BUCKET))
                             if (!world.isClient) {
                                 Criteria.FILLED_BUCKET.trigger(user as ServerPlayerEntity, ItemStack(WATER_WOODEN_BUCKET))
                             }
@@ -59,7 +59,7 @@ open class WoodenBucket(val fluid: Fluid, settings: Settings): Item(settings) {
                 } else {
                     val interactablePos = if (blockState.block is FluidFillable && this.fluid === Fluids.WATER) pos else offsetPos
                     if (bucketItem.placeFluid(user, world, interactablePos, blockHitResult)) {
-                        bucketItem.onEmptied(world, itemStack, interactablePos)
+                        bucketItem.onEmptied(null, world, itemStack, interactablePos)
                         if (user is ServerPlayerEntity) {
                             Criteria.PLACED_BLOCK.trigger(user, interactablePos, itemStack)
                         }

@@ -16,7 +16,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, hand: Hand, val world: World, val tag: CompoundTag): ScreenHandler(getContainerInfo(ENTANGLED_BAG)?.handlerType, syncId) {
+class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @Suppress("UNUSED_PARAMETER") hand: Hand, val world: World, val tag: CompoundTag): ScreenHandler(getContainerInfo(ENTANGLED_BAG)?.handlerType, syncId) {
 
     private fun hasPersistentState(): Boolean = !world.isClient
 

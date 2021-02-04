@@ -17,7 +17,7 @@ import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import java.util.*
 
-class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).ticksRandomly().collidable(false)), Waterloggable {
+class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ticksRandomly().collidable(false)), Waterloggable {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.WATERLOGGED, false)
@@ -33,11 +33,13 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
         return super.getPlacementState(ctx)!!.with(SeaPickleBlock.WATERLOGGED, bl)
     }
 
+    @Suppress("DEPRECATION")
     override fun getFluidState(state: BlockState): FluidState? {
         return if (state.get(SeaPickleBlock.WATERLOGGED) as Boolean) Fluids.WATER.getStill(false)
         else super.getFluidState(state)
     }
 
+    @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: WorldAccess, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
         if (state.get(HorizontalConnectingBlock.WATERLOGGED) as Boolean) {
             world.fluidTickScheduler.schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
@@ -46,7 +48,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
     }
 
     override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
-        (0..2).forEach {
+        (0..2).forEach { _ ->
             val vx = (random.nextDouble()-0.5)/5.0
             val vy = (random.nextDouble()-0.5)/5.0
             val vz = (random.nextDouble()-0.5)/5.0
@@ -59,8 +61,10 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).lightLevel(15).t
         return BlockRenderType.INVISIBLE
     }
 
-    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
-        return createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
+    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
     }
 
 }

@@ -17,7 +17,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.pow
 
-class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY).requiresTool().strength(1.5F, 6.0F)) {
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
         if(!world.isClient && entity is PlayerEntity) {
@@ -65,11 +65,11 @@ class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE).requ
         }
     }
 
-    override fun getOutlineShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
-        return createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
-    }
+    override fun getOutlineShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
-        return createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
+    override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
     }
 }

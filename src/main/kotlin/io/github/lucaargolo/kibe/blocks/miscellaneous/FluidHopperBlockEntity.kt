@@ -16,7 +16,7 @@ import net.minecraft.world.World
 
 class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(block), pos, state) {
 
-    val fluidInv = SimpleFixedFluidInv(1, FluidAmount(1))
+    val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(1))
     private var volume
         get() = fluidInv.getInvFluid(0)
         set(value) {

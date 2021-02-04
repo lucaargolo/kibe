@@ -29,7 +29,6 @@ class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory
     }
 
     override fun drawBackground(matrices: MatrixStack?, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
         client!!.textureManager.bindTexture(texture)
         drawTexture(matrices, startX, startY, 0, 0, 176, 166)
     }

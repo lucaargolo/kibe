@@ -24,7 +24,7 @@ public class MobEntityMixin {
         if(isCursed) info.setReturnValue(true);
     }
 
-    @Inject(at = @At("HEAD"), method = "method_29506", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "interactWithItem", cancellable = true)
     public void method_29506(PlayerEntity playerEntity, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ItemStack stack = playerEntity.getStackInHand(hand);
         Item item = stack.getItem();

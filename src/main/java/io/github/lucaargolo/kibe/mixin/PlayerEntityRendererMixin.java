@@ -6,7 +6,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,11 +26,11 @@ public class PlayerEntityRendererMixin {
             double z = abstractClientPlayerEntity.getZ();
 
             matrixStack.push();
-            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-interpolatedYaw));
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-interpolatedYaw));
             matrixStack.translate(0f, abstractClientPlayerEntity.getHeight() / 2f, 0f);
-            matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90f));
+            matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90f));
             matrixStack.translate(0f, -abstractClientPlayerEntity.getHeight() / 2f, 0f);
-            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(interpolatedYaw));
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(interpolatedYaw));
 
             GliderHelper.INSTANCE.setPlayerRenderPoppingNeeds(abstractClientPlayerEntity, true);
         }

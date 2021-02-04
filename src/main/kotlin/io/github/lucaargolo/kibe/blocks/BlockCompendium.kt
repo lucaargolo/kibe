@@ -14,6 +14,10 @@ import io.github.lucaargolo.kibe.blocks.cooler.Cooler
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerBlockEntity
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreen
 import io.github.lucaargolo.kibe.blocks.cooler.CoolerScreenHandler
+import io.github.lucaargolo.kibe.blocks.drawbridge.Drawbridge
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeBlockEntity
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeScreen
+import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeScreenHandler
 import io.github.lucaargolo.kibe.blocks.entangledchest.*
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
@@ -49,7 +53,7 @@ import net.minecraft.util.registry.Registry
 import java.util.function.Supplier
 import kotlin.reflect.KClass
 
-class ContainerInfo<T : ScreenHandler>(
+class ContainerInfo<T: ScreenHandler>(
     handlerClass: KClass<*>,
     screenClass: Supplier<KClass<*>>,
     val identifier: Identifier? = null
@@ -82,7 +86,7 @@ class ContainerInfo<T : ScreenHandler>(
 
 }
 
-class BlockInfo<T : BlockEntity>(
+class BlockInfo<T: BlockEntity> (
     val identifier: Identifier,
     private val block: Block,
     private val hasBlockItem: Boolean,
@@ -146,8 +150,8 @@ fun <T : BlockEntity> registerWithEntity(identifier: Identifier, block: Block, h
 val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), CursedDirt())
 val REDSTONE_TIMER = registerWithEntity<RedstoneTimerEntity>(Identifier(MOD_ID, "redstone_timer"), RedstoneTimer(), renderer = { RedstoneTimerEntityRenderer::class })
 
-val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MapColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
-val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MapColor.DIAMOND).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
+val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
+val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MapColor.DIAMOND_BLUE).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
 val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt"), ConveyorBelt(0.050))
 val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ConveyorBelt(0.1))
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ConveyorBelt(0.2))
@@ -158,6 +162,7 @@ val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can
 val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, { VacuumHopperScreen::class })))
 val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, { BigTorchScreen::class })))
 val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, { CoolerScreen::class })))
+val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, Supplier { DrawbridgeScreen::class })))
 
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())

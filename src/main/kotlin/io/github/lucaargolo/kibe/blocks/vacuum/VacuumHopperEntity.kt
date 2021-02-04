@@ -35,7 +35,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
-    val tanks = listOf(FluidTank(FluidAmount(16)))
+    val tanks = listOf(FluidTank(FluidAmount.ofWhole(16)))
 
     override fun getTankCount() = tanks.size
 

@@ -50,15 +50,26 @@ class Spikes(private val damage: Float, private val isPlayer: Boolean, settings:
 
     override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.FACING])
 
-    private fun getShape(facing: Direction): VoxelShape {
-        return when(facing) {
-            Direction.UP -> createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
-            Direction.DOWN -> createCuboidShape(0.0, 8.0, 0.0, 16.0, 16.0, 16.0)
-            Direction.EAST -> createCuboidShape(0.0, 0.0, 0.0, 8.0, 16.0, 16.0)
-            Direction.WEST -> createCuboidShape(8.0, 0.0, 0.0, 16.0, 16.0, 16.0)
-            Direction.SOUTH -> createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 8.0)
-            Direction.NORTH -> createCuboidShape(0.0, 0.0, 8.0, 16.0, 16.0, 16.0)
+    override fun getCullingShape(state: BlockState?, world: BlockView?, pos: BlockPos?): VoxelShape = EMPTY
+
+    companion object {
+        private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+
+        init {
+            Direction.values().forEach {
+                SHAPES[it] = when(it) {
+                    Direction.UP -> createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
+                    Direction.DOWN -> createCuboidShape(0.0, 8.0, 0.0, 16.0, 16.0, 16.0)
+                    Direction.EAST -> createCuboidShape(0.0, 0.0, 0.0, 8.0, 16.0, 16.0)
+                    Direction.WEST -> createCuboidShape(8.0, 0.0, 0.0, 16.0, 16.0, 16.0)
+                    Direction.SOUTH -> createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 8.0)
+                    Direction.NORTH -> createCuboidShape(0.0, 0.0, 8.0, 16.0, 16.0, 16.0)
+                }
+            }
         }
+
+        private fun getShape(facing: Direction) = SHAPES[facing] ?: EMPTY
     }
 
 }

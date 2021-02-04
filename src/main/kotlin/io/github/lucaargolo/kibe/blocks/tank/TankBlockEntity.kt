@@ -23,7 +23,7 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
     var lastRenderedFluid = 0f
     var tickDelay = 0
 
-    val fluidInv = SimpleFixedFluidInv(1, FluidAmount(16))
+    val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
 
     init {
         fluidInv.addListener ( { _, _, _, _ -> markDirtyAndSync() }, {  })

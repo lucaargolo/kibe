@@ -42,9 +42,10 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext?): BlockState? {
-        return defaultState.with(Properties.ENABLED, true);
+        return defaultState.with(Properties.ENABLED, true)
     }
 
+    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, notify: Boolean) {
         if ((!state.isOf(newState.block) || !newState[Properties.ENABLED]) && !world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
@@ -55,16 +56,6 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
         }
         super.onStateReplaced(state, world, pos, newState, notify)
     }
-
-    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = VoxelShapes.union(
-        createCuboidShape(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
-        createCuboidShape(3.0, 12.0, 3.0, 13.0, 13.0, 13.0)
-    )
-
-    override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = VoxelShapes.union(
-        createCuboidShape(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
-        createCuboidShape(3.0, 12.0, 3.0, 13.0, 13.0, 13.0)
-    )
 
     override fun getRenderType(state: BlockState?) =  BlockRenderType.MODEL
 
@@ -81,11 +72,22 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
                 if (state[Properties.ENABLED]) {
                     MinecraftClient.getInstance().openScreen(ChunkLoaderScreen(be))
                 } else {
-                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.toLowerCase()}"), false);
+                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.toLowerCase()}"), false)
                 }
             }
         }
         return ActionResult.SUCCESS
+    }
+
+    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
+
+    override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = VoxelShapes.union(
+            createCuboidShape(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
+            createCuboidShape(3.0, 12.0, 3.0, 13.0, 13.0, 13.0)
+        )
     }
     
 }

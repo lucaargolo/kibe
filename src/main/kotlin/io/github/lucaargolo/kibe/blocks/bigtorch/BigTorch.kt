@@ -24,7 +24,7 @@ import java.util.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)) {
+class BigTorch: BlockWithEntity(Settings.of(Material.DECORATION).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_8)
@@ -58,6 +58,7 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).l
         return ActionResult.SUCCESS
     }
 
+    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {
@@ -67,14 +68,14 @@ class BigTorch: BlockWithEntity(Settings.of(Material.SUPPORTED).strength(0.5f).l
         }
     }
 
-    override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape {
-        return createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
-    }
-
-    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape {
-        return createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
-    }
-
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCollisionShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
+
+    override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
+
+    companion object {
+        private val SHAPE = createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
+    }
 
 }

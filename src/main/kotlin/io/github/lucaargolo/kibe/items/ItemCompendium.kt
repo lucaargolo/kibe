@@ -41,6 +41,8 @@ import java.util.function.Supplier
 import java.util.function.Function
 import kotlin.reflect.KClass
 import com.mojang.datafixers.util.Pair
+import io.github.lucaargolo.kibe.TRINKET
+import io.github.lucaargolo.kibe.compat.TrinketRing
 import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreen
@@ -138,9 +140,9 @@ val CURSED_SEEDS    = register(Identifier(MOD_ID, "cursed_seeds"), CursedSeeds(S
 val MAGNET = register(Identifier(MOD_ID, "magnet"), Magnet(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val DIAMOND_RING = register(Identifier(MOD_ID, "diamond_ring"),  Item(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-val ANGEL_RING   = register(Identifier(MOD_ID, "angel_ring"),  AbilityRing(Settings().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING))
-val MAGMA_RING   = register(Identifier(MOD_ID, "magma_ring"),  AbilityRing(Settings().maxCount(1).rarity(Rarity.RARE), INFINITE_FIRE_RESISTENCE))
-val WATER_RING   = register(Identifier(MOD_ID, "water_ring"),  AbilityRing(Settings().maxCount(1).rarity(Rarity.RARE), INFINITE_WATER_BREATHING))
+val ANGEL_RING   = register(Identifier(MOD_ID, "angel_ring"),  if(TRINKET) TrinketRing(Settings().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING) else AbilityRing(Settings().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING))
+val MAGMA_RING   = register(Identifier(MOD_ID, "magma_ring"),  if(TRINKET) TrinketRing(Settings().maxCount(1).rarity(Rarity.RARE), INFINITE_FIRE_RESISTENCE) else AbilityRing(Settings().maxCount(1).rarity(Rarity.RARE), INFINITE_FIRE_RESISTENCE))
+val WATER_RING   = register(Identifier(MOD_ID, "water_ring"),  if(TRINKET) TrinketRing(Settings().maxCount(1).rarity(Rarity.RARE), INFINITE_WATER_BREATHING) else AbilityRing(Settings().maxCount(1).rarity(Rarity.RARE), INFINITE_WATER_BREATHING))
 val LIGHT_RING   = register(Identifier(MOD_ID, "light_ring"),  LightRing(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val GOLDEN_LASSO  = register(Identifier(MOD_ID, "golden_lasso"),  Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
@@ -166,6 +168,8 @@ val BLACK_RUNE      = register(Identifier(MOD_ID, "black_rune"),  Rune(DyeColor.
 
 val SLIME_BOOTS = register(Identifier(MOD_ID, "slime_boots"),  SlimeBoots(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 val SLIME_SLING = register(Identifier(MOD_ID, "slime_sling"),  SlimeSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+
+val TORCH_SLING = register(Identifier(MOD_ID, "torch_sling"),  TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val WOODEN_BUCKET = register(Identifier(MOD_ID, "wooden_bucket"), WoodenBucket.Empty(Settings().maxCount(16)))
 val WATER_WOODEN_BUCKET = register(Identifier(MOD_ID, "water_wooden_bucket"), WoodenBucket.Water(Settings().maxCount(1)))

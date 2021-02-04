@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.MOD_ID
-import net.minecraft.class_5603
-import net.minecraft.class_5606
-import net.minecraft.class_5607
-import net.minecraft.class_5609
+import net.minecraft.client.model.ModelTransform
+import net.minecraft.client.model.ModelPartBuilder
+import net.minecraft.client.model.TexturedModelData
+import net.minecraft.client.model.ModelData
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.*
@@ -15,7 +15,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.util.math.Vector3f
+import net.minecraft.util.math.Vec3f
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
@@ -32,7 +32,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             }
         }
 
-        fun setupSelectorModel(level: Int): class_5607 {
+        fun setupSelectorModel(level: Int): TexturedModelData {
             val offsetX = when(level) {
                 in 0..4 -> level*2
                 in 5..8 -> 8
@@ -49,10 +49,10 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
                 else -> 0
             }
 
-            val lv = class_5609()
-            val lv2 = lv.method_32111()
-            lv2.method_32117("selector", class_5606.method_32108().method_32101(3, 3).method_32097(0f, 3f+offsetX, 3f+offsetY, 1f, 2f, 2f), class_5603.field_27701)
-            return class_5607.method_32110(lv, 16, 16)
+            val lv = ModelData()
+            val lv2 = lv.getRoot()
+            lv2.addChild("selector", ModelPartBuilder.create().uv(3, 3).cuboid(0f, 3f+offsetX, 3f+offsetY, 1f, 2f, 2f), ModelTransform.NONE)
+            return TexturedModelData.of(lv, 16, 16)
         }
 
     }
@@ -68,12 +68,12 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             matrices.push()
             matrices.translate(0.5, 0.5, 0.5)
             matrices.multiply(when(direction) {
-                Direction.NORTH -> Vector3f.POSITIVE_Y.getDegreesQuaternion(0f)
-                Direction.SOUTH -> Vector3f.POSITIVE_Y.getDegreesQuaternion(180f)
-                Direction.WEST -> Vector3f.POSITIVE_Y.getDegreesQuaternion(90f)
-                Direction.EAST -> Vector3f.POSITIVE_Y.getDegreesQuaternion(270f)
-                Direction.UP -> Vector3f.POSITIVE_Z.getDegreesQuaternion(90f)
-                Direction.DOWN -> Vector3f.POSITIVE_Z.getDegreesQuaternion(270f)
+                Direction.NORTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(0f)
+                Direction.SOUTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(180f)
+                Direction.WEST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(90f)
+                Direction.EAST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(270f)
+                Direction.UP -> Vec3f.POSITIVE_Z.getDegreesQuaternion(90f)
+                Direction.DOWN -> Vec3f.POSITIVE_Z.getDegreesQuaternion(270f)
             })
 
             matrices.translate(-0.5, -0.5, -0.5)
@@ -87,19 +87,19 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             matrices.translate(0.5, 0.5, 0.5)
 
             val rot1 = when(direction) {
-                Direction.NORTH -> Vector3f.POSITIVE_Y.getDegreesQuaternion(0f)
-                Direction.SOUTH -> Vector3f.POSITIVE_Y.getDegreesQuaternion(180f)
-                Direction.WEST -> Vector3f.POSITIVE_Y.getDegreesQuaternion(90f)
-                Direction.EAST -> Vector3f.POSITIVE_Y.getDegreesQuaternion(270f)
-                Direction.UP -> Vector3f.POSITIVE_X.getDegreesQuaternion(90f)
-                Direction.DOWN -> Vector3f.POSITIVE_X.getDegreesQuaternion(270f)
+                Direction.NORTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(0f)
+                Direction.SOUTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(180f)
+                Direction.WEST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(90f)
+                Direction.EAST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(270f)
+                Direction.UP -> Vec3f.POSITIVE_X.getDegreesQuaternion(90f)
+                Direction.DOWN -> Vec3f.POSITIVE_X.getDegreesQuaternion(270f)
             }
             vec.rotate(rot1)
             matrices.multiply(rot1)
 
             val rot2 = when(direction) {
-                Direction.UP -> Vector3f.POSITIVE_Z.getDegreesQuaternion(90f)
-                Direction.DOWN -> Vector3f.POSITIVE_Z.getDegreesQuaternion(270f)
+                Direction.UP -> Vec3f.POSITIVE_Z.getDegreesQuaternion(90f)
+                Direction.DOWN -> Vec3f.POSITIVE_Z.getDegreesQuaternion(270f)
                 else -> null
             }
 
@@ -138,9 +138,9 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val ironTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("block/iron_block"))
         val ironConsumer = ironTexture.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntitySolid(texture) })
 
-        matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180f))
+        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180f))
         matrices.translate(0.0, -1.0, -1.0)
-        matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90f))
+        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90f))
         matrices.translate(0.0, -1.0, 0.0)
         selector.render(matrices, ironConsumer, light, overlay)
     }

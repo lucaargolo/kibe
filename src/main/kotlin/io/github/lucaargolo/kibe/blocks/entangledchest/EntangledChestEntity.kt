@@ -28,31 +28,17 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         (1..8).forEach {
             runeColors[it] = DyeColor.WHITE
         }
+        updateColorCode()
     }
 
-    fun getColorCode(): String {
+    var colorCode = ""
+
+    fun updateColorCode() {
         var code = ""
         (1..8).forEach {
-            code += when(runeColors[it]!!) {
-                DyeColor.WHITE -> '0'
-                DyeColor.ORANGE -> '1'
-                DyeColor.MAGENTA -> '2'
-                DyeColor.LIGHT_BLUE -> '3'
-                DyeColor.YELLOW -> '4'
-                DyeColor.LIME -> '5'
-                DyeColor.PINK -> '6'
-                DyeColor.GRAY -> '7'
-                DyeColor.LIGHT_GRAY -> '8'
-                DyeColor.CYAN -> '9'
-                DyeColor.BLUE -> 'A'
-                DyeColor.PURPLE -> 'B'
-                DyeColor.GREEN -> 'C'
-                DyeColor.BROWN -> 'D'
-                DyeColor.RED -> 'E'
-                DyeColor.BLACK -> 'F'
-            }
+            code += runeColors[it]?.id?.let { int -> Integer.toHexString(int) }
         }
-        return code
+        colorCode = code
     }
 
     override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
@@ -79,6 +65,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
+        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
     }
@@ -87,6 +74,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
+        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
@@ -102,9 +90,9 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         tag.putString("owner", owner)
         if(hasPersistentState()) {
             var subTag = CompoundTag()
-            subTag = getPersistentState()!!.toTag(subTag)
-            if(subTag[getColorCode()] != null) {
-                subTag = subTag.get(getColorCode()) as CompoundTag
+            subTag = getPersistentState()!!.toNbt(subTag)
+            if(subTag[colorCode] != null) {
+                subTag = subTag.get(colorCode) as CompoundTag
                 tag.put("Items", subTag.get("Items"))
             }
         }
@@ -123,32 +111,32 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
     }
 
     override fun size(): Int {
-        return if(hasPersistentState()) getPersistentState()!!.size(getColorCode())
+        return if(hasPersistentState()) getPersistentState()!!.size(colorCode)
         else inventory.size
     }
 
     override fun isEmpty(): Boolean {
-        return if(hasPersistentState()) getPersistentState()!!.isEmpty(getColorCode())
+        return if(hasPersistentState()) getPersistentState()!!.isEmpty(colorCode)
         else inventory.all { it.isEmpty }
     }
 
     override fun getStack(slot: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.getStack(slot, getColorCode())
+        return if(hasPersistentState()) getPersistentState()!!.getStack(slot, colorCode)
         else inventory[slot]
     }
 
     override fun removeStack(slot: Int, amount: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, amount, getColorCode())
+        return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, amount, colorCode)
         else Inventories.splitStack(inventory, slot, amount)
     }
 
     override fun removeStack(slot: Int): ItemStack {
-        return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, getColorCode())
+        return if(hasPersistentState()) getPersistentState()!!.removeStack(slot, colorCode)
         else Inventories.removeStack(this.inventory, slot)
     }
 
     override fun setStack(slot: Int, stack: ItemStack?) {
-        if(hasPersistentState()) getPersistentState()!!.setStack(slot, stack, getColorCode())
+        if(hasPersistentState()) getPersistentState()!!.setStack(slot, stack, colorCode)
         else {
             inventory[slot] = stack
             if (stack!!.count > maxCountPerStack) {

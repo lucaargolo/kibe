@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.utils.EntangledTankCache;
+import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,8 @@ public class MinecraftClientMixin {
 
     @Inject(at = @At("HEAD"), method = "joinWorld")
     public void joinWorld(ClientWorld world, CallbackInfo info) {
-        EntangledTankCache.INSTANCE.reset();
+        EntangledTankState.Companion.getCLIENT_STATES().clear();
+        EntangledTankState.Companion.getCLIENT_PLAYER_REQUESTS().clear();
     }
 
 }

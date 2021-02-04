@@ -138,10 +138,13 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
         val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos)
         if (spawnList.size == 0) return null
-        val entry: SpawnSettings.SpawnEntry = WeightedPicker.getRandom(random, spawnList)
+        val optionalEntry: Optional<SpawnSettings.SpawnEntry> = WeightedPicker.getRandom(random, spawnList)
+        val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
         BigTorchBlockEntity.setException(true)
-        if (!SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random)) return null
-        BigTorchBlockEntity.setException(false)
-        return entry.type
+        SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random).let {
+            BigTorchBlockEntity.setException(false)
+            return if(it) entry.type else null
+        }
+
     }
 }

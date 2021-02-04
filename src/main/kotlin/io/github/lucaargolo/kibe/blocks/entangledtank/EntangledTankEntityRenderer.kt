@@ -5,20 +5,16 @@ import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import io.github.lucaargolo.kibe.utils.EntangledRendererHelper
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.minecraft.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
-import net.minecraft.client.render.entity.model.EntityModelLayer
-import net.minecraft.client.render.entity.model.EntityModelLayers
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.util.math.Vector3f
+import net.minecraft.util.math.Vec3f
 import net.minecraft.fluid.Fluids
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
-import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
@@ -26,7 +22,6 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import java.awt.Color
-import java.util.function.Function
 
 class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledTankEntity> {
 
@@ -48,7 +43,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
         val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
         matrices.translate(0.5, 0.5, 0.5)
-        matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f))
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
@@ -84,8 +79,13 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
         matrices.pop()
 
-        val fluidInv = entity.fluidInv
-        val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        (MinecraftClient.getInstance().player)?.let { player ->
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
+            list.add(Pair(entity.key, entity.colorCode))
+            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
+        }
+        val fluidInv = EntangledTankState.CLIENT_STATES[entity.key]?.fluidInvMap?.get(entity.colorCode)
+        val fluid = fluidInv?.getInvFluid(0)?.rawFluid ?: Fluids.EMPTY
 
         val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
         val fluidColor = fluidRenderHandler.getFluidColor(entity.world, entity.pos, fluid.defaultState)
@@ -96,7 +96,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
-        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, fluidInv.getInvFluid(0).amount().asLong(1000L) / 1000f)
+        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, (fluidInv?.getInvFluid(0)?.amount()?.asLong(1000L) ?: 0L)/1000f)
         entity.lastRenderedFluid = p
 
         val partUv = TankBlockEntityRenderer.UV(sprite)
@@ -116,7 +116,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
     }
 
-    private fun renderVertices(bb: VertexConsumer, entry: MatrixStack.Entry, normal: Vector3f, color: Color, overlay: Int, light: Int, uv: TankBlockEntityRenderer.UV, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float) {
+    private fun renderVertices(bb: VertexConsumer, entry: MatrixStack.Entry, normal: Vec3f, color: Color, overlay: Int, light: Int, uv: TankBlockEntityRenderer.UV, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float) {
         bb.vertex(entry.model, f, h, j).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.maxU, uv.minV).overlay(overlay).light(light).normal(entry.normal, normal.x, normal.y, normal.z).next()
         bb.vertex(entry.model, g, h, k).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.minV).overlay(overlay).light(light).normal(entry.normal, normal.x, normal.y, normal.z).next()
         bb.vertex(entry.model, g, i, l).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.maxV).overlay(overlay).light(light).normal(entry.normal, normal.x, normal.y, normal.z).next()

@@ -1,14 +1,12 @@
 package io.github.lucaargolo.kibe.items.entangledbucket
 
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.MOD_ID
-import io.github.lucaargolo.kibe.REQUEST_ENTANGLED_TANK_SYNC_C2S
-import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
-import io.github.lucaargolo.kibe.utils.EntangledTankCache
-import io.netty.buffer.Unpooled
+import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
@@ -68,14 +66,12 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
         val key = tag.getString("key")
-        if(EntangledTankCache.isDirty(key, colorCode)) {
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeString(key)
-            passedData.writeString(colorCode)
-            ClientSidePacketRegistry.INSTANCE.sendToServer(REQUEST_ENTANGLED_TANK_SYNC_C2S, passedData)
+        (MinecraftClient.getInstance().player)?.let { player ->
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
+            list.add(Pair(key, colorCode))
+            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
         }
-
-        val fluidInv = EntangledTankCache.getOrCreateClientFluidInv(key, colorCode, tag)
+        val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
 
         if(fluid != Fluids.EMPTY) {

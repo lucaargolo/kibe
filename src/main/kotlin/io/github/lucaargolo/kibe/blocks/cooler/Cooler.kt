@@ -18,7 +18,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.ICE).strength(0.2F).sounds(BlockSoundGroup.SNOW)) {
+class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.PALE_PURPLE).strength(0.2F).sounds(BlockSoundGroup.SNOW)) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return CoolerBlockEntity(this, blockPos, blockState)
@@ -37,17 +37,26 @@ class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.IC
         return ActionResult.SUCCESS
     }
 
-    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
+    override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
 
     override fun getCollisionShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
 
-    private fun getShape(facing: Direction): VoxelShape {
-        return when(facing) {
-            Direction.EAST, Direction.WEST -> createCuboidShape(5.0, 0.0, 1.0, 11.0, 12.0, 15.0)
-            else -> createCuboidShape(1.0, 0.0, 5.0, 15.0, 12.0, 11.0)
-        }
-    }
+    override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
 
-    override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+    companion object {
+        private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+
+        init {
+            Direction.values().forEach {
+                SHAPES[it] = when(it) {
+                    Direction.EAST, Direction.WEST -> createCuboidShape(5.0, 0.0, 1.0, 11.0, 12.0, 15.0)
+                    else -> createCuboidShape(1.0, 0.0, 5.0, 15.0, 12.0, 11.0)
+                }
+            }
+        }
+
+        fun getShape(direction: Direction): VoxelShape = SHAPES[direction] ?: EMPTY
+    }
 
 }
