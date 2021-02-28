@@ -144,7 +144,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                 }else {
                     val interactablePos = if (blockState.block is FluidFillable && fluid == Fluids.WATER) pos else offsetPos
                     val interactableBlockState = world.getBlockState(interactablePos)
-                    if(hasBucket && (interactableBlockState.block !is FluidDrainable || interactableBlockState[Properties.LEVEL_15] != 0)) {
+                    if(hasBucket && (interactableBlockState.block !is FluidDrainable || (interactableBlockState.contains(Properties.LEVEL_15) && interactableBlockState[Properties.LEVEL_15] != 0))) {
                         val bucketItem = fluid.bucketItem as BucketItem
                         if (bucketItem.placeFluid(user, world, interactablePos, blockHitResult)) {
                             bucketItem.onEmptied(world, itemStack, interactablePos)
