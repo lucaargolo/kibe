@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "kibe:item/blue_sleeping_bag"
+    "layer0": "kibe:item/gray_sleeping_bag"
   }
 }
