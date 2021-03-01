@@ -36,9 +36,9 @@ import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
 import io.netty.buffer.Unpooled
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer
+import me.shedaniel.autoconfig.AutoConfig
+import me.shedaniel.autoconfig.annotation.Config
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
