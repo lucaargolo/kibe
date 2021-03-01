@@ -30,7 +30,7 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         updateColorCode()
     }
 
-    var colorCode = ""
+    var colorCode = "00000000"
 
     fun updateColorCode() {
         var code = ""
