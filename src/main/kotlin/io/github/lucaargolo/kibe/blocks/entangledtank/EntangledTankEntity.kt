@@ -43,7 +43,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         updateColorCode()
     }
 
-    var colorCode = ""
+    var colorCode = "00000000"
 
     val persistentState: EntangledTankState?
         get() = (world as? ServerWorld)?.let { serverWorld ->

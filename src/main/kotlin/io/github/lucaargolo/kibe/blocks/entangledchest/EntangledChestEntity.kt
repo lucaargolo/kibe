@@ -31,7 +31,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         updateColorCode()
     }
 
-    var colorCode = ""
+    var colorCode = "00000000"
 
     fun updateColorCode() {
         var code = ""

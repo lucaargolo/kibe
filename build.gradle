@@ -13,28 +13,57 @@ group = project.maven_group
 
 repositories {
     maven {
-        name = "Fabric"
-        url = "http://maven.fabricmc.net/"
+        name "Fabric"
+        url "http://maven.fabricmc.net/"
+        content {
+            includeGroup "net.fabricmc"
+        }
     }
     maven {
-        name = "BuildCraft"
-        url = "https://mod-buildcraft.com/maven"
+        name "BuildCraft"
+        url "https://mod-buildcraft.com/maven"
+        content {
+            includeGroup "alexiil.mc.lib"
+        }
     }
     maven {
-        name = "Ladysnake Libs"
-        url = 'https://dl.bintray.com/ladysnake/libs'
+        name "Ladysnake Libs"
+        url 'https://dl.bintray.com/ladysnake/libs'
+        content {
+            includeGroup "io.github.ladysnake"
+        }
     }
     maven {
-        name = "JitPack"
-        url = "https://jitpack.io"
+        name "JitPack"
+        url "https://jitpack.io"
+        content {
+            includeGroup "com.github.emilyploszaj"
+        }
     }
     maven {
-        name = "NerdHubMC"
-        url = "https://maven.abusedmaster.xyz/"
+        name "NerdHubMC"
+        url "https://maven.abusedmaster.xyz/"
+        content {
+            includeGroup "io.github.onyxstudios.Cardinal-Components-API"
+        }
     }
     maven {
-        name = "Terraformers MC"
-        url = "https://maven.terraformersmc.com/releases/"
+        name "TerraformersMC"
+        url "https://maven.terraformersmc.com/releases"
+        content {
+            includeGroup "com.terraformersmc"
+            includeGroup "dev.emi"
+        }
+    }
+    maven {
+        name "Shedaniel"
+        url "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "me.shedaniel.cloth.api"
+            includeGroup "me.sargunvohra.mcmods"
+        }
     }
     mavenLocal()
 }
@@ -51,13 +80,14 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modImplementation "com.github.emilyploszaj:trinkets:${trinkets_version}"
+    modImplementation ("dev.emi:trinkets:${project.trinkets_version}") {
+        exclude group: "io.github.onyxstudios", module: "Cardinal-Components-API"
+    }
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
 
-    modImplementation("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
-    include("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
-
-    modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
-    include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
+    include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
 
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
@@ -68,9 +98,8 @@ dependencies {
     modImplementation("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
     include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
 
-    //modImplementation "alexiil.mc.mod:simplepipes-all:0.4.1-pre.1"
-    modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
-    //modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
 }
 
@@ -98,24 +127,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
     from "LICENSE"
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
-    }
-
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
-    }
 }
 
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
