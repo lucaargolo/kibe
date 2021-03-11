@@ -48,9 +48,8 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
         tooltip.add(color)
         val key = tag.getString("key")
         (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: mutableListOf()
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
             list.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = linkedSetOf()
         }
         val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         fluidInv.toTag(tag)

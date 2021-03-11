@@ -134,9 +134,8 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
         matrices.pop()
 
         (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
             list.add(Pair(entity.key, entity.colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
         }
         val fluidInv = EntangledTankState.CLIENT_STATES[entity.key]?.fluidInvMap?.get(entity.colorCode)
         val fluid = fluidInv?.getInvFluid(0)?.rawFluid ?: Fluids.EMPTY

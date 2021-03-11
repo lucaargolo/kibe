@@ -67,9 +67,8 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
         }
         val key = tag.getString("key")
         (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
+            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
             list.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
         }
         val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
