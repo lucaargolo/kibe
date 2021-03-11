@@ -41,14 +41,14 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        client!!.textureManager.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, startX, startY, 0, 0, 176, 166)
 
         val tank = handler.entity.tanks.first()
         val percentage = tank.volume.amount().asInt(1000).toDouble()/tank.capacity.asInt(1000).toDouble()
         tank.volume.renderGuiRect(startX+100.0, startY+70.0-(52.0*percentage), startX+112.0, startY+70.0)
 
-        client!!.textureManager.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, startX+100, startY+18, 172, 0, 12, 52)
 
     }

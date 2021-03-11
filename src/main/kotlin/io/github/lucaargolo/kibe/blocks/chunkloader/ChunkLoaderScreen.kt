@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
+import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
 import io.netty.buffer.Unpooled
 import net.minecraft.block.MapColor
@@ -83,7 +84,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
 
     @Suppress("UNUSED_PARAMETER")
     private fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        client!!.textureManager.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight)
     }
 
@@ -92,8 +93,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
         drawBackground(matrices, delta, mouseX, mouseY)
         if(identifier == null) createImage()
         identifier?.let {
-            val mc = MinecraftClient.getInstance()
-            mc.textureManager.bindTexture(it)
+            RenderSystem.setShaderTexture(0, it)
             drawTexture(matrices, x+7, y+15, 0, 0, 80, 80)
         }
         entity.enabledChunks.forEach {

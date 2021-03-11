@@ -30,7 +30,7 @@ class CoolerScreen(handler: CoolerScreenHandler, inventory: PlayerInventory, tit
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        client!!.textureManager.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, x, y, 0, 0, 176, 131)
     }
 

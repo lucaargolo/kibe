@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.drawbridge
 
+import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.blocks.DRAWBRIDGE
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
@@ -31,7 +32,7 @@ class DrawbridgeScreen(handler: DrawbridgeScreenHandler, inventory: PlayerInvent
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        client!!.textureManager.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, x, y, 0, 0, 176, 131)
         if(handler.inventory.getStack(1)?.isEmpty == true)
             itemRenderer.renderInGuiWithOverrides(ItemStack(DRAWBRIDGE.asItem()), x+134, y+18)

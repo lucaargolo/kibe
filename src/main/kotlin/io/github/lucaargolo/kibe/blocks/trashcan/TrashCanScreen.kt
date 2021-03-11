@@ -32,7 +32,7 @@ class TrashCanScreen(screenHandler: TrashCanScreenHandler, inventory: PlayerInve
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        client!!.textureManager.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, startX, startY, 0, 0, 176, 166)
     }
 
