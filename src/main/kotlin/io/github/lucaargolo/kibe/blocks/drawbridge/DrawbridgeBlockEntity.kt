@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3i
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 
@@ -43,7 +44,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         EXTENDED
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registry.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
@@ -52,15 +53,15 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
             val itemStack = inventory[i]
             val compoundTag = CompoundTag()
             compoundTag.putByte("Slot", i.toByte())
-            itemStack.toTag(compoundTag)
+            itemStack.writeNbt(compoundTag)
             listTag.add(compoundTag)
         }
         tag.put("Items", listTag)
-        return super.toTag(tag)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         this.state = try {
             State.valueOf(tag.getString("state"))
         }catch (e: IllegalArgumentException) {
@@ -68,15 +69,15 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         }
         extendedBlock = Registry.BLOCK.get(Identifier(tag.getString("extendedBlock")))
         extendedBlocks = tag.getInt("extendedBlocks")
-        Inventories.fromTag(tag, inventory)
+        Inventories.readNbt(tag, inventory)
     }
 
     override fun toClientTag(tag: CompoundTag): CompoundTag {
-        return toTag(tag)
+        return writeNbt(tag)
     }
 
     override fun fromClientTag(tag: CompoundTag) {
-        fromTag(tag)
+        readNbt(tag)
         MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }
 
@@ -136,7 +137,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
                     }
                     if(storedBlock != null) {
                         for(it in 1..64) {
-                            val itPos = pos.add(direction.vector.x*it, direction.vector.y*it, direction.vector.z*it)
+                            val itPos = pos.add(Vec3i( direction.vector.x*it, direction.vector.y*it, direction.vector.z*it))
                             val itBlock = world.getBlockState(itPos).block
                             if(itBlock is AirBlock) {
                                 if(it != blockEntity.extendedBlocks+1) {
@@ -181,7 +182,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
                         var selectedBlock = storedBlock ?: Blocks.AIR
 
                         for(it in 1..64) {
-                            val itPos = pos.add(direction.vector.x*it, direction.vector.y*it, direction.vector.z*it)
+                            val itPos = pos.add(Vec3i(direction.vector.x*it, direction.vector.y*it, direction.vector.z*it))
                             val itBlock = world.getBlockState(itPos).block
                             if(selectedBlock is AirBlock) {
                                 selectedBlock = itBlock

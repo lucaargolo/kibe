@@ -78,7 +78,7 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
         }
     }
 
-    override fun toNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         loadedChunkMap.keys.forEach { dim ->
             val longArray = LongArray(loadedChunkMap[dim]!!.size)
             loadedChunkMap[dim]!!.forEachIndexed { idx, pos ->

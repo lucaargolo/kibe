@@ -39,11 +39,6 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
     private val coreModelGold = arg.getLayerModelPart(helper.coreModelLayerGold)
     private val coreModelDiamond = arg.getLayerModelPart(helper.coreModelLayerDiamond)
 
-    @Suppress("UnstableApiUsage")
-    private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj {
-            i: Int -> RenderLayer.getEndPortal(i + 1)
-    }.collect(ImmutableList.toImmutableList())
-
     private val random = Random(31100L)
 
     enum class AnimationState {
@@ -140,10 +135,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
 
         val d = entity.pos.getSquaredDistance(arg.renderDispatcher.camera.pos, true)
         var m = matrices.peek().model
-        renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
-        for (l in 1 until getLayersToRender(d)) {
-            renderMiddleDownPart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
-        }
+        renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
 
         matrices.translate(0.5, 0.0, 0.5)
         when(currentState) {
@@ -193,10 +185,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         topModel.render(matrices, chestConsumer, lightAbove, overlay)
 
         m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
-        for (l in 1 until getLayersToRender(d)) {
-            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
-        }
+        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
 
         contextMap[entity.pos]!!.isScreenOpen = isScreenOpen
         contextMap[entity.pos]!!.currentState = currentState

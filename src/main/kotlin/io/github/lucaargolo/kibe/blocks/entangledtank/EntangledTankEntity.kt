@@ -69,8 +69,8 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         super.markDirty()
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -89,8 +89,8 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         fluidInv.fromTag(tag)
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        super.toTag(tag)
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
+        super.writeNbt(tag)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
         }
@@ -98,7 +98,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         tag.putString("owner", owner)
         if(persistentState != null) {
             var subTag = CompoundTag()
-            subTag = persistentState!!.toNbt(subTag)
+            subTag = persistentState!!.writeNbt(subTag)
             subTag = subTag.getCompound(colorCode)
             tag.put("tanks", subTag.get("tanks") ?: ListTag())
         }
@@ -106,7 +106,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         return tag
     }
 
-    override fun toClientTag(tag: CompoundTag) = toTag(tag)
+    override fun toClientTag(tag: CompoundTag) = writeNbt(tag)
 
     companion object {
 

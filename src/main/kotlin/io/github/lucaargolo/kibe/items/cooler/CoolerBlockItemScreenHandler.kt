@@ -37,7 +37,7 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
     }
 
     init {
-        Inventories.fromTag(tag, rawInventory)
+        Inventories.readNbt(tag, rawInventory)
         checkSize(inventory, 1)
         inventory.onOpen(playerInventory.player)
 
@@ -56,18 +56,16 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
         }
     }
 
-    override fun onSlotClick(i: Int, j: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?): ItemStack {
-        val stack = if(hand == Hand.MAIN_HAND && i in 0..slots.size && getSlot(i).stack == playerInventory.mainHandStack)
-            ItemStack.EMPTY
-        else
+    override fun onSlotClick(i: Int, j: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?) {
+        if(hand != Hand.MAIN_HAND || i !in 0..slots.size || getSlot(i).stack != playerInventory.mainHandStack) {
             super.onSlotClick(i, j, actionType, playerEntity)
+        }
         this.onContentChanged(null)
-        return stack
     }
 
     override fun onContentChanged(inventory: Inventory?) {
         super.onContentChanged(inventory)
-        Inventories.toTag(tag, rawInventory)
+        Inventories.writeNbt(tag, rawInventory)
         val coolerStack = playerInventory.player.getStackInHand(hand)
         if (coolerStack.item is CoolerBlockItem) {
             coolerStack.orCreateTag.put("BlockEntityTag", tag.copy())

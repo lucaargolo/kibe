@@ -14,8 +14,8 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer, pos: BlockPos, state
     var current = 0
     var level = 0
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         current = tag.getInt("current")
         level = tag.getInt("level")
     }
@@ -25,10 +25,10 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer, pos: BlockPos, state
         level = tag.getInt("level")
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         tag.putInt("current", current)
         tag.putInt("level", level)
-        return super.toTag(tag)
+        return super.writeNbt(tag)
     }
 
     override fun toClientTag(tag: CompoundTag): CompoundTag {

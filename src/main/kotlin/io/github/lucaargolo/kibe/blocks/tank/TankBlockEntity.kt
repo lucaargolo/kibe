@@ -64,20 +64,20 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
         broken = true
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         tag.put("fluidInv", fluidInv.toTag())
-        return if(broken) tag else super.toTag(tag)
+        return if(broken) tag else super.writeNbt(tag)
     }
 
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         fluidInv.fromTag(tag.getCompound("fluidInv"))
     }
 
-    override fun toClientTag(tag: CompoundTag) = toTag(tag)
+    override fun toClientTag(tag: CompoundTag) = writeNbt(tag)
 
-    override fun fromClientTag(tag: CompoundTag) = fromTag(tag)
+    override fun fromClientTag(tag: CompoundTag) = readNbt(tag)
 
     companion object {
 

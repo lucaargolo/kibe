@@ -64,10 +64,9 @@ class BigTorchScreenHandler (syncId: Int, playerInventory: PlayerInventory, val 
         return itemStack
     }
 
-    override fun onSlotClick(i: Int, j: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?): ItemStack {
-        val stack = super.onSlotClick(i, j, actionType, playerEntity)
+    override fun onSlotClick(i: Int, j: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?) {
+        super.onSlotClick(i, j, actionType, playerEntity)
         entity.updateValues()
-        return stack
     }
 
     override fun onContentChanged(inventory: Inventory?) {

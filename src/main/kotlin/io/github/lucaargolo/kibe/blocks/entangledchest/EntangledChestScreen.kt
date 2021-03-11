@@ -37,7 +37,7 @@ class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         textRenderer.draw(matrices, title, 8.0f, 6.0f, 0xFFFFFF)
-        textRenderer.draw(matrices, playerInventory.displayName, 8.0f, (backgroundHeight - 96 + 4).toFloat(), 0xFFFFFF)
+        textRenderer.draw(matrices, field_29347, 8.0f, (backgroundHeight - 96 + 4).toFloat(), 0xFFFFFF)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {

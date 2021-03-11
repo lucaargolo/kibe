@@ -32,7 +32,7 @@ class EntangledBag(settings: Settings): Item(settings){
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         if(context.world.getBlockState(context.blockPos).block is EntangledChest && context.player != null && context.player!!.isSneaking) {
             val blockEntity = (context.world.getBlockEntity(context.blockPos) as EntangledChestEntity)
-            val blockEntityTag = blockEntity.toTag(CompoundTag())
+            val blockEntityTag = blockEntity.writeNbt(CompoundTag())
             val newTag = CompoundTag()
             newTag.putString("key", blockEntityTag.getString("key"))
             newTag.putString("owner", blockEntityTag.getString("owner"))

@@ -21,7 +21,6 @@ import net.minecraft.world.World
 import kotlin.math.min
 import kotlin.math.sqrt
 
-
 class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(bigTorch), pos, state), BlockEntityClientSerializable, SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
@@ -52,25 +51,25 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
         updateValues()
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         //tag.putInt("suppressedSpawns", suppressedSpawns)
-        Inventories.toTag(tag, inventory)
-        return super.toTag(tag)
+        Inventories.writeNbt(tag, inventory)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(tag: CompoundTag?) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag?) {
+        super.readNbt(tag)
         //suppressedSpawns = tag.getInt("suppressedSpawns")
-        Inventories.fromTag(tag, inventory)
+        Inventories.readNbt(tag, inventory)
         updateValues()
     }
 
     override fun toClientTag(tag: CompoundTag): CompoundTag {
-        return toTag(tag)
+        return writeNbt(tag)
     }
 
     override fun fromClientTag(tag: CompoundTag) {
-        fromTag(tag)
+        readNbt(tag)
     }
 
     override fun size() = inventory.size

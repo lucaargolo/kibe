@@ -57,7 +57,7 @@ public abstract class LivingEntityMixin extends Entity {
         BlockPos pos = this.getBlockPos();
         Block block = this.world.getBlockState(pos.down()).getBlock();
         if (block instanceof Elevator && world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
-            while(pos.getY() < world.getTopHeightLimit()) {
+            while(pos.getY() < world.getTopY()) {
                 if(world.getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.up())) {
                     world.playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.25F + 0.6F);
                     this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z);

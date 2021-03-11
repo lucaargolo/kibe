@@ -18,10 +18,10 @@ class EntangledChestState : PersistentState() {
         return inventoryMap[colorCode] != null
     }
 
-    override fun toNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         inventoryMap.forEach { (colorCode, inventory) ->
             val subTag = CompoundTag()
-            Inventories.toTag(subTag, inventory)
+            Inventories.writeNbt(subTag, inventory)
             tag.put(colorCode, subTag)
         }
         return tag
@@ -72,7 +72,7 @@ class EntangledChestState : PersistentState() {
             val state = EntangledChestState()
             tag.keys.forEach {
                 val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
-                Inventories.fromTag(tag.get(it) as CompoundTag, tempInventory)
+                Inventories.readNbt(tag.get(it) as CompoundTag, tempInventory)
                 state.inventoryMap[it] = tempInventory
             }
             return state

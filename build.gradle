@@ -37,13 +37,7 @@ repositories {
         name "JitPack"
         url "https://jitpack.io"
         content {
-            includeGroup "com.github.emilyploszaj"
-        }
-    }
-    maven {
-        name "NerdHubMC"
-        url "https://maven.abusedmaster.xyz/"
-        content {
+            includeGroup "com.github.emilyalexandra"
             includeGroup "io.github.onyxstudios.Cardinal-Components-API"
         }
     }
@@ -52,7 +46,6 @@ repositories {
         url "https://maven.terraformersmc.com/releases"
         content {
             includeGroup "com.terraformersmc"
-            includeGroup "dev.emi"
         }
     }
     maven {
@@ -80,8 +73,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modImplementation ("dev.emi:trinkets:${project.trinkets_version}") {
-        exclude group: "io.github.onyxstudios", module: "Cardinal-Components-API"
+    modImplementation ("com.github.emilyalexandra:trinkets:${project.trinkets_version}") {
+        exclude group: "io.github.onyxstudios.Cardinal-Components-API", module: "cardinal-components-base"
+        exclude group: "io.github.onyxstudios.Cardinal-Components-API", module: "cardinal-components-entity"
     }
     modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
     modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
@@ -99,7 +93,7 @@ dependencies {
     include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+    //modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
 }
 

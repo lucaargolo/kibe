@@ -82,7 +82,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
         if(world?.isClient == false) sync()
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         val tanksTag = CompoundTag()
         tanks.forEachIndexed { index, tank ->
             val tankTag = CompoundTag()
@@ -90,14 +90,14 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
             tanksTag.put(index.toString(), tankTag)
         }
         tag.put("tanks", tanksTag)
-        Inventories.toTag(tag, inventory)
-        return super.toTag(tag)
+        Inventories.writeNbt(tag, inventory)
+        return super.writeNbt(tag)
     }
 
-    override fun toClientTag(tag: CompoundTag) = toTag(tag)
+    override fun toClientTag(tag: CompoundTag) = writeNbt(tag)
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         val tanksTag = tag.getCompound("tanks")
         tanksTag.keys.forEachIndexed { idx, key ->
             val tankTag = tanksTag.getCompound(key)
@@ -109,10 +109,10 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
             val liquidXp = tag.getInt("fluid")
             tanks[0].volume = LIQUID_XP.key.withAmount(FluidAmount.of(liquidXp.toLong(), 1000))
         }
-        Inventories.fromTag(tag, inventory)
+        Inventories.readNbt(tag, inventory)
     }
 
-    override fun fromClientTag(tag: CompoundTag) = fromTag(tag)
+    override fun fromClientTag(tag: CompoundTag) = readNbt(tag)
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack

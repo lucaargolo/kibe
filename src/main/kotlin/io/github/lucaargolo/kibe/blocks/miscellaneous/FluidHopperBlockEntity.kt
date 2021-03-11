@@ -23,14 +23,14 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
             fluidInv.setInvFluid(0, value, Simulation.ACTION)
         }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        super.toTag(tag)
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
+        super.writeNbt(tag)
         fluidInv.toTag(tag)
         return tag
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         fluidInv.fromTag(tag)
     }
 

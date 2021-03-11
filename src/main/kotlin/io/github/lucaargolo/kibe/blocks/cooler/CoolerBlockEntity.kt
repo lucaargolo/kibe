@@ -17,22 +17,22 @@ class CoolerBlockEntity(cooler: Cooler, pos: BlockPos, state: BlockState): Block
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        Inventories.toTag(tag, inventory)
-        return super.toTag(tag)
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
+        Inventories.writeNbt(tag, inventory)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
-        Inventories.fromTag(tag, inventory)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
+        Inventories.readNbt(tag, inventory)
     }
 
     override fun toClientTag(tag: CompoundTag): CompoundTag {
-        return toTag(tag)
+        return writeNbt(tag)
     }
 
     override fun fromClientTag(tag: CompoundTag) {
-        fromTag(tag)
+        readNbt(tag)
     }
 
     override fun size() = inventory.size

@@ -31,7 +31,7 @@ public abstract class EntityMixin {
             Block block = world.getBlockState(pos.down()).getBlock();
             if (block instanceof Elevator && world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
                 pos = pos.down();
-                while(pos.getY() > world.getBottomSectionLimit()) {
+                while(pos.getY() > world.getBottomY()) {
                     if(world.getBlockState(pos.down()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.down())) {
                         world.playSound(null, pos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
                         teleport(this.pos.x, pos.down().getY()+1.15, this.pos.z);

@@ -60,8 +60,8 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         super.markDirty()
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -78,11 +78,11 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         key = tag.getString("key")
         owner = tag.getString("owner")
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
-        Inventories.fromTag(tag, this.inventory)
+        Inventories.readNbt(tag, this.inventory)
     }
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        super.toTag(tag)
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
+        super.writeNbt(tag)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
@@ -90,13 +90,13 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         tag.putString("owner", owner)
         if(hasPersistentState()) {
             var subTag = CompoundTag()
-            subTag = getPersistentState()!!.toNbt(subTag)
+            subTag = getPersistentState()!!.writeNbt(subTag)
             if(subTag[colorCode] != null) {
                 subTag = subTag.get(colorCode) as CompoundTag
                 tag.put("Items", subTag.get("Items"))
             }
         }
-        else Inventories.toTag(tag, this.inventory)
+        else Inventories.writeNbt(tag, this.inventory)
         return tag
     }
 
@@ -106,7 +106,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
-        Inventories.toTag(tag, this.inventory)
+        Inventories.writeNbt(tag, this.inventory)
         return tag
     }
 

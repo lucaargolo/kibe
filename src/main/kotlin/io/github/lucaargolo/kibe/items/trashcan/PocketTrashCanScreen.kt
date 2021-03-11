@@ -38,7 +38,7 @@ class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory
         drawCenteredString(matrices, textRenderer, stringArray[0],backgroundWidth/2, 6, 0xFFFFFF)
         stringArray.removeAt(0)
         drawCenteredString(matrices, textRenderer, Strings.join(stringArray, " "),backgroundWidth/2, 17, 0xFFFFFF)
-        textRenderer.draw(matrices, playerInventory.displayName, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
+        textRenderer.draw(matrices, field_29347, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
     }
 
 }

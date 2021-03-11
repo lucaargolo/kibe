@@ -44,12 +44,12 @@ class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory,
         }
     }
 
-    override fun onSlotClick(slot: Int, mouse: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?): ItemStack {
+    override fun onSlotClick(slot: Int, mouse: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?) {
         if(slot == 0) {
             entity.extendedBlock = null
             entity.extendedBlocks = 0
         }
-        return super.onSlotClick(slot, mouse, actionType, playerEntity)
+        super.onSlotClick(slot, mouse, actionType, playerEntity)
     }
 
     override fun onContentChanged(inventory: Inventory) {

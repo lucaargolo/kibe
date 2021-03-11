@@ -36,7 +36,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
         Pair(-1, 1), Pair(0, 1), Pair(1, 1)
     )
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         tag.putString("ownerUUID", ownerUUID)
         tag.putLong("ownerLastSeen", ownerLastSeen)
         tag.putString("disabledReason", disabledReason.name)
@@ -48,11 +48,11 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
             list.add(innerTag)
         }
         tag.put("enabledChunks", list)
-        return super.toTag(tag)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(tag: CompoundTag) {
-        super.fromTag(tag)
+    override fun readNbt(tag: CompoundTag) {
+        super.readNbt(tag)
         ownerUUID = tag.getString("ownerUUID")
         ownerLastSeen = tag.getLong("ownerLastSeen")
         disabledReason = try { DisabledReason.valueOf(tag.getString("disabledReason")) } catch (ignored: Exception) { ignored.printStackTrace(); DisabledReason.NONE }
@@ -67,11 +67,11 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
     }
 
     override fun toClientTag(tag: CompoundTag): CompoundTag {
-        return toTag(tag)
+        return writeNbt(tag)
     }
 
     override fun fromClientTag(tag: CompoundTag) {
-        fromTag(tag)
+        readNbt(tag)
     }
 
     fun markDirtyAndSync() {

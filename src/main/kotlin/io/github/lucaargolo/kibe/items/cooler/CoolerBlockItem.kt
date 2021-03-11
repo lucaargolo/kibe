@@ -21,11 +21,11 @@ class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
         if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && entity.canConsume(false)) {
             val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
             val tag = stack.orCreateTag.getCompound("BlockEntityTag")
-            Inventories.fromTag(tag, rawInventory)
+            Inventories.readNbt(tag, rawInventory)
             val foodStack = rawInventory[0]
             if(!foodStack.isEmpty && foodStack.isFood) {
                 entity.eatFood(world, foodStack)
-                Inventories.toTag(tag, rawInventory)
+                Inventories.writeNbt(tag, rawInventory)
                 stack.orCreateTag.put("BlockEntityTag", tag)
             }
         }

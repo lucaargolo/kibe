@@ -25,6 +25,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3i
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.*
 import net.minecraft.world.biome.SpawnSettings
@@ -72,7 +73,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         } else {
             if (world.getLightLevel(pos.up()) <= 7) {
                 repeat((0..3).count()) {
-                    val randomPos = pos.add(random.nextInt(3) - 1, random.nextInt(3) - 1, random.nextInt(3) - 1)
+                    val randomPos = pos.add(Vec3i(random.nextInt(3) - 1, random.nextInt(3) - 1, random.nextInt(3) - 1))
                     if (canSpread(state, world, randomPos)) {
                         world.setBlockState(randomPos, defaultState.with(SNOWY, world.getBlockState(randomPos.up()).block == Blocks.SNOW).with(Properties.LEVEL_15, state[Properties.LEVEL_15]-1))
                     }

@@ -32,7 +32,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
         return fluidInvMap[colorCode] ?: createInventory(colorCode)
     }
 
-    override fun toNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: CompoundTag): CompoundTag {
         fluidInvMap.forEach { (colorCode, fluidInv) ->
             tag.put(colorCode, fluidInv.toTag())
         }

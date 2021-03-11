@@ -86,14 +86,11 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
         addSlot(object: Slot(resultInv, 0, 8 + 6 * 18, 18 + 2 * 18 ) {
             override fun canInsert(itemStack_1: ItemStack?) = false
 
-            override fun onTakeItem(playerEntity: PlayerEntity, itemStack: ItemStack): ItemStack? {
-                return if(entity.removeLiquidXp(lastRecipe!!.xpInput)) {
+            override fun onTakeItem(playerEntity: PlayerEntity, itemStack: ItemStack)  {
+                if(entity.removeLiquidXp(lastRecipe!!.xpInput)) {
                     slots[1].stack.decrement(1)
                     entity.markDirty()
                     super.onTakeItem(playerEntity, itemStack)
-                    itemStack
-                }else{
-                    ItemStack.EMPTY
                 }
             }
         })
@@ -118,7 +115,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
         updateResult(syncId, player.world, player, craftingInv, resultInv)
     }
 
-    override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
+    override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity) {
         if(actionType == SlotActionType.QUICK_MOVE && slotId == 0 && slots[0].hasStack()) {
             var maxCraftSize = min(slots[1].stack.count, entity.tanks.first().volume.amount().asInt(1000)/lastRecipe!!.xpInput)
             val maxStackSize = lastRecipe!!.output.maxCount
@@ -137,9 +134,9 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
                     player.giveItemStack(ItemStack(craftResult, maxCraftSize))
                 }
             }
-            return ItemStack.EMPTY
+            return
         }
-        return super.onSlotClick(slotId, clickData, actionType, player)
+        super.onSlotClick(slotId, clickData, actionType, player)
     }
 
     private fun updateResult(syncId: Int, world: World, player: PlayerEntity, craftingInventory: CraftingInventory, resultInventory: CraftingResultInventory) {
@@ -223,9 +220,9 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             if (itemStack2.count == itemStack.count) {
                 return ItemStack.EMPTY
             }
-            val itemStack3 = slot.onTakeItem(player, itemStack2)
+            slot.onTakeItem(player, itemStack2)
             if (invSlot == 0) {
-                player.dropItem(itemStack3, false)
+                player.dropItem(itemStack2, false)
             }
         }
 

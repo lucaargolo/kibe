@@ -13,19 +13,13 @@ import java.util.stream.IntStream
 
 class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<VacuumHopperEntity> {
 
-    @Suppress("UnstableApiUsage")
-    private val layerList: List<RenderLayer> = IntStream.range(0, 16).mapToObj { i: Int -> RenderLayer.getEndPortal(i + 1) }.collect(
-        ImmutableList.toImmutableList())
     private val random = Random(31100L)
 
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         matrices.push()
         val d = blockEntity.pos.getSquaredDistance(arg.renderDispatcher.camera.pos, true)
         val m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
-        for (l in 1 until getLayersToRender(d)) {
-            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
-        }
+        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
         matrices.pop()
     }
 
