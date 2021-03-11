@@ -6,6 +6,7 @@ import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.ModelPart
+import net.minecraft.client.options.GraphicsMode
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
@@ -117,7 +118,7 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
             rune.render(matrices, runesConsumer, lightAbove, overlay)
         }
 
-        val upUV = if(entity.key != EntangledTank.DEFAULT_KEY) -10 else 0;
+        val upUV = if(entity.key != EntangledTank.DEFAULT_KEY) -10 else 0
 
         val core = ModelPart(64, 64, 0, 0)
         core.setTextureOffset(58, 50+upUV)
@@ -145,7 +146,17 @@ class EntangledTankEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Bloc
         val sprite = fluidRenderHandler.getFluidSprites(entity.world, entity.pos, fluid.defaultState)[0]
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
 
-        val bb = vertexConsumers.getBuffer(if(fluid != Fluids.EMPTY) RenderLayers.getFluidLayer(fluid.defaultState) else RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE))
+        val renderLayer = if(fluid != Fluids.EMPTY) {
+            if(MinecraftClient.isFabulousGraphicsOrBetter()) {
+                RenderLayer.getSolid()
+            }else{
+                RenderLayers.getFluidLayer(fluid.defaultState)
+            }
+        } else {
+            RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+        }
+
+        val bb = vertexConsumers.getBuffer(renderLayer)
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 

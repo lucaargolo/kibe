@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.tank
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderLayers
 import net.minecraft.client.render.VertexConsumer
@@ -32,7 +33,17 @@ class TankBlockEntityRenderer(dispatcher: BlockEntityRenderDispatcher): BlockEnt
         val sprite = fluidRenderHandler.getFluidSprites(entity.world, entity.pos, fluid.defaultState)[0]
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
 
-        val bb = vertexConsumers.getBuffer(if(fluid != Fluids.EMPTY) RenderLayers.getFluidLayer(fluid.defaultState) else RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE))
+        val renderLayer = if(fluid != Fluids.EMPTY) {
+            if(MinecraftClient.isFabulousGraphicsOrBetter()) {
+                RenderLayer.getSolid()
+            }else{
+                RenderLayers.getFluidLayer(fluid.defaultState)
+            }
+        } else {
+            RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+        }
+
+        val bb = vertexConsumers.getBuffer(renderLayer)
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
