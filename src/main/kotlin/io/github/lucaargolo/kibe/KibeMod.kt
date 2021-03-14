@@ -88,6 +88,7 @@ var MOD_CONFIG: ModConfig = ModConfig()
 fun Boolean.toInt() = if (this) 1 else 0
 
 fun init() {
+    initCreativeTab()
     initRecipeSerializers()
     initRecipeTypes()
     initTooltip()
@@ -97,7 +98,6 @@ fun init() {
     initEffects()
     initLootTables()
     initFluids()
-    initCreativeTab()
     initPackets()
     initExtras()
     if(TRINKET) {

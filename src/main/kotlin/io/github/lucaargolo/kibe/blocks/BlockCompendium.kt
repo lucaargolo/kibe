@@ -30,7 +30,7 @@ import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
 import io.github.lucaargolo.kibe.blocks.vacuum.*
-import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItem
+import io.github.lucaargolo.kibe.utils.CREATIVE_TAB
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
@@ -104,9 +104,9 @@ class BlockInfo<T: BlockEntity> (
         Registry.register(Registry.BLOCK, identifier, block)
         if(hasBlockItem) {
             if(blockItem != null)
-                Registry.register(Registry.ITEM, identifier, blockItem.java.constructors[0].newInstance(block, Item.Settings()) as BlockItem)
+                Registry.register(Registry.ITEM, identifier, blockItem.java.constructors[0].newInstance(block, Item.Settings().group(CREATIVE_TAB)) as BlockItem)
             else
-                Registry.register(Registry.ITEM, identifier, BlockItem(block, Item.Settings()))
+                Registry.register(Registry.ITEM, identifier, BlockItem(block, Item.Settings().group(CREATIVE_TAB)))
         }
         if(entity != null) Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier, entity)
         containers.forEach { it.init(identifier) }
@@ -144,7 +144,7 @@ fun register(identifier: Identifier, block: Block, hasModBlock: Boolean = true):
 
 fun <T: BlockEntity> registerWithEntity(identifier: Identifier, block: Block, hasBlockItem: Boolean = true, blockItem: KClass<*>? = null, renderer: Supplier<KClass<*>>? = null, containers: List<ContainerInfo<*>> = listOf()): Block {
     val bli = blockItem as? KClass<BlockItem>
-    val ent = (block as? BlockEntityProvider)?.let { BlockEntityType.Builder.create(Supplier { it.createBlockEntity(null) }, block).build(null) as BlockEntityType<T> }
+    val ent = (block as? BlockEntityProvider)?.let { BlockEntityType.Builder.create({ it.createBlockEntity(null) }, block).build(null) as BlockEntityType<T> }
     val rnd = if(CLIENT) renderer?.let { it.get() as KClass<BlockEntityRenderer<T>> } else null
     val info = BlockInfo(identifier, block, hasBlockItem, bli, ent, rnd, containers)
     blockRegistry[block] = info
@@ -152,7 +152,7 @@ fun <T: BlockEntity> registerWithEntity(identifier: Identifier, block: Block, ha
 }
 
 val CURSED_DIRT = register(Identifier(MOD_ID, "cursed_dirt"), CursedDirt())
-val REDSTONE_TIMER = registerWithEntity<RedstoneTimerEntity>(Identifier(MOD_ID, "redstone_timer"), RedstoneTimer(), renderer = Supplier { RedstoneTimerEntityRenderer::class })
+val REDSTONE_TIMER = registerWithEntity<RedstoneTimerEntity>(Identifier(MOD_ID, "redstone_timer"), RedstoneTimer(), renderer = { RedstoneTimerEntityRenderer::class })
 
 val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), Spikes(6F, false, FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
 val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), Spikes(7F, true, FabricBlockSettings.of(Material.METAL, MaterialColor.DIAMOND).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)))
@@ -160,17 +160,17 @@ val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt")
 val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ConveyorBelt(0.1))
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ConveyorBelt(0.2))
 
-val ENTANGLED_TANK = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_tank"), EntangledTank(), renderer = Supplier { EntangledTankEntityRenderer::class }, hasBlockItem = false)
-val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = Supplier { EntangledChestEntityRenderer::class }, hasBlockItem = false, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, Supplier { EntangledChestScreen::class })))
-val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(TrashCanScreenHandler::class, Supplier {  TrashCanScreen::class })))
-val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = Supplier { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, Supplier {  VacuumHopperScreen::class })))
-val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, Supplier { BigTorchScreen::class })))
-val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, Supplier { CoolerScreen::class })))
-val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, Supplier { DrawbridgeScreen::class })))
+val ENTANGLED_TANK = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_tank"), EntangledTank(), renderer = { EntangledTankEntityRenderer::class }, hasBlockItem = false)
+val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = { EntangledChestEntityRenderer::class }, hasBlockItem = false, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, { EntangledChestScreen::class })))
+val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(TrashCanScreenHandler::class, {  TrashCanScreen::class })))
+val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, {  VacuumHopperScreen::class })))
+val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, { BigTorchScreen::class })))
+val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, { CoolerScreen::class })))
+val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, { DrawbridgeScreen::class })))
 
 val LIGHT_SOURCE = register(Identifier(MOD_ID, "light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID, "chunk_loader"), ChunkLoader())
-val TANK = registerWithEntity<TankBlockEntity>(Identifier(MOD_ID, "tank"), Tank(), hasBlockItem = false, renderer = Supplier { TankBlockEntityRenderer::class })
+val TANK = registerWithEntity<TankBlockEntity>(Identifier(MOD_ID, "tank"), Tank(), hasBlockItem = false, renderer = { TankBlockEntityRenderer::class })
 val XP_SHOWER = registerWithEntity<XpShowerBlockEntity>(Identifier(MOD_ID, "xp_shower"), XpShower())
 val XP_DRAIN = register(Identifier(MOD_ID, "xp_drain"), XpDrain())
 val FLUID_HOPPER = registerWithEntity<FluidHopperBlockEntity>(Identifier(MOD_ID, "fluid_hopper"), FluidHopper())

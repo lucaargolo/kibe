@@ -27,6 +27,15 @@ import net.minecraft.util.registry.Registry
 var CREATIVE_TAB: ItemGroup? = null
 
 fun initCreativeTab() {
+    CREATIVE_TAB = FabricItemGroupBuilder
+        .create(Identifier(MOD_ID, "creative_tab"))
+        .icon { ItemStack(KIBE) }
+        .appendItems { it.addAll(appendItems()) }
+        .build()
+}
+
+private fun appendItems(): List<ItemStack> {
+    val list = mutableListOf<ItemStack>()
     val order = arrayOf(
         KIBE, CURSED_KIBE, GOLDEN_KIBE, DIAMOND_KIBE,
         CURSED_DIRT, CURSED_DROPLETS, CURSED_SEEDS, CURSED_LASSO, GOLDEN_LASSO, DIAMOND_LASSO,
@@ -44,36 +53,32 @@ fun initCreativeTab() {
         WHITE_ELEVATOR, ORANGE_ELEVATOR, MAGENTA_ELEVATOR, LIGHT_BLUE_ELEVATOR, YELLOW_ELEVATOR, LIME_ELEVATOR, PINK_ELEVATOR, GRAY_ELEVATOR,
         LIGHT_GRAY_ELEVATOR, CYAN_ELEVATOR, BLUE_ELEVATOR, PURPLE_ELEVATOR, GREEN_ELEVATOR, BROWN_ELEVATOR, RED_ELEVATOR, BLACK_ELEVATOR,
     )
-    CREATIVE_TAB = FabricItemGroupBuilder
-        .create(Identifier(MOD_ID, "creative_tab"))
-        .icon { ItemStack(KIBE) }
-        .appendItems{stacks ->
-            order.forEach {
-                val itemStack = when(it) {
-                    is Item -> ItemStack(it)
-                    is Block -> ItemStack(it.asItem())
-                    is Fluid -> ItemStack(getFluidBucket(it))
-                    else -> ItemStack.EMPTY
-                }
-                stacks.add(itemStack)
+    order.forEach { element ->
+        list.add(when(element) {
+            is Item -> ItemStack(element)
+            is Block -> ItemStack(element.asItem())
+            is Fluid -> ItemStack(getFluidBucket(element))
+            else -> ItemStack.EMPTY
+        })
+    }
+    Registry.FLUID.forEach { fluid ->
+        val itemStack = ItemStack(TANK)
+        if(fluid == Fluids.EMPTY) {
+            list.add(itemStack)
+        }else if(fluid.isStill(fluid.defaultState)) {
+            val key = FluidKeys.get(fluid)
+            if(!key.entry.isEmpty) {
+                val tag = itemStack.orCreateTag
+                val blockEntityTag = CompoundTag()
+                val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
+                fluidInv.setInvFluid(0, key.withAmount(FluidAmount.ofWhole(16)), Simulation.ACTION)
+                blockEntityTag.put("fluidInv", fluidInv.toTag())
+                tag.put("BlockEntityTag", blockEntityTag)
+                list.add(itemStack)
             }
-            Registry.FLUID.forEach { fluid ->
-                val itemStack = ItemStack(TANK)
-                if(fluid == Fluids.EMPTY) {
-                    stacks.add(itemStack)
-                }else if(fluid.isStill(fluid.defaultState)) {
-                    val key = FluidKeys.get(fluid)
-                    if(!key.entry.isEmpty) {
-                        val tag = itemStack.orCreateTag
-                        val blockEntityTag = CompoundTag()
-                        val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-                        fluidInv.setInvFluid(0, key.withAmount(FluidAmount.ofWhole(16)), Simulation.ACTION)
-                        blockEntityTag.put("fluidInv", fluidInv.toTag())
-                        tag.put("BlockEntityTag", blockEntityTag)
-                        stacks.add(itemStack)
-                    }
-                }
-            }
-        }.build()
+        }
+    }
+    return list
 }
+
 
