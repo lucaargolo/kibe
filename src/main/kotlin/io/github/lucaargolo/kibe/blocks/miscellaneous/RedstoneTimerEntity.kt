@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.blocks.REDSTONE_TIMER
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
@@ -38,12 +39,12 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer): BlockEntity(getEnti
     }
 
     override fun tick() {
-        val isEnabled = world!!.getBlockState(pos)[Properties.ENABLED]
+        val isEnabled = cachedState.isOf(REDSTONE_TIMER) && cachedState[Properties.ENABLED]
         val delay = level*4
         current++
         if(current >= delay){
             current = 0
-            world!!.setBlockState(pos, timer.defaultState.with(Properties.ENABLED, !isEnabled))
+            world?.setBlockState(pos, timer.defaultState.with(Properties.ENABLED, !isEnabled))
             level = delay/4
         }
 
