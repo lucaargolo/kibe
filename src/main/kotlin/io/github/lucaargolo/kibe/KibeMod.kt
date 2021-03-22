@@ -29,6 +29,7 @@ import io.github.lucaargolo.kibe.items.*
 import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.items.miscellaneous.GliderDynamicRenderer
+import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -44,14 +45,18 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.client.render.RenderLayer
@@ -139,15 +144,15 @@ fun initPackets() {
     }
 
     ServerPlayNetworking.registerGlobalReceiver(REQUEST_DIRTY_TANK_STATES)  { server, player, _, attachedData, _ ->
-        val list = linkedSetOf<Pair<String, String>>()
+        val set = linkedSetOf<Pair<String, String>>()
         val qnt = attachedData.readInt()
         repeat(qnt) {
             val first = attachedData.readString(32767)
             val second = attachedData.readString(32767)
-            list.add(Pair(first, second))
+            set.add(Pair(first, second))
         }
         server.execute {
-            EntangledTankState.SERVER_PLAYER_REQUESTS[player] = list
+            EntangledTankState.SERVER_PLAYER_REQUESTS[player] = set
         }
     }
 
@@ -191,31 +196,44 @@ fun initExtras() {
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }
+    ServerPlayConnectionEvents.DISCONNECT.register { handler, server ->
+        EntangledTankState.ALL_TIME_PLAYER_REQUESTS.remove(handler.player)
+        EntangledTankState.SERVER_PLAYER_REQUESTS.remove(handler.player)
+    }
     ServerTickEvents.END_SERVER_TICK.register { server ->
         EntangledTankState.SERVER_PLAYER_REQUESTS.forEach { (player, requests) ->
             val finalMap = mutableMapOf<String, MutableMap<String, FluidVolume>>()
             requests.forEach {
                 val key = it.first
-                val state = server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(server.overworld, key) }, key)
-
                 val colorCode = it.second
-                val fluidVolume = state.getOrCreateInventory(colorCode).getInvFluid(0)
 
-                val secondMap = finalMap[key] ?: mutableMapOf()
-                secondMap[colorCode] = fluidVolume
-                finalMap[key] = secondMap
-            }
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeInt(finalMap.size)
-            finalMap.forEach { (key, secondMap) ->
-                passedData.writeString(key, 32767)
-                passedData.writeInt(secondMap.size)
-                secondMap.forEach { (colorCode, fluidVolume) ->
-                    passedData.writeString(colorCode, 32767)
-                    fluidVolume.toMcBuffer(passedData)
+                val state = server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(server.overworld, key) }, key)
+                val allTimeRequests = EntangledTankState.ALL_TIME_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
+                if(!allTimeRequests.contains(it) || state.dirtyColors.contains(colorCode)) {
+                    allTimeRequests.add(it)
+                    val fluidVolume = state.getOrCreateInventory(colorCode).getInvFluid(0)
+
+                    val secondMap = finalMap[key] ?: mutableMapOf()
+                    secondMap[colorCode] = fluidVolume
+                    finalMap[key] = secondMap
                 }
             }
-            ServerPlayNetworking.send(player, SYNCHRONIZE_DIRTY_TANK_STATES, passedData)
+            if(finalMap.isNotEmpty()) {
+                val passedData = PacketByteBuf(Unpooled.buffer())
+                passedData.writeInt(finalMap.size)
+                finalMap.forEach { (key, secondMap) ->
+                    passedData.writeString(key, 32767)
+                    passedData.writeInt(secondMap.size)
+                    secondMap.forEach { (colorCode, fluidVolume) ->
+                        passedData.writeString(colorCode, 32767)
+                        fluidVolume.toMcBuffer(passedData)
+                    }
+                }
+                ServerPlayNetworking.send(player, SYNCHRONIZE_DIRTY_TANK_STATES, passedData)
+            }
+        }
+        (server.overworld.persistentStateManager as? PersistentStateManagerAccessor)?.loadedStates?.forEach { (_, state) ->
+            (state as? EntangledTankState)?.dirtyColors?.clear()
         }
     }
     FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
@@ -223,24 +241,27 @@ fun initExtras() {
 }
 
 fun initExtrasClient() {
-    @Suppress("deprecated")
+    ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
+        EntangledTankState.CLIENT_STATES.clear()
+        EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS = linkedSetOf()
+        EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS = linkedSetOf()
+    }
     ClientTickEvents.END_CLIENT_TICK.register { client ->
-        client.player?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player]
-            list?.size?.let { qnt ->
-                if(qnt > 0) {
+        client.world?.let { _ ->
+            if (EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS != EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS) {
+                if (EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.size > 0) {
                     val passedData = PacketByteBuf(Unpooled.buffer())
-                    passedData.writeInt(qnt)
-                    list.forEach {
+                    passedData.writeInt(EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.size)
+                    EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.forEach {
                         passedData.writeString(it.first)
                         passedData.writeString(it.second)
                     }
                     ClientPlayNetworking.send(REQUEST_DIRTY_TANK_STATES, passedData)
                 }
             }
-
+            EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS = EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS
+            EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS = linkedSetOf()
         }
-
     }
     ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
         registry.register(Identifier(MOD_ID, "block/entangled_chest"))

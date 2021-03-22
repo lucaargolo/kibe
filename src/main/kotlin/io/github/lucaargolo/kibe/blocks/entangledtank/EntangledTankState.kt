@@ -49,10 +49,14 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
 
     companion object {
 
-        val SERVER_STATES = mutableMapOf<String, EntangledTankState>()
-        val CLIENT_STATES = mutableMapOf<String, EntangledTankState>()
-        val SERVER_PLAYER_REQUESTS = mutableMapOf<ServerPlayerEntity, LinkedHashSet<Pair<String, String>>>()
-        val CLIENT_PLAYER_REQUESTS = mutableMapOf<ClientPlayerEntity, LinkedHashSet<Pair<String, String>>>()
+        val SERVER_STATES = linkedMapOf<String, EntangledTankState>()
+        val CLIENT_STATES = linkedMapOf<String, EntangledTankState>()
+
+        val ALL_TIME_PLAYER_REQUESTS = linkedMapOf<ServerPlayerEntity, LinkedHashSet<Pair<String, String>>>()
+        val SERVER_PLAYER_REQUESTS = linkedMapOf<ServerPlayerEntity, LinkedHashSet<Pair<String, String>>>()
+
+        var PAST_CLIENT_PLAYER_REQUESTS = linkedSetOf<Pair<String, String>>()
+        var CURRENT_CLIENT_PLAYER_REQUESTS = linkedSetOf<Pair<String, String>>()
 
         fun getOrCreateClientState(key: String): EntangledTankState {
             CLIENT_STATES[key]?.let {

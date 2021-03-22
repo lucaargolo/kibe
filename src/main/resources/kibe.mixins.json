@@ -12,6 +12,7 @@
     "LivingEntityMixin",
     "MobEntityMixin",
     "MobSpawnerLogicMixin",
+    "PersistentStateManagerAccessor",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
     "ServerWorldMixin",
@@ -20,13 +21,12 @@
     "WitherRoseBlockMixin"
   ],
   "client": [
-    "MinecraftClientMixin",
     "BipedEntityModelMixin",
+    "ClientPlayNetworkHandlerMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
-    "PlayerEntityRendererMixin",
-    "ClientPlayNetworkHandlerMixin"
+    "PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -209,10 +209,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
             val state = world.server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(world, key) }, key)
             state.getOrCreateInventory(colorCode)
         }else {
-            (MinecraftClient.getInstance().player)?.let { player ->
-                val list = EntangledTankState.CLIENT_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
-                list.add(Pair(key, colorCode))
-            }
+            EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
             EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         }
         fluidInv.toTag(tag)
