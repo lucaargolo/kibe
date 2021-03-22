@@ -249,15 +249,13 @@ fun initExtrasClient() {
     ClientTickEvents.END_CLIENT_TICK.register { client ->
         client.world?.let { _ ->
             if (EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS != EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS) {
-                if (EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.size > 0) {
-                    val passedData = PacketByteBuf(Unpooled.buffer())
-                    passedData.writeInt(EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.size)
-                    EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.forEach {
-                        passedData.writeString(it.first)
-                        passedData.writeString(it.second)
-                    }
-                    ClientPlayNetworking.send(REQUEST_DIRTY_TANK_STATES, passedData)
+                val passedData = PacketByteBuf(Unpooled.buffer())
+                passedData.writeInt(EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.size)
+                EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.forEach {
+                    passedData.writeString(it.first)
+                    passedData.writeString(it.second)
                 }
+                ClientPlayNetworking.send(REQUEST_DIRTY_TANK_STATES, passedData)
             }
             EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS = EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS
             EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS = linkedSetOf()
