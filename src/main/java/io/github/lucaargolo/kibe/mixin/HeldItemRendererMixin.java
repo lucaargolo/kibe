@@ -47,14 +47,17 @@ public class HeldItemRendererMixin {
 
     @Inject(at = @At("HEAD"), method = "renderFirstPersonItem", cancellable = true)
     private void renderFirstPersonItemPre(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo info) {
-        matrices.push();
-        if(player.getStackInHand(hand).getItem() instanceof Glider && Glider.Companion.isEnabled(player.getStackInHand(hand)))
+        if(player.getStackInHand(hand).getItem() instanceof Glider && Glider.Companion.isEnabled(player.getStackInHand(hand))) {
+            matrices.push();
             matrices.multiply(Vector3f.NEGATIVE_X.getDegreesQuaternion(360 - player.getPitch(tickDelta)));
+        }
     }
 
     @Inject(at = @At("TAIL"), method = "renderFirstPersonItem")
     private void renderFirstPersonItemPost(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo info) {
-        matrices.pop();
+        if(player.getStackInHand(hand).getItem() instanceof Glider && Glider.Companion.isEnabled(player.getStackInHand(hand))) {
+            matrices.pop();
+        }
     }
 
 }
