@@ -80,7 +80,7 @@ class EntangledChestScreenHandler(syncId: Int, playerInventory: PlayerInventory,
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return blockContext.run({ world: World, blockPos: BlockPos ->
+        return blockContext.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
                 ).block != ENTANGLED_CHEST

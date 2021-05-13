@@ -13,7 +13,7 @@ import net.minecraft.util.registry.Registry
 class VacuumHopperRecipeSerializer : RecipeSerializer<VacuumHopperRecipe> {
 
     override fun write(buf: PacketByteBuf, recipe: VacuumHopperRecipe) {
-        recipe.previewInputs.forEach {
+        recipe.ingredients.forEach {
             it.write(buf)
         }
         buf.writeInt(recipe.xpInput)

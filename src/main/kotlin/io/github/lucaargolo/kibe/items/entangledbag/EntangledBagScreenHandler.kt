@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.server.world.ServerWorld
@@ -16,7 +16,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @Suppress("UNUSED_PARAMETER") hand: Hand, val world: World, val tag: CompoundTag): ScreenHandler(getContainerInfo(ENTANGLED_BAG)?.handlerType, syncId) {
+class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @Suppress("UNUSED_PARAMETER") hand: Hand, val world: World, val tag: NbtCompound): ScreenHandler(getContainerInfo(ENTANGLED_BAG)?.handlerType, syncId) {
 
     private fun hasPersistentState(): Boolean = !world.isClient
 

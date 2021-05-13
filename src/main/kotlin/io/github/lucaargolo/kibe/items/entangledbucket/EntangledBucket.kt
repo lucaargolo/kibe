@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.*
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
@@ -188,8 +188,8 @@ class EntangledBucket(settings: Settings): Item(settings)  {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         if(context.player?.isSneaking == true) {
             (context.world.getBlockEntity(context.blockPos) as? EntangledTankEntity)?.let{ blockEntity ->
-                val blockEntityTag = blockEntity.writeNbt(CompoundTag())
-                val newTag = CompoundTag()
+                val blockEntityTag = blockEntity.writeNbt(NbtCompound())
+                val newTag = NbtCompound()
                 newTag.putString("key", blockEntityTag.getString("key"))
                 newTag.putString("owner", blockEntityTag.getString("owner"))
                 (1..8).forEach {
@@ -205,7 +205,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         return ActionResult.PASS
     }
 
-    private fun getFluidInv(world: World?, tag: CompoundTag): SimpleFixedFluidInv {
+    private fun getFluidInv(world: World?, tag: NbtCompound): SimpleFixedFluidInv {
         val key = tag.getString("key")
         val colorCode = tag.getString("colorCode")
         val fluidInv = if(world is ServerWorld) {
@@ -223,11 +223,11 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         return fluidInv
     }
 
-    private fun getTag(stack: ItemStack): CompoundTag {
+    private fun getTag(stack: ItemStack): NbtCompound {
         return if(stack.hasTag()) {
             stack.orCreateTag
         }else{
-            val newTag = CompoundTag()
+            val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)
             (1..8).forEach {
                 newTag.putString("rune$it", DyeColor.WHITE.name)

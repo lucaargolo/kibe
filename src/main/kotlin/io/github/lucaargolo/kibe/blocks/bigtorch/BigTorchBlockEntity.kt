@@ -10,7 +10,7 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.state.property.Properties
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
@@ -51,24 +51,24 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
         updateValues()
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         //tag.putInt("suppressedSpawns", suppressedSpawns)
         Inventories.writeNbt(tag, inventory)
         return super.writeNbt(tag)
     }
 
-    override fun readNbt(tag: CompoundTag?) {
+    override fun readNbt(tag: NbtCompound?) {
         super.readNbt(tag)
         //suppressedSpawns = tag.getInt("suppressedSpawns")
         Inventories.readNbt(tag, inventory)
         updateValues()
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         return writeNbt(tag)
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         readNbt(tag)
     }
 

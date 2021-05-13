@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.PersistentState
 
@@ -18,9 +18,9 @@ class EntangledChestState : PersistentState() {
         return inventoryMap[colorCode] != null
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         inventoryMap.forEach { (colorCode, inventory) ->
-            val subTag = CompoundTag()
+            val subTag = NbtCompound()
             Inventories.writeNbt(subTag, inventory)
             tag.put(colorCode, subTag)
         }
@@ -68,11 +68,11 @@ class EntangledChestState : PersistentState() {
     }
 
     companion object {
-        fun createFromTag(tag: CompoundTag): EntangledChestState {
+        fun createFromTag(tag: NbtCompound): EntangledChestState {
             val state = EntangledChestState()
             tag.keys.forEach {
                 val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
-                Inventories.readNbt(tag.get(it) as CompoundTag, tempInventory)
+                Inventories.readNbt(tag.get(it) as NbtCompound, tempInventory)
                 state.inventoryMap[it] = tempInventory
             }
             return state

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.Recipe
-import net.minecraft.recipe.RecipeFinder
+import net.minecraft.recipe.RecipeMatcher
 import net.minecraft.util.Identifier
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
@@ -27,22 +27,22 @@ class VacuumHopperRecipe(private val id: Identifier, private val output: ItemSta
 
     override fun getOutput(): ItemStack = output
 
-    override fun getRecipeKindIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.defaultStack
+    override fun createIcon(): ItemStack  = Items.EXPERIENCE_BOTTLE.defaultStack
 
-    override fun getPreviewInputs() = input
+    override fun getIngredients() = input
 
     override fun matches(inv: CraftingInventory, world: World): Boolean {
-        val recipeFinder = RecipeFinder()
+        val recipeFinder = RecipeMatcher()
         var i = 0
 
         for (j in 0 until inv.size()) {
             val itemStack: ItemStack = inv.getStack(j)
             if (!itemStack.isEmpty) {
                 ++i
-                recipeFinder.addItem(itemStack, 1)
+                recipeFinder.addInput(itemStack, 1)
             }
         }
 
-        return i == input.size && recipeFinder.findRecipe(this, null as IntList?)
+        return i == input.size && recipeFinder.match(this, null as IntList?)
     }
 }

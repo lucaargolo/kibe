@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -19,12 +19,12 @@ import net.minecraft.world.World
 class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
-        if(!stack.hasTag()) stack.orCreateTag.put("BlockEntityTag", CompoundTag())
+        if(!stack.hasTag()) stack.orCreateTag.put("BlockEntityTag", NbtCompound())
         super.inventoryTick(stack, world, entity, slot, selected)
     }
 
     override fun onCraft(stack: ItemStack, world: World, player: PlayerEntity) {
-        stack.orCreateTag.put("BlockEntityTag", CompoundTag())
+        stack.orCreateTag.put("BlockEntityTag", NbtCompound())
         super.onCraft(stack, world, player)
     }
 

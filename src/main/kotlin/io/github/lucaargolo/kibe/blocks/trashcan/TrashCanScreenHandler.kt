@@ -84,7 +84,7 @@ class TrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, val e
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return blockContext.run({ world: World, blockPos: BlockPos ->
+        return blockContext.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
                 ).block != TRASH_CAN

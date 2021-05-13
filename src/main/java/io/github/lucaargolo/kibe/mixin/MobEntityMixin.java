@@ -7,7 +7,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,16 +28,15 @@ public class MobEntityMixin {
     public void method_29506(PlayerEntity playerEntity, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ItemStack stack = playerEntity.getStackInHand(hand);
         Item item = stack.getItem();
-        if(item instanceof Lasso) {
-            CompoundTag stackTag = stack.getTag();
+        if(item instanceof Lasso lasso) {
+            NbtCompound stackTag = stack.getTag();
             MobEntity entity = (MobEntity) ((Object) this);
-            Lasso lasso = (Lasso) item;
             if(stackTag != null && !stackTag.contains("Entity")) {
                 if (lasso.canStoreEntity(entity.getType())) {
                     if(entity.isLeashed()) entity.detachLeash(true, true);
                     entity.fallDistance = 0;
-                    CompoundTag tag = new CompoundTag();
-                    entity.saveSelfToTag(tag);
+                    NbtCompound tag = new NbtCompound();
+                    entity.saveSelfNbt(tag);
                     stackTag.put("Entity", tag);
                     stack.setTag(stackTag);
                     entity.remove(Entity.RemovalReason.DISCARDED);

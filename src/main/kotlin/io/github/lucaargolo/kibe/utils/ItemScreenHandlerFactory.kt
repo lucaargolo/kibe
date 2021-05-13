@@ -5,13 +5,13 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.Item
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Hand
 
-class ItemScreenHandlerFactory(val item: Item, val hand: Hand, val tag: CompoundTag): ExtendedScreenHandlerFactory {
+class ItemScreenHandlerFactory(val item: Item, val hand: Hand, val tag: NbtCompound): ExtendedScreenHandlerFactory {
 
     override fun createMenu(syncId: Int, playerInv: PlayerInventory, player: PlayerEntity): ScreenHandler {
         val world = player.world
@@ -22,7 +22,7 @@ class ItemScreenHandlerFactory(val item: Item, val hand: Hand, val tag: Compound
 
     override fun writeScreenOpeningData(p0: ServerPlayerEntity?, p1: PacketByteBuf?) {
         p1?.writeEnumConstant(hand)
-        p1?.writeCompoundTag(tag)
+        p1?.writeNbt(tag)
     }
 
     override fun getDisplayName() = getContainerInfo(item)!!.title

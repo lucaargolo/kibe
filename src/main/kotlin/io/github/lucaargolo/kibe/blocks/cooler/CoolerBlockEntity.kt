@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -17,21 +17,21 @@ class CoolerBlockEntity(cooler: Cooler, pos: BlockPos, state: BlockState): Block
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         Inventories.writeNbt(tag, inventory)
         return super.writeNbt(tag)
     }
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         Inventories.readNbt(tag, inventory)
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         return writeNbt(tag)
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         readNbt(tag)
     }
 

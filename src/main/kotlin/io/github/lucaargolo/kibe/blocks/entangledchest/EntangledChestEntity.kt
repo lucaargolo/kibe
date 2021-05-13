@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
@@ -60,7 +60,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         super.markDirty()
     }
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
@@ -70,7 +70,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         owner = tag.getString("owner")
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -81,7 +81,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         Inventories.readNbt(tag, this.inventory)
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         super.writeNbt(tag)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
@@ -89,10 +89,10 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         tag.putString("key", key)
         tag.putString("owner", owner)
         if(hasPersistentState()) {
-            var subTag = CompoundTag()
+            var subTag = NbtCompound()
             subTag = getPersistentState()!!.writeNbt(subTag)
             if(subTag[colorCode] != null) {
-                subTag = subTag.get(colorCode) as CompoundTag
+                subTag = subTag.get(colorCode) as NbtCompound
                 tag.put("Items", subTag.get("Items"))
             }
         }
@@ -100,7 +100,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         return tag
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }

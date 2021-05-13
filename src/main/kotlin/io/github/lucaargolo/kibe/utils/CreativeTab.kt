@@ -20,7 +20,7 @@ import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
@@ -65,7 +65,7 @@ fun initCreativeTab() {
                     val key = FluidKeys.get(fluid)
                     if(!key.entry.isEmpty) {
                         val tag = itemStack.orCreateTag
-                        val blockEntityTag = CompoundTag()
+                        val blockEntityTag = NbtCompound()
                         val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
                         fluidInv.setInvFluid(0, key.withAmount(FluidAmount.ofWhole(16)), Simulation.ACTION)
                         blockEntityTag.put("fluidInv", fluidInv.toTag())

@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.*
 import net.minecraft.util.*
 import net.minecraft.world.World
@@ -32,8 +32,8 @@ class EntangledBag(settings: Settings): Item(settings){
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         if(context.world.getBlockState(context.blockPos).block is EntangledChest && context.player != null && context.player!!.isSneaking) {
             val blockEntity = (context.world.getBlockEntity(context.blockPos) as EntangledChestEntity)
-            val blockEntityTag = blockEntity.writeNbt(CompoundTag())
-            val newTag = CompoundTag()
+            val blockEntityTag = blockEntity.writeNbt(NbtCompound())
+            val newTag = NbtCompound()
             newTag.putString("key", blockEntityTag.getString("key"))
             newTag.putString("owner", blockEntityTag.getString("owner"))
             (1..8).forEach {
@@ -47,11 +47,11 @@ class EntangledBag(settings: Settings): Item(settings){
         return ActionResult.PASS
     }
 
-    private fun getTag(stack: ItemStack): CompoundTag {
+    private fun getTag(stack: ItemStack): NbtCompound {
         return if(stack.hasTag()) {
             stack.orCreateTag
         }else{
-            val newTag = CompoundTag()
+            val newTag = NbtCompound()
             newTag.putString("key", EntangledChest.DEFAULT_KEY)
             (1..8).forEach {
                 newTag.putString("rune$it", DyeColor.WHITE.name)

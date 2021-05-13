@@ -101,9 +101,10 @@ private fun setupFluidRendering(still: Fluid?, flowing: Fluid?, textureFluidId: 
 
     ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(object :
         SimpleSynchronousResourceReloadListener {
+
         override fun getFabricId() = listenerId
 
-        override fun apply(resourceManager: ResourceManager?) {
+        override fun reload(resourceManager: ResourceManager?) {
             val atlas: Function<Identifier, Sprite> =
                 MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
             fluidSprites[0] = atlas.apply(stillSpriteId)

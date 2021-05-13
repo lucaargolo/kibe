@@ -73,7 +73,7 @@ class ContainerInfo<T: ScreenHandler>(
         title = TranslatableText("screen.$MOD_ID.${id.path}")
         handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
             val hand = packetByteBuf.readEnumConstant(Hand::class.java)
-            val tag = packetByteBuf.readCompoundTag()!!
+            val tag = packetByteBuf.readNbt()!!
             handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, hand, playerInventory.player.world, tag) as T
             handler
         }

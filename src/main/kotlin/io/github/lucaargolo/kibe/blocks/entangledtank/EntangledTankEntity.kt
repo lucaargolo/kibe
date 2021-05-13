@@ -10,8 +10,8 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.fluid.Fluids
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
@@ -69,7 +69,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         super.markDirty()
     }
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
@@ -79,7 +79,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         owner = tag.getString("owner")
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -89,7 +89,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         fluidInv.fromTag(tag)
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         super.writeNbt(tag)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
@@ -97,16 +97,16 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         tag.putString("key", key)
         tag.putString("owner", owner)
         if(persistentState != null) {
-            var subTag = CompoundTag()
+            var subTag = NbtCompound()
             subTag = persistentState!!.writeNbt(subTag)
             subTag = subTag.getCompound(colorCode)
-            tag.put("tanks", subTag.get("tanks") ?: ListTag())
+            tag.put("tanks", subTag.get("tanks") ?: NbtList())
         }
         else fluidInv.toTag(tag)
         return tag
     }
 
-    override fun toClientTag(tag: CompoundTag) = writeNbt(tag)
+    override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
 
     companion object {
 

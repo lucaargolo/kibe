@@ -75,7 +75,7 @@ class BigTorchScreenHandler (syncId: Int, playerInventory: PlayerInventory, val 
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
                 ).block != BIG_TORCH

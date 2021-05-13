@@ -10,7 +10,7 @@ import io.github.lucaargolo.kibe.utils.plus
 import net.minecraft.block.BlockState
 import net.minecraft.block.HopperBlock
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
@@ -23,13 +23,13 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
             fluidInv.setInvFluid(0, value, Simulation.ACTION)
         }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         super.writeNbt(tag)
         fluidInv.toTag(tag)
         return tag
     }
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         fluidInv.fromTag(tag)
     }

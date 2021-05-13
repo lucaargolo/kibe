@@ -15,7 +15,7 @@ public abstract class ShapedRecipeMixin {
 
     @Shadow public abstract ItemStack getOutput();
 
-    @Inject(at = @At("HEAD"), method = "matchesSmall", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "matchesPattern", cancellable = true)
     private void matchesSmall(CraftingInventory inv, int offsetX, int offsetY, boolean bl, CallbackInfoReturnable<Boolean> info) {
         if(getOutput().getItem() == ItemCompendiumKt.getGLIDER_LEFT_WING() || getOutput().getItem() == ItemCompendiumKt.getGLIDER_RIGHT_WING()) {
             if(bl) info.setReturnValue(false);

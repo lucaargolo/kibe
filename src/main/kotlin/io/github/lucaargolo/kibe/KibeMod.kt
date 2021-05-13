@@ -36,9 +36,6 @@ import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
 import io.netty.buffer.Unpooled
-import me.shedaniel.autoconfig.AutoConfig
-import me.shedaniel.autoconfig.annotation.Config
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -186,8 +183,8 @@ fun initPacketsClient() {
 }
 
 fun initExtras() {
-    AutoConfig.register(ModConfig::class.java) { cfg: Config, cls: Class<ModConfig> -> JanksonConfigSerializer(cfg, cls) }
-    MOD_CONFIG = AutoConfig.getConfigHolder(ModConfig::class.java).config
+    //TODO: Fix the config
+    MOD_CONFIG = ModConfig()
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, server)}, { ChunkLoaderState(server) }, "kibe_chunk_loaders")
     }

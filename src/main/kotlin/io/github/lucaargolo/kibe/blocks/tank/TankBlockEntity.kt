@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.fluid.Fluids
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -64,20 +64,20 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
         broken = true
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         tag.put("fluidInv", fluidInv.toTag())
         return if(broken) tag else super.writeNbt(tag)
     }
 
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         fluidInv.fromTag(tag.getCompound("fluidInv"))
     }
 
-    override fun toClientTag(tag: CompoundTag) = writeNbt(tag)
+    override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
 
-    override fun fromClientTag(tag: CompoundTag) = readNbt(tag)
+    override fun fromClientTag(tag: NbtCompound) = readNbt(tag)
 
     companion object {
 

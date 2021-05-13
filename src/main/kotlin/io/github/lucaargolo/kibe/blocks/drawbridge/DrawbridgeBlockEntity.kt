@@ -14,8 +14,8 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.state.property.Properties
@@ -44,23 +44,23 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         EXTENDED
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registry.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
-        val listTag = ListTag()
+        val nbtList = NbtList()
         for (i in inventory.indices) {
             val itemStack = inventory[i]
-            val compoundTag = CompoundTag()
-            compoundTag.putByte("Slot", i.toByte())
-            itemStack.writeNbt(compoundTag)
-            listTag.add(compoundTag)
+            val nbtCompound = NbtCompound()
+            nbtCompound.putByte("Slot", i.toByte())
+            itemStack.writeNbt(nbtCompound)
+            nbtList.add(nbtCompound)
         }
-        tag.put("Items", listTag)
+        tag.put("Items", nbtList)
         return super.writeNbt(tag)
     }
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         this.state = try {
             State.valueOf(tag.getString("state"))
@@ -72,11 +72,11 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         Inventories.readNbt(tag, inventory)
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         return writeNbt(tag)
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         readNbt(tag)
         MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }

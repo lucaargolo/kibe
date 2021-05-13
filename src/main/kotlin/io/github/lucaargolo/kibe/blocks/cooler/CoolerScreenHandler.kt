@@ -58,7 +58,7 @@ class CoolerScreenHandler(syncId: Int, playerInventory: PlayerInventory, val ent
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(blockPos).block != COOLER) false
             else player.squaredDistanceTo(
                 blockPos.x + .5,

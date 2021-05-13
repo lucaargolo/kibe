@@ -3,7 +3,7 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import net.minecraft.client.network.ClientPlayerEntity
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.PersistentState
@@ -32,7 +32,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
         return fluidInvMap[colorCode] ?: createInventory(colorCode)
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         fluidInvMap.forEach { (colorCode, fluidInv) ->
             tag.put(colorCode, fluidInv.toTag())
         }
@@ -56,7 +56,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
             }
         }
 
-        fun createFromTag(tag: CompoundTag, world: ServerWorld, key: String): EntangledTankState {
+        fun createFromTag(tag: NbtCompound, world: ServerWorld, key: String): EntangledTankState {
             val state = EntangledTankState(world, key)
             tag.keys.forEach {
                 val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))

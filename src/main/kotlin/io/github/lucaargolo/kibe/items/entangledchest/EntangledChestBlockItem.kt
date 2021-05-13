@@ -6,7 +6,7 @@ import net.minecraft.block.Block
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
@@ -21,9 +21,9 @@ class EntangledChestBlockItem(settings: Settings): BlockItem(ENTANGLED_CHEST, se
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
         val tag = if(stack.hasTag() && stack.tag!!.contains("BlockEntityTag") ) {
-            stack.orCreateTag.get("BlockEntityTag") as CompoundTag
+            stack.orCreateTag.get("BlockEntityTag") as NbtCompound
         }else{
-            val newTag = CompoundTag()
+            val newTag = NbtCompound()
             newTag.putString("key", EntangledChest.DEFAULT_KEY)
             (1..8).forEach {
                 newTag.putString("rune$it", DyeColor.WHITE.name)

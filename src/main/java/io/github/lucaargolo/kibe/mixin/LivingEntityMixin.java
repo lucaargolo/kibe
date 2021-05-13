@@ -29,8 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
 
-    @Shadow public abstract BlockState getBlockState();
-
     @Shadow public abstract ItemStack getStackInHand(Hand hand);
 
     public LivingEntityMixin(EntityType<?> type, World world) {

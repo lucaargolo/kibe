@@ -35,10 +35,10 @@ class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory
 
     override fun drawForeground(matrices: MatrixStack?, mouseX: Int, mouseY: Int) {
         val stringArray = title.string.split(" ").toMutableList()
-        drawCenteredString(matrices, textRenderer, stringArray[0],backgroundWidth/2, 6, 0xFFFFFF)
+        drawCenteredText(matrices, textRenderer, stringArray[0],backgroundWidth/2, 6, 0xFFFFFF)
         stringArray.removeAt(0)
-        drawCenteredString(matrices, textRenderer, Strings.join(stringArray, " "),backgroundWidth/2, 17, 0xFFFFFF)
-        textRenderer.draw(matrices, field_29347, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
+        drawCenteredText(matrices, textRenderer, Strings.join(stringArray, " "),backgroundWidth/2, 17, 0xFFFFFF)
+        textRenderer.draw(matrices, displayName, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
     }
 
 }

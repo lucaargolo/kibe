@@ -17,7 +17,7 @@ import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -27,9 +27,9 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
 
     override fun render(stack: ItemStack, mode: ModelTransformation.Mode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
         val tag = if(stack.hasTag() && stack.tag!!.contains("BlockEntityTag") ) {
-            stack.orCreateTag.get("BlockEntityTag") as CompoundTag
+            stack.orCreateTag.get("BlockEntityTag") as NbtCompound
         }else{
-            val newTag = CompoundTag()
+            val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)
             (1..8).forEach {
                 newTag.putString("rune$it", DyeColor.WHITE.name)

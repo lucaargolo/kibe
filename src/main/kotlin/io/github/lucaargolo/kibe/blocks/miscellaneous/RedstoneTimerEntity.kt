@@ -4,7 +4,7 @@ import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -14,24 +14,24 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer, pos: BlockPos, state
     var current = 0
     var level = 0
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         current = tag.getInt("current")
         level = tag.getInt("level")
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         current = tag.getInt("current")
         level = tag.getInt("level")
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         tag.putInt("current", current)
         tag.putInt("level", level)
         return super.writeNbt(tag)
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         tag.putInt("current", current)
         tag.putInt("level", level)
         return tag

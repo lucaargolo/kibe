@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BucketItemAccessor",
+    "ClientPlayNetworkHandlerMixin",
     "CraftingTableContainerMixin",
     "EndermanEntityMixin",
     "EntityMixin",
@@ -16,18 +17,19 @@
     "PlayerInventoryMixin",
     "ServerWorldMixin",
     "ShapedRecipeMixin",
+    "SpawnHelperInvoker",
     "ThreadedAnvilChunkStorageMixin",
     "WitherRoseBlockMixin",
     "WorldMixin"
   ],
   "client": [
     "BipedEntityModelMixin",
+    "EntityModelsMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
-    "PlayerEntityRendererMixin",
-    "EntityModelsMixin"
+    "PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

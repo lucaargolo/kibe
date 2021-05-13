@@ -25,8 +25,8 @@ class CoolerBlockItemScreen(handler: CoolerBlockItemScreenHandler, inventory: Pl
     }
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
-        drawCenteredString(matrices, textRenderer, title.string,backgroundWidth/2, 6, 0xFFFFFF)
-        textRenderer.draw(matrices, field_29347, 8f, backgroundHeight - 96 + 4f, 4210752)
+        drawCenteredText(matrices, textRenderer, title.string,backgroundWidth/2, 6, 0xFFFFFF)
+        textRenderer.draw(matrices, displayName, 8f, backgroundHeight - 96 + 4f, 4210752)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {

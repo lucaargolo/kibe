@@ -85,7 +85,7 @@ class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory,
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(blockPos).block != DRAWBRIDGE) false
             else player.squaredDistanceTo(
                 blockPos.x + .5,

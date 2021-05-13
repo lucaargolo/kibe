@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
+import io.github.lucaargolo.kibe.mixin.SpawnHelperInvoker
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.*
@@ -10,8 +11,8 @@ import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.EmptyFluid
 import net.minecraft.fluid.Fluids
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
@@ -20,6 +21,7 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
+import net.minecraft.util.collection.Weighted
 import net.minecraft.util.collection.WeightedPicker
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -45,7 +47,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
-            val entries = (world as ServerWorld).chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos.up())
+            val entries = (world as ServerWorld).chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos.up()).entries
             if (entries.isEmpty()) {
                 player.sendMessage(LiteralText("Nothing can spawn"), false)
                 return ActionResult.SUCCESS
@@ -110,14 +112,14 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         }
     }
 
-    private fun getSpawnTag(): CompoundTag {
-        val activeEffect = CompoundTag()
+    private fun getSpawnTag(): NbtCompound {
+        val activeEffect = NbtCompound()
         activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
         activeEffect.putInt("Amplifier", 1)
         activeEffect.putInt("Duration", 300)
-        val activeEffects = ListTag()
+        val activeEffects = NbtList()
         activeEffects.add(activeEffect)
-        val tag = CompoundTag()
+        val tag = NbtCompound()
         tag.put("ActiveEffects", activeEffects)
         return tag
     }
@@ -137,9 +139,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     }
 
     private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
-        val spawnList = world.chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos)
-        if (spawnList.size == 0) return null
-        val optionalEntry: Optional<SpawnSettings.SpawnEntry> = WeightedPicker.getRandom(random, spawnList)
+        val optionalEntry: Optional<SpawnSettings.SpawnEntry> = SpawnHelperInvoker.pickRandomSpawnEntry(world, world.structureAccessor, world.chunkManager.chunkGenerator, SpawnGroup.MONSTER, random, pos)
         val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
         BigTorchBlockEntity.setException(true)
         SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random).let {

@@ -22,7 +22,7 @@ import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
@@ -51,7 +51,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
         val tag = if(stack.hasTag()) {
             stack.orCreateTag
         }else{
-            val newTag = CompoundTag()
+            val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)
             (1..8).forEach {
                 newTag.putString("rune$it", DyeColor.WHITE.name)

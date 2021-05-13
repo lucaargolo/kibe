@@ -173,7 +173,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
                 ).block != VACUUM_HOPPER
@@ -198,7 +198,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
                 if (!insertItem(itemStack2, 11, 47, true)) {
                     return ItemStack.EMPTY
                 }
-                slot.onStackChanged(itemStack2, itemStack)
+                slot.onQuickTransfer(itemStack2, itemStack)
             } else if (invSlot in 11..46) {
                 if (!insertItem(itemStack2, 1, 11, false)) {
                     if (invSlot < 38) {

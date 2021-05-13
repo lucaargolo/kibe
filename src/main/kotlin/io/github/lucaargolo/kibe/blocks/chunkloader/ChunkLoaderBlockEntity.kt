@@ -1,14 +1,13 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import io.github.lucaargolo.kibe.MOD_CONFIG
-import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
@@ -36,13 +35,13 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
         Pair(-1, 1), Pair(0, 1), Pair(1, 1)
     )
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         tag.putString("ownerUUID", ownerUUID)
         tag.putLong("ownerLastSeen", ownerLastSeen)
         tag.putString("disabledReason", disabledReason.name)
-        val list = ListTag()
+        val list = NbtList()
         enabledChunks.forEach {
-            val innerTag = CompoundTag()
+            val innerTag = NbtCompound()
             innerTag.putInt("x", it.first)
             innerTag.putInt("z", it.second)
             list.add(innerTag)
@@ -51,26 +50,26 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
         return super.writeNbt(tag)
     }
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         ownerUUID = tag.getString("ownerUUID")
         ownerLastSeen = tag.getLong("ownerLastSeen")
         disabledReason = try { DisabledReason.valueOf(tag.getString("disabledReason")) } catch (ignored: Exception) { ignored.printStackTrace(); DisabledReason.NONE }
-        val list = tag.get("enabledChunks") as? ListTag
+        val list = tag.get("enabledChunks") as? NbtList
         list?.let {
             enabledChunks = mutableListOf()
             list.forEach {
-                val ct = it as CompoundTag
+                val ct = it as NbtCompound
                 enabledChunks.add(Pair(ct.getInt("x"), ct.getInt("z")))
             }
         }
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         return writeNbt(tag)
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         readNbt(tag)
     }
 

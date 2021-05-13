@@ -7,8 +7,8 @@ import net.minecraft.entity.SpawnGroup
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
@@ -39,7 +39,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
                     else -> pos
                 }
 
-                val newTag = this.addToTag(stackTag["Entity"] as CompoundTag)
+                val newTag = this.addToTag(stackTag["Entity"] as NbtCompound)
                 if(newTag.contains("APX")) {
                     newTag.putInt("APX", targetPos.x)
                     newTag.putInt("APY", targetPos.y)
@@ -70,21 +70,21 @@ abstract class Lasso(settings: Settings): Item(settings) {
         super.appendTooltip(stack, world, tooltip, context)
     }
 
-    abstract fun addToTag(tag: CompoundTag): CompoundTag
+    abstract fun addToTag(tag: NbtCompound): NbtCompound
     abstract fun canStoreEntity(entityType: EntityType<*>): Boolean
 
     class GoldenLasso(settings: Settings): Lasso(settings) {
-        override fun addToTag(tag: CompoundTag): CompoundTag = tag
+        override fun addToTag(tag: NbtCompound): NbtCompound = tag
         override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup != SpawnGroup.MONSTER && entityType.spawnGroup != SpawnGroup.MISC
     }
 
     class CursedLasso(settings: Settings): Lasso(settings) {
-        override fun addToTag(tag: CompoundTag): CompoundTag {
-            val activeEffect = CompoundTag()
+        override fun addToTag(tag: NbtCompound): NbtCompound {
+            val activeEffect = NbtCompound()
             activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
             activeEffect.putInt("Amplifier", 1)
             activeEffect.putInt("Duration", 999999)
-            val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as ListTag else ListTag()
+            val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as NbtList else NbtList()
             activeEffects.add(activeEffect)
             tag.put("ActiveEffects", activeEffects)
             return tag
@@ -93,7 +93,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
     }
 
     class DiamondLasso(settings: Settings): Lasso(settings) {
-        override fun addToTag(tag: CompoundTag): CompoundTag = tag
+        override fun addToTag(tag: NbtCompound): NbtCompound = tag
         override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType == EntityType.VILLAGER || (entityType.spawnGroup != SpawnGroup.MISC && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER)
     }
 

@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.LongTag
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.NbtLong
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
@@ -78,7 +78,7 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
         }
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
         loadedChunkMap.keys.forEach { dim ->
             val longArray = LongArray(loadedChunkMap[dim]!!.size)
             loadedChunkMap[dim]!!.forEachIndexed { idx, pos ->
@@ -90,7 +90,7 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
     }
 
     companion object {
-        fun createFromTag(tag: CompoundTag, server: MinecraftServer): ChunkLoaderState {
+        fun createFromTag(tag: NbtCompound, server: MinecraftServer): ChunkLoaderState {
             val state = ChunkLoaderState(server)
             if(state.loadedChunkMap.keys.size > 0) {
                 state.loadedChunkMap.forEach { (key, pos) ->
@@ -106,12 +106,12 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
             }
             state.loadedChunkMap = mutableMapOf()
             tag.keys.forEach { key ->
-                val registryKey = RegistryKey.of(Registry.DIMENSION, Identifier(key))
+                val registryKey = RegistryKey.of(Registry.WORLD_KEY, Identifier(key))
                 val world = server.getWorld(registryKey)
                 world?.let { _ ->
                     state.loadedChunkMap[registryKey] = mutableListOf()
-                    val listTag = tag.getLongArray(key)
-                    listTag.forEach {
+                    val NbtList = tag.getLongArray(key)
+                    NbtList.forEach {
                         val blockPos = BlockPos.fromLong(it)
                         val blockState = world.getBlockState(blockPos)
                         if(blockState.block is ChunkLoader) {

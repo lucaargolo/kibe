@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
@@ -82,10 +82,10 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
         if(world?.isClient == false) sync()
     }
 
-    override fun writeNbt(tag: CompoundTag): CompoundTag {
-        val tanksTag = CompoundTag()
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
+        val tanksTag = NbtCompound()
         tanks.forEachIndexed { index, tank ->
-            val tankTag = CompoundTag()
+            val tankTag = NbtCompound()
             tankTag.put("fluids", tank.volume.toTag())
             tanksTag.put(index.toString(), tankTag)
         }
@@ -94,9 +94,9 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
         return super.writeNbt(tag)
     }
 
-    override fun toClientTag(tag: CompoundTag) = writeNbt(tag)
+    override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
 
-    override fun readNbt(tag: CompoundTag) {
+    override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         val tanksTag = tag.getCompound("tanks")
         tanksTag.keys.forEachIndexed { idx, key ->
@@ -112,7 +112,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
         Inventories.readNbt(tag, inventory)
     }
 
-    override fun fromClientTag(tag: CompoundTag) = readNbt(tag)
+    override fun fromClientTag(tag: NbtCompound) = readNbt(tag)
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack
@@ -192,7 +192,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
                         it.stack = entity.addStack(it.stack)
                     }
                 }
-                val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
+                val vel = it.pos.relativize(vecPos).normalize().multiply(0.1)
                 it.addVelocity(vel.x, vel.y, vel.z)
             }
         }
