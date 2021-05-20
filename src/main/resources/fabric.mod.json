@@ -32,9 +32,6 @@
     ],
     "client": [
       "io.github.lucaargolo.kibe.KibeModKt::initClient"
-    ],
-    "modmenu": [
-      "io.github.lucaargolo.kibe.compat.ModMenuCompat"
     ]
   },
   "mixins": [

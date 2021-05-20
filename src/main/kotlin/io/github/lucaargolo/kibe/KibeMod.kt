@@ -7,6 +7,8 @@ import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
@@ -37,9 +39,6 @@ import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
 import io.netty.buffer.Unpooled
-import me.shedaniel.autoconfig.AutoConfig
-import me.shedaniel.autoconfig.annotation.Config
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -48,16 +47,15 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
@@ -76,6 +74,11 @@ import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import java.io.File
+import java.io.PrintWriter
+import java.nio.file.Files
 import java.util.*
 import java.util.function.Consumer
 
@@ -88,7 +91,36 @@ val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
 var TANK_CUSTOM_MODEL: Any? = null
-var MOD_CONFIG: ModConfig = ModConfig()
+val LOGGER: Logger = LogManager.getLogger("Kibe")
+val MOD_CONFIG: ModConfig by lazy {
+    val parser = JsonParser()
+    val gson = GsonBuilder().setPrettyPrinting().create()
+    val configFile = File("${FabricLoader.getInstance().configDir}${File.separator}$MOD_ID.json")
+    var finalConfig: ModConfig
+    LOGGER.info("Trying to read config file...")
+    try {
+        if (configFile.createNewFile()) {
+            LOGGER.info("No config file found, creating a new one...")
+            val json: String = gson.toJson(parser.parse(gson.toJson(ModConfig())))
+            PrintWriter(configFile).use { out -> out.println(json) }
+            finalConfig = ModConfig()
+            LOGGER.info("Successfully created default config file.")
+        } else {
+            LOGGER.info("A config file was found, loading it..")
+            finalConfig = gson.fromJson(String(Files.readAllBytes(configFile.toPath())), ModConfig::class.java)
+            if (finalConfig == null) {
+                throw NullPointerException("The config file was empty.")
+            } else {
+                LOGGER.info("Successfully loaded config file.")
+            }
+        }
+    } catch (exception: Exception) {
+        LOGGER.error("There was an error creating/loading the config file!", exception)
+        finalConfig = ModConfig()
+        LOGGER.warn("Defaulting to original config.")
+    }
+    finalConfig
+}
 
 fun Boolean.toInt() = if (this) 1 else 0
 
@@ -191,8 +223,7 @@ fun initPacketsClient() {
 }
 
 fun initExtras() {
-    AutoConfig.register(ModConfig::class.java) { cfg: Config, cls: Class<ModConfig> -> JanksonConfigSerializer(cfg, cls) }
-    MOD_CONFIG = AutoConfig.getConfigHolder(ModConfig::class.java).config
+    MOD_CONFIG.toString() //Used to init mod config here.
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }

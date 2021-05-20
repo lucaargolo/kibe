@@ -79,13 +79,6 @@ repositories {
         }
     }
     maven {
-        name "NerdHubMC"
-        url "https://maven.abusedmaster.xyz/"
-        content {
-            includeGroup "io.github.onyxstudios.Cardinal-Components-API"
-        }
-    }
-    maven {
         name "TerraformersMC"
         url "https://maven.terraformersmc.com/releases"
         content {
@@ -114,11 +107,10 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modImplementation ("dev.emi:trinkets:${project.trinkets_version}") {
-        exclude group: "io.github.onyxstudios", module: "Cardinal-Components-API"
+    modCompileOnly ("dev.emi:trinkets:${project.trinkets_version}") {
+        exclude group: "io.github.onyxstudios.Cardinal-Components-API", module: "cardinal-components-base"
+        exclude group: "io.github.onyxstudios.Cardinal-Components-API", module: "cardinal-components-entity"
     }
-    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
-    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
 
     modImplementation "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
     include "io.github.ladysnake:PlayerAbilityLib:${project.pal_version}"
@@ -131,7 +123,6 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
-
 }
 
 processResources {
