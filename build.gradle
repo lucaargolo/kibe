@@ -151,6 +151,27 @@ jar {
     from "LICENSE"
 }
 
+//Temporary maven publishing
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+        }
+    }
+
+    // select the repositories you want to publish to
+    repositories {
+        // uncomment to publish to the local maven
+        mavenLocal()
+    }
+}
+
 //Github publishing
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
