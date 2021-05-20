@@ -1,16 +1,20 @@
 pluginManagement {
     repositories {
         jcenter()
+        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        gradlePluginPortal()
+        mavenLocal()
     }
 
     plugins {
-        id 'fabric-loom' version loom_version
         id "org.jetbrains.kotlin.jvm" version kotlin_version
+        id 'fabric-loom' version loom_version
+        id "org.ajoberstar.grgit" version grgit_version
+        id "com.matthewprenger.cursegradle" version cursegradle_version
+        id "com.modrinth.minotaur" version modrinth_version
     }
 
 }
