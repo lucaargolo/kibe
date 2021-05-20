@@ -227,7 +227,7 @@ fun initExtras() {
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }
-    ServerPlayConnectionEvents.DISCONNECT.register { handler, server ->
+    ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
         EntangledTankState.ALL_TIME_PLAYER_REQUESTS.remove(handler.player)
         EntangledTankState.SERVER_PLAYER_REQUESTS.remove(handler.player)
     }
