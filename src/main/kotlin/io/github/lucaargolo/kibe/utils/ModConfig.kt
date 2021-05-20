@@ -10,6 +10,8 @@ class ModConfig {
         var tanksChangeLights: Boolean = true
         //How many mobs can the Cursed Dirt spawn in a chunk.
         var cursedDirtMobCap: Int = 25
+        //What mobs aren't allowed to spawn in cursed dirt
+        var cursedDirtBlacklist: ArrayList<String> = arrayListOf()
     }
 
     class ChunkLoaderModule {
