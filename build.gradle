@@ -51,49 +51,48 @@ def getBranch() {
 
 repositories {
     maven {
-        name "Fabric"
-        url "http://maven.fabricmc.net/"
+        name = "Fabric"
+        url "https://maven.fabricmc.net/"
         content {
             includeGroup "net.fabricmc"
         }
     }
     maven {
-        name "BuildCraft"
-        url "https://mod-buildcraft.com/maven"
+        name = "BuildCraft"
+        url = "https://mod-buildcraft.com/maven"
         content {
             includeGroup "alexiil.mc.lib"
         }
     }
     maven {
-        name "Ladysnake Libs"
-        url 'https://dl.bintray.com/ladysnake/libs'
+        name = "Ladysnake Mods"
+        url = "https://ladysnake.jfrog.io/artifactory/mods"
         content {
             includeGroup "io.github.ladysnake"
         }
     }
     maven {
-        name "JitPack"
-        url "https://jitpack.io"
+        name = "JitPack"
+        url = "https://jitpack.io"
         content {
             includeGroup "com.github.emilyploszaj"
         }
     }
     maven {
-        name "TerraformersMC"
-        url "https://maven.terraformersmc.com/releases"
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/releases"
         content {
             includeGroup "com.terraformersmc"
             includeGroup "dev.emi"
         }
     }
     maven {
-        name "Shedaniel"
+        name = "Shedaniel"
         url "https://maven.shedaniel.me/"
         content {
             includeGroup "me.shedaniel"
             includeGroup "me.shedaniel.cloth"
             includeGroup "me.shedaniel.cloth.api"
-            includeGroup "me.sargunvohra.mcmods"
         }
     }
     mavenLocal()
