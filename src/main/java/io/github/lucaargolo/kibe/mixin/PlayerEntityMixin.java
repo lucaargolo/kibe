@@ -67,6 +67,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         @SuppressWarnings("ConstantConditions")
         PlayerEntity player = (PlayerEntity) ((Object) this);
         //Glider logic
+        ItemStack cursorStack = player.inventory.getCursorStack();
+        if(cursorStack.getItem() instanceof Glider && Glider.Companion.isEnabled(cursorStack)) {
+            cursorStack.getOrCreateTag().putBoolean("enabled", false);
+        }
         if(!isOnGround() && !isTouchingWater() && !isFallFlying() && getVelocity().y < 0.0) {
             ItemStack mainHandStack = player.getMainHandStack();
             ItemStack offHandStack = player.getOffHandStack();
