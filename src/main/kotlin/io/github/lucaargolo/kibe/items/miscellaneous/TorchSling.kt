@@ -43,7 +43,7 @@ class TorchSling(settings: Settings): Item(settings) {
                 thrownTorchEntity.setItem(ItemStack(it.item))
                 thrownTorchEntity.setProperties(entity, entity.pitch, entity.yaw, 0f, tickStrength, 0f)
                 world.spawnEntity(thrownTorchEntity)
-                it.decrement(1)
+                if(!player.abilities.creativeMode) it.decrement(1)
             }
         }
 
