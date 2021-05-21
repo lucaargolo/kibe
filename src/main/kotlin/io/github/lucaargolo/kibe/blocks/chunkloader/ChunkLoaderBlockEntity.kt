@@ -27,6 +27,7 @@ class ChunkLoaderBlockEntity(val block: Block): BlockEntity(getEntityType(block)
     var disabledReason = DisabledReason.NONE
     private var ownerLastSeen = System.currentTimeMillis()
     private var delay = 0
+    private var dirty = false
 
     var enabledChunks = mutableListOf(
         Pair(-1, -1), Pair(0, -1), Pair(1, -1),
@@ -102,6 +103,11 @@ class ChunkLoaderBlockEntity(val block: Block): BlockEntity(getEntityType(block)
                         return
                     }
 
+                    if(dirty) {
+                        chunkLoaderState.removePos(pos, world)
+                        dirty = false
+                    }
+
                     chunkLoaderState.addPos(pos, world)
                 }
 
@@ -147,6 +153,11 @@ class ChunkLoaderBlockEntity(val block: Block): BlockEntity(getEntityType(block)
 
     override fun fromClientTag(tag: CompoundTag) {
         fromTag(block.defaultState, tag)
+    }
+
+    override fun markDirty() {
+        super.markDirty()
+        dirty = true
     }
 
     fun markDirtyAndSync() {
