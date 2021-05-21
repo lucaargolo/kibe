@@ -9,6 +9,7 @@
     "EntityMixin",
     "ExperienceOrbEntityAccessor",
     "HostileEntityMixin",
+    "LightStorageMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
     "MobSpawnerLogicMixin",
@@ -17,6 +18,7 @@
     "PlayerInventoryMixin",
     "ServerWorldMixin",
     "ShapedRecipeMixin",
+    "SpawnRestrictionMixin",
     "ThreadedAnvilChunkStorageMixin",
     "WitherRoseBlockMixin"
   ],

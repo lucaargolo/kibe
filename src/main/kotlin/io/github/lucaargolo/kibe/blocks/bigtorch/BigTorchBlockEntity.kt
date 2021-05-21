@@ -128,6 +128,8 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
     companion object {
         private val suppressedChunkMap = linkedMapOf<RegistryKey<World>, LinkedHashSet<ChunkPos>>()
         private var isException = false
+        var testingThread: Thread? = null
+        var isTesting = false
 
         fun setException(boolean: Boolean) {
             isException = boolean
