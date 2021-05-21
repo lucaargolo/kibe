@@ -1,6 +1,8 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity;
+import io.github.lucaargolo.kibe.utils.SpikeHelper;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -19,6 +21,15 @@ public class HostileEntityMixin {
     private static void isSpawnDark(ServerWorldAccess world, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> info) {
         if(BigTorchBlockEntity.Companion.isChunkSuppressed(world.toServerWorld().getRegistryKey(), new ChunkPos(pos))) {
             info.setReturnValue(false);
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Inject(at = @At("HEAD"), method = "shouldDropLoot", cancellable = true)
+    private void shouldDropLoot(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity livingEntity = ((LivingEntity) ((Object) this));
+        if(SpikeHelper.INSTANCE.shouldCancelLootDrop(livingEntity)) {
+            cir.setReturnValue(false);
         }
     }
 

@@ -6,14 +6,14 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:iron_sword"
+      "item": "minecraft:golden_sword"
     },
     "_": {
       "item": "kibe:stone_spikes"
     }
   },
   "result": {
-    "item": "kibe:iron_spikes",
+    "item": "kibe:gold_spikes",
     "count": 4
   }
 }

@@ -1,7 +1,9 @@
 {
   "itemGroup.kibe.creative_tab": "Kibe",
 
+  "block.kibe.stone_spikes": "Stone Spikes",
   "block.kibe.iron_spikes": "Iron Spikes",
+  "block.kibe.gold_spikes": "Gold Spikes",
   "block.kibe.diamond_spikes": "Diamond Spikes",
 
   "block.kibe.regular_conveyor_belt": "Regular Conveyor Belt",
@@ -175,7 +177,9 @@
   "tooltip.kibe.lore.cursed_lasso.2": "§4§oBeware! They may come out cursed",
   "tooltip.kibe.lore.diamond_lasso": "§5§oA magical lasso that hold most creatures",
 
+  "tooltip.kibe.lore.stone_spikes": "§5§oEntities don't drop anything",
   "tooltip.kibe.lore.iron_spikes": "§5§oEntities drops regular items",
+  "tooltip.kibe.lore.gold_spikes": "§5§oEntities drops xp",
   "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
 
   "tooltip.kibe.lore.cooler": "§5§oAutomatically consumes any food stored in it",
@@ -192,13 +196,5 @@
   "screen.kibe.entangled_chest": "Entangled Chest",
   "screen.kibe.entangled_bag": "Entangled Bag",
   "screen.kibe.pocket_trash_can": "Pocket Trash Can",
-  "screen.kibe.pocket_crafting_table": "Pocket Crafting Table",
-
-  "text.autoconfig.kibe.category.miscellaneous": "Miscellaneous",
-  "text.autoconfig.kibe.option.miscellaneousModule.tanksChangeLight": "Tanks Change Light",
-  "text.autoconfig.kibe.option.miscellaneousModule.cursedDirtMobCap": "Cursed Dirt Mob Cap",
-  "text.autoconfig.kibe.category.chunk_loader": "Chunk Loader",
-  "text.autoconfig.kibe.option.chunkLoaderModule.checkForPlayer": "Check for Player",
-  "text.autoconfig.kibe.option.chunkLoaderModule.maxPerPlayer": "Max per Player",
-  "text.autoconfig.kibe.option.chunkLoaderModule.maxOfflineTime": "Max Offline Time"
+  "screen.kibe.pocket_crafting_table": "Pocket Crafting Table"
 }

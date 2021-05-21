@@ -6,14 +6,14 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:iron_sword"
+      "item": "minecraft:stone_sword"
     },
     "_": {
-      "item": "kibe:stone_spikes"
+      "item": "minecraft:cobblestone_slab"
     }
   },
   "result": {
-    "item": "kibe:iron_spikes",
+    "item": "kibe:stone_spikes",
     "count": 4
   }
 }

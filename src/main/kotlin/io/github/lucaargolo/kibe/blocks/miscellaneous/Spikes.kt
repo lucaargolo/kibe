@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import io.github.lucaargolo.kibe.utils.SpikeHelper
 import net.minecraft.block.*
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
@@ -14,8 +15,14 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class Spikes(private val damage: Float, private val isPlayer: Boolean, settings: Settings): Block(settings) {
+class Spikes(private val type: Type, settings: Settings): Block(settings) {
 
+    enum class Type(val damage: Float) {
+        STONE(4F),
+        IRON(6F),
+        GOLD(6F),
+        DIAMOND(8F),
+    }
 
     init {
         defaultState = defaultState.with(Properties.FACING, Direction.UP)
@@ -31,10 +38,12 @@ class Spikes(private val damage: Float, private val isPlayer: Boolean, settings:
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
         if(!world.isClient && entity is LivingEntity) {
-            if(isPlayer)
-                entity.damage(DamageSource.player(FakePlayerEntity(world)), damage)
-            else
-                entity.damage(DamageSource.GENERIC, damage)
+            SpikeHelper.setSpike(entity, type)
+            when(type) {
+                Type.IRON, Type.STONE -> entity.damage(DamageSource.GENERIC, type.damage)
+                Type.GOLD, Type.DIAMOND -> entity.damage(DamageSource.player(FakePlayerEntity(world)), type.damage)
+            }
+            SpikeHelper.setSpike(entity, null)
         }
     }
 
