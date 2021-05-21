@@ -7,6 +7,7 @@ import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.state.property.Properties
 import net.minecraft.util.math.Matrix4f
 import java.util.*
 import java.util.stream.IntStream
@@ -19,14 +20,16 @@ class VacuumHopperEntityRenderer(dispatcher: BlockEntityRenderDispatcher): Block
     private val random = Random(31100L)
 
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-        matrices.push()
-        val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
-        val m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
-        for (l in 1 until getLayersToRender(d)) {
-            renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
+        if(blockEntity.cachedState[Properties.ENABLED]) {
+            matrices.push()
+            val d = blockEntity.pos.getSquaredDistance(dispatcher.camera.pos, true)
+            val m = matrices.peek().model
+            renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(layerList[0]))
+            for (l in 1 until getLayersToRender(d)) {
+                renderMiddlePart(2.0f / (18 - l).toFloat(), m, vertexConsumers.getBuffer(layerList[l]))
+            }
+            matrices.pop()
         }
-        matrices.pop()
     }
 
     private fun renderMiddlePart(g: Float, matrix4f: Matrix4f, vertexConsumer: VertexConsumer) {

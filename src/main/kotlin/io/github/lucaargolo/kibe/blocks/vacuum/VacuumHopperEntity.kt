@@ -23,6 +23,7 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.state.property.Properties
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Tickable
@@ -176,12 +177,12 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper): LockableContai
     }
 
     override fun tick() {
-        val world = world ?: return
+        if(!cachedState[Properties.ENABLED]) return
         val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
         val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
         val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-        val validEntities = world.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
-        validEntities.forEach {
+        val validEntities = world?.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+        validEntities?.forEach {
             val distance: Double = it.pos.distanceTo(vecPos)
             if (distance < 1.0) {
                 if(it is ExperienceOrbEntity) {
