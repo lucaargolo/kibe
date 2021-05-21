@@ -11,6 +11,7 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
@@ -34,9 +35,7 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
     override fun tick() {
         if(count++ == 40) {
             count = 0
-            world?.let {
-                addSuppressedChunks(it.registryKey, this.getSuppressedChunks())
-            }
+            (world as? ServerWorld)?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks()) }
         }
     }
 
@@ -44,15 +43,15 @@ class BigTorchBlockEntity(bigTorch: BigTorch): BlockEntity(getEntityType(bigTorc
         var torchQuantity = 0.0
         inventory.forEach { torchQuantity += it.count }
         torchPercentage = (torchQuantity/(inventory.size*64.0))
-        world?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         chunkRadius = min(sqrt(torchQuantity / 9).toInt(), 8)
-        world?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        (world as? ServerWorld)?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         if(world?.getBlockState(pos)?.block == BIG_TORCH)
             world?.setBlockState(pos, cachedState.with(Properties.LEVEL_8, chunkRadius))
     }
 
     override fun markRemoved() {
-        world?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         super.markRemoved()
     }
 
