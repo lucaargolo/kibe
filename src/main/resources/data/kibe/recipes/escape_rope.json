@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##i",
+    "## ",
+    "## "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:string"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "kibe:escape_rope",
+    "count": 1
+  }
+}
