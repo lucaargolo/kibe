@@ -36,6 +36,7 @@
   "block.kibe.entangled_tank": "Entangled Tank",
   "block.kibe.entangled_chest": "Entangled Chest",
   "block.kibe.trash_can": "Trash Can",
+  "block.kibe.heat_lamp": "Heat Lamp",
   "block.kibe.vacuum_hopper": "Vacuum Hopper",
   "block.kibe.redstone_timer": "Redstone Timer",
   "block.kibe.xp_shower": "Xp Shower",
@@ -185,6 +186,7 @@
   "tooltip.kibe.lore.cooler": "§5§oAutomatically consumes any food stored in it",
   "tooltip.kibe.lore.big_torch": "§5§oFill with torches to keep chunks mob-free",
   "tooltip.kibe.lore.chunk_loader": "§5§oLet you keep a 5x5 chunk area loaded.",
+  "tooltip.kibe.lore.heat_lamp": "§5§oMelt ice and snow in its surroundings.",
 
   "screen.kibe.cooler": "Cooler",
   "screen.kibe.cooler_item": "Cooler",

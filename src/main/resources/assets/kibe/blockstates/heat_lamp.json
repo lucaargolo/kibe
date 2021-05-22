@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "enabled=false": {
+      "model": "kibe:block/heat_lamp"
+    },
+    "enabled=true": {
+      "model": "kibe:block/heat_lamp_on"
+    }
+  }
+}
