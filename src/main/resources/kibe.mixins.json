@@ -17,6 +17,7 @@
     "PersistentStateManagerAccessor",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
+    "RedstoneWireBlockMixin",
     "ServerWorldMixin",
     "ShapedRecipeMixin",
     "SpawnRestrictionMixin",
