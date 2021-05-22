@@ -175,6 +175,7 @@ val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(Identifier(MOD_ID,
 val TANK = registerWithEntity<TankBlockEntity>(Identifier(MOD_ID, "tank"), Tank(), hasBlockItem = false, renderer = { TankBlockEntityRenderer::class })
 val XP_SHOWER = registerWithEntity<XpShowerBlockEntity>(Identifier(MOD_ID, "xp_shower"), XpShower())
 val XP_DRAIN = register(Identifier(MOD_ID, "xp_drain"), XpDrain())
+val IGNITER = register(Identifier(MOD_ID, "igniter"), Igniter())
 val FLUID_HOPPER = registerWithEntity<FluidHopperBlockEntity>(Identifier(MOD_ID, "fluid_hopper"), FluidHopper())
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), Elevator())

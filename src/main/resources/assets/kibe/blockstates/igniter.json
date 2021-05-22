@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": {"model": "kibe:block/igniter", "x": 270},
+    "facing=down": {"model": "kibe:block/igniter", "x": 90},
+    "facing=north": {"model": "kibe:block/igniter"},
+    "facing=south": {"model": "kibe:block/igniter", "y": 180},
+    "facing=east": {"model": "kibe:block/igniter", "y": 90},
+    "facing=west": {"model": "kibe:block/igniter", "y": 270}
+  }
+}
