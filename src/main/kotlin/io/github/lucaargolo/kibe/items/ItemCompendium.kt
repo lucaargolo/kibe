@@ -89,7 +89,7 @@ class ContainerInfo<T: ScreenHandler>(
 class ItemInfo (
     val identifier: Identifier,
     val item: Item,
-    private val bakedModel: Supplier<BakedModel>?,
+    private val bakedModel: (() -> BakedModel)?,
     var containers: List<ContainerInfo<*>>
 ){
 
@@ -106,7 +106,7 @@ class ItemInfo (
                     if(modelIdentifier.namespace == identifier.namespace && modelIdentifier.path == identifier.path && modelIdentifier.variant == "inventory") {
                         return@ModelVariantProvider object : UnbakedModel {
                             override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
-                            override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationScreenHandler: ModelBakeSettings, modelId: Identifier) = bakedModel.get()
+                            override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationScreenHandler: ModelBakeSettings, modelId: Identifier) = bakedModel.invoke()
                             override fun getTextureDependencies(unbakedModelGetter: Function<Identifier, UnbakedModel>?, unresolvedTextureReferences: MutableSet<Pair<String, String>>?): MutableCollection<SpriteIdentifier> = mutableListOf()
                         }
                     }
@@ -227,7 +227,7 @@ val BLACK_SLEEPING_BAG = register(Identifier(MOD_ID, "black_sleeping_bag"), Slee
 
 private fun settingsWithTab() = Settings().group(CREATIVE_TAB)
 
-fun register(identifier: Identifier, item: Item, bakedModel: Supplier<BakedModel>? = null, containers: List<ContainerInfo<*>> = listOf()): Item {
+fun register(identifier: Identifier, item: Item, bakedModel: (() -> BakedModel)? = null, containers: List<ContainerInfo<*>> = listOf()): Item {
     val info = ItemInfo(identifier, item, bakedModel, containers)
     itemRegistry[item] = info
     return item
