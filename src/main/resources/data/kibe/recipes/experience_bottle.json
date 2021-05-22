@@ -1,6 +1,9 @@
 {
   "type": "kibe:vacuum_hopper",
-  "input": {"item": "minecraft:glass_bottle"},
-  "xpinput": 333,
+  "ticks": 20,
+  "xp": 333,
+  "input": {
+    "item": "minecraft:glass_bottle"
+  },
   "output": "minecraft:experience_bottle"
 }

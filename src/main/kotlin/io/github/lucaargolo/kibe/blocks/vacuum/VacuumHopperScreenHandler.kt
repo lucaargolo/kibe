@@ -1,38 +1,28 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
-import io.github.lucaargolo.kibe.SYNCHRONIZE_LAST_RECIPE_PACKET
 import io.github.lucaargolo.kibe.blocks.VACUUM_HOPPER
 import io.github.lucaargolo.kibe.blocks.getContainerInfo
-import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
-import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
-import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
-import io.netty.buffer.Unpooled
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.inventory.CraftingInventory
-import net.minecraft.inventory.CraftingResultInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.slot.Slot
-import net.minecraft.screen.slot.SlotActionType
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import java.util.*
-import kotlin.math.min
 
 class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, val entity: VacuumHopperEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(VACUUM_HOPPER)?.handlerType, syncId) {
 
-    private var player: PlayerEntity = playerInventory.player
-    private var craftingInv = CraftingInventory(this, 1, 1)
-    private var resultInv = CraftingResultInventory()
+    private val propertyDelegate = entity.propertyDelegate
 
-    var lastRecipe: VacuumHopperRecipe? = null
+    var processingTicks
+        get() = propertyDelegate.get(0)
+        set(value) = propertyDelegate.set(0, value)
+
+    var totalProcessingTicks
+        get() = propertyDelegate.get(1)
+        set(value) = propertyDelegate.set(1, value)
 
     var inventory: Inventory = object: Inventory {
         override fun size(): Int {
@@ -80,24 +70,14 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
 
     init {
         checkSize(inventory, 9)
+        checkDataCount(propertyDelegate, 2)
         inventory.onOpen(playerInventory.player)
         val i: Int = (3 - 4) * 18
 
-        addSlot(object: Slot(resultInv, 0, 8 + 6 * 18, 18 + 2 * 18 ) {
-            override fun canInsert(itemStack_1: ItemStack?) = false
-
-            override fun onTakeItem(playerEntity: PlayerEntity, itemStack: ItemStack): ItemStack? {
-                return if(entity.removeLiquidXp(lastRecipe!!.xpInput)) {
-                    slots[1].stack.decrement(1)
-                    entity.markDirty()
-                    super.onTakeItem(playerEntity, itemStack)
-                    itemStack
-                }else{
-                    ItemStack.EMPTY
-                }
-            }
+        addSlot(object: Slot(inventory, 10, 8 + 6 * 18, 18 + 2 * 18 ) {
+            override fun canInsert(itemStack: ItemStack) = false
         })
-        addSlot(Slot(craftingInv, 0, 8 + 6 * 18, 18 ))
+        addSlot(Slot(inventory, 9, 8 + 6 * 18, 18 ))
 
         (0..2).forEach {n ->
             (0..2).forEach { m ->
@@ -115,64 +95,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             addSlot(Slot(playerInventory, n, 8 + n * 18, 161 + i))
         }
 
-        updateResult(syncId, player.world, player, craftingInv, resultInv)
-    }
-
-    override fun onSlotClick(slotId: Int, clickData: Int, actionType: SlotActionType, player: PlayerEntity): ItemStack {
-        if(actionType == SlotActionType.QUICK_MOVE && slotId == 0 && slots[0].hasStack()) {
-            var maxCraftSize = min(slots[1].stack.count, entity.tanks.first().volume.amount().asInt(1000)/lastRecipe!!.xpInput)
-            val maxStackSize = lastRecipe!!.output.maxCount
-            if(entity.removeLiquidXp(maxCraftSize*lastRecipe!!.xpInput)) {
-                slots[1].stack.decrement(maxCraftSize)
-                val craftResult = lastRecipe!!.output.item
-                if(maxCraftSize > maxStackSize) {
-                    while(maxCraftSize > maxStackSize) {
-                        player.giveItemStack(ItemStack(craftResult, maxStackSize))
-                        maxCraftSize -= maxStackSize
-                    }
-                    if(maxCraftSize > 0) {
-                        player.giveItemStack(ItemStack(craftResult, maxCraftSize))
-                    }
-                }else{
-                    player.giveItemStack(ItemStack(craftResult, maxCraftSize))
-                }
-            }
-            return ItemStack.EMPTY
-        }
-        return super.onSlotClick(slotId, clickData, actionType, player)
-    }
-
-    private fun updateResult(syncId: Int, world: World, player: PlayerEntity, craftingInventory: CraftingInventory, resultInventory: CraftingResultInventory) {
-        if (!world.isClient) {
-            val serverPlayerEntity = player as ServerPlayerEntity
-            var itemStack = ItemStack.EMPTY
-            val optional: Optional<VacuumHopperRecipe> = world.server!!.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, craftingInventory, world)
-            if (optional.isPresent) {
-                val craftingRecipe = optional.get()
-                if (resultInventory.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe) && entity.tanks.first().volume.amount().asInt(1000) >= craftingRecipe.xpInput) {
-                    itemStack = craftingRecipe.craft(craftingInventory)
-                    lastRecipe = craftingRecipe
-                    val passedData = PacketByteBuf(Unpooled.buffer())
-                    passedData.writeIdentifier(craftingRecipe.id)
-                    VACUUM_HOPPER_RECIPE_SERIALIZER.write(passedData, craftingRecipe)
-                    ServerPlayNetworking.send(player, SYNCHRONIZE_LAST_RECIPE_PACKET , passedData)
-                }
-            }
-            resultInventory.setStack(0, itemStack)
-            serverPlayerEntity.networkHandler.sendPacket(ScreenHandlerSlotUpdateS2CPacket(syncId, 0, itemStack))
-        }
-    }
-
-    override fun sendContentUpdates() {
-        updateResult(syncId, player.world, player, craftingInv, resultInv)
-        super.sendContentUpdates()
-    }
-
-    override fun close(player: PlayerEntity?) {
-        super.close(player)
-        context.run { world: World, _: BlockPos ->
-            dropInventory(player, world, craftingInv)
-        }
+        addProperties(propertyDelegate)
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
@@ -230,10 +153,6 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
         }
 
         return itemStack
-    }
-
-    override fun canInsertIntoSlot(stack: ItemStack, slot: Slot): Boolean {
-        return slot.inventory !== resultInv && super.canInsertIntoSlot(stack, slot)
     }
 
 }

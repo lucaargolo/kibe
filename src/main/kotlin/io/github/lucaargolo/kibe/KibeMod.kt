@@ -87,7 +87,6 @@ val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
 val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_states")
-val SYNCHRONIZE_LAST_RECIPE_PACKET = Identifier(MOD_ID, "synchronize_last_recipe")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
 var TANK_CUSTOM_MODEL: Any? = null
@@ -191,14 +190,6 @@ fun initPackets() {
 }
 
 fun initPacketsClient() {
-    ClientPlayNetworking.registerGlobalReceiver(SYNCHRONIZE_LAST_RECIPE_PACKET) { client, _, buf, _ ->
-        val id = buf.readIdentifier()
-        val recipe = VACUUM_HOPPER_RECIPE_SERIALIZER.read(id, buf)
-        client.execute {
-            val screen = client.currentScreen as? VacuumHopperScreen
-            screen?.screenHandler?.lastRecipe = recipe
-        }
-    }
 
     ClientPlayNetworking.registerGlobalReceiver(SYNCHRONIZE_DIRTY_TANK_STATES) { client, _, buf, _ ->
         val tot = buf.readInt()
