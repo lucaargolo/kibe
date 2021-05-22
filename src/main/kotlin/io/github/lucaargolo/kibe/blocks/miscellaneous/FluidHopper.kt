@@ -24,7 +24,24 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MaterialCo
 
     override fun createBlockEntity(world: BlockView?) = FluidHopperBlockEntity(this)
 
-    override fun hasComparatorOutput(state: BlockState?) = false
+    override fun hasComparatorOutput(state: BlockState?) = true
+
+    override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
+        return (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.fluidInv?.let {
+            val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
+            return (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
+        } ?: 0
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!state.isOf(newState.block)) {
+            (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.let {
+                world.updateComparators(pos, this)
+            }
+            super.onStateReplaced(state, world, pos, newState, moved)
+        }
+    }
 
     override fun addAllAttributes(world: World, pos: BlockPos, state: BlockState?, to: AttributeList<*>) {
         (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.let {

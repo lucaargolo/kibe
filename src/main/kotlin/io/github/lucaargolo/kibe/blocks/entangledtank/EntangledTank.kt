@@ -18,6 +18,7 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
@@ -39,6 +40,44 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
     }
 
     override fun createBlockEntity(world: BlockView?) = EntangledTankEntity(this)
+
+    override fun hasComparatorOutput(state: BlockState?) = true
+
+    override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
+        return (world.getBlockEntity(pos) as? EntangledTankEntity)?.getComparatorOutput() ?: 0
+    }
+
+    @Suppress("DEPRECATION")
+    override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, fromPos: BlockPos, notify: Boolean) {
+        (world.getBlockEntity(pos) as? EntangledTankEntity)?.let comparatorCheck@{
+            if(it.isBeingCompared) {
+                world.getBlockState(pos.north()).let { state ->
+                    if(state.isOf(Blocks.COMPARATOR) && state[Properties.HORIZONTAL_FACING] == Direction.SOUTH) return@comparatorCheck
+                }
+                world.getBlockState(pos.south()).let { state ->
+                    if(state.isOf(Blocks.COMPARATOR) && state[Properties.HORIZONTAL_FACING] == Direction.NORTH) return@comparatorCheck
+                }
+                world.getBlockState(pos.east()).let { state ->
+                    if(state.isOf(Blocks.COMPARATOR) && state[Properties.HORIZONTAL_FACING] == Direction.WEST) return@comparatorCheck
+                }
+                world.getBlockState(pos.west()).let { state ->
+                    if(state.isOf(Blocks.COMPARATOR) && state[Properties.HORIZONTAL_FACING] == Direction.EAST) return@comparatorCheck
+                }
+                it.isBeingCompared = false
+            }
+        }
+        super.neighborUpdate(state, world, pos, block, fromPos, notify)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!state.isOf(newState.block)) {
+            (world.getBlockEntity(pos) as? EntangledTankEntity)?.let {
+                world.updateComparators(pos, this)
+            }
+            super.onStateReplaced(state, world, pos, newState, moved)
+        }
+    }
 
     override fun addAllAttributes(world: World, pos: BlockPos?, state: BlockState?, to: AttributeList<*>) {
         (world.getBlockEntity(pos) as? EntangledTankEntity)?.let {

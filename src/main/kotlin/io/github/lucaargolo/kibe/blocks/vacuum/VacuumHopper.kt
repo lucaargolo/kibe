@@ -8,6 +8,7 @@ import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemStack
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.BlockSoundGroup
@@ -18,7 +19,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
@@ -66,6 +67,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Mater
             val blockEntity = world.getBlockEntity(pos)
             if (blockEntity is Inventory) {
                 ItemScatterer.spawn(world, pos, blockEntity as Inventory?)
+                world.updateComparators(pos, this)
             }
             super.onStateReplaced(state, world, pos, newState, notify)
         }
@@ -94,6 +96,25 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Mater
                 world.addParticle(ParticleTypes.PORTAL, x, y, z, velocityX, velocityY, velocityZ)
             }
         }
+    }
+
+    override fun hasComparatorOutput(state: BlockState?) = true
+
+    override fun getComparatorOutput(state: BlockState, world: World, pos: BlockPos): Int {
+        var output = 0
+        (world.getBlockEntity(pos) as? VacuumHopperEntity)?.let { entity ->
+            var i = 0
+            var f = 0.0f
+            repeat(9) {
+                val itemStack: ItemStack = entity.getStack(it)
+                if (!itemStack.isEmpty) {
+                    f += itemStack.count.toFloat() / entity.maxCountPerStack.coerceAtMost(itemStack.maxCount).toFloat()
+                    ++i
+                }
+            }
+            output = MathHelper.floor((f/9f) * 14.0f) + if (i > 0) 1 else 0
+        }
+        return output
     }
 
     override fun isTranslucent(state: BlockState?, view: BlockView?, pos: BlockPos?): Boolean {

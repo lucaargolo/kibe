@@ -7,6 +7,7 @@ import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
+import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.screen.ScreenHandler
@@ -14,9 +15,10 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
+import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
 
-class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)), BlockEntityClientSerializable {
+class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(getEntityType(chest)), BlockEntityClientSerializable, Tickable {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var runeColors = mutableMapOf<Int, DyeColor>()
@@ -59,6 +61,26 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         super.markDirty()
     }
 
+    private var lastComparatorOutput = 0
+    var isBeingCompared = false
+
+    fun getComparatorOutput(): Int {
+        val comparatorOutput = ScreenHandler.calculateComparatorOutput(this as Inventory)
+        isBeingCompared = true
+        lastComparatorOutput = comparatorOutput
+        return comparatorOutput
+    }
+
+    override fun tick() {
+        val world = world ?: return
+        if(!world.isClient && isBeingCompared) {
+            val comparatorOutput = ScreenHandler.calculateComparatorOutput(this as Inventory)
+            if(comparatorOutput != lastComparatorOutput) {
+                world.updateComparators(pos, cachedState.block)
+            }
+        }
+    }
+
     override fun fromTag(state: BlockState, tag: CompoundTag) {
         super.fromTag(state, tag)
         (1..8).forEach {
@@ -67,6 +89,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
+        isBeingCompared = tag.getBoolean("isBeingCompared")
+        lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
     override fun fromClientTag(tag: CompoundTag) {
@@ -87,6 +111,8 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
+        tag.putBoolean("isBeingCompared", isBeingCompared)
+        tag.putInt("lastComparatorOutput", lastComparatorOutput)
         if(hasPersistentState()) {
             var subTag = CompoundTag()
             subTag = getPersistentState()!!.toTag(subTag)
@@ -157,8 +183,5 @@ class EntangledChestEntity(chest: EntangledChest): LockableContainerBlockEntity(
             player!!.squaredDistanceTo(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5) <= 64.0
         }
     }
-
-
-
 
 }
