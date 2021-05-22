@@ -18,7 +18,6 @@ import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeCustomModel
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
-import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperScreen
 import io.github.lucaargolo.kibe.compat.initTrinketsCompat
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
@@ -32,7 +31,6 @@ import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItemDyn
 import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.items.miscellaneous.GliderDynamicRenderer
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
-import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
 import io.github.lucaargolo.kibe.utils.ModConfig

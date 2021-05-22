@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld

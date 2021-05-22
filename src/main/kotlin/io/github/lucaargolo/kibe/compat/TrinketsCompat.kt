@@ -1,6 +1,9 @@
 package io.github.lucaargolo.kibe.compat
 
-import dev.emi.trinkets.api.*
+import dev.emi.trinkets.api.SlotGroups
+import dev.emi.trinkets.api.Slots
+import dev.emi.trinkets.api.Trinket
+import dev.emi.trinkets.api.TrinketSlots
 import io.github.ladysnake.pal.PlayerAbility
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
@@ -9,7 +12,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 
 fun initTrinketsCompat() {
-    TrinketSlots.addSlot(SlotGroups.HAND, Slots.RING, Identifier("trinkets", "textures/item/empty_trinket_slot_ring.png"));
+    TrinketSlots.addSlot(SlotGroups.HAND, Slots.RING, Identifier("trinkets", "textures/item/empty_trinket_slot_ring.png"))
 }
 
 class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(settings, ability), Trinket {

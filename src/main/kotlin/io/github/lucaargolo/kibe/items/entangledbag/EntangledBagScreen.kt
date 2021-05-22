@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.items.entangledbag
 
-import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack

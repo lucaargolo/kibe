@@ -5,13 +5,13 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.blocks.*
+import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.TANK
-import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.getFluidBucket
-import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.items.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.minecraft.block.Block

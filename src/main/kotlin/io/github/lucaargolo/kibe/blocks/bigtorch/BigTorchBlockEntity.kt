@@ -19,7 +19,6 @@ import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.World
-import kotlin.collections.LinkedHashSet
 import kotlin.math.min
 import kotlin.math.sqrt
 

@@ -23,7 +23,6 @@ import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -42,6 +41,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter(): Boolean = false
 
+    @Suppress("DEPRECATION")
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val background = ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_background"), "inventory")
@@ -93,7 +93,6 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
                 emitter.emit()
             })
             context.popTransform()
-
         }
 
         val foreground = ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_foreground"), "inventory")

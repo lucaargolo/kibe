@@ -1,8 +1,6 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import com.mojang.datafixers.util.Either
-import net.minecraft.entity.EntityType
-import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.HostileEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item

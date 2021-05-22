@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.*
+import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.items.*
 import net.minecraft.block.Block
 import net.minecraft.item.ItemConvertible

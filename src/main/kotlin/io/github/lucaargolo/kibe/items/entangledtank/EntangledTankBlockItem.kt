@@ -5,7 +5,6 @@ import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack

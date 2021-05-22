@@ -6,11 +6,11 @@ import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricEntityTypeBuilde
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer
 import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import net.minecraft.entity.EntityDimensions
 import net.minecraft.world.World
 
 val entityRegistry = mutableMapOf<Identifier, EntityType<*>>()

@@ -5,13 +5,8 @@ import net.minecraft.entity.attribute.AttributeContainer
 import net.minecraft.entity.attribute.EntityAttributeModifier
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.effect.StatusEffect
-import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffectType
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.network.Packet
-import net.minecraft.network.packet.s2c.play.EntityStatusEffectS2CPacket
-import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket
-import net.minecraft.server.network.ServerPlayerEntity
 
 class CursedEffect: StatusEffect(StatusEffectType.HARMFUL, 3484199) {
 

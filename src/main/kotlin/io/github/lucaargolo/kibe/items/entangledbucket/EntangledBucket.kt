@@ -14,7 +14,6 @@ import io.github.lucaargolo.kibe.utils.plus
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluid

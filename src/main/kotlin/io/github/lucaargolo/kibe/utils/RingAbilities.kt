@@ -1,18 +1,16 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.ladysnake.pal.*
+import io.github.ladysnake.pal.AbilitySource
+import io.github.ladysnake.pal.Pal
+import io.github.ladysnake.pal.PlayerAbility
+import io.github.ladysnake.pal.SimpleAbilityTracker
 import io.github.lucaargolo.kibe.MOD_ID
-import net.fabricmc.fabric.api.event.player.UseItemCallback
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
-import net.minecraft.util.TypedActionResult
-import net.minecraft.world.World
 
-val ringAbilitySource: AbilitySource = Pal.getAbilitySource(Identifier("kibe", "ring"));
+val ringAbilitySource: AbilitySource = Pal.getAbilitySource(Identifier("kibe", "ring"))
 val potionToAbilityMap = mutableMapOf<PlayerAbility, StatusEffect>()
 
 private fun registerEffect(playerAbility: PlayerAbility, status: StatusEffect): PlayerAbility {

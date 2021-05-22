@@ -1,8 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.LongTag
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
@@ -86,7 +84,7 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
             }
             tag.putLongArray(dim.value.toString(), longArray)
         }
-        return tag;
+        return tag
     }
 
     override fun fromTag(tag: CompoundTag) {

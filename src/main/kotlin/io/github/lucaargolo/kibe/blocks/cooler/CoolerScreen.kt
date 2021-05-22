@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.cooler
 
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory

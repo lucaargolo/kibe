@@ -1,7 +1,10 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.minecraft.block.*
+import net.minecraft.block.Block
+import net.minecraft.block.Blocks
+import net.minecraft.block.IceBlock
+import net.minecraft.block.SnowBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
@@ -10,8 +13,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.World
-import kotlin.collections.LinkedHashMap
-import kotlin.collections.LinkedHashSet
 
 class HeatLampBlockEntity(heatLamp: HeatLamp): BlockEntity(getEntityType(heatLamp)), Tickable {
 

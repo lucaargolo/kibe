@@ -1,8 +1,7 @@
 package io.github.lucaargolo.kibe.items.entangledchest
 
-import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
-import net.minecraft.block.Block
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
