@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "enabled=false": {
+      "model": "kibe:block/dehumidifier"
+    },
+    "enabled=true": {
+      "model": "kibe:block/dehumidifier_on"
+    }
+  }
+}

@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "/B/",
+    "#B#",
     "BRB",
-    "/B/"
+    "#B#"
   ],
   "key": {
-    "/": {
-      "item": "minecraft:blaze_rod"
+    "#": {
+      "item": "minecraft:cobblestone"
     },
     "B": {
       "item": "minecraft:blaze_powder"

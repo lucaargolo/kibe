@@ -30,7 +30,9 @@
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "WorldRendererMixin",
+    "WorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -23,10 +23,12 @@ fun initTooltip() {
     registerTooltip(GOLD_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
 
+    registerTooltip(HEAT_LAMP)
+    registerTooltip(DEHUMIDIFIER)
+
     registerTooltip(COOLER)
     registerTooltip(BIG_TORCH)
     registerTooltip(CHUNK_LOADER)
-    registerTooltip(HEAT_LAMP)
 
     registerTooltip(KIBE)
     registerTooltip(GOLDEN_KIBE)

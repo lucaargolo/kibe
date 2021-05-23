@@ -8,13 +8,14 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class HeatLamp: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).luminance { if(it[Properties.ENABLED]) 15 else 0 }) {
+class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
 
-    override fun createBlockEntity(world: BlockView?) = HeatLampBlockEntity(this)
+    override fun createBlockEntity(world: BlockView?) = DehumidifierBlockEntity(this)
 
     init {
         defaultState = stateManager.defaultState.with(Properties.ENABLED, false)
@@ -45,19 +46,17 @@ class HeatLamp: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).l
     }
 
     override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
-        if(state[Properties.ENABLED]) {
-            repeat(4) {
-                val x = pos.x.toDouble() + 0.5
-                val y = pos.y.toDouble() + 0.5
-                val z = pos.z.toDouble() + 0.5
-
-                val velocityX = (random.nextDouble() - 0.5) * 0.25
-                val velocityY = (random.nextDouble() - 0.5) * 0.25
-                val velocityZ = (random.nextDouble() - 0.5) * 0.25
-
-                world.addParticle(ParticleTypes.FLAME, x, y, z, -velocityX, -velocityY, -velocityZ)
-            }
-        }
+        //TODO: Fix this
+//        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+//        if(state[Properties.ENABLED]) {
+//            repeat(4) {
+//                val x = vecPos.x + (random.nextDouble()*4)-2
+//                val y = vecPos.y + (random.nextDouble()*4)-2
+//                val z = vecPos.z + (random.nextDouble()*4)-2
+//                val vel = Vec3d(x, y, z).reverseSubtract(vecPos).normalize().multiply(0.1)
+//                world.addParticle(ParticleTypes.FLAME, x, y, z, vel.x, vel.y, vel.z)
+//            }
+//        }
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
