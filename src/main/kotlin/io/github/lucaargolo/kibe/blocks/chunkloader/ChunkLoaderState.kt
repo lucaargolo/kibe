@@ -11,8 +11,11 @@ import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ChunkLoaderState(val server: MinecraftServer, val key: String): PersistentState(key){
+
+    private var chunkReferenceMap: MutableMap<RegistryKey<World>, MutableMap<ChunkPos, ArrayList<BlockPos>>> = mutableMapOf()
 
     var loadedChunkMap: MutableMap<RegistryKey<World>, MutableList<BlockPos>> = mutableMapOf()
     var loadersPerUUID: MutableMap<String, Int> = mutableMapOf()
@@ -43,18 +46,41 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
             loadersPerUUID[blockEntity.ownerUUID] = loadersPerUUID.getOrDefault(blockEntity.ownerUUID, 1)-1
         }
         val centerChunkPos = ChunkPos(blockEntity.pos)
-        blockEntity.enabledChunks.forEach {
-            world.chunkManager.setChunkForced(ChunkPos(centerChunkPos.x+it.first, centerChunkPos.z+it.second), bool)
+        blockEntity.enabledChunks.forEach { chunkOffset ->
+            val chunkPos = ChunkPos(centerChunkPos.x+chunkOffset.first, centerChunkPos.z+chunkOffset.second)
+            val worldChunkReferenceMap = chunkReferenceMap.getOrPut(world.registryKey) { mutableMapOf() }
+            val chunkReference = worldChunkReferenceMap.getOrPut(chunkPos) { arrayListOf() }
+            if(bool) {
+                chunkReference.add(blockEntity.pos)
+                world.chunkManager.setChunkForced(chunkPos, true)
+            }else{
+                val chunkReferenceIterator = chunkReference.iterator()
+                var foundOtherLoader = false
+                while(chunkReferenceIterator.hasNext()) {
+                    val referencePos = chunkReferenceIterator.next()
+                    val referenceBlockEntity = (world.getBlockEntity(referencePos) as? ChunkLoaderBlockEntity)
+                    if(referenceBlockEntity?.let { !it.isRemoved && it != blockEntity } == true) {
+                        foundOtherLoader = true
+                    }else{
+                        chunkReferenceIterator.remove()
+                    }
+                }
+                if(!foundOtherLoader) {
+                    world.chunkManager.setChunkForced(chunkPos, false)
+                }
+            }
         }
     }
 
     fun removePos(pos: BlockPos, world: ServerWorld) {
         val blockEntity = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
         blockEntity?.let {
-            if (loadedChunkMap[world.registryKey] != null && loadedChunkMap[world.registryKey]!!.contains(pos)) {
-                !loadedChunkMap[world.registryKey]!!.remove(pos)
-                setChunksForced(world, blockEntity, false)
-                markDirty()
+            loadedChunkMap[world.registryKey]?.let{
+                if(it.contains(pos)) {
+                    it.remove(pos)
+                    setChunksForced(world, blockEntity, false)
+                    markDirty()
+                }
             }
         }
     }
@@ -66,9 +92,10 @@ class ChunkLoaderState(val server: MinecraftServer, val key: String): Persistent
                 loadedChunkMap[world.registryKey] = mutableListOf(pos)
                 setChunksForced(world, blockEntity, true)
                 markDirty()
-            }else{
-                if(!loadedChunkMap[world.registryKey]!!.contains(pos)) {
-                    !loadedChunkMap[world.registryKey]!!.add(pos)
+            }
+            loadedChunkMap[world.registryKey]?.let {
+                if(!it.contains(pos)) {
+                    it.add(pos)
                     setChunksForced(world, blockEntity, true)
                     markDirty()
                 }
