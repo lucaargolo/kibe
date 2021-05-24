@@ -32,6 +32,8 @@
   "block.kibe.big_torch": "Big Torch",
   "block.kibe.chunk_loader": "Chunk Loader",
   "block.kibe.drawbridge": "Drawbridge",
+  "block.kibe.breaker": "Breaker",
+  "block.kibe.placer": "Placer",
   "block.kibe.igniter": "Igniter",
 
   "block.kibe.entangled_tank": "Entangled Tank",
@@ -197,6 +199,8 @@
   "screen.kibe.big_torch": "Big Torch",
   "screen.kibe.chunk_loader": "Chunk Loader",
   "screen.kibe.drawbridge": "Drawbridge",
+  "screen.kibe.breaker": "Breaker",
+  "screen.kibe.placer": "Placer",
   "screen.kibe.trash_can": "Trash Can",
   "screen.kibe.vacuum_hopper": "Vacuum Hopper",
   "screen.kibe.entangled_chest": "Entangled Chest",

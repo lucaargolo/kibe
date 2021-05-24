@@ -8,6 +8,9 @@ import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorch
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreen
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreenHandler
+import io.github.lucaargolo.kibe.blocks.breaker.Breaker
+import io.github.lucaargolo.kibe.blocks.breaker.BreakerScreen
+import io.github.lucaargolo.kibe.blocks.breaker.BreakerScreenHandler
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoader
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.cooler.Cooler
@@ -22,6 +25,9 @@ import io.github.lucaargolo.kibe.blocks.entangledchest.*
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
+import io.github.lucaargolo.kibe.blocks.placer.Placer
+import io.github.lucaargolo.kibe.blocks.placer.PlacerScreen
+import io.github.lucaargolo.kibe.blocks.placer.PlacerScreenHandler
 import io.github.lucaargolo.kibe.blocks.tank.Tank
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
@@ -168,6 +174,9 @@ val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "v
 val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, { BigTorchScreen::class })))
 val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, { CoolerScreen::class })))
 val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, { DrawbridgeScreen::class })))
+
+val BREAKER = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "breaker"), Breaker(), containers = listOf(ContainerInfo<BreakerScreenHandler>(BreakerScreenHandler::class, { BreakerScreen::class })))
+val PLACER = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "placer"), Placer(), containers = listOf(ContainerInfo<PlacerScreenHandler>(PlacerScreenHandler::class, { PlacerScreen::class })))
 
 val HEAT_LAMP = registerWithEntity<HeatLampBlockEntity>(Identifier(MOD_ID, "heat_lamp"), HeatLamp())
 val DEHUMIDIFIER = registerWithEntity<DehumidifierBlockEntity>(Identifier(MOD_ID, "dehumidifier"), Dehumidifier())

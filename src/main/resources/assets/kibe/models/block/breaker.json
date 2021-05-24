@@ -2,10 +2,10 @@
 	"parent": "block/block",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "kibe:block/igniter_side",
+		"0": "kibe:block/common_side",
 		"1": "kibe:block/common_back",
-		"2": "kibe:block/igniter_front",
-		"particle": "kibe:block/igniter_side"
+		"2": "kibe:block/breaker_front",
+		"particle": "kibe:block/common_side"
 	},
 	"elements": [
 		{

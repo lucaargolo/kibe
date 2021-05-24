@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": {"model": "kibe:block/breaker", "x": 270},
+    "facing=down": {"model": "kibe:block/breaker", "x": 90},
+    "facing=north": {"model": "kibe:block/breaker"},
+    "facing=south": {"model": "kibe:block/breaker", "y": 180},
+    "facing=east": {"model": "kibe:block/breaker", "y": 90},
+    "facing=west": {"model": "kibe:block/breaker", "y": 270}
+  }
+}

@@ -57,7 +57,7 @@ class Drawbridge: BlockWithEntity(FabricBlockSettings.of(Material.METAL, Materia
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.FACING, if(ctx.player?.isSneaking != false) ctx.side.opposite else ctx.side)
+        return defaultState.with(Properties.FACING, ctx.playerLookDirection.opposite)
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {

@@ -45,7 +45,7 @@ class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
             stack.damage(pos.y-entity.blockPos.y, entity) {
                 it.sendToolBreakStatus(it.activeHand)
             }
-            entity.teleport(pos.x+0.0, pos.y+0.0, pos.z+0.0)
+            entity.teleport(pos.x+0.5, pos.y+0.0, pos.z+0.5)
         }
     }
 

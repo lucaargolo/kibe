@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#D#",
+    "RZR",
+    "CBC"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:smooth_stone"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Z": {
+      "item": "minecraft:dispenser"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "B": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "kibe:breaker",
+    "count": 1
+  }
+}
