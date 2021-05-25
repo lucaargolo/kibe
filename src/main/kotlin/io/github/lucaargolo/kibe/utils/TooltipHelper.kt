@@ -23,8 +23,20 @@ fun initTooltip() {
     registerTooltip(GOLD_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
 
-    registerTooltip(HEAT_LAMP)
+    registerTooltip(HEATER)
     registerTooltip(DEHUMIDIFIER)
+
+    registerTooltip(COBBLESTONE_GENERATOR_MK1)
+    registerTooltip(COBBLESTONE_GENERATOR_MK2)
+    registerTooltip(COBBLESTONE_GENERATOR_MK3)
+    registerTooltip(COBBLESTONE_GENERATOR_MK4)
+    registerTooltip(COBBLESTONE_GENERATOR_MK5)
+
+    registerTooltip(BASALT_GENERATOR_MK1)
+    registerTooltip(BASALT_GENERATOR_MK2)
+    registerTooltip(BASALT_GENERATOR_MK3)
+    registerTooltip(BASALT_GENERATOR_MK4)
+    registerTooltip(BASALT_GENERATOR_MK5)
 
     registerTooltip(COOLER)
     registerTooltip(BIG_TORCH)

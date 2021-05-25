@@ -27,6 +27,7 @@ import io.github.lucaargolo.kibe.utils.initCreativeTab
 import io.github.lucaargolo.kibe.utils.initTooltip
 import io.netty.buffer.Unpooled
 import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
@@ -34,8 +35,10 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
+import net.minecraft.client.particle.FlameParticle
 import net.minecraft.item.Items
 import net.minecraft.loot.ConstantLootTableRange
 import net.minecraft.loot.UniformLootTableRange
@@ -45,10 +48,13 @@ import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.LootingEnchantLootFunction
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.particle.DefaultParticleType
+import net.minecraft.particle.ParticleType
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
+import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.File
@@ -63,7 +69,9 @@ val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
 val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_states")
 val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
 val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
-var TANK_CUSTOM_MODEL: Any? = null
+val WATER_DROPS: DefaultParticleType by lazy {
+    Registry.register(Registry.PARTICLE_TYPE, Identifier(MOD_ID, "water_drops"), FabricParticleTypes.simple())
+}
 val LOGGER: Logger = LogManager.getLogger("Kibe")
 val MOD_CONFIG: ModConfig by lazy {
     val parser = JsonParser()
@@ -156,6 +164,7 @@ fun initPackets() {
 
 fun initExtras() {
     MOD_CONFIG.toString() //Used to init mod config here.
+    ParticleFactoryRegistry.getInstance().register(WATER_DROPS) { sprite -> FlameParticle.Factory(sprite) }
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
         server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
     }

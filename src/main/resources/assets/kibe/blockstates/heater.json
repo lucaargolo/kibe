@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "enabled=false": {
+      "model": "kibe:block/heater"
+    },
+    "enabled=true": {
+      "model": "kibe:block/heater_on"
+    }
+  }
+}

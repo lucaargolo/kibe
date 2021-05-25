@@ -36,7 +36,7 @@ class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
     }
 
     override fun onStoppedUsing(stack: ItemStack, world: World, entity: LivingEntity, remainingUseTicks: Int) {
-        if(entity !is PlayerEntity) return
+        if(entity !is PlayerEntity || 72000 - remainingUseTicks < 20) return
         var pos = entity.blockPos
         while (!world.isSkyVisible(pos) && pos.y < world.dimension.logicalHeight-2) {
             pos = pos.up()

@@ -34,6 +34,8 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
+var TANK_CUSTOM_MODEL: Any? = null
+
 fun initClient() {
     initBlocksClient()
     initItemsClient()

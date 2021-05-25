@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.WATER_DROPS
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.item.ItemPlacementContext
@@ -46,17 +47,16 @@ class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTON
     }
 
     override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
-        //TODO: Fix this
-//        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-//        if(state[Properties.ENABLED]) {
-//            repeat(4) {
-//                val x = vecPos.x + (random.nextDouble()*4)-2
-//                val y = vecPos.y + (random.nextDouble()*4)-2
-//                val z = vecPos.z + (random.nextDouble()*4)-2
-//                val vel = Vec3d(x, y, z).reverseSubtract(vecPos).normalize().multiply(0.1)
-//                world.addParticle(ParticleTypes.FLAME, x, y, z, vel.x, vel.y, vel.z)
-//            }
-//        }
+        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+        if(state[Properties.ENABLED]) {
+            repeat(4) {
+                val x = vecPos.x + (random.nextDouble()*4)-2
+                val y = vecPos.y + (random.nextDouble()*4)-2
+                val z = vecPos.z + (random.nextDouble()*4)-2
+                val vel = Vec3d(x, y, z).reverseSubtract(vecPos).normalize().multiply(0.1)
+                world.addParticle(WATER_DROPS, x, y, z, vel.x, vel.y, vel.z)
+            }
+        }
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL

@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.miscellaneous.HeatLampBlockEntity;
+import io.github.lucaargolo.kibe.blocks.miscellaneous.HeaterBlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -17,7 +17,7 @@ public class BiomeMixin {
     @Inject(at = @At("HEAD"), method = "canSetIce(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;Z)Z", cancellable = true)
     private void canSetIce(WorldView world, BlockPos pos, boolean doWaterCheck, CallbackInfoReturnable<Boolean> cir) {
         if(world instanceof ServerWorld) {
-            if(HeatLampBlockEntity.Companion.isBeingHeated((ServerWorld) world, new ChunkPos(pos))) {
+            if(HeaterBlockEntity.Companion.isBeingHeated((ServerWorld) world, new ChunkPos(pos))) {
                 cir.setReturnValue(false);
             }
         }
@@ -26,7 +26,7 @@ public class BiomeMixin {
     @Inject(at = @At("HEAD"), method = "canSetSnow", cancellable = true)
     private void canSetSnow(WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if(world instanceof ServerWorld) {
-            if(HeatLampBlockEntity.Companion.isBeingHeated((ServerWorld) world, new ChunkPos(pos))) {
+            if(HeaterBlockEntity.Companion.isBeingHeated((ServerWorld) world, new ChunkPos(pos))) {
                 cir.setReturnValue(false);
             }
         }
