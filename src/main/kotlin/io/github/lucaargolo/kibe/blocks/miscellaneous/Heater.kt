@@ -28,6 +28,14 @@ class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).lum
         return defaultState.with(Properties.ENABLED, ctx.world.isReceivingRedstonePower(ctx.blockPos))
     }
 
+    @Suppress("DEPRECATION")
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if(newState.isOf(this)) {
+            (world.getBlockEntity(pos) as? HeaterBlockEntity)?.markDirty()
+        }
+        super.onStateReplaced(state, world, pos, newState, moved)
+    }
+
     override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos?, block: Block?, fromPos: BlockPos?, notify: Boolean) {
         if (!world.isClient) {
             val isEnabled = state[Properties.ENABLED]

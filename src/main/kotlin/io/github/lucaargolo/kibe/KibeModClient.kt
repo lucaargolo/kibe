@@ -24,8 +24,10 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
+import net.minecraft.client.particle.FlameParticle
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.network.PacketByteBuf
@@ -70,6 +72,7 @@ fun initPacketsClient() {
 }
 
 fun initExtrasClient() {
+    ParticleFactoryRegistry.getInstance().register(WATER_DROPS) { sprite -> FlameParticle.Factory(sprite) }
     ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
         EntangledTankState.CLIENT_STATES.clear()
         EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS = linkedSetOf()

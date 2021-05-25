@@ -84,6 +84,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
                     }
                 }
                 world.breakBlock(facingPos, false)
+                it.markDirty()
             }
         }
     }

@@ -13,7 +13,7 @@ class DehumidifierBlockEntity(dehumidifier: Dehumidifier): BlockEntity(getEntity
 
     override fun setLocation(world: World, pos: BlockPos) {
         super.setLocation(world, pos)
-        (world as? ClientWorld)?.let {
+        if(world.isClient) {
             setupDehumidifier(ChunkPos(pos), this)
         }
     }

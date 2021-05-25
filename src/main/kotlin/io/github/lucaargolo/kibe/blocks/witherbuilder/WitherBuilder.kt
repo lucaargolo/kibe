@@ -79,21 +79,24 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         ).map { world.getBlockState(it).material.isReplaceable }.none { !it }
 
         if(shouldRun) {
-            (world.getBlockEntity(pos) as? WitherBuilderBlockEntity)?.let {
-                val fakePlayer = FakePlayerEntity(world)
+            (world.getBlockEntity(pos) as? WitherBuilderBlockEntity)?.let { blockEntity ->
+                val minCount = (blockEntity.inventory.map { if (it.isEmpty) 0 else it.count }.minOrNull() ?: 0)
+                if(minCount > 0) {
+                    val fakePlayer = FakePlayerEntity(world)
 
-                (0..6).forEach { slot ->
-                    val stack = it.getStack(slot)
-                    val item = stack.item as? BlockItem ?: return
-                    fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
-                    when(slot) {
-                        0 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5, facingPos.y + 0.0, facingPos.z + 0.5), facing.opposite, facingPos, false)))
-                        1 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5, facingPos.y + 1.0, facingPos.z + 0.5), Direction.UP, facingPos.up(), false)))
-                        2 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 + xOffset, facingPos.y + 1.0, facingPos.z + 0.5 + zOffset), Direction.get(Direction.AxisDirection.POSITIVE, facing.axis), facingPos.add(xOffset, 1, zOffset), false)))
-                        3 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 - xOffset, facingPos.y + 1.0, facingPos.z + 0.5 - zOffset), Direction.get(Direction.AxisDirection.NEGATIVE, facing.axis), facingPos.add(-xOffset, 1, -zOffset), false)))
-                        4 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5, facingPos.y + 2.0, facingPos.z + 0.5), Direction.UP, facingPos.add(0, 2, 0), false)))
-                        5 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 + xOffset, facingPos.y + 2.0, facingPos.z + 0.5 - zOffset), Direction.UP, facingPos.add(xOffset, 1, zOffset), false)))
-                        6 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 - xOffset, facingPos.y + 2.0, facingPos.z + 0.5 - zOffset), Direction.UP, facingPos.add(-xOffset, 1, -zOffset), false)))
+                    (0..6).forEach { slot ->
+                        val stack = blockEntity.getStack(slot)
+                        val item = stack.item as? BlockItem ?: return
+                        fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
+                        when(slot) {
+                            0 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5, facingPos.y + 0.0, facingPos.z + 0.5), facing.opposite, facingPos, false)))
+                            1 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5, facingPos.y + 1.0, facingPos.z + 0.5), Direction.UP, facingPos.up(), false)))
+                            2 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 + xOffset, facingPos.y + 1.0, facingPos.z + 0.5 + zOffset), Direction.get(Direction.AxisDirection.POSITIVE, facing.axis), facingPos.add(xOffset, 1, zOffset), false)))
+                            3 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 - xOffset, facingPos.y + 1.0, facingPos.z + 0.5 - zOffset), Direction.get(Direction.AxisDirection.NEGATIVE, facing.axis), facingPos.add(-xOffset, 1, -zOffset), false)))
+                            4 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5, facingPos.y + 2.0, facingPos.z + 0.5), Direction.UP, facingPos.add(0, 2, 0), false)))
+                            5 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 + xOffset, facingPos.y + 2.0, facingPos.z + 0.5 - zOffset), Direction.UP, facingPos.add(xOffset, 1, zOffset), false)))
+                            6 -> item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(Vec3d(facingPos.x + 0.5 - xOffset, facingPos.y + 2.0, facingPos.z + 0.5 - zOffset), Direction.UP, facingPos.add(-xOffset, 1, -zOffset), false)))
+                        }
                     }
                 }
             }

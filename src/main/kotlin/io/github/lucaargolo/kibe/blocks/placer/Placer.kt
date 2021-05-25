@@ -65,6 +65,7 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
                 fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
                 val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.0, facingPos.z + 0.5)
                 item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, facingPos, false)))
+                it.markDirty()
             }
         }
     }
