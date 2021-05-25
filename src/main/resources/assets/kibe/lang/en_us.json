@@ -59,6 +59,13 @@
   "block.kibe.xp_drain": "Xp Drain",
   "block.kibe.fluid_hopper": "Fluid Hopper",
 
+  "block.kibe.light_source": "Light Source",
+
+  "block.kibe.obsidian_sand": "Obsidian Sand",
+  "block.kibe.wither_proof_block": "Witherproof Block",
+  "block.kibe.wither_proof_sand": "Witherproof Sand",
+  "block.kibe.wither_proof_glass": "Witherproof Glass",
+
   "item.kibe.kibe": "Kibe",
   "item.kibe.golden_kibe": "Golden Kibe",
   "item.kibe.diamond_kibe": "Diamond Kibe",
@@ -181,7 +188,7 @@
   "tooltip.kibe.shift2enable": "§9§oShift click to enable",
   "tooltip.kibe.shift2disable": "§9§oShift click to disable",
 
-  "tooltip.kibe.lore.rune": "§5§oUsed to change the entangled chest code",
+  "tooltip.kibe.lore.rune": "§5§oUsed to change the entangled code",
 
   "tooltip.kibe.lore.kibe": "§5§oA tasteful Levantine dish (Kibbeh)",
   "tooltip.kibe.lore.golden_kibe": "§5§oVIP only",

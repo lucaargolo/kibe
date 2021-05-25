@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#O",
+    "O#"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:sand"
+    },
+    "O": [
+      {
+        "item": "minecraft:obsidian"
+      },
+      {
+        "item": "minecraft:crying_obsidian"
+      }
+    ]
+  },
+  "result": {
+    "item": "kibe:obsidian_sand",
+    "count": 2
+  }
+}

@@ -148,6 +148,7 @@ fun initExtrasClient() {
     BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
     BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutoutMipped())
     BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
+    BlockRenderLayerMap.INSTANCE.putBlock(WITHER_PROOF_GLASS, RenderLayer.getTranslucent())
     BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutoutMipped())
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
         ModelVariantProvider { modelIdentifier, _ ->

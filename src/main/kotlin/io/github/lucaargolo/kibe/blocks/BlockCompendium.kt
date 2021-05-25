@@ -41,9 +41,8 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
-import net.minecraft.block.Block
-import net.minecraft.block.BlockEntityProvider
-import net.minecraft.block.Blocks
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
+import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
@@ -53,6 +52,7 @@ import net.minecraft.item.Item
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.ScreenHandlerType
+import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
@@ -218,6 +218,10 @@ val BROWN_ELEVATOR = register(Identifier(MOD_ID, "brown_elevator"), Elevator())
 val RED_ELEVATOR = register(Identifier(MOD_ID, "red_elevator"), Elevator())
 val BLACK_ELEVATOR = register(Identifier(MOD_ID, "black_elevator"), Elevator())
 
+val OBSIDIAN_SAND = register(Identifier(MOD_ID, "obsidian_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
+val WITHER_PROOF_BLOCK = register(Identifier(MOD_ID, "wither_proof_block"), Block(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)))
+val WITHER_PROOF_SAND = register(Identifier(MOD_ID, "wither_proof_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
+val WITHER_PROOF_GLASS = register(Identifier(MOD_ID, "wither_proof_glass"), GlassBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).nonOpaque()))
 
 fun initBlocks() {
     blockRegistry.forEach{ it.value.init() }
