@@ -34,6 +34,7 @@
   "block.kibe.drawbridge": "Drawbridge",
   "block.kibe.breaker": "Breaker",
   "block.kibe.placer": "Placer",
+  "block.kibe.wither_builder": "Wither Builder",
   "block.kibe.igniter": "Igniter",
 
   "block.kibe.cobblestone_generator_mk1": "Cobblestone Generator MK1",
@@ -232,6 +233,7 @@
   "screen.kibe.drawbridge": "Drawbridge",
   "screen.kibe.breaker": "Breaker",
   "screen.kibe.placer": "Placer",
+  "screen.kibe.wither_builder": "Wither Builder",
   "screen.kibe.cobblestone_generator_mk1": "Cobblestone Generator MK1",
   "screen.kibe.cobblestone_generator_mk2": "Cobblestone Generator MK2",
   "screen.kibe.cobblestone_generator_mk3": "Cobblestone Generator MK3",

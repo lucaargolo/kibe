@@ -1,34 +1,40 @@
-package io.github.lucaargolo.kibe.blocks.breaker
+package io.github.lucaargolo.kibe.blocks.witherbuilder
 
-import io.github.lucaargolo.kibe.blocks.BREAKER
+import io.github.lucaargolo.kibe.blocks.WITHER_BUILDER
 import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.slot.Slot
+import net.minecraft.tag.BlockTags
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class BreakerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: BreakerBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(BREAKER)?.handlerType, syncId)  {
+class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: WitherBuilderBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(WITHER_BUILDER)?.handlerType, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 
     init {
-        checkSize(inventory, 9)
+        checkSize(inventory, 7)
         inventory.onOpen(playerInventory.player)
 
-        (0..2).forEach { n ->
-            (0..2).forEach { m ->
-                addSlot(object: Slot(inventory, m + n * 3, 26 + (m+2) * 18, 18 + n * 18) {
-                    override fun canInsert(stack: ItemStack) = stack.item is BlockItem
-                })
-            }
-        }
+        addSlot(object: Slot(inventory, 0, 80, 54) {
+            override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.block?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
+        })
 
+        (0..2).forEach { n ->
+            addSlot(object: Slot(inventory, 1+n, 62 + n*18, 36) {
+                override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.block?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
+            })
+            addSlot(object: Slot(inventory, 4+n, 62 + n*18, 18) {
+                override fun canInsert(stack: ItemStack) = stack.item == Items.WITHER_SKELETON_SKULL
+            })
+        }
 
         (0..2).forEach { n ->
             (0..8).forEach { m ->
@@ -47,11 +53,11 @@ class BreakerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, va
         if (slot != null && slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
-            if (invSlot < 9) {
-                if (!insertItem(itemStack2, 9, this.slots.size, true)) {
+            if (invSlot < 7) {
+                if (!insertItem(itemStack2, 7, this.slots.size, true)) {
                     return ItemStack.EMPTY
                 }
-            } else if (!insertItem(itemStack2, 0, 9, false)) {
+            } else if (!insertItem(itemStack2, 0, 7, false)) {
                 return ItemStack.EMPTY
             }
             if (itemStack2.isEmpty) {
@@ -65,7 +71,7 @@ class BreakerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, va
 
     override fun canUse(player: PlayerEntity): Boolean {
         return context.run({ world: World, blockPos: BlockPos ->
-            if (world.getBlockState(blockPos).block != BREAKER) false
+            if (world.getBlockState(blockPos).block != WITHER_BUILDER) false
             else player.squaredDistanceTo(
                 blockPos.x + .5,
                 blockPos.y + .5,

@@ -18,7 +18,7 @@ class PlacerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val
     val inventory = BlockEntityInventory(this, entity)
 
     init {
-        checkSize(inventory, 2)
+        checkSize(inventory, 9)
         inventory.onOpen(playerInventory.player)
 
         (0..2).forEach { n ->

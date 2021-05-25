@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "ODO",
+    "ONO"
+  ],
+  "key": {
+    "#": [
+      {
+        "item": "minecraft:soul_sand"
+      },
+      {
+        "item": "minecraft:soul_soil"
+      }
+    ],
+    "O": {
+      "item": "kibe:wither_proof_block"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "item": "kibe:wither_builder",
+    "count": 1
+  }
+}

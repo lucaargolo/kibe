@@ -9,6 +9,7 @@ import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreen
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchScreenHandler
 import io.github.lucaargolo.kibe.blocks.breaker.Breaker
+import io.github.lucaargolo.kibe.blocks.breaker.BreakerBlockEntity
 import io.github.lucaargolo.kibe.blocks.breaker.BreakerScreen
 import io.github.lucaargolo.kibe.blocks.breaker.BreakerScreenHandler
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoader
@@ -26,6 +27,7 @@ import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
 import io.github.lucaargolo.kibe.blocks.miscellaneous.*
 import io.github.lucaargolo.kibe.blocks.placer.Placer
+import io.github.lucaargolo.kibe.blocks.placer.PlacerBlockEntity
 import io.github.lucaargolo.kibe.blocks.placer.PlacerScreen
 import io.github.lucaargolo.kibe.blocks.placer.PlacerScreenHandler
 import io.github.lucaargolo.kibe.blocks.tank.Tank
@@ -36,6 +38,10 @@ import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler
 import io.github.lucaargolo.kibe.blocks.vacuum.*
+import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilder
+import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderBlockEntity
+import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreen
+import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreenHandler
 import io.github.lucaargolo.kibe.utils.CREATIVE_TAB
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
@@ -175,8 +181,14 @@ val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_
 val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, { CoolerScreen::class })))
 val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, { DrawbridgeScreen::class })))
 
-val BREAKER = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "breaker"), Breaker(), containers = listOf(ContainerInfo<BreakerScreenHandler>(BreakerScreenHandler::class, { BreakerScreen::class })))
-val PLACER = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "placer"), Placer(), containers = listOf(ContainerInfo<PlacerScreenHandler>(PlacerScreenHandler::class, { PlacerScreen::class })))
+val OBSIDIAN_SAND = register(Identifier(MOD_ID, "obsidian_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
+val WITHER_PROOF_BLOCK = register(Identifier(MOD_ID, "wither_proof_block"), Block(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)))
+val WITHER_PROOF_SAND = register(Identifier(MOD_ID, "wither_proof_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
+val WITHER_PROOF_GLASS = register(Identifier(MOD_ID, "wither_proof_glass"), GlassBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).nonOpaque()))
+val WITHER_BUILDER = registerWithEntity<WitherBuilderBlockEntity>(Identifier(MOD_ID, "wither_builder"), WitherBuilder(), containers = listOf(ContainerInfo<WitherBuilderScreenHandler>(WitherBuilderScreenHandler::class, { WitherBuilderScreen::class })))
+
+val PLACER = registerWithEntity<PlacerBlockEntity>(Identifier(MOD_ID, "placer"), Placer(), containers = listOf(ContainerInfo<PlacerScreenHandler>(PlacerScreenHandler::class, { PlacerScreen::class })))
+val BREAKER = registerWithEntity<BreakerBlockEntity>(Identifier(MOD_ID, "breaker"), Breaker(), containers = listOf(ContainerInfo<BreakerScreenHandler>(BreakerScreenHandler::class, { BreakerScreen::class })))
 
 val HEATER = registerWithEntity<HeaterBlockEntity>(Identifier(MOD_ID, "heater"), Heater())
 val DEHUMIDIFIER = registerWithEntity<DehumidifierBlockEntity>(Identifier(MOD_ID, "dehumidifier"), Dehumidifier())
@@ -217,11 +229,6 @@ val GREEN_ELEVATOR = register(Identifier(MOD_ID, "green_elevator"), Elevator())
 val BROWN_ELEVATOR = register(Identifier(MOD_ID, "brown_elevator"), Elevator())
 val RED_ELEVATOR = register(Identifier(MOD_ID, "red_elevator"), Elevator())
 val BLACK_ELEVATOR = register(Identifier(MOD_ID, "black_elevator"), Elevator())
-
-val OBSIDIAN_SAND = register(Identifier(MOD_ID, "obsidian_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
-val WITHER_PROOF_BLOCK = register(Identifier(MOD_ID, "wither_proof_block"), Block(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)))
-val WITHER_PROOF_SAND = register(Identifier(MOD_ID, "wither_proof_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
-val WITHER_PROOF_GLASS = register(Identifier(MOD_ID, "wither_proof_glass"), GlassBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).nonOpaque()))
 
 fun initBlocks() {
     blockRegistry.forEach{ it.value.init() }

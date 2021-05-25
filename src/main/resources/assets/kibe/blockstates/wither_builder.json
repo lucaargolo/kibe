@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "vertical=true,vertical_facing=up,facing=north": {"model": "kibe:block/wither_builder", "x": 270},
+    "vertical=true,vertical_facing=up,facing=south": {"model": "kibe:block/wither_builder", "x": 270, "y": 180},
+    "vertical=true,vertical_facing=up,facing=east": {"model": "kibe:block/wither_builder", "x": 270, "y": 90},
+    "vertical=true,vertical_facing=up,facing=west": {"model": "kibe:block/wither_builder", "x": 270, "y": 270},
+    "vertical=true,vertical_facing=down,facing=north": {"model": "kibe:block/wither_builder", "x": 90, "y": 180},
+    "vertical=true,vertical_facing=down,facing=south": {"model": "kibe:block/wither_builder", "x": 90},
+    "vertical=true,vertical_facing=down,facing=east": {"model": "kibe:block/wither_builder", "x": 90, "y": 270},
+    "vertical=true,vertical_facing=down,facing=west": {"model": "kibe:block/wither_builder", "x": 90, "y": 90},
+    "vertical=false,vertical_facing=up,facing=north": {"model": "kibe:block/wither_builder"},
+    "vertical=false,vertical_facing=up,facing=south": {"model": "kibe:block/wither_builder", "y": 180},
+    "vertical=false,vertical_facing=up,facing=east": {"model": "kibe:block/wither_builder", "y": 90},
+    "vertical=false,vertical_facing=up,facing=west": {"model": "kibe:block/wither_builder", "y": 270},
+    "vertical=false,vertical_facing=down,facing=north": {"model": "kibe:block/wither_builder"},
+    "vertical=false,vertical_facing=down,facing=south": {"model": "kibe:block/wither_builder", "y": 180},
+    "vertical=false,vertical_facing=down,facing=east": {"model": "kibe:block/wither_builder", "y": 90},
+    "vertical=false,vertical_facing=down,facing=west": {"model": "kibe:block/wither_builder", "y": 270}
+  }
+}

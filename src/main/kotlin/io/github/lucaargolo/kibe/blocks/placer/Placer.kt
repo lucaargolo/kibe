@@ -51,22 +51,20 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
     }
 
     override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
-        val facingPos = pos.offset(state[Properties.FACING])
-        val facingState = world.getBlockState(facingPos)
-        if(facingState.material.isReplaceable) {
-            (world.getBlockEntity(pos) as? PlacerBlockEntity)?.let {
-                var index = 0
-                while(index < 9 && it.getStack(index).isEmpty) {
-                    index++
-                }
-                if(index < 9) {
-                    val stack = it.getStack(index)
-                    val item = stack.item as? BlockItem ?: return
-                    val fakePlayer = FakePlayerEntity(world)
-                    fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
-                    val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.0, facingPos.z + 0.5)
-                    item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, Direction.UP, facingPos, false)))
-                }
+        val facing = state[Properties.FACING]
+        val facingPos = pos.offset(facing)
+        (world.getBlockEntity(pos) as? PlacerBlockEntity)?.let {
+            var index = 0
+            while(index < 9 && it.getStack(index).isEmpty) {
+                index++
+            }
+            if(index < 9) {
+                val stack = it.getStack(index)
+                val item = stack.item as? BlockItem ?: return
+                val fakePlayer = FakePlayerEntity(world)
+                fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
+                val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.0, facingPos.z + 0.5)
+                item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, facingPos, false)))
             }
         }
     }
