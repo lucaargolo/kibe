@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangledchest
 
+import io.github.lucaargolo.kibe.blocks.miscellaneous.BlockGeneratorBlockEntity
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
@@ -7,6 +8,8 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.Items
@@ -61,6 +64,10 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return EntangledChestEntity(this, blockPos, blockState)
+    }
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> EntangledChestEntity.tick(wrld, pos, state, blockEntity as EntangledChestEntity) }
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {

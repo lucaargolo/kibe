@@ -5,10 +5,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.render.*
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
@@ -55,7 +52,9 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, x, y, 0, 0, 176, 186)
+        itemRenderer.renderInGuiWithOverrides(ItemStack(handler.entity.block), x+80, y+18)
         //Draw fluids
+        RenderSystem.setShader(GameRenderer::getPositionColorTexShader)
         RenderSystem.setShaderTexture(0, atlas)
         if(handler.entity.block == Blocks.BASALT) {
             drawBlockBar(matrices, delta, Blocks.BLUE_ICE, true)
@@ -63,7 +62,6 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
             drawFluidBar(matrices, delta, Fluids.WATER, true)
         }
         drawFluidBar(matrices, delta, Fluids.LAVA, false)
-        itemRenderer.renderInGuiWithOverrides(ItemStack(handler.entity.block), x+80, y+18)
     }
 
     private fun drawBlockBar(matrices: MatrixStack, delta: Float, block: Block, left: Boolean) {

@@ -123,7 +123,7 @@ dependencies {
     modImplementation("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
     include("alexiil.mc.lib:libblockattributes-fluids:${project.lba_version}")
 
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    //modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     //modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
 }
