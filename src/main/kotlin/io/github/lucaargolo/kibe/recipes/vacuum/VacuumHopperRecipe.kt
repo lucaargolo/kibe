@@ -47,8 +47,8 @@ class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput
 
     override fun getOutput(): ItemStack = output
 
-    override fun getRecipeKindIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.defaultStack
+    override fun createIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.defaultStack
 
-    override fun getPreviewInputs(): DefaultedList<Ingredient> = DefaultedList.ofSize(1, input)
+    override fun getIngredients(): DefaultedList<Ingredient> = DefaultedList.ofSize(1, input)
 
 }

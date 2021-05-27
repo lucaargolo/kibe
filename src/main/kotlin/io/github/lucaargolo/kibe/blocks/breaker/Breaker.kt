@@ -4,6 +4,7 @@ import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.BlockItem
@@ -89,7 +90,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         }
     }
 
-    override fun createBlockEntity(world: BlockView?) = BreakerBlockEntity(this)
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = BreakerBlockEntity(this, pos, state)
 
     override fun hasComparatorOutput(state: BlockState?) = true
 

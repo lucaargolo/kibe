@@ -82,24 +82,6 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         return comparatorOutput
     }
 
-    override fun tick() {
-        val world = world ?: return
-        if(!world.isClient && isBeingCompared) {
-            val comparatorOutput = fluidInv.let {
-                val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
-                (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
-            }
-            if(comparatorOutput != lastComparatorOutput) {
-                world.updateComparators(pos, cachedState.block)
-            }
-        }
-        val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
-        val luminance = fluid.defaultState.blockState.luminance
-        if(luminance != cachedState[Properties.LEVEL_15] && MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
-            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
-        }
-    }
-
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         (1..8).forEach {
@@ -145,8 +127,17 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
 
     companion object {
 
-        fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: EntangledTankEntity) {
-            val fluid = if(blockEntity.fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else blockEntity.fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: EntangledTankEntity) {
+            if(!world.isClient && entity.isBeingCompared) {
+                val comparatorOutput = entity.fluidInv.let {
+                    val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
+                    (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
+                }
+                if(comparatorOutput != entity.lastComparatorOutput) {
+                    world.updateComparators(pos, state.block)
+                }
+            }
+            val fluid = if(entity.fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else entity.fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
             val luminance = fluid.defaultState.blockState.luminance
             if(luminance != state[Properties.LEVEL_15] && MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
                 world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))

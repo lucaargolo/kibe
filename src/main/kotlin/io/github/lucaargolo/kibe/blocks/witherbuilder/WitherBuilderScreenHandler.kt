@@ -24,12 +24,12 @@ class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInvento
         inventory.onOpen(playerInventory.player)
 
         addSlot(object: Slot(inventory, 0, 80, 54) {
-            override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.block?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
+            override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.let{BlockTags.WITHER_SUMMON_BASE_BLOCKS.contains(it.block)} ?: false
         })
 
         (0..2).forEach { n ->
             addSlot(object: Slot(inventory, 1+n, 62 + n*18, 36) {
-                override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.block?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
+                override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.let{BlockTags.WITHER_SUMMON_BASE_BLOCKS.contains(it.block)} ?: false
             })
             addSlot(object: Slot(inventory, 4+n, 62 + n*18, 18) {
                 override fun canInsert(stack: ItemStack) = stack.item == Items.WITHER_SKELETON_SKULL
@@ -50,7 +50,7 @@ class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInvento
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 7) {
@@ -70,7 +70,7 @@ class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInvento
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(blockPos).block != WITHER_BUILDER) false
             else player.squaredDistanceTo(
                 blockPos.x + .5,

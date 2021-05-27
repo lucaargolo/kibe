@@ -72,7 +72,6 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         }
 
         val coreModel = if(entity.key != EntangledTank.DEFAULT_KEY) coreModelDiamond else coreModelGold
-        val upUV = if(entity.key != EntangledTank.DEFAULT_KEY) -10 else 0
 
         coreModel.render(matrices, chestConsumer, lightAbove, overlay)
 
@@ -89,7 +88,6 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val sprite = fluidRenderHandler.getFluidSprites(entity.world, entity.pos, fluid.defaultState)[0]
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
 
-        val bb = vertexConsumers.getBuffer(if (fluid != Fluids.EMPTY) RenderLayers.getFluidLayer(fluid.defaultState) else RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE))
         val renderLayer = if(fluid != Fluids.EMPTY) {
             if(MinecraftClient.isFabulousGraphicsOrBetter()) {
                 RenderLayer.getSolid()

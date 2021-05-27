@@ -17,6 +17,7 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
 class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
 
@@ -50,7 +51,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
 
     private fun getPersistentState(): EntangledChestState? {
         return (world as? ServerWorld)?.let { serverWorld ->
-            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledChestState(key)}, key)
+            serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledChestState.createFromTag(it)}, { EntangledChestState() }, key)
         }
     }
 
@@ -69,16 +70,6 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         isBeingCompared = true
         lastComparatorOutput = comparatorOutput
         return comparatorOutput
-    }
-
-    override fun tick() {
-        val world = world ?: return
-        if(!world.isClient && isBeingCompared) {
-            val comparatorOutput = ScreenHandler.calculateComparatorOutput(this as Inventory)
-            if(comparatorOutput != lastComparatorOutput) {
-                world.updateComparators(pos, cachedState.block)
-            }
-        }
     }
 
     override fun readNbt(tag: NbtCompound) {
@@ -181,6 +172,17 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
             false
         } else {
             player!!.squaredDistanceTo(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5) <= 64.0
+        }
+    }
+
+    companion object {
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: EntangledChestEntity) {
+            if(!world.isClient && entity.isBeingCompared) {
+                val comparatorOutput = ScreenHandler.calculateComparatorOutput(entity as Inventory)
+                if(comparatorOutput != entity.lastComparatorOutput) {
+                    world.updateComparators(pos, state.block)
+                }
+            }
         }
     }
 

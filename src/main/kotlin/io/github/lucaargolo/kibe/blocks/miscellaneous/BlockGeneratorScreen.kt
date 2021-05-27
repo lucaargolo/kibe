@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.SpriteIdentifier
@@ -48,14 +49,14 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         textRenderer.draw(matrices, title, 8f, 6f, 4210752)
-        textRenderer.draw(matrices, playerInventory.displayName, 8f, backgroundHeight - 96 + 4f, 4210752)
+        textRenderer.draw(matrices, displayName, 8f, backgroundHeight - 96 + 4f, 4210752)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        client?.textureManager?.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, x, y, 0, 0, 176, 186)
         //Draw fluids
-        client?.textureManager?.bindTexture(atlas)
+        RenderSystem.setShaderTexture(0, atlas)
         if(handler.entity.block == Blocks.BASALT) {
             drawBlockBar(matrices, delta, Blocks.BLUE_ICE, true)
         }else{
@@ -107,7 +108,7 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
         val b = (color and 255)/255f
         val matrix = matrices.peek().model
         val bufferBuilder = Tessellator.getInstance().buffer
-        bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE)
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE)
         bufferBuilder.vertex(matrix, x0, y1, z).color(r, g, b, 1.0f).texture(u0, v1).next()
         bufferBuilder.vertex(matrix, x1, y1, z).color(r, g, b, 1.0f).texture(u1, v1).next()
         bufferBuilder.vertex(matrix, x1, y0, z).color(r, g, b, 1.0f).texture(u1, v0).next()

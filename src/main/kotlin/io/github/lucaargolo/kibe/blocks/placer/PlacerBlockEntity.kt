@@ -8,22 +8,23 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 
-class PlacerBlockEntity(placer: Placer): BlockEntity(getEntityType(placer)), SidedInventory {
+class PlacerBlockEntity(placer: Placer, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(placer), pos, state), SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        Inventories.toTag(tag, inventory)
-        return super.toTag(tag)
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
+        Inventories.writeNbt(tag, inventory)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
-        Inventories.fromTag(tag, inventory)
+    override fun readNbt(tag: NbtCompound) {
+        super.readNbt(tag)
+        Inventories.readNbt(tag, inventory)
     }
 
     override fun size() = inventory.size

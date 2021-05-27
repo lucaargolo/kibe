@@ -38,8 +38,8 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.item.Items
-import net.minecraft.loot.ConstantLootTableRange
-import net.minecraft.loot.UniformLootTableRange
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider
+import net.minecraft.loot.provider.number.UniformLootNumberProvider
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
 import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
@@ -162,7 +162,7 @@ fun initPackets() {
 fun initExtras() {
     MOD_CONFIG.toString() //Used to init mod config here.
     ServerLifecycleEvents.SERVER_STARTED.register { server ->
-        server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+        server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, server)}, { ChunkLoaderState(server) }, "kibe_chunk_loaders")
     }
     ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
         EntangledTankState.ALL_TIME_PLAYER_REQUESTS.remove(handler.player)
@@ -171,14 +171,14 @@ fun initExtras() {
     ServerTickEvents.END_SERVER_TICK.register { server ->
         EntangledTankState.SERVER_PLAYER_REQUESTS.forEach { (player, requests) ->
             val finalMap = mutableMapOf<String, MutableMap<String, FluidVolume>>()
-            requests.forEach {
-                val key = it.first
-                val colorCode = it.second
+            requests.forEach { pair ->
+                val key = pair.first
+                val colorCode = pair.second
 
-                val state = server.overworld.persistentStateManager.getOrCreate( { EntangledTankState(server.overworld, key) }, key)
+                val state = server.overworld.persistentStateManager.getOrCreate( { EntangledTankState.createFromTag(it, server.overworld, key) }, { EntangledTankState(server.overworld, key)}, key)
                 val allTimeRequests = EntangledTankState.ALL_TIME_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
-                if(!allTimeRequests.contains(it) || state.dirtyColors.contains(colorCode)) {
-                    allTimeRequests.add(it)
+                if(!allTimeRequests.contains(pair) || state.dirtyColors.contains(colorCode)) {
+                    allTimeRequests.add(pair)
                     val fluidVolume = state.getOrCreateInventory(colorCode).getInvFluid(0)
 
                     val secondMap = finalMap[key] ?: mutableMapOf()
@@ -213,7 +213,7 @@ fun initLootTables() {
     LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
         if (id.toString().startsWith("minecraft:entities")) {
             val poolBuilder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
+                .rolls(ConstantLootNumberProvider.create(1f))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(
                     EntityPropertiesLootCondition.builder(
@@ -222,7 +222,7 @@ fun initLootTables() {
                     )
                 )
                 .conditionally(RandomChanceLootCondition.builder(0.05F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f, 1.5f)).build())
+                .withFunction(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
     })
@@ -230,10 +230,10 @@ fun initLootTables() {
     LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
         if (id.toString() == "minecraft:entities/wither_skeleton") {
             val poolBuilder = FabricLootPoolBuilder.builder()
-                .rolls(ConstantLootTableRange.create(1))
+                .rolls(ConstantLootNumberProvider.create(1f))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(RandomChanceLootCondition.builder(0.1F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootTableRange.between(0f, 1.5f)).build())
+                .withFunction(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
     })

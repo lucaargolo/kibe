@@ -30,7 +30,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
         }
 
         override fun isEmpty(): Boolean {
-            return entity.isEmpty
+            return entity.isEmpty()
         }
 
         override fun getStack(slot: Int): ItemStack {
@@ -99,7 +99,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(
                     blockPos
                 ).block != VACUUM_HOPPER
@@ -114,7 +114,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
     override fun transferSlot(player: PlayerEntity, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = slots[invSlot]
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot == 0) {
@@ -124,7 +124,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
                 if (!insertItem(itemStack2, 11, 47, true)) {
                     return ItemStack.EMPTY
                 }
-                slot.onStackChanged(itemStack2, itemStack)
+                slot.onQuickTransfer(itemStack2, itemStack)
             } else if (invSlot in 11..46) {
                 if (!insertItem(itemStack2, 1, 11, false)) {
                     if (invSlot < 38) {
@@ -146,9 +146,9 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             if (itemStack2.count == itemStack.count) {
                 return ItemStack.EMPTY
             }
-            val itemStack3 = slot.onTakeItem(player, itemStack2)
+            slot.onTakeItem(player, itemStack2)
             if (invSlot == 0) {
-                player.dropItem(itemStack3, false)
+                player.dropItem(itemStack2, false)
             }
         }
 

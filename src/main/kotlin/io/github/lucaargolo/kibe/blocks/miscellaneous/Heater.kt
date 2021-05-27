@@ -2,19 +2,25 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
 class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).luminance { if(it[Properties.ENABLED]) 15 else 0 }) {
 
-    override fun createBlockEntity(world: BlockView?) = HeaterBlockEntity(this)
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = HeaterBlockEntity(this, pos, state)
+
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
+        return BlockEntityTicker { wrld, pos, state, blockEntity -> HeaterBlockEntity.tick(wrld, pos, state, blockEntity as HeaterBlockEntity) }
+    }
 
     init {
         defaultState = stateManager.defaultState.with(Properties.ENABLED, false)

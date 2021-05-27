@@ -70,7 +70,7 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         }
     }
 
-    override fun createBlockEntity(world: BlockView?) = PlacerBlockEntity(this)
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = PlacerBlockEntity(this, pos, state)
 
     override fun hasComparatorOutput(state: BlockState?) = true
 

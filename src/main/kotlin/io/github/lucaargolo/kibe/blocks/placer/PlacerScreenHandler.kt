@@ -44,7 +44,7 @@ class PlacerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 9) {
@@ -64,7 +64,7 @@ class PlacerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(blockPos).block != PLACER) false
             else player.squaredDistanceTo(
                 blockPos.x + .5,

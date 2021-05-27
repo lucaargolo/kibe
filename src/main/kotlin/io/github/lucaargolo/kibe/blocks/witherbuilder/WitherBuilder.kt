@@ -103,7 +103,7 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         }
     }
 
-    override fun createBlockEntity(world: BlockView?) = WitherBuilderBlockEntity(this)
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = WitherBuilderBlockEntity(this, pos, state)
 
     override fun hasComparatorOutput(state: BlockState?) = true
 

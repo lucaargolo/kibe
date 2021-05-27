@@ -71,7 +71,7 @@ private fun appendItems(): List<ItemStack> {
             val key = FluidKeys.get(fluid)
             if(!key.entry.isEmpty) {
                 val tag = itemStack.orCreateTag
-                val blockEntityTag = CompoundTag()
+                val blockEntityTag = NbtCompound()
                 val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
                 fluidInv.setInvFluid(0, key.withAmount(FluidAmount.ofWhole(16)), Simulation.ACTION)
                 blockEntityTag.put("fluidInv", fluidInv.toTag())

@@ -34,7 +34,6 @@ import io.github.lucaargolo.kibe.blocks.tank.Tank
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCan
-import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreen
 import io.github.lucaargolo.kibe.blocks.trashcan.TrashCanScreenHandler

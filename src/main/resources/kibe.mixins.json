@@ -34,8 +34,6 @@
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
-    "MinecraftClientMixin",
-    "PlayerEntityRendererMixin"
     "PlayerEntityRendererMixin",
     "WorldRendererMixin",
     "WorldMixin"

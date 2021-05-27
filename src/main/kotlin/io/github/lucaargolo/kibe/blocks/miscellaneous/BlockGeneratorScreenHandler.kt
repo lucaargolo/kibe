@@ -41,7 +41,7 @@ class BlockGeneratorScreenHandler(syncId: Int, val playerInventory: PlayerInvent
 
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         val slot = this.slots[invSlot]
-        if (slot != null && slot.hasStack() && invSlot < 27) {
+        if (slot.hasStack() && invSlot < 27) {
             val itemStack = slot.stack
             if (!insertItem(itemStack, 27, this.slots.size, true)) {
                 return ItemStack.EMPTY
@@ -57,7 +57,7 @@ class BlockGeneratorScreenHandler(syncId: Int, val playerInventory: PlayerInvent
     }
 
     override fun canUse(player: PlayerEntity): Boolean {
-        return context.run({ world: World, blockPos: BlockPos ->
+        return context.get({ world: World, blockPos: BlockPos ->
             if (world.getBlockState(blockPos).block != entity.generator) false
             else player.squaredDistanceTo(
                 blockPos.x + .5,

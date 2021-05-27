@@ -6,25 +6,23 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
-import net.minecraft.inventory.SidedInventory
-import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.collection.DefaultedList
-import net.minecraft.util.math.Direction
+import net.minecraft.util.math.BlockPos
 
-class BreakerBlockEntity(breaker: Breaker): BlockEntity(getEntityType(breaker)), Inventory {
+class BreakerBlockEntity(breaker: Breaker, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(breaker), pos, state), Inventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        Inventories.toTag(tag, inventory)
-        return super.toTag(tag)
+    override fun writeNbt(nbt: NbtCompound): NbtCompound {
+        Inventories.writeNbt(nbt, inventory)
+        return super.writeNbt(nbt)
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
-        Inventories.fromTag(tag, inventory)
+    override fun readNbt(tag: NbtCompound) {
+        super.readNbt(tag)
+        Inventories.readNbt(tag, inventory)
     }
 
     override fun size() = inventory.size

@@ -9,91 +9,47 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.screen.PropertyDelegate
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.Identifier
-import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.registry.Registry
+import net.minecraft.world.World
 
-class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block, var rate: Float): BlockEntity(getEntityType(generator)), BlockEntityClientSerializable, SidedInventory, Tickable {
+class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block, var rate: Float, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(generator), pos, state), BlockEntityClientSerializable, SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var lastRenderProgress: Float = 0f
     var renderProgress: Float = 0f
     var progress: Float = 0f
 
-    override fun tick() {
-
-        renderProgress += rate
-        progress += rate
-        if(progress >= 1f) {
-            var count = MathHelper.floor(progress)
-            progress -= count
-            var slot = 0
-            while (slot < 27 && !inventory[slot].isEmpty && inventory[slot].count == inventory[slot].maxCount) {
-                slot++
-            }
-            if (slot < 27) {
-                inventory[slot].let { slotStack ->
-                    if(slotStack.isEmpty) {
-                        if(world?.isClient == false) {
-                            inventory[slot] = ItemStack(block, count)
-                            markDirty()
-                        }
-                    }else{
-                        if(slotStack.count + count <= slotStack.maxCount) {
-                            if(world?.isClient == false) {
-                                slotStack.increment(count)
-                                markDirty()
-                            }
-                        }else{
-                            count -= slotStack.maxCount - slotStack.count
-                            if(world?.isClient == false) {
-                                slotStack.count = slotStack.maxCount
-                            }
-                            progress += count
-                            progress -= rate
-                            markDirty()
-                            tick()
-                        }
-                    }
-                }
-            }else{
-                //TODO: Cache if is full
-                progress = 0f
-            }
-        }
-
-    }
-
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        Inventories.toTag(tag, inventory)
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
+        Inventories.writeNbt(tag, inventory)
         tag.putString("generator", Registry.BLOCK.getId(generator).toString())
         tag.putString("block", Registry.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         tag.putFloat("progress", progress)
-        return super.toTag(tag)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
-        Inventories.fromTag(tag, inventory)
+    override fun readNbt(tag: NbtCompound) {
+        super.readNbt(tag)
+        Inventories.readNbt(tag, inventory)
         generator = Registry.BLOCK.get(Identifier(tag.getString("generator"))) as BlockGenerator
         block = Registry.BLOCK.get(Identifier(tag.getString("block")))
         rate = tag.getFloat("rate")
         progress = tag.getFloat("progress")
     }
 
-    override fun toClientTag(tag: CompoundTag): CompoundTag {
+    override fun toClientTag(tag: NbtCompound): NbtCompound {
         tag.putString("block", Registry.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         return tag
     }
 
-    override fun fromClientTag(tag: CompoundTag) {
+    override fun fromClientTag(tag: NbtCompound) {
         block = Registry.BLOCK.get(Identifier(tag.getString("block")))
         rate = tag.getFloat("rate")
     }
@@ -126,6 +82,52 @@ class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block,
     override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = false
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = true
+
+    companion object {
+
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: BlockGeneratorBlockEntity) {
+            entity.renderProgress += entity.rate
+            entity.progress += entity.rate
+            if(entity.progress >= 1f) {
+                var count = MathHelper.floor(entity.progress)
+                entity.progress -= count
+                var slot = 0
+                while (slot < 27 && !entity.inventory[slot].isEmpty && entity.inventory[slot].count == entity.inventory[slot].maxCount) {
+                    slot++
+                }
+                if (slot < 27) {
+                    entity.inventory[slot].let { slotStack ->
+                        if(slotStack.isEmpty) {
+                            if(!world.isClient) {
+                                entity.inventory[slot] = ItemStack(entity.block, count)
+                                entity.markDirty()
+                            }
+                        }else{
+                            if(slotStack.count + count <= slotStack.maxCount) {
+                                if(!world.isClient) {
+                                    slotStack.increment(count)
+                                    entity.markDirty()
+                                }
+                            }else{
+                                count -= slotStack.maxCount - slotStack.count
+                                if(!world.isClient) {
+                                    slotStack.count = slotStack.maxCount
+                                }
+                                entity.progress += count
+                                entity.progress -= entity.rate
+                                entity.markDirty()
+                                tick(world, pos, state, entity)
+                            }
+                        }
+                    }
+                }else{
+                    //TODO: Cache if is full
+                    entity.progress = 0f
+                }
+            }
+        }
+
+    }
 
 
 }

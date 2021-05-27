@@ -4,19 +4,17 @@ import io.github.lucaargolo.kibe.WATER_DROPS
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.item.ItemPlacementContext
-import net.minecraft.particle.ParticleTypes
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
 class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
 
-    override fun createBlockEntity(world: BlockView?) = DehumidifierBlockEntity(this)
+    override fun createBlockEntity(pos: BlockPos, state: BlockState) = DehumidifierBlockEntity(this, pos, state)
 
     init {
         defaultState = stateManager.defaultState.with(Properties.ENABLED, false)
@@ -61,7 +59,7 @@ class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTON
                 val x = vecPos.x + (random.nextDouble()*4)-2
                 val y = vecPos.y + (random.nextDouble()*4)-2
                 val z = vecPos.z + (random.nextDouble()*4)-2
-                val vel = Vec3d(x, y, z).reverseSubtract(vecPos).normalize().multiply(0.1)
+                val vel = Vec3d(x, y, z).relativize(vecPos).normalize().multiply(0.1)
                 world.addParticle(WATER_DROPS, x, y, z, vel.x, vel.y, vel.z)
             }
         }

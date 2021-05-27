@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import net.minecraft.block.BlockState
 
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.world.ClientWorld
@@ -9,10 +10,10 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.World
 
-class DehumidifierBlockEntity(dehumidifier: Dehumidifier): BlockEntity(getEntityType(dehumidifier)) {
+class DehumidifierBlockEntity(dehumidifier: Dehumidifier, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(dehumidifier), pos, state) {
 
-    override fun setLocation(world: World, pos: BlockPos) {
-        super.setLocation(world, pos)
+    override fun setWorld(world: World) {
+        super.setWorld(world)
         if(world.isClient) {
             setupDehumidifier(ChunkPos(pos), this)
         }

@@ -9,23 +9,24 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.tag.BlockTags
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 
-class WitherBuilderBlockEntity(placer: WitherBuilder): BlockEntity(getEntityType(placer)), SidedInventory {
+class WitherBuilderBlockEntity(placer: WitherBuilder, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(placer), pos, state), SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(7, ItemStack.EMPTY)
 
-    override fun toTag(tag: CompoundTag): CompoundTag {
-        Inventories.toTag(tag, inventory)
-        return super.toTag(tag)
+    override fun writeNbt(tag: NbtCompound): NbtCompound {
+        Inventories.writeNbt(tag, inventory)
+        return super.writeNbt(tag)
     }
 
-    override fun fromTag(state: BlockState, tag: CompoundTag) {
-        super.fromTag(state, tag)
-        Inventories.fromTag(tag, inventory)
+    override fun readNbt(tag: NbtCompound) {
+        super.readNbt(tag)
+        Inventories.readNbt(tag, inventory)
     }
 
     override fun size() = inventory.size
@@ -61,7 +62,7 @@ class WitherBuilderBlockEntity(placer: WitherBuilder): BlockEntity(getEntityType
 
     override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?): Boolean {
         return if((0..3).contains(slot)) {
-            (stack.item as? BlockItem)?.block?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
+            (stack.item as? BlockItem)?.let{ BlockTags.WITHER_SUMMON_BASE_BLOCKS.contains(it.block) } ?: false
         }else{
             stack.item == Items.WITHER_SKELETON_SKULL
         }

@@ -25,14 +25,10 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.screen.PropertyDelegate
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Identifier
-import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
@@ -40,7 +36,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
-class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(vacuumHopper), pos, state), FixedFluidInv, BlockEntityClientSerializable {
+class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(vacuumHopper), pos, state), FixedFluidInv, BlockEntityClientSerializable, SidedInventory {
 
     private var processingRecipe: Identifier? = null
     private var processingTicks = 0
@@ -144,16 +140,20 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
                 modifiableStack = ItemStack.EMPTY
             }else{
                 if(ItemStack.areItemsEqual(stk, modifiableStack) && ItemStack.areTagsEqual(stk, modifiableStack)) {
-                    if(stk.count+modifiableStack.count > stk.maxCount) {
-                        val aux = stk.maxCount-stk.count
-                        stk.count = stk.maxCount
-                        modifiableStack.count -= aux
-                    }else if(stk.count+modifiableStack.count == stk.maxCount){
-                        stk.count = stk.maxCount
-                        modifiableStack = ItemStack.EMPTY
-                    }else{
-                        stk.count += modifiableStack.count
-                        modifiableStack = ItemStack.EMPTY
+                    when {
+                        stk.count+modifiableStack.count > stk.maxCount -> {
+                            val aux = stk.maxCount-stk.count
+                            stk.count = stk.maxCount
+                            modifiableStack.count -= aux
+                        }
+                        stk.count+modifiableStack.count == stk.maxCount -> {
+                            stk.count = stk.maxCount
+                            modifiableStack = ItemStack.EMPTY
+                        }
+                        else -> {
+                            stk.count += modifiableStack.count
+                            modifiableStack = ItemStack.EMPTY
+                        }
                     }
                 }
                 if(modifiableStack.count <= 0) {
@@ -198,61 +198,64 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = slot != 9
 
-    override fun tick() {
+    companion object {
 
-        var actualProcessingRecipe: VacuumHopperRecipe? = null
-        (world as? ServerWorld)?.let { serverWorld ->
-            if(processingRecipe == null) {
-                if (!getStack(9).isEmpty) {
-                    actualProcessingRecipe = serverWorld.server.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, this, world).orElseGet { null }
-                }
-            }else{
-                serverWorld.server.recipeManager.get(processingRecipe).ifPresent {
-                    (it as? VacuumHopperRecipe)?.let { vacuumHopperRecipe -> actualProcessingRecipe = vacuumHopperRecipe }
-                }
-            }
-            processingRecipe = actualProcessingRecipe?.id
-            actualProcessingRecipe?.let { recipe ->
-                if(recipe.matches(this, serverWorld)) {
-                    totalProcessingTicks = recipe.ticks
-                    if(processingTicks++ >= recipe.ticks) {
-                        recipe.craft(this)
-                        processingRecipe = null
-                        processingTicks = 0
-                        totalProcessingTicks = 0
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: VacuumHopperEntity) {
+            var actualProcessingRecipe: VacuumHopperRecipe? = null
+            (world as? ServerWorld)?.let { serverWorld ->
+                if(entity.processingRecipe == null) {
+                    if (!entity.getStack(9).isEmpty) {
+                        actualProcessingRecipe = serverWorld.server.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, entity, world).orElseGet { null }
                     }
                 }else{
-                    processingRecipe = null
-                    processingTicks = 0
-                    totalProcessingTicks = 0
+                    serverWorld.server.recipeManager.get(entity.processingRecipe).ifPresent {
+                        (it as? VacuumHopperRecipe)?.let { vacuumHopperRecipe -> actualProcessingRecipe = vacuumHopperRecipe }
+                    }
+                }
+                entity.processingRecipe = actualProcessingRecipe?.id
+                actualProcessingRecipe?.let { recipe ->
+                    if(recipe.matches(entity, serverWorld)) {
+                        entity.totalProcessingTicks = recipe.ticks
+                        if(entity.processingTicks++ >= recipe.ticks) {
+                            recipe.craft(entity)
+                            entity.processingRecipe = null
+                            entity.processingTicks = 0
+                            entity.totalProcessingTicks = 0
+                        }
+                    }else{
+                        entity.processingRecipe = null
+                        entity.processingTicks = 0
+                        entity.totalProcessingTicks = 0
+                    }
+                }
+                if(actualProcessingRecipe == null) {
+                    entity.processingRecipe = null
+                    entity.processingTicks = 0
+                    entity.totalProcessingTicks = 0
                 }
             }
-            if(actualProcessingRecipe == null) {
-                processingRecipe = null
-                processingTicks = 0
-                totalProcessingTicks = 0
+
+            if(!state[Properties.ENABLED]) return
+            val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
+            val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
+            val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+            val validEntities = world.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+            validEntities?.forEach {
+                val distance: Double = it.pos.distanceTo(vecPos)
+                if (distance < 1.0) {
+                    if(it is ExperienceOrbEntity) {
+                        entity.addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
+                        it.remove(Entity.RemovalReason.DISCARDED)
+                    }
+                    if(it is ItemEntity) {
+                        it.stack = entity.addStack(it.stack)
+                    }
+                }
+                val vel = it.pos.relativize(vecPos).normalize().multiply(0.1)
+                it.addVelocity(vel.x, vel.y, vel.z)
             }
         }
 
-        if(!cachedState[Properties.ENABLED]) return
-        val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
-        val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
-        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-        val validEntities = world?.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
-        validEntities?.forEach {
-            val distance: Double = it.pos.distanceTo(vecPos)
-            if (distance < 1.0) {
-                if(it is ExperienceOrbEntity) {
-                    addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
-                    it.remove()
-                }
-                if(it is ItemEntity) {
-                    it.stack = addStack(it.stack)
-                }
-            }
-            val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
-            it.addVelocity(vel.x, vel.y, vel.z)
-        }
     }
 
 }

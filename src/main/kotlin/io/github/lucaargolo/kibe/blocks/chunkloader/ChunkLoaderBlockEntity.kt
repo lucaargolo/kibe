@@ -85,86 +85,86 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
     }
 
     companion object {
-        fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: ChunkLoaderBlockEntity) {
-            if(delay >= 20) {
-                val playerUUID = try { UUID.fromString(ownerUUID) } catch (ignored: Exception) { null }
-                if (!cachedState[Properties.ENABLED]) {
-                    when (disabledReason) {
+        fun tick(world: World, pos: BlockPos, state: BlockState, entity: ChunkLoaderBlockEntity) {
+            if(entity.delay >= 20) {
+                val playerUUID = try { UUID.fromString(entity.ownerUUID) } catch (ignored: Exception) { null }
+                if (!state[Properties.ENABLED]) {
+                    when (entity.disabledReason) {
                         DisabledReason.NONE -> {
-                            world?.setBlockState(pos, cachedState.with(Properties.ENABLED, true))
-                            disabledReason = DisabledReason.NONE
-                            markDirtyAndSync()
+                            world.setBlockState(pos, state.with(Properties.ENABLED, true))
+                            entity.disabledReason = DisabledReason.NONE
+                            entity.markDirtyAndSync()
                         }
                         DisabledReason.OWNER_OFFLINE, DisabledReason.OWNER_LONG_GONE -> {
                             playerUUID?.let { validUUID ->
                                 (world as? ServerWorld)?.server?.playerManager?.getPlayer(validUUID)?.let {
-                                    world?.setBlockState(pos, cachedState.with(Properties.ENABLED, true))
-                                    ownerLastSeen = System.currentTimeMillis()
-                                    disabledReason = DisabledReason.NONE
-                                    markDirtyAndSync()
+                                    world.setBlockState(pos, state.with(Properties.ENABLED, true))
+                                    entity.ownerLastSeen = System.currentTimeMillis()
+                                    entity.disabledReason = DisabledReason.NONE
+                                    entity.markDirtyAndSync()
                                 }
                             }
                         }
                         DisabledReason.TOO_MANY_LOADERS -> {
                             playerUUID?.let { validUUID ->
                                 (world as? ServerWorld)?.let { world ->
-                                    val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+                                    val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, world.server)}, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
                                     if(chunkLoaderState.getLoaded(validUUID) < MOD_CONFIG.chunkLoaderModule.maxPerPlayer || MOD_CONFIG.chunkLoaderModule.maxPerPlayer < 0) {
-                                        world.setBlockState(pos, cachedState.with(Properties.ENABLED, true))
-                                        disabledReason = DisabledReason.NONE
-                                        markDirtyAndSync()
+                                        world.setBlockState(pos, state.with(Properties.ENABLED, true))
+                                        entity.disabledReason = DisabledReason.NONE
+                                        entity.markDirtyAndSync()
                                     }
                                 }
                             }
                         }
                     }
                 }
-                if (cachedState[Properties.ENABLED]) {
-                    if(disabledReason != DisabledReason.NONE) {
-                        world?.setBlockState(pos, cachedState.with(Properties.ENABLED, false))
+                if (state[Properties.ENABLED]) {
+                    if(entity.disabledReason != DisabledReason.NONE) {
+                        world.setBlockState(pos, state.with(Properties.ENABLED, false))
                         return
                     }
 
-                    (world as? ServerWorld)?.let { world ->
-                        val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState(world.server, "kibe_chunk_loaders") }, "kibe_chunk_loaders")
+                    (world as? ServerWorld)?.let { serverWorld ->
+                        val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({ChunkLoaderState.createFromTag(it, world.server)}, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
 
                         playerUUID?.let { validUUID ->
-                            val player = world.server.playerManager.getPlayer(validUUID)
+                            val player = serverWorld.server.playerManager.getPlayer(validUUID)
                             if(player != null) {
-                                ownerLastSeen = System.currentTimeMillis()
+                                entity.ownerLastSeen = System.currentTimeMillis()
                             }else if (MOD_CONFIG.chunkLoaderModule.checkForPlayer) {
-                                world.setBlockState(pos, cachedState.with(Properties.ENABLED, false))
-                                disabledReason = DisabledReason.OWNER_OFFLINE
-                                markDirtyAndSync()
+                                serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
+                                entity.disabledReason = DisabledReason.OWNER_OFFLINE
+                                entity.markDirtyAndSync()
                                 return
                             }
                             if (MOD_CONFIG.chunkLoaderModule.maxPerPlayer > -1 && chunkLoaderState.getLoaded(validUUID) > MOD_CONFIG.chunkLoaderModule.maxPerPlayer) {
-                                world.setBlockState(pos, cachedState.with(Properties.ENABLED, false))
-                                disabledReason = DisabledReason.TOO_MANY_LOADERS
-                                markDirtyAndSync()
+                                serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
+                                entity.disabledReason = DisabledReason.TOO_MANY_LOADERS
+                                entity.markDirtyAndSync()
                                 return
                             }
                         }
 
-                        if (MOD_CONFIG.chunkLoaderModule.maxOfflineTime > -1 && ((System.currentTimeMillis() - ownerLastSeen)/1000) > MOD_CONFIG.chunkLoaderModule.maxOfflineTime) {
-                            world.setBlockState(pos, cachedState.with(Properties.ENABLED, false))
-                            disabledReason = DisabledReason.OWNER_LONG_GONE
-                            markDirtyAndSync()
+                        if (MOD_CONFIG.chunkLoaderModule.maxOfflineTime > -1 && ((System.currentTimeMillis() - entity.ownerLastSeen)/1000) > MOD_CONFIG.chunkLoaderModule.maxOfflineTime) {
+                            serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
+                            entity.disabledReason = DisabledReason.OWNER_LONG_GONE
+                            entity.markDirtyAndSync()
                             return
                         }
 
-                        if(dirty) {
-                            chunkLoaderState.removePos(pos, world)
-                            dirty = false
+                        if(entity.dirty) {
+                            chunkLoaderState.removePos(pos, serverWorld)
+                            entity.dirty = false
                         }
 
-                        chunkLoaderState.addPos(pos, world)
+                        chunkLoaderState.addPos(pos, serverWorld)
                     }
 
                 }
-                delay = 0
+                entity.delay = 0
             }
-            delay++
+            entity.delay++
         }
     }
 
