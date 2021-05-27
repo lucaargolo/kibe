@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
+import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -19,6 +20,17 @@ class Glider(settings: Settings): Item(settings) {
         }
         stack.tag = tag
         return TypedActionResult.success(stack)
+    }
+
+    override fun inventoryTick(stack: ItemStack, world: World?, entity: Entity?, slot: Int, selected: Boolean) {
+        var realSelected = selected
+        if(!realSelected) {
+            realSelected = (entity as? PlayerEntity)?.inventory?.offHand?.get(0)?.equals(stack) ?: false
+        }
+        val tag = stack.orCreateTag
+        if(!realSelected && tag.contains("enabled") && tag.getBoolean("enabled")) {
+            tag.putBoolean("enabled", false)
+        }
     }
 
     companion object {

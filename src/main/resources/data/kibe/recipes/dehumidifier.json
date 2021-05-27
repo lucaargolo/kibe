@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#S#",
+    "LFL",
+    "#N#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "S": {
+      "item": "minecraft:sponge"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "N": {
+      "item": "minecraft:sand"
+    }
+  },
+  "result": {
+    "item": "kibe:dehumidifier",
+    "count": 1
+  }
+}

@@ -5,7 +5,6 @@ import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
@@ -47,11 +46,7 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
         }
         tooltip.add(color)
         val key = tag.getString("key")
-        (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: mutableListOf()
-            list.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = linkedSetOf()
-        }
+        EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
         val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         fluidInv.toTag(tag)
         if(!fluidInv.getInvFluid(0).isEmpty)

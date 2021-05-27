@@ -11,6 +11,7 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
@@ -34,15 +35,15 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
         var torchQuantity = 0.0
         inventory.forEach { torchQuantity += it.count }
         torchPercentage = (torchQuantity/(inventory.size*64.0))
-        world?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         chunkRadius = min(sqrt(torchQuantity / 9).toInt(), 8)
-        world?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        (world as? ServerWorld)?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         if(world?.getBlockState(pos)?.block == BIG_TORCH)
             world?.setBlockState(pos, cachedState.with(Properties.LEVEL_8, chunkRadius))
     }
 
     override fun markRemoved() {
-        world?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
+        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks())}
         super.markRemoved()
     }
 
@@ -119,11 +120,13 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
     companion object {
         private val suppressedChunkMap = linkedMapOf<RegistryKey<World>, LinkedHashSet<ChunkPos>>()
         private var isException = false
+        var testingThread: Thread? = null
+        var isTesting = false
 
         fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: BigTorchBlockEntity) {
             if(blockEntity.count++ == 40) {
                 blockEntity.count = 0
-                addSuppressedChunks(world.registryKey, blockEntity.getSuppressedChunks())
+                (world as? ServerWorld)?.let { addSuppressedChunks(world.registryKey, blockEntity.getSuppressedChunks()) }
             }
         }
 

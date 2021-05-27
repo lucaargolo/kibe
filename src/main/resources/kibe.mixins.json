@@ -3,6 +3,7 @@
   "package": "io.github.lucaargolo.kibe.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BiomeMixin",
     "BucketItemAccessor",
     "ClientPlayNetworkHandlerMixin",
     "CraftingTableContainerMixin",
@@ -10,14 +11,18 @@
     "EntityMixin",
     "ExperienceOrbEntityAccessor",
     "HostileEntityMixin",
+    "LightStorageMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
     "MobSpawnerLogicMixin",
+    "PersistentStateManagerAccessor",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
+    "RedstoneWireBlockMixin",
     "ServerWorldMixin",
     "ShapedRecipeMixin",
     "SpawnHelperInvoker",
+    "SpawnRestrictionMixin",
     "ThreadedAnvilChunkStorageMixin",
     "WitherRoseBlockMixin",
     "WorldMixin"
@@ -25,11 +30,15 @@
   "client": [
     "BipedEntityModelMixin",
     "EntityModelsMixin",
+    "ClientPlayNetworkHandlerMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
     "MinecraftClientMixin",
     "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "WorldRendererMixin",
+    "WorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

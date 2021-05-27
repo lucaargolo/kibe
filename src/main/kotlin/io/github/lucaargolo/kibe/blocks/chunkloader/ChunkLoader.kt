@@ -72,7 +72,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
                 if (state[Properties.ENABLED]) {
                     MinecraftClient.getInstance().openScreen(ChunkLoaderScreen(be))
                 } else {
-                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.toLowerCase()}"), false)
+                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.lowercase()}"), false)
                 }
             }
         }

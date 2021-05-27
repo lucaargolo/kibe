@@ -5,6 +5,7 @@ import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
+import io.github.lucaargolo.kibe.utils.SpikeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -43,6 +44,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     @Inject(at = @At("HEAD"), method = "isSleepingInBed", cancellable = true)
     private void isSleepingInBed(CallbackInfoReturnable<Boolean> info) {
         if(SleepingBag.Companion.getPlayersSleeping().contains(this)) {
@@ -67,6 +69,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Inject(at = @At("HEAD"), method = "handleFallDamage", cancellable = true)
     private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if((Object) this instanceof PlayerEntity) {
@@ -93,7 +96,15 @@ public abstract class LivingEntityMixin extends Entity {
                 }
             }
         }
+    }
 
+    @SuppressWarnings("ConstantConditions")
+    @Inject(at = @At("HEAD"), method = "shouldDropLoot", cancellable = true)
+    private void shouldDropLoot(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity livingEntity = ((LivingEntity) ((Object) this));
+        if(SpikeHelper.INSTANCE.shouldCancelLootDrop(livingEntity)) {
+            cir.setReturnValue(false);
+        }
     }
 
 }

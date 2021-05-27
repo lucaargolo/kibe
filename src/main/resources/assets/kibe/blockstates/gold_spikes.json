@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": { "model": "kibe:block/gold_spikes" },
+    "facing=down": { "model": "kibe:block/gold_spikes", "x": 180 },
+    "facing=north": { "model": "kibe:block/gold_spikes", "x": 90 },
+    "facing=south": { "model": "kibe:block/gold_spikes", "x": 270 },
+    "facing=east": { "model": "kibe:block/gold_spikes", "x": 90, "y": 90 },
+    "facing=west": { "model": "kibe:block/gold_spikes", "x": 270, "y": 90 }
+  }
+}

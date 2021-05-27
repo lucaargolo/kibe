@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "D",
+    "N"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "N": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "result": {
+    "item": "kibe:igniter",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#O#",
+    "OnO",
+    "#O#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:chain"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "n": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "result": {
+    "item": "kibe:wither_proof_block",
+    "count": 4
+  }
+}

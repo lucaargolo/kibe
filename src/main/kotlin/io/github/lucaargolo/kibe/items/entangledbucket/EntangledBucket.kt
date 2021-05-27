@@ -17,7 +17,6 @@ import io.github.lucaargolo.kibe.utils.plus
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluid
@@ -212,11 +211,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
             val state = world.server.overworld.persistentStateManager.getOrCreate( {EntangledTankState.createFromTag(it, world, key) }, { EntangledTankState(world, key) }, key)
             state.getOrCreateInventory(colorCode)
         }else {
-            (MinecraftClient.getInstance().player)?.let { player ->
-                val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
-                list.add(Pair(key, colorCode))
-                EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
-            }
+            EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
             EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         }
         fluidInv.toTag(tag)

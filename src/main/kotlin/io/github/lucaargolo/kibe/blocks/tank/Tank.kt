@@ -47,6 +47,25 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
         }
     }
 
+    override fun hasComparatorOutput(state: BlockState?) = true
+
+    override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
+        return (world.getBlockEntity(pos) as? TankBlockEntity)?.fluidInv?.let {
+            val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
+            return (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
+        } ?: 0
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!state.isOf(newState.block)) {
+            (world.getBlockEntity(pos) as? TankBlockEntity)?.let {
+                world.updateComparators(pos, this)
+            }
+            super.onStateReplaced(state, world, pos, newState, moved)
+        }
+    }
+
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
         return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { FluidInvUtil.interactHandWithTank(it.fluidInv as FixedFluidInv, player, hand).asActionResult() } ?: ActionResult.FAIL
     }

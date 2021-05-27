@@ -1,0 +1,6 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "kibe:block/wither_proof_glass"
+	}
+}

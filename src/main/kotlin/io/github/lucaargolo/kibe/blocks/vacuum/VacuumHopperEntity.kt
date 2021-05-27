@@ -11,30 +11,61 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.mixin.ExperienceOrbEntityAccessor
+import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
+import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.github.lucaargolo.kibe.utils.FluidTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
-import net.minecraft.block.entity.LockableContainerBlockEntity
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ExperienceOrbEntity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
+import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.screen.PropertyDelegate
+import net.minecraft.server.world.ServerWorld
+import net.minecraft.state.property.Properties
+import net.minecraft.util.Identifier
+import net.minecraft.util.Tickable
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
 class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(vacuumHopper), pos, state), FixedFluidInv, BlockEntityClientSerializable {
 
-    var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
+    private var processingRecipe: Identifier? = null
+    private var processingTicks = 0
+    private var totalProcessingTicks = 0
 
+    val propertyDelegate = object: PropertyDelegate {
+        override fun get(index: Int): Int {
+            return when(index) {
+                0 -> processingTicks
+                1 -> totalProcessingTicks
+                else -> 0
+            }
+        }
+
+        override fun set(index: Int, value: Int) {
+            when(index) {
+                0 -> processingTicks = value
+                1 -> totalProcessingTicks = value
+            }
+        }
+
+        override fun size() = 2
+    }
+
+    var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(11, ItemStack.EMPTY)
     val tanks = listOf(FluidTank(FluidAmount.ofWhole(16)))
 
     override fun getTankCount() = tanks.size
@@ -56,7 +87,7 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
 
     override fun addListener(p0: FluidInvTankChangeListener?, p1: ListenerRemovalToken?) = ListenerToken {}
 
-    fun addLiquidXp(qnt: Int): Boolean {
+    private fun addLiquidXp(qnt: Int): Boolean {
         val currentAmount = tanks[0].volume.amount()
         val newAmount = FluidAmount.of(currentAmount.asLong(1000) + qnt, 1000)
         if (newAmount > tanks[0].capacity)
@@ -65,16 +96,6 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
             tanks[0].volume = LIQUID_XP.key.withAmount(newAmount)
         markDirty()
         return true
-    }
-
-    fun removeLiquidXp(qnt: Int): Boolean {
-        val currentAmount = tanks[0].volume.amount()
-        val removeAmount = FluidAmount.of(qnt.toLong(), 1000)
-        return if(currentAmount >= removeAmount) {
-            tanks[0].volume = LIQUID_XP.key.withAmount(FluidAmount.of(currentAmount.asLong(1000) - qnt, 1000))
-            markDirty()
-            true
-        }else false
     }
 
     override fun markDirty() {
@@ -144,8 +165,6 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
         return modifiableStack
     }
 
-    override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?) = null
-
     override fun size() = inventory.size
 
     override fun isEmpty() = inventory.all { it.isEmpty }
@@ -165,8 +184,6 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
 
     override fun clear()  = inventory.clear()
 
-    override fun getContainerName(): Text = TranslatableText("screen.kibe.vacuum_hopper")
-
     override fun canPlayerUse(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {
             false
@@ -175,26 +192,66 @@ class VacuumHopperEntity(private val vacuumHopper: VacuumHopper, pos: BlockPos, 
         }
     }
 
-    companion object {
-        fun tick(world: World, pos: BlockPos, state: BlockState, entity: VacuumHopperEntity) {
-            val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
-            val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
-            val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-            val validEntities = world.getOtherEntities(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
-            validEntities.forEach {
-                val distance: Double = it.pos.distanceTo(vecPos)
-                if (distance < 1.0) {
-                    if(it is ExperienceOrbEntity) {
-                        entity.addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
-                        it.remove(Entity.RemovalReason.KILLED)
-                    }
-                    if(it is ItemEntity) {
-                        it.stack = entity.addStack(it.stack)
-                    }
+    override fun getAvailableSlots(side: Direction?) = intArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+    override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = slot == 9
+
+    override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = slot != 9
+
+    override fun tick() {
+
+        var actualProcessingRecipe: VacuumHopperRecipe? = null
+        (world as? ServerWorld)?.let { serverWorld ->
+            if(processingRecipe == null) {
+                if (!getStack(9).isEmpty) {
+                    actualProcessingRecipe = serverWorld.server.recipeManager.getFirstMatch(VACUUM_HOPPER_RECIPE_TYPE, this, world).orElseGet { null }
                 }
-                val vel = it.pos.relativize(vecPos).normalize().multiply(0.1)
-                it.addVelocity(vel.x, vel.y, vel.z)
+            }else{
+                serverWorld.server.recipeManager.get(processingRecipe).ifPresent {
+                    (it as? VacuumHopperRecipe)?.let { vacuumHopperRecipe -> actualProcessingRecipe = vacuumHopperRecipe }
+                }
             }
+            processingRecipe = actualProcessingRecipe?.id
+            actualProcessingRecipe?.let { recipe ->
+                if(recipe.matches(this, serverWorld)) {
+                    totalProcessingTicks = recipe.ticks
+                    if(processingTicks++ >= recipe.ticks) {
+                        recipe.craft(this)
+                        processingRecipe = null
+                        processingTicks = 0
+                        totalProcessingTicks = 0
+                    }
+                }else{
+                    processingRecipe = null
+                    processingTicks = 0
+                    totalProcessingTicks = 0
+                }
+            }
+            if(actualProcessingRecipe == null) {
+                processingRecipe = null
+                processingTicks = 0
+                totalProcessingTicks = 0
+            }
+        }
+
+        if(!cachedState[Properties.ENABLED]) return
+        val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
+        val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
+        val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+        val validEntities = world?.getEntitiesByType<Entity>(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+        validEntities?.forEach {
+            val distance: Double = it.pos.distanceTo(vecPos)
+            if (distance < 1.0) {
+                if(it is ExperienceOrbEntity) {
+                    addLiquidXp((it as ExperienceOrbEntityAccessor).amount * 10)
+                    it.remove()
+                }
+                if(it is ItemEntity) {
+                    it.stack = addStack(it.stack)
+                }
+            }
+            val vel = it.pos.reverseSubtract(vecPos).normalize().multiply(0.1)
+            it.addVelocity(vel.x, vel.y, vel.z)
         }
     }
 

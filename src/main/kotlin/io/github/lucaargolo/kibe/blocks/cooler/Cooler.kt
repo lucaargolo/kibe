@@ -6,6 +6,7 @@ import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.screen.ScreenHandler
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -35,6 +36,22 @@ class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.PA
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
         return ActionResult.SUCCESS
+    }
+
+    override fun hasComparatorOutput(state: BlockState?) = true
+
+    override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
+        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos))
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!state.isOf(newState.block)) {
+            (world.getBlockEntity(pos) as? CoolerBlockEntity)?.let {
+                world.updateComparators(pos, this)
+            }
+            super.onStateReplaced(state, world, pos, newState, moved)
+        }
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL

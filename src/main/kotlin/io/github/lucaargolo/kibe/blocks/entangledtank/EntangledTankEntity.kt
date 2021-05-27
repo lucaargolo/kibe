@@ -69,6 +69,37 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         super.markDirty()
     }
 
+    private var lastComparatorOutput = 0
+    var isBeingCompared = false
+
+    fun getComparatorOutput(): Int {
+        val comparatorOutput = fluidInv.let {
+            val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
+            (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
+        }
+        isBeingCompared = true
+        lastComparatorOutput = comparatorOutput
+        return comparatorOutput
+    }
+
+    override fun tick() {
+        val world = world ?: return
+        if(!world.isClient && isBeingCompared) {
+            val comparatorOutput = fluidInv.let {
+                val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
+                (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
+            }
+            if(comparatorOutput != lastComparatorOutput) {
+                world.updateComparators(pos, cachedState.block)
+            }
+        }
+        val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        val luminance = fluid.defaultState.blockState.luminance
+        if(luminance != cachedState[Properties.LEVEL_15] && MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
+            world.setBlockState(pos, cachedState.with(Properties.LEVEL_15, luminance))
+        }
+    }
+
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         (1..8).forEach {
@@ -77,6 +108,8 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
+        isBeingCompared = tag.getBoolean("isBeingCompared")
+        lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
     override fun fromClientTag(tag: NbtCompound) {
@@ -96,6 +129,8 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
+        tag.putBoolean("isBeingCompared", isBeingCompared)
+        tag.putInt("lastComparatorOutput", lastComparatorOutput)
         if(persistentState != null) {
             var subTag = NbtCompound()
             subTag = persistentState!!.writeNbt(subTag)

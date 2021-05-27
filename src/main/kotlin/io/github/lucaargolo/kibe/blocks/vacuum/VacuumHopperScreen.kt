@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
-import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
@@ -26,6 +25,9 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         this.renderBackground(matrices)
         super.render(matrices, mouseX, mouseY, delta)
+        val p = ((handler.processingTicks/handler.totalProcessingTicks.toFloat())*14).toInt()
+        client?.textureManager?.bindTexture(texture)
+        drawTexture(matrices, startX+120, startY+37, 184, 0, 8, p)
         drawMouseoverTooltip(matrices, mouseX, mouseY)
         if(mouseX in (startX+100..startX+112) && mouseY in (startY+18..startY+70)) {
             val tank = handler.entity.tanks.first()

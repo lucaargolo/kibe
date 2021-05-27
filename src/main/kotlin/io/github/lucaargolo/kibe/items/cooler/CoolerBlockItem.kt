@@ -13,7 +13,6 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
-import java.util.*
 
 class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
 

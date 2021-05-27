@@ -8,7 +8,7 @@
   <a title="Fabric Language Kotlin" href="https://github.com/FabricMC/fabric-language-kotlin" target="_blank" rel="noopener noreferrer">
     <img src="https://i.imgur.com/c1DH9VL.png" width="171" height="50" />
   </a>
-  <p align="center">Also uses <a href="https://github.com/Ladysnake/PlayerAbilityLib">PlayerAbilityLib</a> by <a href="https://github.com/Pyrofab">Pyrofab</a>, <a href="https://github.com/AlexIIL/LibBlockAttributes">Lib Block Attributes</a> by <a href="https://github.com/AlexIIL">AlexIIL</a> and <a href="https://github.com/shedaniel/AutoConfig">AutoConfig 1u</a> by <a href="https://github.com/shedaniel">Shedaniel</a></p>
+  <p align="center">Also uses <a href="https://github.com/Ladysnake/PlayerAbilityLib">PlayerAbilityLib</a> by <a href="https://github.com/Pyrofab">Pyrofab</a> and <a href="https://github.com/AlexIIL/LibBlockAttributes">Lib Block Attributes</a> by <a href="https://github.com/AlexIIL">AlexIIL</a></p>
 </p>
 <p align="center">
   <a href="https://github.com/lucaargolo/kibe/actions"><img src="https://github.com/lucaargolo/kibe/workflows/Build/badge.svg"/></a>

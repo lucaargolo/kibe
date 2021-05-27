@@ -72,6 +72,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         }
 
         val coreModel = if(entity.key != EntangledTank.DEFAULT_KEY) coreModelDiamond else coreModelGold
+        val upUV = if(entity.key != EntangledTank.DEFAULT_KEY) -10 else 0
 
         coreModel.render(matrices, chestConsumer, lightAbove, overlay)
 
@@ -79,11 +80,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
         matrices.pop()
 
-        (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
-            list.add(Pair(entity.key, entity.colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
-        }
+        EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(entity.key, entity.colorCode))
         val fluidInv = EntangledTankState.CLIENT_STATES[entity.key]?.fluidInvMap?.get(entity.colorCode)
         val fluid = fluidInv?.getInvFluid(0)?.rawFluid ?: Fluids.EMPTY
 
@@ -93,6 +90,17 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
 
         val bb = vertexConsumers.getBuffer(if (fluid != Fluids.EMPTY) RenderLayers.getFluidLayer(fluid.defaultState) else RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE))
+        val renderLayer = if(fluid != Fluids.EMPTY) {
+            if(MinecraftClient.isFabulousGraphicsOrBetter()) {
+                RenderLayer.getSolid()
+            }else{
+                RenderLayers.getFluidLayer(fluid.defaultState)
+            }
+        } else {
+            RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+        }
+
+        val bb = vertexConsumers.getBuffer(renderLayer)
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 

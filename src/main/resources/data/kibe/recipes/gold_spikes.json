@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#_#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:golden_sword"
+    },
+    "_": {
+      "item": "kibe:stone_spikes"
+    }
+  },
+  "result": {
+    "item": "kibe:gold_spikes",
+    "count": 4
+  }
+}

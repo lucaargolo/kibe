@@ -7,6 +7,7 @@ import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.state.property.Properties
 import net.minecraft.util.math.Matrix4f
 import java.util.*
 import java.util.stream.IntStream
@@ -16,11 +17,13 @@ class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Con
     private val random = Random(31100L)
 
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-        matrices.push()
-        val d = blockEntity.pos.getSquaredDistance(arg.renderDispatcher.camera.pos, true)
-        val m = matrices.peek().model
-        renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
-        matrices.pop()
+        if(blockEntity.cachedState[Properties.ENABLED]) {
+            matrices.push()
+            val d = blockEntity.pos.getSquaredDistance(arg.renderDispatcher.camera.pos, true)
+            val m = matrices.peek().model
+            renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
+            matrices.pop()
+        }
     }
 
     private fun renderMiddlePart(g: Float, matrix4f: Matrix4f, vertexConsumer: VertexConsumer) {

@@ -1,23 +1,43 @@
 package io.github.lucaargolo.kibe.recipes.vacuum
 
+import alexiil.mc.lib.attributes.Simulation
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
+import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
-import it.unimi.dsi.fastutil.ints.IntList
-import net.minecraft.inventory.CraftingInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.Recipe
-import net.minecraft.recipe.RecipeMatcher
 import net.minecraft.util.Identifier
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class VacuumHopperRecipe(private val id: Identifier, private val output: ItemStack, private val input: DefaultedList<Ingredient>, val xpInput: Int) : Recipe<CraftingInventory> {
+class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput: Long, val input: Ingredient, private val output: ItemStack) : Recipe<VacuumHopperEntity> {
 
     override fun getId() = id
 
-    override fun craft(inv: CraftingInventory): ItemStack = output.copy()
+    override fun matches(inv: VacuumHopperEntity, world: World): Boolean {
+        val inputStack = inv.getStack(9)
+        val inputVolume = inv.getTank(0).attemptAnyExtraction(FluidAmount.of(xpInput, 1000), Simulation.SIMULATE)
+        val hasSpace = inv.getStack(10).let {
+            it.isEmpty || (ItemStack.areItemsEqual(it, output) && ItemStack.areTagsEqual(it, output) && it.count < it.maxCount)
+        }
+        return input.test(inputStack) && inputVolume == LIQUID_XP.key.withAmount(FluidAmount.of(xpInput, 1000)) && hasSpace
+    }
+
+    override fun craft(inv: VacuumHopperEntity): ItemStack {
+        inv.getStack(9).decrement(1)
+        inv.getTank(0).extract(FluidAmount.of(xpInput, 1000))
+        if(inv.getStack(10).isEmpty) {
+            inv.setStack(10, output.copy())
+        }else{
+            inv.getStack(10).increment(1)
+        }
+        inv.markDirty()
+        return output.copy()
+    }
 
     override fun getType() = VACUUM_HOPPER_RECIPE_TYPE
 
@@ -27,22 +47,8 @@ class VacuumHopperRecipe(private val id: Identifier, private val output: ItemSta
 
     override fun getOutput(): ItemStack = output
 
-    override fun createIcon(): ItemStack  = Items.EXPERIENCE_BOTTLE.defaultStack
+    override fun getRecipeKindIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.defaultStack
 
-    override fun getIngredients() = input
+    override fun getPreviewInputs(): DefaultedList<Ingredient> = DefaultedList.ofSize(1, input)
 
-    override fun matches(inv: CraftingInventory, world: World): Boolean {
-        val recipeFinder = RecipeMatcher()
-        var i = 0
-
-        for (j in 0 until inv.size()) {
-            val itemStack: ItemStack = inv.getStack(j)
-            if (!itemStack.isEmpty) {
-                ++i
-                recipeFinder.addInput(itemStack, 1)
-            }
-        }
-
-        return i == input.size && recipeFinder.match(this, null as IntList?)
-    }
 }

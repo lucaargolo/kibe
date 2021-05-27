@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.items.trashcan
 
-import com.mojang.blaze3d.systems.RenderSystem
 import joptsimple.internal.Strings
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack

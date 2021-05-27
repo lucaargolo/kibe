@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.*
+import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.items.*
 import net.minecraft.block.Block
 import net.minecraft.item.ItemConvertible
@@ -18,8 +18,25 @@ fun initTooltip() {
 
     registerTooltip(LIGHT_SOURCE)
 
+    registerTooltip(STONE_SPIKES)
     registerTooltip(IRON_SPIKES)
+    registerTooltip(GOLD_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
+
+    registerTooltip(HEATER)
+    registerTooltip(DEHUMIDIFIER)
+
+    registerTooltip(COBBLESTONE_GENERATOR_MK1)
+    registerTooltip(COBBLESTONE_GENERATOR_MK2)
+    registerTooltip(COBBLESTONE_GENERATOR_MK3)
+    registerTooltip(COBBLESTONE_GENERATOR_MK4)
+    registerTooltip(COBBLESTONE_GENERATOR_MK5)
+
+    registerTooltip(BASALT_GENERATOR_MK1)
+    registerTooltip(BASALT_GENERATOR_MK2)
+    registerTooltip(BASALT_GENERATOR_MK3)
+    registerTooltip(BASALT_GENERATOR_MK4)
+    registerTooltip(BASALT_GENERATOR_MK5)
 
     registerTooltip(COOLER)
     registerTooltip(BIG_TORCH)

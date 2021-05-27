@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.particle.ParticleTypes
+import net.minecraft.screen.ScreenHandler
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -63,9 +64,16 @@ class BigTorch: BlockWithEntity(Settings.of(Material.DECORATION).strength(0.5f).
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {
                 ItemScatterer.spawn(world, pos, it)
+                world.updateComparators(pos, this)
             }
             super.onStateReplaced(state, world, pos, newState, notify)
         }
+    }
+
+    override fun hasComparatorOutput(state: BlockState?) = true
+
+    override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
+        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos))
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL

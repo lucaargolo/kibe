@@ -42,6 +42,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter(): Boolean = false
 
+    @Suppress("DEPRECATION")
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val background = ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_background"), "inventory")
@@ -66,11 +67,8 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
         val key = tag.getString("key")
-        (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: linkedSetOf()
-            list.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = list
-        }
+
+        EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
         val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
 
@@ -96,7 +94,6 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
                 emitter.emit()
             })
             context.popTransform()
-
         }
 
         val foreground = ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_foreground"), "inventory")

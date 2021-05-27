@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#G#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "kibe:basalt_generator_mk3"
+    },
+    "G": {
+      "item": "minecraft:emerald_block"
+    }
+  },
+  "result": {
+    "item": "kibe:basalt_generator_mk4",
+    "count": 1
+  }
+}

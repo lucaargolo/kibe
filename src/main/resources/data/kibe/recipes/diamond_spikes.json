@@ -8,9 +8,14 @@
     "#": {
       "item": "minecraft:diamond_sword"
     },
-    "_": {
-      "item": "kibe:iron_spikes"
-    }
+    "_": [
+      {
+        "item": "kibe:iron_spikes"
+      },
+      {
+        "item": "kibe:gold_spikes"
+      }
+    ]
   },
   "result": {
     "item": "kibe:diamond_spikes",

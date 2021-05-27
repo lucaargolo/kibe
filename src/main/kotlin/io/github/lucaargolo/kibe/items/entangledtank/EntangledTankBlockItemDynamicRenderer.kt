@@ -46,11 +46,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
 
         val key = tag.getString("key")
 
-        (MinecraftClient.getInstance().player)?.let { player ->
-            val list = EntangledTankState.CLIENT_PLAYER_REQUESTS[player] ?: mutableListOf()
-            list.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_PLAYER_REQUESTS[player] = linkedSetOf()
-        }
+        EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
         val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
         fluidInv.toTag(tag)
 
