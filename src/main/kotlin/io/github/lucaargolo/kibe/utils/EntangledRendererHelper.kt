@@ -1,29 +1,37 @@
 package io.github.lucaargolo.kibe.utils
 
+import io.github.lucaargolo.kibe.MOD_ID
 import net.minecraft.client.model.ModelTransform
 import net.minecraft.client.model.ModelPartBuilder
 import net.minecraft.client.model.TexturedModelData
 import net.minecraft.client.model.ModelData
 import net.minecraft.client.render.entity.model.EntityModelLayer
-import net.minecraft.client.render.entity.model.EntityModelLayers
 import net.minecraft.util.DyeColor
+import net.minecraft.util.Identifier
 
 class EntangledRendererHelper(val parent: String) {
 
     private val runeModelLayers = linkedMapOf<String, EntityModelLayer>()
 
+    val bottomModelLayer: EntityModelLayer
+    val topModelLayer: EntityModelLayer
+    val coreModelLayerGold: EntityModelLayer
+    val coreModelLayerDiamond: EntityModelLayer
+
     init {
         (1..8).forEach { runeId ->
             DyeColor.values().forEach { runeColor ->
-                runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayers.register(parent, "rune${runeId}_${runeColor.getName()}")
+                runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayer(Identifier(MOD_ID, parent), "rune${runeId}_${runeColor.getName()}")
             }
         }
+
+        bottomModelLayer = EntityModelLayer(Identifier(MOD_ID, parent), "bottom")
+        topModelLayer = EntityModelLayer(Identifier(MOD_ID, parent), "top")
+        coreModelLayerGold = EntityModelLayer(Identifier(MOD_ID, parent), "core_gold")
+        coreModelLayerDiamond = EntityModelLayer(Identifier(MOD_ID, parent), "core_diamond")
     }
 
-    val bottomModelLayer: EntityModelLayer = EntityModelLayers.register(parent, "bottom")
-    val topModelLayer: EntityModelLayer = EntityModelLayers.register(parent, "top")
-    val coreModelLayerGold: EntityModelLayer = EntityModelLayers.register(parent, "core_gold")
-    val coreModelLayerDiamond: EntityModelLayer = EntityModelLayers.register(parent, "core_diamond")
+
 
     fun getRuneLayer(runeId: Int, runeColor: DyeColor): EntityModelLayer? {
         return runeModelLayers["rune${runeId}_${runeColor.getName()}"]

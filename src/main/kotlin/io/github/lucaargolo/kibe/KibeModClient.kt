@@ -9,7 +9,11 @@ import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.drawbridge.DrawbridgeCustomModel
+import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChestEntityRenderer
+import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
+import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimerEntityRenderer.Companion.selectorModelLayers
+import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimerEntityRenderer.Companion.setupSelectorModel
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.entities.initEntitiesClient
 import io.github.lucaargolo.kibe.fluids.initFluidsClient
@@ -25,6 +29,7 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.minecraft.client.particle.FlameParticle
@@ -35,6 +40,7 @@ import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
+
 
 var TANK_CUSTOM_MODEL: Any? = null
 
@@ -71,7 +77,19 @@ fun initPacketsClient() {
 
 }
 
+@Suppress("DEPRECATION", "UnstableApiUsage")
 fun initExtrasClient() {
+
+    EntangledChestEntityRenderer.helper.getEntries().forEach { (entityLayer, texturedModelData) ->
+        EntityModelLayerRegistry.registerModelLayer(entityLayer) { texturedModelData }
+    }
+    EntangledTankEntityRenderer.helper.getEntries().forEach { (entityLayer, texturedModelData) ->
+        EntityModelLayerRegistry.registerModelLayer(entityLayer) { texturedModelData }
+    }
+    selectorModelLayers.forEachIndexed{ index, entityModelLayer ->
+        EntityModelLayerRegistry.registerModelLayer(entityModelLayer) { setupSelectorModel(index) }
+    }
+
     ParticleFactoryRegistry.getInstance().register(WATER_DROPS) { sprite -> FlameParticle.Factory(sprite) }
     ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
         EntangledTankState.CLIENT_STATES.clear()

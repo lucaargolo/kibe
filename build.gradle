@@ -26,6 +26,7 @@ def ENV = System.getenv()
 def RELEASE_NAME = "Kibe ${version}"
 def RELEASE_TYPE = version.split("-").size() > 0 ? (version.split("-")[1] == "BETA" || version.split("-")[1] == "ALPHA") ? version.split("-")[1] : "ALPHA" : "RELEASE"
 def RELEASE_FILE = "${buildDir}/libs/${archivesBaseName}-${version}.jar"
+def CF_GAME_VERSION = "1.17-Snapshot"
 
 @SuppressWarnings('GrMethodMayBeStatic')
 def getChangeLog() {
@@ -95,10 +96,6 @@ repositories {
         }
     }
     mavenLocal()
-}
-
-minecraft {
-    accessWidener "src/main/resources/kibe.accesswidener"
 }
 
 dependencies {
@@ -212,8 +209,9 @@ curseforge {
         id = project.curseforge_id
         changelog = getChangeLog()
         releaseType = RELEASE_TYPE.toLowerCase()
-        addGameVersion project.minecraft_version
         addGameVersion "Fabric"
+        addGameVersion "Java 16"
+        addGameVersion CF_GAME_VERSION
 
         mainArtifact(file(RELEASE_FILE)) {
             displayName = RELEASE_NAME

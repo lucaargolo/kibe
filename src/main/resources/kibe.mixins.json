@@ -29,7 +29,6 @@
   ],
   "client": [
     "BipedEntityModelMixin",
-    "EntityModelsMixin",
     "ClientPlayNetworkHandlerMixin",
     "HeldItemRendererMixin",
     "ItemMixin",

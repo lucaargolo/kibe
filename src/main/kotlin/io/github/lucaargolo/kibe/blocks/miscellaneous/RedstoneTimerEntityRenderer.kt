@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.MOD_ID
+import net.fabricmc.fabric.mixin.client.renderer.registry.EntityModelLayersAccessor
 import net.minecraft.client.model.ModelTransform
 import net.minecraft.client.model.ModelPartBuilder
 import net.minecraft.client.model.TexturedModelData
@@ -28,7 +29,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
         init {
             (0..15).forEach { level ->
-                selectorModelLayers.add(EntityModelLayers.register("redstone_timer", "selector${level}"))
+                selectorModelLayers.add(EntityModelLayer(Identifier(MOD_ID, "redstone_timer"), "selector${level}"))
             }
         }
 
