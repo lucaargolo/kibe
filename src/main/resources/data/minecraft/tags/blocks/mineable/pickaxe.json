@@ -33,6 +33,7 @@
     "kibe:basalt_generator_mk5",
     "kibe:regular_conveyor_belt",
     "kibe:fast_conveyor_belt",
-    "kibe:express_conveyor_belt"
+    "kibe:express_conveyor_belt",
+    "#kibe:elevators"
   ]
 }

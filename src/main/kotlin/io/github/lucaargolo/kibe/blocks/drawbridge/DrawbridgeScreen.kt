@@ -28,7 +28,7 @@ class DrawbridgeScreen(handler: DrawbridgeScreenHandler, inventory: PlayerInvent
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         drawCenteredText(matrices, textRenderer, title.string, backgroundWidth / 2, 6, 0xFFE000)
-        textRenderer.draw(matrices, displayName, 8f, backgroundHeight - 96 + 4f, 0xFFE000)
+        textRenderer.draw(matrices, playerInventoryTitle, 8f, backgroundHeight - 96 + 4f, 0xFFE000)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {

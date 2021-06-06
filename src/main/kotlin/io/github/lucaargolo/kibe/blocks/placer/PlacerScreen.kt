@@ -19,7 +19,7 @@ class PlacerScreen(handler: PlacerScreenHandler, inventory: PlayerInventory, tit
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         textRenderer.draw(matrices, title, ((backgroundWidth / 2) - (textRenderer.getWidth(title)/2)).toFloat(), 6f, 4210752)
-        textRenderer.draw(matrices, displayName, 8f, backgroundHeight - 96 + 4f, 4210752)
+        textRenderer.draw(matrices, playerInventoryTitle, 8f, backgroundHeight - 96 + 4f, 4210752)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {

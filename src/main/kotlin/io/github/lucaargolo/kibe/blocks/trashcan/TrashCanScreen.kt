@@ -28,7 +28,7 @@ class TrashCanScreen(screenHandler: TrashCanScreenHandler, inventory: PlayerInve
 
     override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         drawCenteredText(matrices, textRenderer, title.string,backgroundWidth/2, 6, 0xFFFFFF)
-        textRenderer.draw(matrices, displayName, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
+        textRenderer.draw(matrices, playerInventoryTitle, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
