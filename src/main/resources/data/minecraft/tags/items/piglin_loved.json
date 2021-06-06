@@ -1,5 +1,8 @@
 {
   "values": [
+    "kibe:basalt_generator_mk2",
+    "kibe:cobblestone_generator_mk2",
+    "kibe:gold_spikes",
     "kibe:golden_lasso",
     "kibe:golden_kibe"
   ]

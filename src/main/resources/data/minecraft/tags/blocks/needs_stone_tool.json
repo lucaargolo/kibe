@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "kibe:vacuum_hopper",
+    "kibe:heater",
+    "kibe:dehumidifier",
+    "kibe:iron_spikes",
+    "kibe:cobblestone_generator_mk1",
+    "kibe:basalt_generator_mk1"
+  ]
+}

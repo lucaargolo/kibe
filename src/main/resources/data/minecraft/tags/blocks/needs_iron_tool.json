@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "kibe:chunk_loader",
+    "kibe:entangled_tank",
+    "kibe:entangled_chest",
+    "kibe:gold_spikes",
+    "kibe:diamond_spikes",
+    "kibe:basalt_generator_mk2",
+    "kibe:basalt_generator_mk3",
+    "kibe:basalt_generator_mk4",
+    "kibe:cobblestone_generator_mk2",
+    "kibe:cobblestone_generator_mk3",
+    "kibe:cobblestone_generator_mk4"
+  ]
+}

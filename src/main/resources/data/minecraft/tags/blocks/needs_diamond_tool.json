@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "kibe:cobblestone_generator_mk5",
+    "kibe:basalt_generator_mk5",
+    "kibe:obsidian_sand",
+    "kibe:wither_proof_block",
+    "kibe:wither_proof_sand",
+    "kibe:wither_proof_glass",
+    "kibe:wither_builder"
+  ]
+}
