@@ -5,7 +5,6 @@
   "mixins": [
     "BiomeMixin",
     "BucketItemAccessor",
-    "ClientPlayNetworkHandlerMixin",
     "CraftingTableContainerMixin",
     "EndermanEntityMixin",
     "EntityMixin",
@@ -28,6 +27,7 @@
     "WorldMixin"
   ],
   "client": [
+    "ClientPlayNetworkHandlerMixin",
     "BipedEntityModelMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
