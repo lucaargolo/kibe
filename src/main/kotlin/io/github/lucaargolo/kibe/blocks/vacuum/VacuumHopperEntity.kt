@@ -139,7 +139,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
                 inventory[id] = modifiableStack
                 modifiableStack = ItemStack.EMPTY
             }else{
-                if(ItemStack.areItemsEqual(stk, modifiableStack) && ItemStack.areTagsEqual(stk, modifiableStack)) {
+                if(ItemStack.areItemsEqual(stk, modifiableStack) && ItemStack.areNbtEqual(stk, modifiableStack)) {
                     when {
                         stk.count+modifiableStack.count > stk.maxCount -> {
                             val aux = stk.maxCount-stk.count

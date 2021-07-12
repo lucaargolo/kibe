@@ -12,13 +12,13 @@ class Glider(settings: Settings): Item(settings) {
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = player.getStackInHand(hand)
-        val tag = stack.orCreateTag
+        val tag = stack.orCreateNbt
         if(tag.contains("enabled") && tag.getBoolean("enabled")) {
             tag.putBoolean("enabled", false)
         }else{
             tag.putBoolean("enabled", true)
         }
-        stack.tag = tag
+        stack.nbt = tag
         return TypedActionResult.success(stack)
     }
 
@@ -27,7 +27,7 @@ class Glider(settings: Settings): Item(settings) {
         if(!realSelected) {
             realSelected = (entity as? PlayerEntity)?.inventory?.offHand?.get(0)?.equals(stack) ?: false
         }
-        val tag = stack.orCreateTag
+        val tag = stack.orCreateNbt
         if(!realSelected && tag.contains("enabled") && tag.getBoolean("enabled")) {
             tag.putBoolean("enabled", false)
         }
@@ -36,7 +36,7 @@ class Glider(settings: Settings): Item(settings) {
     companion object {
 
         fun isEnabled(stack: ItemStack): Boolean {
-            val tag = stack.orCreateTag
+            val tag = stack.orCreateNbt
             return tag.contains("enabled") && tag.getBoolean("enabled")
         }
 

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.items.entangledbag
 
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.block.BlockState
@@ -32,6 +33,7 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
+        val defaultMaterial = RendererAccess.INSTANCE.renderer?.materialFinder()?.find() ?: return
         var color = Color(255, 255, 255, 255).rgb
         val emitter = context.emitter
 
@@ -43,29 +45,31 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
         val background = ModelIdentifier(Identifier(MOD_ID, "entangled_bag_background"), "inventory")
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q.vertexData, 0, true)
+            emitter.fromVanilla(q, defaultMaterial, null)
             emitter.emit()
         }
 
         val core =
-            if(stack.hasTag() && stack.tag!!.contains("key") && stack.tag!!.getString("key") != EntangledChest.DEFAULT_KEY)
+            if(stack.hasNbt() && stack.nbt!!.contains("key") && stack.nbt!!.getString("key") != EntangledChest.DEFAULT_KEY)
                 ModelIdentifier(Identifier(MOD_ID, "entangled_bag_diamond_core"), "inventory")
             else
                 ModelIdentifier(Identifier(MOD_ID, "entangled_bag_gold_core"), "inventory")
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
+
         coreModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q.vertexData, 0, true)
+            emitter.fromVanilla(q, defaultMaterial, null)
             emitter.emit()
         }
 
+
         context.popTransform()
 
-        if(stack.hasTag() && stack.tag!!.contains("rune1")) {
+        if(stack.hasNbt() && stack.nbt!!.contains("rune1")) {
             var sumr = 0
             var sumg = 0
             var sumb = 0
             (1..8).forEach {
-                val dye = DyeColor.byName(stack.tag!!.getString("rune$it"), DyeColor.WHITE)
+                val dye = DyeColor.byName(stack.nbt!!.getString("rune$it"), DyeColor.WHITE)
                 val dyeColor = Color(dye.mapColor.color)
                 sumr += dyeColor.red
                 sumg += dyeColor.green
@@ -80,7 +84,7 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
         val ring = ModelIdentifier(Identifier(MOD_ID, "entangled_ring"), "inventory")
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q.vertexData, 0, true)
+            emitter.fromVanilla(q, defaultMaterial, null)
             emitter.emit()
         }
         context.popTransform()

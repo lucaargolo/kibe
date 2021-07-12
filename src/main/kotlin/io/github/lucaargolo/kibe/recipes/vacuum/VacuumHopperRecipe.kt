@@ -22,7 +22,7 @@ class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput
         val inputStack = inv.getStack(9)
         val inputVolume = inv.getTank(0).attemptAnyExtraction(FluidAmount.of(xpInput, 1000), Simulation.SIMULATE)
         val hasSpace = inv.getStack(10).let {
-            it.isEmpty || (ItemStack.areItemsEqual(it, output) && ItemStack.areTagsEqual(it, output) && it.count < it.maxCount)
+            it.isEmpty || (ItemStack.areItemsEqual(it, output) && ItemStack.areNbtEqual(it, output) && it.count < it.maxCount)
         }
         return input.test(inputStack) && inputVolume == LIQUID_XP.key.withAmount(FluidAmount.of(xpInput, 1000)) && hasSpace
     }

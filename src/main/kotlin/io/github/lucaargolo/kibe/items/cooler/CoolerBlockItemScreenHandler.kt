@@ -68,7 +68,7 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
         Inventories.writeNbt(tag, rawInventory)
         val coolerStack = playerInventory.player.getStackInHand(hand)
         if (coolerStack.item is CoolerBlockItem) {
-            coolerStack.orCreateTag.put("BlockEntityTag", tag.copy())
+            coolerStack.orCreateNbt.put("BlockEntityTag", tag.copy())
         }
     }
 
@@ -77,7 +77,7 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
             return ItemStack.EMPTY
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 1) {

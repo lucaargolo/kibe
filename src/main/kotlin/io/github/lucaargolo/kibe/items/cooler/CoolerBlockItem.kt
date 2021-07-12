@@ -19,13 +19,13 @@ class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && entity.canConsume(false)) {
             val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
-            val tag = stack.orCreateTag.getCompound("BlockEntityTag")
+            val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
             Inventories.readNbt(tag, rawInventory)
             val foodStack = rawInventory[0]
             if(!foodStack.isEmpty && foodStack.isFood) {
                 entity.eatFood(world, foodStack)
                 Inventories.writeNbt(tag, rawInventory)
-                stack.orCreateTag.put("BlockEntityTag", tag)
+                stack.orCreateNbt.put("BlockEntityTag", tag)
             }
         }
         super.inventoryTick(stack, world, entity, slot, selected)
@@ -40,7 +40,7 @@ class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
     override fun use(world: World, player: PlayerEntity?, hand: Hand): TypedActionResult<ItemStack> {
         if(!world.isClient) player?.let {
             val stack = player.getStackInHand(hand)
-            val tag = stack.orCreateTag.getCompound("BlockEntityTag")
+            val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
             player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag))
             return TypedActionResult.success(stack)
         }

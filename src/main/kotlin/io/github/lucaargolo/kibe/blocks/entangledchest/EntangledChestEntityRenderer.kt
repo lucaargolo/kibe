@@ -125,15 +125,14 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
-        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, RenderLayer::getEntityCutout)
 
         val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
-        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, RenderLayer::getEntityCutout)
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
 
-        val d = entity.pos.getSquaredDistance(arg.renderDispatcher.camera.pos, true)
         var m = matrices.peek().model
         renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
 

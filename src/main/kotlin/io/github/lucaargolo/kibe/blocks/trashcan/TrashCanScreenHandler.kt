@@ -23,17 +23,17 @@ class TrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, val e
             return entity.isEmpty
         }
 
-        override fun getStack(slot: Int): ItemStack? {
+        override fun getStack(slot: Int): ItemStack {
             return entity.getStack(slot)
         }
 
-        override fun removeStack(slot: Int): ItemStack? {
+        override fun removeStack(slot: Int): ItemStack {
             val stack: ItemStack = entity.removeStack(slot)
             onContentChanged(this)
             return stack
         }
 
-        override fun removeStack(slot: Int, amount: Int): ItemStack? {
+        override fun removeStack(slot: Int, amount: Int): ItemStack {
             val stack: ItemStack = entity.removeStack(slot, amount)
             onContentChanged(this)
             return stack
@@ -99,7 +99,7 @@ class TrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, val e
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 1) {

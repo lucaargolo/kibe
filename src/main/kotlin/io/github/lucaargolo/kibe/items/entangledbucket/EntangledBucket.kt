@@ -195,7 +195,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                     newTag.putString("rune$it", blockEntityTag.getString("rune$it"))
                 }
                 newTag.putString("colorCode", blockEntity.colorCode)
-                context.stack.tag = newTag
+                context.stack.nbt = newTag
                 if(!context.world.isClient) context.player!!.sendMessage(TranslatableText("chat.kibe.entangled_bucket.success"), true)
                 return ActionResult.SUCCESS
             }
@@ -219,8 +219,8 @@ class EntangledBucket(settings: Settings): Item(settings)  {
     }
 
     private fun getTag(stack: ItemStack): NbtCompound {
-        return if(stack.hasTag()) {
-            stack.orCreateTag
+        return if(stack.hasNbt()) {
+            stack.orCreateNbt
         }else{
             val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)

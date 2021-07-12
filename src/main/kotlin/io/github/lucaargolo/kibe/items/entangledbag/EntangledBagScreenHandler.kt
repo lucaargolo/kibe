@@ -112,7 +112,7 @@ class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @
     override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = slots[invSlot]
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             val itemStack2 = slot.stack
             itemStack = itemStack2.copy()
             if (invSlot < 27) {

@@ -26,8 +26,8 @@ import java.util.*
 class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
     override fun render(stack: ItemStack, mode: ModelTransformation.Mode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
-        val tag = if(stack.hasTag() && stack.tag!!.contains("BlockEntityTag") ) {
-            stack.orCreateTag.get("BlockEntityTag") as NbtCompound
+        val tag = if(stack.hasNbt() && stack.nbt!!.contains("BlockEntityTag") ) {
+            stack.orCreateNbt.get("BlockEntityTag") as NbtCompound
         }else{
             val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)

@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings("ConstantConditions")
 @Mixin(MobEntity.class)
 public class MobEntityMixin {
 
@@ -29,7 +30,7 @@ public class MobEntityMixin {
         ItemStack stack = playerEntity.getStackInHand(hand);
         Item item = stack.getItem();
         if(item instanceof Lasso lasso) {
-            NbtCompound stackTag = stack.getTag();
+            NbtCompound stackTag = stack.getNbt();
             MobEntity entity = (MobEntity) ((Object) this);
             if(stackTag != null && !stackTag.contains("Entity")) {
                 if (lasso.canStoreEntity(entity.getType())) {
@@ -38,7 +39,7 @@ public class MobEntityMixin {
                     NbtCompound tag = new NbtCompound();
                     entity.saveSelfNbt(tag);
                     stackTag.put("Entity", tag);
-                    stack.setTag(stackTag);
+                    stack.setNbt(stackTag);
                     entity.remove(Entity.RemovalReason.DISCARDED);
                     info.setReturnValue(ActionResult.SUCCESS);
                 }

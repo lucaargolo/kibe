@@ -31,20 +31,20 @@ open class BooleanItem(settings: Settings): Item(settings) {
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = player.getStackInHand(hand)
         if(player.isSneaking) {
-            val tag = stack.orCreateTag
+            val tag = stack.orCreateNbt
             if(tag.contains("enabled") && tag.getBoolean("enabled")) {
                 tag.putBoolean("enabled", false)
             }else{
                 tag.putBoolean("enabled", true)
             }
-            stack.tag = tag
+            stack.nbt = tag
             return TypedActionResult.success(stack)
         }
         return TypedActionResult.pass(stack)
     }
 
     open fun isEnabled(stack: ItemStack): Boolean {
-        val tag = stack.orCreateTag
+        val tag = stack.orCreateNbt
         return tag.contains("enabled") && tag.getBoolean("enabled")
     }
 

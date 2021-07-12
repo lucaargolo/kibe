@@ -41,7 +41,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
             (TANK_CUSTOM_MODEL as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
         }catch (ignored: Exception) { }
 
-        val stackTag = stack.orCreateTag
+        val stackTag = stack.orCreateNbt
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
 
         val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))

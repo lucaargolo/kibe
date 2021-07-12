@@ -20,11 +20,11 @@ import net.minecraft.world.World
 abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun hasGlint(stack: ItemStack): Boolean {
-        return stack.orCreateTag.contains("Entity")
+        return stack.orCreateNbt.contains("Entity")
     }
 
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
-        val stackTag = context.stack.orCreateTag
+        val stackTag = context.stack.orCreateNbt
         if(stackTag.contains("Entity")) {
             if(context.world is ServerWorld) {
                 val pos = context.blockPos
@@ -56,7 +56,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
                 if(newEntity != null) {
                     stackTag.remove("Entity")
-                    context.stack.tag = stackTag
+                    context.stack.nbt = stackTag
                 }
             }
             return ActionResult.SUCCESS
@@ -65,8 +65,8 @@ abstract class Lasso(settings: Settings): Item(settings) {
     }
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        if(stack.orCreateTag.contains("Entity"))
-            tooltip.add(TranslatableText("tooltip.kibe.stored").append(TranslatableText("entity."+stack.tag!!.getCompound("Entity").getString("id").replace(":", "."))))
+        if(stack.orCreateNbt.contains("Entity"))
+            tooltip.add(TranslatableText("tooltip.kibe.stored").append(TranslatableText("entity."+stack.nbt!!.getCompound("Entity").getString("id").replace(":", "."))))
         super.appendTooltip(stack, world, tooltip, context)
     }
 

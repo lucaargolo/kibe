@@ -49,8 +49,8 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         context.fallbackConsumer().accept(backgroundModel)
 
-        val tag = if(stack.hasTag()) {
-            stack.orCreateTag
+        val tag = if(stack.hasNbt()) {
+            stack.orCreateNbt
         }else{
             val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)
@@ -100,19 +100,19 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
         val foregroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(foreground)
         context.fallbackConsumer().accept(foregroundModel)
 
-        val core = if(stack.hasTag() && stack.tag!!.contains("key") && stack.tag!!.getString("key") != EntangledTank.DEFAULT_KEY)
+        val core = if(stack.hasNbt() && stack.nbt!!.contains("key") && stack.nbt!!.getString("key") != EntangledTank.DEFAULT_KEY)
             ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_diamond_core"), "inventory")
         else ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_gold_core"), "inventory")
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
         context.fallbackConsumer().accept(coreModel)
 
         var color = Color.WHITE.rgb
-        if(stack.hasTag() && stack.tag!!.contains("rune1")) {
+        if(stack.hasNbt() && stack.nbt!!.contains("rune1")) {
             var sumr = 0
             var sumg = 0
             var sumb = 0
             (1..8).forEach {
-                val dye = DyeColor.byName(stack.tag!!.getString("rune$it"), DyeColor.WHITE)
+                val dye = DyeColor.byName(stack.nbt!!.getString("rune$it"), DyeColor.WHITE)
                 val dyeColor = Color(dye.mapColor.color)
                 sumr += dyeColor.red
                 sumg += dyeColor.green

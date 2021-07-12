@@ -19,8 +19,8 @@ class EntangledChestBlockItem(settings: Settings): BlockItem(ENTANGLED_CHEST, se
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
-        val tag = if(stack.hasTag() && stack.tag!!.contains("BlockEntityTag") ) {
-            stack.orCreateTag.get("BlockEntityTag") as NbtCompound
+        val tag = if(stack.hasNbt() && stack.nbt!!.contains("BlockEntityTag") ) {
+            stack.orCreateNbt.get("BlockEntityTag") as NbtCompound
         }else{
             val newTag = NbtCompound()
             newTag.putString("key", EntangledChest.DEFAULT_KEY)

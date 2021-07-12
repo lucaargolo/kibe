@@ -39,8 +39,8 @@ class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(setti
 //    }
 
     override fun onEquip(stack: ItemStack, slot: Trinket.SlotReference, entity: LivingEntity) {
-        if(stack.tag?.getBoolean("enabled") != true)
-            stack.orCreateTag.putBoolean("enabled", true)
+        if(stack.nbt?.getBoolean("enabled") != true)
+            stack.orCreateNbt.putBoolean("enabled", true)
     }
 
 //    override fun onEquip(player: PlayerEntity, stack: ItemStack) {
@@ -49,8 +49,8 @@ class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(setti
 //    }
 
     override fun onUnequip(stack: ItemStack, slot: Trinket.SlotReference, entity: LivingEntity) {
-        if(stack.tag?.getBoolean("enabled") == true)
-            stack.orCreateTag.putBoolean("enabled", false)
+        if(stack.nbt?.getBoolean("enabled") == true)
+            stack.orCreateNbt.putBoolean("enabled", false)
     }
 
 //    override fun onUnequip(player: PlayerEntity, stack: ItemStack) {

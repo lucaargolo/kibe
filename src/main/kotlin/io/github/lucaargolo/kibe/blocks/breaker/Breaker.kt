@@ -68,7 +68,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
                             if (stk.isEmpty) {
                                 it.setStack(slot, stack.copy())
                                 stack.decrement(stack.count)
-                            } else if (ItemStack.areItemsEqual(stack, stk) && ItemStack.areTagsEqual(stack, stk)) {
+                            } else if (ItemStack.areItemsEqual(stack, stk) && ItemStack.areNbtEqual(stack, stk)) {
                                 if (stk.count + stack.count < stk.maxCount) {
                                     stk.increment(stack.count)
                                     stack.decrement(stack.count)

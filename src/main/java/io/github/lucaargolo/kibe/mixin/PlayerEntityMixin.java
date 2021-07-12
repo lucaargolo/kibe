@@ -72,7 +72,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         //Glider logic
         ItemStack cursorStack = player.playerScreenHandler.getCursorStack();
         if(cursorStack.getItem() instanceof Glider && Glider.Companion.isEnabled(cursorStack)) {
-            cursorStack.getOrCreateTag().putBoolean("enabled", false);
+            cursorStack.getOrCreateNbt().putBoolean("enabled", false);
         }
         if(!isOnGround() && !isTouchingWater() && !isFallFlying() && getVelocity().y < 0.0) {
             ItemStack mainHandStack = player.getMainHandStack();
@@ -159,7 +159,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             for (Pair<ItemStack, Long> pair : kibe_activeRingsList) {
                 ItemStack ringStack = pair.getFirst();
                 Item ringItem = ringStack.getItem();
-                if (ringItem instanceof AbilityRing && ringStack.getOrCreateTag().getBoolean("enabled")) {
+                if (ringItem instanceof AbilityRing && ringStack.getOrCreateNbt().getBoolean("enabled")) {
                     ringMap.computeIfAbsent((AbilityRing) ringItem, k -> new ArrayList<>());
                     ringMap.get(ringItem).add(ringStack);
                 }
@@ -169,16 +169,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                     if (ringMap.size() == 1 && ringMap.get(ring).size() == 1) {
                         RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
                         ItemStack ringStack = ringMap.get(ring).get(0);
-                        if (!ringStack.getOrCreateTag().getBoolean("unique")) {
-                            ringStack.getOrCreateTag().putBoolean("unique", true);
+                        if (!ringStack.getOrCreateNbt().getBoolean("unique")) {
+                            ringStack.getOrCreateNbt().putBoolean("unique", true);
                         }
                     } else {
                         if (RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
                             RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
                         }
                         for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (ringStack.getOrCreateTag().getBoolean("unique")) {
-                                ringStack.getOrCreateTag().putBoolean("unique", false);
+                            if (ringStack.getOrCreateNbt().getBoolean("unique")) {
+                                ringStack.getOrCreateNbt().putBoolean("unique", false);
                             }
                         }
                     }

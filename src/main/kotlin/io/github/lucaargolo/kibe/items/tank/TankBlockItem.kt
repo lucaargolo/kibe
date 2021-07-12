@@ -19,24 +19,24 @@ import net.minecraft.world.World
 class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
-        if(!stack.hasTag()) stack.orCreateTag.put("BlockEntityTag", NbtCompound())
+        if(!stack.hasNbt()) stack.orCreateNbt.put("BlockEntityTag", NbtCompound())
         super.inventoryTick(stack, world, entity, slot, selected)
     }
 
     override fun onCraft(stack: ItemStack, world: World, player: PlayerEntity) {
-        stack.orCreateTag.put("BlockEntityTag", NbtCompound())
+        stack.orCreateNbt.put("BlockEntityTag", NbtCompound())
         super.onCraft(stack, world, player)
     }
 
     override fun use(world: World?, user: PlayerEntity?, hand: Hand?): TypedActionResult<ItemStack> {
-        val tag = user?.getStackInHand(hand)?.tag
+        val tag = user?.getStackInHand(hand)?.nbt
         tag?.let { println(tag.toString()) }
         return super.use(world, user, hand)
     }
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
-        val stackTag = stack.tag ?: return
+        val stackTag = stack.nbt ?: return
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
         val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
         dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))

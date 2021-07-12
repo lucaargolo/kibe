@@ -29,7 +29,7 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
             tooltip.add(TranslatableText("tooltip.kibe.enabled"))
             tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
         }else {
-            val tag = stack.orCreateTag
+            val tag = stack.orCreateNbt
             if(tag.contains("enabled") && tag.getBoolean("enabled") && tag.contains("unique") && !tag.getBoolean("unique")) {
                 tooltip.add(TranslatableText("tooltip.kibe.overflow"))
                 tooltip.add(TranslatableText("tooltip.kibe.overflowed"))
@@ -42,7 +42,7 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
     }
 
     override fun isEnabled(stack: ItemStack): Boolean {
-        val tag = stack.orCreateTag
+        val tag = stack.orCreateNbt
         return tag.contains("enabled") && tag.getBoolean("enabled") && tag.contains("unique") && tag.getBoolean("unique")
     }
 

@@ -33,7 +33,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
         return ChunkLoaderBlockEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
         return BlockEntityTicker { wrld, pos, state, blockEntity -> ChunkLoaderBlockEntity.tick(wrld, pos, state, blockEntity as ChunkLoaderBlockEntity) }
     }
 
@@ -70,7 +70,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
             val be = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
             be?.let {
                 if (state[Properties.ENABLED]) {
-                    MinecraftClient.getInstance().openScreen(ChunkLoaderScreen(be))
+                    MinecraftClient.getInstance().setScreen(ChunkLoaderScreen(be))
                 } else {
                     player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.lowercase()}"), false)
                 }
