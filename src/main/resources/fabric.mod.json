@@ -19,7 +19,14 @@
       "links": {
         "modmenu.discord": "https://discord.gg/G4PjhEf"
       }
-    }
+    },
+    "dashloader:customobject": [
+      "io.github.lucaargolo.kibe.compat.DashDrawbridgeCustomModel",
+      "io.github.lucaargolo.kibe.compat.DashEntangledBagBakedModel",
+      "io.github.lucaargolo.kibe.compat.DashEntangledBucketBakedModel",
+      "io.github.lucaargolo.kibe.compat.DashTankBlockItemBakedModel",
+      "io.github.lucaargolo.kibe.compat.DashTankCustomModel"
+    ]
   },
 
   "license": "Mozilla Public License 2.0",

@@ -41,9 +41,6 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
-
-var TANK_CUSTOM_MODEL: Any? = null
-
 fun initClient() {
     initBlocksClient()
     initItemsClient()
@@ -177,9 +174,7 @@ fun initExtrasClient() {
                 return@ModelVariantProvider DrawbridgeCustomModel()
             }
             if(modelIdentifier.namespace == MOD_ID && modelIdentifier.path == "tank" && modelIdentifier.variant != "inventory") {
-                val model = TankCustomModel()
-                TANK_CUSTOM_MODEL = model
-                return@ModelVariantProvider model
+                return@ModelVariantProvider TankCustomModel()
             }
             return@ModelVariantProvider null
         }

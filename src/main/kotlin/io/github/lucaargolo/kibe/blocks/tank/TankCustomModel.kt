@@ -27,13 +27,13 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     private val spriteIdList = mutableListOf(
         SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier(MOD_ID, "block/tank"))
     )
-    private val spriteList = mutableListOf<Sprite>()
+    val spriteList = mutableListOf<Sprite>()
 
     override fun getModelDependencies(): Collection<Identifier> = listOf()
 
     override fun getTextureDependencies(unbakedModelGetter: Function<Identifier, UnbakedModel>, unresolvedTextureReferences: MutableSet<Pair<String, String>>) = spriteIdList
 
-    override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel? {
+    override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
         spriteIdList.forEach { spriteIdentifier ->
             spriteList.add(textureGetter.apply(spriteIdentifier))
         }

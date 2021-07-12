@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.items.tank
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import io.github.lucaargolo.kibe.TANK_CUSTOM_MODEL
+import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
@@ -17,6 +17,7 @@ import net.minecraft.client.render.model.json.JsonUnbakedModel
 import net.minecraft.client.render.model.json.ModelOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
+import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
@@ -37,9 +38,10 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        try {
-            (TANK_CUSTOM_MODEL as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
-        }catch (ignored: Exception) { }
+        val client = MinecraftClient.getInstance()
+        val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(Identifier(MOD_ID, "tank"), "level=0"))
+
+        (tankBlockModel as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 
         val stackTag = stack.orCreateNbt
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
@@ -47,7 +49,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
         dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))
 
-        val player = MinecraftClient.getInstance().player
+        val player = client.player
         val world = player?.world
         val pos = player?.blockPos
 

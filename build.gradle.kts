@@ -76,8 +76,14 @@ repositories {
         url = uri("https://jitpack.io")
     }
     maven {
+        name = "Dashloader"
+        url = uri("https://oskarstrom.net/maven")
+    }
+    maven {
         name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/releases")
+        //Temporary fix for TerraformersMC maven being down.
+        //url = uri("https://maven.terraformersmc.com/releases")
+        url = uri("https://raw.githubusercontent.com/TerraformersMC/Archive/main/releases/")
     }
     maven {
         name = "Shedaniel"
@@ -110,6 +116,8 @@ dependencies {
 
     modApi("alexiil.mc.lib:libblockattributes-fluids:${project["lba_version"]}")
     include("alexiil.mc.lib:libblockattributes-fluids:${project["lba_version"]}")
+
+    modImplementation ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modRuntime("com.terraformersmc:modmenu:${project["modmenu_version"]}")

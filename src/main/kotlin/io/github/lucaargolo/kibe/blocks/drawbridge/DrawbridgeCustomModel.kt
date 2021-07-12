@@ -31,18 +31,18 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier(MOD_ID, "block/drawbridge_side")),
         SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier(MOD_ID, "block/drawbridge_back"))
     )
-    private val spriteList = mutableListOf<Sprite>()
+    val spriteList = mutableListOf<Sprite>()
 
     private val modelIdList = mutableListOf(
         Identifier(MOD_ID, "block/drawbridge")
     )
-    private val modelList = mutableListOf<BakedModel>()
+    val modelList = mutableListOf<BakedModel>()
 
     override fun getModelDependencies(): Collection<Identifier> = listOf()
 
     override fun getTextureDependencies(unbakedModelGetter: Function<Identifier, UnbakedModel>, unresolvedTextureReferences: MutableSet<Pair<String, String>>) = spriteIdList
 
-    private lateinit var transformation: ModelTransformation
+    lateinit var modelTransformation: ModelTransformation
 
     override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings?, modelId: Identifier?): BakedModel {
         val model = loader.getOrLoadModel(modelIdList[0])
@@ -54,7 +54,7 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         modelList.add(model.bake(loader, textureGetter, ModelRotation.X270_Y0, modelId)!!) // UP
         modelList.add(model.bake(loader, textureGetter, ModelRotation.X90_Y0, modelId)!!) // DOWN
 
-        transformation = modelList[0].transformation
+        modelTransformation = modelList[0].transformation
 
         spriteIdList.forEachIndexed { _, spriteIdentifier ->
             spriteList.add(textureGetter.apply(spriteIdentifier))
@@ -131,6 +131,6 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun isBuiltin() = false
 
     override fun getOverrides(): ModelOverrideList = ModelOverrideList.EMPTY
-    override fun getTransformation() = transformation
+    override fun getTransformation() = modelTransformation
 
 }
