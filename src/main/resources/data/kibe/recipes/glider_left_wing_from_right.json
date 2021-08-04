@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "kibe:glider_right_wing"
+    }
+  ],
+  "result": {
+    "item": "kibe:glider_left_wing",
+    "count": 1
+  }
+}
