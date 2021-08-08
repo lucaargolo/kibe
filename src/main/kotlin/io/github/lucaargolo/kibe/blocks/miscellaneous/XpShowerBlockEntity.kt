@@ -30,7 +30,7 @@ class XpShowerBlockEntity(xpShower: XpShower, pos: BlockPos, state: BlockState):
 
             val extractable = FluidAttributes.EXTRACTABLE.get(world, pos.add(dir.vector))
 
-            var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
+            var i = 8 + world.random.nextInt(world.getReceivedRedstonePower(pos) * 5)
 
             while (i > 0) {
                 val j = ExperienceOrbEntity.roundToOrbSize(i)
