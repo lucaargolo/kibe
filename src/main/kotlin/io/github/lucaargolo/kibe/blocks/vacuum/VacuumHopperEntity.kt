@@ -134,7 +134,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack
         inventory.forEachIndexed { id, stk ->
-            if(modifiableStack == ItemStack.EMPTY) return@forEachIndexed
+            if(id >= 9 || modifiableStack == ItemStack.EMPTY) return@forEachIndexed
             if(stk.isEmpty) {
                 inventory[id] = modifiableStack
                 modifiableStack = ItemStack.EMPTY
