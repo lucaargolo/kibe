@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.vacuum
 
 import alexiil.mc.lib.attributes.AttributeList
 import alexiil.mc.lib.attributes.AttributeProvider
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -34,7 +35,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> VacuumHopperEntity.tick(wrld, pos, state, blockEntity as VacuumHopperEntity) }
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> VacuumHopperEntity.tick(wrld, pos, state, blockEntity as VacuumHopperEntity) }
     }
 
     init {

@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangledchest
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.blocks.miscellaneous.BlockGeneratorBlockEntity
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
@@ -66,8 +67,8 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
         return EntangledChestEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> EntangledChestEntity.tick(wrld, pos, state, blockEntity as EntangledChestEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> EntangledChestEntity.tick(wrld, pos, state, blockEntity as EntangledChestEntity) }
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {

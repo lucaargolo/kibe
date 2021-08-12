@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -18,8 +19,8 @@ class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).lum
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = HeaterBlockEntity(this, pos, state)
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> HeaterBlockEntity.tick(wrld, pos, state, blockEntity as HeaterBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> HeaterBlockEntity.tick(wrld, pos, state, blockEntity as HeaterBlockEntity) }
     }
 
     init {

@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.blocks.REDSTONE_TIMER
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.BlockState
@@ -10,7 +9,7 @@ import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class RedstoneTimerEntity(private val timer: RedstoneTimer, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(timer), pos, state), BlockEntityClientSerializable {
+class RedstoneTimerEntity(timer: RedstoneTimer, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(timer), pos, state), BlockEntityClientSerializable {
 
     var current = 0
     var level = 0
@@ -40,7 +39,7 @@ class RedstoneTimerEntity(private val timer: RedstoneTimer, pos: BlockPos, state
 
     companion object {
         fun tick(world: World, pos: BlockPos, state: BlockState, entity: RedstoneTimerEntity) {
-            val isEnabled = world.getBlockState(pos)[Properties.ENABLED]
+            val isEnabled = state[Properties.ENABLED]
             val delay = entity.level*4
             entity.current++
             if(entity.current >= delay){

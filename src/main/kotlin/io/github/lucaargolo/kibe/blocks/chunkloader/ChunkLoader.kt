@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -33,8 +34,8 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
         return ChunkLoaderBlockEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> ChunkLoaderBlockEntity.tick(wrld, pos, state, blockEntity as ChunkLoaderBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> ChunkLoaderBlockEntity.tick(wrld, pos, state, blockEntity as ChunkLoaderBlockEntity) }
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {

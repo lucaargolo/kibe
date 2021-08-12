@@ -15,7 +15,7 @@ class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Con
     private val random = Random(31100L)
 
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-        if(blockEntity.world?.getBlockState(blockEntity.pos)?.get(Properties.ENABLED) == true) {
+        if(blockEntity.cachedState[Properties.ENABLED] == true) {
             matrices.push()
             val m = matrices.peek().model
             renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))

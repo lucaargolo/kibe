@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -10,9 +10,7 @@ import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
-import net.minecraft.particle.ParticleTypes
 import net.minecraft.screen.ScreenHandler
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
@@ -20,12 +18,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.shape.VoxelShape
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import java.util.*
-import kotlin.math.cos
-import kotlin.math.sin
 
 class BlockGenerator(settings: FabricBlockSettings, private var block: Block, private var rate: Float): BlockWithEntity(settings) {
 
@@ -37,8 +30,8 @@ class BlockGenerator(settings: FabricBlockSettings, private var block: Block, pr
         return BlockGeneratorBlockEntity(this, block, rate, pos, state)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T> {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> BlockGeneratorBlockEntity.tick(wrld, pos, state, blockEntity as BlockGeneratorBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> BlockGeneratorBlockEntity.tick(wrld, pos, state, blockEntity as BlockGeneratorBlockEntity) }
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import alexiil.mc.lib.attributes.AttributeList
 import alexiil.mc.lib.attributes.AttributeProvider
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -26,7 +27,7 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.S
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> FluidHopperBlockEntity.tick(wrld, pos, state, blockEntity as FluidHopperBlockEntity) }
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> FluidHopperBlockEntity.tick(wrld, pos, state, blockEntity as FluidHopperBlockEntity) }
     }
 
     override fun hasComparatorOutput(state: BlockState?) = true

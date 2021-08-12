@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.minecraft.block.*
@@ -24,7 +25,9 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapC
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> RedstoneTimerEntity.tick(wrld, pos, state, blockEntity as RedstoneTimerEntity) }
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity ->
+            RedstoneTimerEntity.tick(wrld, pos, state, blockEntity as RedstoneTimerEntity)
+        }
     }
 
     override fun emitsRedstonePower(state: BlockState) = true

@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.bigtorch
 
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -35,8 +36,8 @@ class BigTorch: BlockWithEntity(Settings.of(Material.DECORATION).strength(0.5f).
         return BigTorchBlockEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, state: BlockState?, type: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return BlockEntityTicker { wrld, pos, stt, blockEntity -> BigTorchBlockEntity.tick(wrld, pos, stt, blockEntity as BigTorchBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World?, state: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, stt, blockEntity -> BigTorchBlockEntity.tick(wrld, pos, stt, blockEntity as BigTorchBlockEntity) }
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {

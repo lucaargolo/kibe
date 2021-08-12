@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.AttributeList
 import alexiil.mc.lib.attributes.AttributeProvider
 import alexiil.mc.lib.attributes.fluid.FixedFluidInv
 import alexiil.mc.lib.attributes.fluid.FluidInvUtil
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -36,7 +37,7 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> TankBlockEntity.tick(wrld, pos, state, blockEntity as TankBlockEntity) }
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> TankBlockEntity.tick(wrld, pos, state, blockEntity as TankBlockEntity) }
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL

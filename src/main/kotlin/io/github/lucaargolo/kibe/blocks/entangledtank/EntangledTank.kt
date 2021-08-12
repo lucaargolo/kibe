@@ -5,6 +5,7 @@ import alexiil.mc.lib.attributes.AttributeProvider
 import alexiil.mc.lib.attributes.fluid.FixedFluidInv
 import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
+import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -47,7 +48,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return BlockEntityTicker { wrld, pos, state, blockEntity -> EntangledTankEntity.tick(wrld, pos, state, blockEntity as EntangledTankEntity) }
+        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> EntangledTankEntity.tick(wrld, pos, state, blockEntity as EntangledTankEntity) }
     }
 
     override fun hasComparatorOutput(state: BlockState?) = true
