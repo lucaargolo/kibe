@@ -81,9 +81,7 @@ repositories {
     }
     maven {
         name = "TerraformersMC"
-        //Temporary fix for TerraformersMC maven being down.
-        //url = uri("https://maven.terraformersmc.com/releases")
-        url = uri("https://raw.githubusercontent.com/TerraformersMC/Archive/main/releases/")
+        url = uri("https://maven.terraformersmc.com/releases")
     }
     maven {
         name = "Shedaniel"

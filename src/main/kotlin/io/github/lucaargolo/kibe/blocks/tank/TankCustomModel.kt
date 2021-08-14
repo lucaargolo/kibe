@@ -40,7 +40,7 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         return this
     }
 
-    override fun getSprite() = spriteList[0]
+    override fun getParticleSprite() = spriteList[0]
 
     override fun isVanillaAdapter() = false
 
@@ -123,7 +123,7 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun QuadEmitter.draw(side: Direction, left: Float, bottom: Float, right: Float, top: Float, depth: Float) {
         square(side, left, bottom, right, top, depth)
-        spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV)
+        spriteBake(0, particleSprite, MutableQuadView.BAKE_LOCK_UV)
         spriteColor(0, -1, -1, -1, -1)
         emit()
     }

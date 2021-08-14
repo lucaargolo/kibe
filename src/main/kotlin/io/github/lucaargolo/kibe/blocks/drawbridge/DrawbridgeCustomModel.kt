@@ -62,7 +62,7 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         return this
     }
 
-    override fun getSprite() = spriteList[0]
+    override fun getParticleSprite() = spriteList[0]
 
     override fun isVanillaAdapter() = false
 

@@ -104,7 +104,7 @@ class EntangledBagBakedModel: BakedModel, FabricBakedModel {
 
     override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
 
-    override fun getSprite() = null
+    override fun getParticleSprite() = null
 
     override fun hasDepth(): Boolean = false
 
