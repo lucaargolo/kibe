@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.FluidAttributes
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
+import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.utils.minus
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -24,6 +25,7 @@ class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY)
             val insertable = FluidAttributes.INSERTABLE.get(world, pos.down())
 
             var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
+            i = MathHelper.fastFloor(i*MOD_CONFIG.miscellaneousModule.xpDrainSpeedMultiplier)
 
             while (i > 0) {
                 val j = ExperienceOrbEntity.roundToOrbSize(i)

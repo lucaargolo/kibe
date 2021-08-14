@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.Simulation
 import alexiil.mc.lib.attributes.fluid.FluidAttributes
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey
+import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import net.minecraft.block.BlockState
@@ -13,6 +14,7 @@ import net.minecraft.entity.MovementType
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
@@ -31,6 +33,7 @@ class XpShowerBlockEntity(xpShower: XpShower, pos: BlockPos, state: BlockState):
             val extractable = FluidAttributes.EXTRACTABLE.get(world, pos.add(dir.vector))
 
             var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
+            i = MathHelper.fastFloor(i* MOD_CONFIG.miscellaneousModule.xpShowerSpeedMultiplier)
 
             while (i > 0) {
                 val j = ExperienceOrbEntity.roundToOrbSize(i)

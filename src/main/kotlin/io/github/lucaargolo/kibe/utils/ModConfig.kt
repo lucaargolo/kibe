@@ -12,6 +12,10 @@ class ModConfig {
         var cursedDirtMobCap: Int = 25
         //What mobs aren't allowed to spawn in cursed dirt
         var cursedDirtBlacklist: ArrayList<String> = arrayListOf()
+        //The xp drain speed multiplier
+        var xpDrainSpeedMultiplier = 1.0
+        //The xp drain speed multiplier
+        var xpShowerSpeedMultiplier = 1.0
     }
 
     class ChunkLoaderModule {
