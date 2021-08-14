@@ -42,8 +42,10 @@ class SleepingBag(settings: Settings): Item(settings) {
         val sleepingPos = rayTraceContext.run {
             if(this.type == HitResult.Type.BLOCK) {
                 return@run BlockPos(this.pos)
-            }else{
+            }else if(player.isOnGround){
                 return@run player.blockPos
+            }else{
+                return@run null
             }
         }
         if (player.isSleeping || !player.isAlive) {
@@ -55,7 +57,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         if (player.world.isDay) {
             return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW)
         }
-        if (isSleepingBagObstructed(player.world, sleepingPos, player.horizontalFacing)) {
+        if (sleepingPos == null || isSleepingBagObstructed(player.world, sleepingPos, player.horizontalFacing)) {
             return Either.left(PlayerEntity.SleepFailureReason.OBSTRUCTED)
         }
         if (!player.isCreative) {
