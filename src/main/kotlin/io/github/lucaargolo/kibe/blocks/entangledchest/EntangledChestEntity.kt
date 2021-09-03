@@ -2,7 +2,11 @@ package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.minecraft.block.BlockState
+import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -17,6 +21,7 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
@@ -176,6 +181,14 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
     }
 
     companion object {
+        fun registerItemApi(bet: BlockEntityType<EntangledChestEntity>) {
+            ItemStorage.SIDED.registerForBlockEntity(::getApi, bet)
+        }
+
+        fun getApi(be: EntangledChestEntity, direction: Direction): Storage<ItemVariant> {
+            return be.getPersistentState()!!.getStorage(be.colorCode)
+        }
+
         fun tick(world: World, pos: BlockPos, state: BlockState, entity: EntangledChestEntity) {
             if(!world.isClient && entity.isBeingCompared) {
                 val comparatorOutput = ScreenHandler.calculateComparatorOutput(entity as Inventory)

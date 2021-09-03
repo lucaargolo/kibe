@@ -1,14 +1,14 @@
 package io.github.lucaargolo.kibe.blocks.tank
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import io.github.lucaargolo.kibe.utils.minus
-import io.github.lucaargolo.kibe.utils.plus
+import io.github.lucaargolo.kibe.utils.readTank
+import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.fluid.Fluids
@@ -18,39 +18,22 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
+@Suppress("UnstableApiUsage", "DEPRECATION")
 class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(tank), pos, state), BlockEntityClientSerializable {
 
     var lastRenderedFluid = 0f
     var tickDelay = 0
+    val tank = object: SingleVariantStorage<FluidVariant>() {
+        override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+        override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
 
-    val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-
-    init {
-        fluidInv.addListener ( { _, _, _, _ -> markDirtyAndSync() }, {  })
+        override fun onFinalCommit() {
+            markDirtyAndSync()
+        }
     }
 
-    var volume: FluidVolume
-        get() = fluidInv.getInvFluid(0)
-        set(value) {
-            fluidInv.setInvFluid(0, value, Simulation.ACTION)
-            markDirtyAndSync()
-        }
-
-    val fluidKey: FluidKey
-        get() = volume.fluidKey
-
-    var amount: FluidAmount
-        get() = volume.amount()
-        set(value) {
-            fluidInv.setInvFluid(0, fluidKey.withAmount(value), Simulation.ACTION)
-            markDirtyAndSync()
-        }
-
     val isEmpty: Boolean
-        get() = volume.isEmpty
-
-    val capacity: FluidAmount
-        get() = fluidInv.tankCapacity_F
+        get() = tank.amount == 0L
 
     fun markDirtyAndSync() {
         markDirty()
@@ -65,14 +48,14 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
     }
 
     override fun writeNbt(tag: NbtCompound): NbtCompound {
-        tag.put("fluidInv", fluidInv.toTag())
+        writeTank(tag, tank)
         return if(broken) tag else super.writeNbt(tag)
     }
 
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
-        fluidInv.fromTag(tag.getCompound("fluidInv"))
+        readTank(tag, tank)
     }
 
     override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
@@ -80,9 +63,12 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
     override fun fromClientTag(tag: NbtCompound) = readNbt(tag)
 
     companion object {
+        fun getFluidStorage(be: TankBlockEntity, dir: Direction): Storage<FluidVariant> {
+            return be.tank
+        }
 
         fun tick(world: World, pos: BlockPos, state: BlockState, entity: TankBlockEntity) {
-            val fluid = if(entity.isEmpty) Fluids.EMPTY else entity.fluidKey.rawFluid ?: Fluids.EMPTY
+            val fluid = if(entity.isEmpty) Fluids.EMPTY else entity.tank.variant.fluid ?: Fluids.EMPTY
             val luminance = fluid.defaultState.blockState.luminance
             if(luminance != state[Properties.LEVEL_15]) {
                 world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))
@@ -92,25 +78,14 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
                 if(it == Direction.UP) return@forEach
                 val otherTank = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
 
-                if(it == Direction.DOWN && (otherTank.isEmpty || otherTank.fluidKey == entity.fluidKey)) {
-                    if(otherTank.amount + entity.amount <= otherTank.capacity) {
-                        otherTank.volume = entity.fluidKey.withAmount(otherTank.amount + entity.amount)
-                        entity.amount = FluidAmount.ZERO
-                    }else{
-                        val dif = otherTank.capacity - otherTank.amount
-                        otherTank.volume = entity.fluidKey.withAmount(otherTank.capacity)
-                        entity.amount -= dif
-                    }
+                if(it == Direction.DOWN) {
+                    // Move down as much fluid as we can
+                    StorageUtil.move(entity.tank, otherTank.tank, { true }, Long.MAX_VALUE, null)
                 }
 
-                if((otherTank.isEmpty || otherTank.fluidKey == entity.fluidKey) && entity.amount > otherTank.amount) {
-                    var dif = (entity.amount - otherTank.amount).roundedDiv(2L)
-                    dif = FluidAmount.of(dif.asLong(1000), 1000)
-                    if(dif > FluidAmount.of(10, 1000)) {
-                        if(dif > FluidAmount.BOTTLE) dif = FluidAmount.BOTTLE
-                        otherTank.volume = entity.fluidKey.withAmount(otherTank.amount + dif)
-                        entity.amount -= dif
-                    }
+                if(entity.tank.amount > otherTank.tank.amount) {
+                    // Move half the difference if the adjacent tank has less
+                    StorageUtil.move(entity.tank, otherTank.tank, { true }, (entity.tank.amount - otherTank.tank.amount) / 2, null)
                 }
             }
         }
