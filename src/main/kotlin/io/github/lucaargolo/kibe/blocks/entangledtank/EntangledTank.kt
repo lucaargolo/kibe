@@ -1,13 +1,10 @@
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
-import alexiil.mc.lib.attributes.AttributeList
-import alexiil.mc.lib.attributes.AttributeProvider
-import alexiil.mc.lib.attributes.fluid.FixedFluidInv
-import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import io.github.lucaargolo.kibe.blocks.entangledchest.EntangledChest
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
+import io.github.lucaargolo.kibe.utils.interactPlayerHand
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
@@ -28,7 +25,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F).luminance { state -> state[Properties.LEVEL_15] }), AttributeProvider {
+class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F).luminance { state -> state[Properties.LEVEL_15] }) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_15)
@@ -86,12 +83,6 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                 world.updateComparators(pos, this)
             }
             super.onStateReplaced(state, world, pos, newState, moved)
-        }
-    }
-
-    override fun addAllAttributes(world: World, pos: BlockPos?, state: BlockState?, to: AttributeList<*>) {
-        (world.getBlockEntity(pos) as? EntangledTankEntity)?.let {
-            to.offer(it.fluidInv)
         }
     }
 
@@ -156,9 +147,9 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                     }
                 }
             }
-            val tankInteraction = FluidInvUtil.interactHandWithTank(tank.fluidInv as FixedFluidInv, player, hand)
+            val tankInteraction = interactPlayerHand(tank.getTank(), player, hand)
             tank.markDirtyAndSync()
-            tankInteraction.asActionResult()
+            return tankInteraction
         } ?: ActionResult.FAIL
 
     }
