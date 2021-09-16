@@ -1,19 +1,19 @@
 package io.github.lucaargolo.kibe.utils
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.TANK
+import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.getFluidBucket
 import io.github.lucaargolo.kibe.items.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
@@ -63,21 +63,17 @@ private fun appendItems(): List<ItemStack> {
             else -> ItemStack.EMPTY
         })
     }
-    Registry.FLUID.forEach { fluid ->
+    Registry.FLUID.entries.forEach { (fluidKey, fluid) ->
         val itemStack = ItemStack(TANK)
         if(fluid == Fluids.EMPTY) {
             list.add(itemStack)
         }else if(fluid.isStill(fluid.defaultState)) {
-            val key = FluidKeys.get(fluid)
-            if(!key.entry.isEmpty) {
-                val tag = itemStack.orCreateNbt
-                val blockEntityTag = NbtCompound()
-                val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-                fluidInv.setInvFluid(0, key.withAmount(FluidAmount.ofWhole(16)), Simulation.ACTION)
-                blockEntityTag.put("fluidInv", fluidInv.toTag())
-                tag.put("BlockEntityTag", blockEntityTag)
-                list.add(itemStack)
-            }
+            val tag = itemStack.orCreateNbt
+            val blockEntityTag = NbtCompound()
+            blockEntityTag.put("variant", NbtCompound().also { it.putString("fluid", fluidKey.value.toString()) })
+            blockEntityTag.putLong("amount", 16*FluidConstants.BUCKET)
+            tag.put("BlockEntityTag", blockEntityTag)
+            list.add(itemStack)
         }
     }
     return list

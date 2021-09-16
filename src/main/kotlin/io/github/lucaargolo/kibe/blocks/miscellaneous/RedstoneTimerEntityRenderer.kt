@@ -1,7 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.MOD_ID
-import net.fabricmc.fabric.mixin.client.renderer.registry.EntityModelLayersAccessor
 import net.minecraft.client.model.ModelTransform
 import net.minecraft.client.model.ModelPartBuilder
 import net.minecraft.client.model.TexturedModelData

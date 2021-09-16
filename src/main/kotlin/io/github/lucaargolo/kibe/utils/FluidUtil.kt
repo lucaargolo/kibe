@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.utils
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
@@ -33,11 +32,18 @@ fun interactPlayerHand(tank: Storage<FluidVariant>, player: PlayerEntity, hand: 
 }
 
 private fun interactPlayerHandInner(tank: Storage<FluidVariant>, player: PlayerEntity, hand: Hand): Boolean {
+    val backupStack = if(player !is FakePlayerEntity && player.isCreative) { player.getStackInHand(hand).copy() } else null
     val handStorage = ContainerItemContext.ofPlayerHand(player, hand).find(FluidStorage.ITEM) ?: return false
     // Move from hand to tank
-    if (StorageUtil.move(handStorage, tank, { true }, Long.MAX_VALUE, null) > 0) return true;
+    if (StorageUtil.move(handStorage, tank, { true }, Long.MAX_VALUE, null) > 0) {
+        backupStack?.let { player.setStackInHand(hand, backupStack) }
+        return true
+    }
     // Move from tank to hand
-    if (StorageUtil.move(tank, handStorage, { true }, Long.MAX_VALUE, null) > 0) return true;
+    if (StorageUtil.move(tank, handStorage, { true }, Long.MAX_VALUE, null) > 0) {
+        backupStack?.let { player.setStackInHand(hand, backupStack) }
+        return true
+    }
 
     return false;
 }

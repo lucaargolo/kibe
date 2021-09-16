@@ -1,9 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
+
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity

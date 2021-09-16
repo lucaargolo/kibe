@@ -1,7 +1,5 @@
 package io.github.lucaargolo.kibe.items.entangledbucket
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
@@ -10,6 +8,8 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
@@ -23,7 +23,6 @@ import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -69,8 +68,11 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
         val key = tag.getString("key")
 
         EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
-        val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
-        val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: object: SingleVariantStorage<FluidVariant>() {
+            override fun getCapacity(variant: FluidVariant?) = 0L
+            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+        }
+        val fluid = fluidInv.resource.fluid ?: Fluids.EMPTY
 
         if(fluid != Fluids.EMPTY) {
             val fluidRenderHandler: FluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid)

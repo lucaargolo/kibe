@@ -1,9 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.tank
 
-import alexiil.mc.lib.attributes.AttributeList
-import alexiil.mc.lib.attributes.AttributeProvider
-import alexiil.mc.lib.attributes.fluid.FixedFluidInv
-import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.interactPlayerHand
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings

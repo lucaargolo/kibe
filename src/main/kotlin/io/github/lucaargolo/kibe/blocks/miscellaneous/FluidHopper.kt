@@ -1,9 +1,9 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import alexiil.mc.lib.attributes.AttributeList
-import alexiil.mc.lib.attributes.AttributeProvider
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -16,7 +16,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.STONE_GRAY).requiresTool().strength(3.0F, 4.8F).sounds(BlockSoundGroup.METAL).nonOpaque()), AttributeProvider {
+class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.STONE_GRAY).requiresTool().strength(3.0F, 4.8F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
 
     override fun onUse(state: BlockState?, world: World?, pos: BlockPos?, player: PlayerEntity?, hand: Hand?, hit: BlockHitResult?): ActionResult {
         return ActionResult.PASS
@@ -33,10 +33,7 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.S
     override fun hasComparatorOutput(state: BlockState?) = true
 
     override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
-        return (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.fluidInv?.let {
-            val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
-            return (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
-        } ?: 0
+        return StorageUtil.calculateComparatorOutput((world.getBlockEntity(pos) as? TankBlockEntity)?.tank, null)
     }
 
     @Suppress("DEPRECATION")
@@ -49,9 +46,4 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.S
         }
     }
 
-    override fun addAllAttributes(world: World, pos: BlockPos, state: BlockState?, to: AttributeList<*>) {
-        (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.let {
-            to.offer(it.fluidInv)
-        }
-    }
 }

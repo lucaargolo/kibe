@@ -1,19 +1,19 @@
 package io.github.lucaargolo.kibe.items.entangledbucket
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FluidAttributes
-import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
-import alexiil.mc.lib.attributes.fluid.FluidInvUtil
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntity
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.items.ENTANGLED_BUCKET
 import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
-import io.github.lucaargolo.kibe.utils.plus
+import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
@@ -60,8 +60,8 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         tag.putString("colorCode", colorCode)
         tooltip.add(color)
         val fluidInv = getFluidInv(world, tag)
-        if(!fluidInv.getInvFluid(0).isEmpty)
-            tooltip.add(fluidInv.getInvFluid(0).fluidKey.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${fluidInv.getInvFluid(0).amount().asInt(1000)}mB")))
+        if(!fluidInv.isResourceBlank)
+            tooltip.add(fluidInv.resource.fluid.defaultState.blockState.block.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${fluidInv.amount/81}mB")))
     }
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {
@@ -77,9 +77,9 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         tag.putString("colorCode", colorCode)
 
         val fluidInv = getFluidInv(world, tag)
-        val fluid = if(fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
-        val hasSpace = (fluidInv.getInvFluid(0).amount() + FluidAmount.BUCKET) <= fluidInv.tankCapacity_F
-        val hasBucket = fluidInv.getInvFluid(0).amount() >= FluidAmount.BUCKET
+        val fluid = if(fluidInv.isResourceBlank) Fluids.EMPTY else fluidInv.variant.fluid ?: Fluids.EMPTY
+        val hasSpace = (fluidInv.amount + FluidConstants.BUCKET) <= fluidInv.capacity
+        val hasBucket = fluidInv.amount >= FluidConstants.BUCKET
 
         val hitResult: HitResult = raycast(world, user,
             if (hasSpace) RaycastContext.FluidHandling.SOURCE_ONLY else RaycastContext.FluidHandling.NONE
@@ -101,7 +101,9 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                         val serverWorld = world as ServerWorld
                         val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
                         val stateInv = state.getOrCreateInventory(colorCode)
-                        stateInv.attemptInsertion(FluidKeys.get(interact).withAmount(FluidAmount.BUCKET), Simulation.ACTION)
+                        Transaction.openOuter().also {
+                            stateInv.insert(FluidVariant.of(interact), FluidConstants.BUCKET, it)
+                        }.commit()
                         state.markDirty(colorCode)
                     }
                     return TypedActionResult.success(itemStack)
@@ -115,7 +117,9 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                         val serverWorld = world as ServerWorld
                         val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
                         val stateInv = state.getOrCreateInventory(colorCode)
-                        stateInv.attemptExtraction({it.rawFluid == fluid}, FluidAmount.BUCKET, Simulation.ACTION)
+                        Transaction.openOuter().also {
+                            stateInv.extract(FluidVariant.of(fluid), FluidConstants.BUCKET, it)
+                        }.commit()
                         state.markDirty(colorCode)
                     }
                     return TypedActionResult.success(itemStack)
@@ -134,7 +138,14 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                                 val serverWorld = world as ServerWorld
                                 val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
                                 val stateInv = state.getOrCreateInventory(colorCode)
-                                stateInv.attemptInsertion(FluidContainerRegistry.getContainedFluid(drainedFluid.item).withAmount(FluidAmount.BUCKET), Simulation.ACTION)
+                                Transaction.openOuter().also {
+                                    val containedFluidStorage = FluidStorage.ITEM.find(drainedFluid, ContainerItemContext.withInitial(drainedFluid))
+                                    var containedFluid = FluidVariant.blank()
+                                    it.openNested().also {
+                                        StorageUtil.findStoredResource(containedFluidStorage, it)?.let { containedFluid = it }
+                                    }.commit()
+                                    stateInv.insert(containedFluid, FluidConstants.BUCKET, it)
+                                }.commit()
                                 state.markDirty(colorCode)
                                 Criteria.FILLED_BUCKET.trigger(user as ServerPlayerEntity, ItemStack(ENTANGLED_BUCKET))
                             }
@@ -154,7 +165,9 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                                 val serverWorld = world as ServerWorld
                                 val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
                                 val stateInv = state.getOrCreateInventory(colorCode)
-                                stateInv.attemptExtraction({it.rawFluid == fluid}, FluidAmount.BUCKET, Simulation.ACTION)
+                                Transaction.openOuter().also {
+                                    stateInv.extract(FluidVariant.of(fluid), FluidConstants.BUCKET, it)
+                                }.commit()
                                 state.markDirty(colorCode)
                                 Criteria.PLACED_BLOCK.trigger(user as ServerPlayerEntity, interactablePos, itemStack)
                             }
@@ -204,7 +217,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         return ActionResult.PASS
     }
 
-    private fun getFluidInv(world: World?, tag: NbtCompound): SimpleFixedFluidInv {
+    private fun getFluidInv(world: World?, tag: NbtCompound): SingleVariantStorage<FluidVariant> {
         val key = tag.getString("key")
         val colorCode = tag.getString("colorCode")
         val fluidInv = if(world is ServerWorld) {
@@ -212,9 +225,12 @@ class EntangledBucket(settings: Settings): Item(settings)  {
             state.getOrCreateInventory(colorCode)
         }else {
             EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
+            EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: object: SingleVariantStorage<FluidVariant>() {
+                override fun getCapacity(variant: FluidVariant?) = 0L
+                override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+            }
         }
-        fluidInv.toTag(tag)
+        writeTank(tag, fluidInv)
         return fluidInv
     }
 

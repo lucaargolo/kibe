@@ -31,10 +31,10 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
         drawTexture(matrices, startX+120, startY+37, 184, 0, 8, p)
         drawMouseoverTooltip(matrices, mouseX, mouseY)
         if(mouseX in (startX+100..startX+112) && mouseY in (startY+18..startY+70)) {
-            val tank = handler.entity.tanks.first()
-            val stored = tank.volume.amount()
+            val tank = handler.entity.tank
+            val stored = tank.amount
             val capacity = tank.capacity
-            renderTooltip(matrices, listOf(if(tank.volume.isEmpty) TranslatableText("tooltip.kibe.empty") else tank.volume.name, LiteralText("${stored.asInt(1000)} / ${capacity.asInt(1000)} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
+            renderTooltip(matrices, listOf(if(tank.isResourceBlank) TranslatableText("tooltip.kibe.empty") else tank.resource.fluid.defaultState.blockState.block.name, LiteralText("${stored/81} / ${capacity/81} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
         }
     }
 
@@ -47,9 +47,9 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
         RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, startX, startY, 0, 0, 176, 166)
 
-        val tank = handler.entity.tanks.first()
-        val percentage = tank.volume.amount().asInt(1000).toDouble()/tank.capacity.asInt(1000).toDouble()
-        tank.volume.renderGuiRect(startX+100.0, startY+70.0-(52.0*percentage), startX+112.0, startY+70.0)
+        val tank = handler.entity.tank
+        val percentage = tank.amount/tank.capacity
+        //tank.volume.renderGuiRect(startX+100.0, startY+70.0-(52.0*percentage), startX+112.0, startY+70.0)
 
         RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, startX+100, startY+18, 172, 0, 12, 52)

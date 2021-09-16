@@ -1,7 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants

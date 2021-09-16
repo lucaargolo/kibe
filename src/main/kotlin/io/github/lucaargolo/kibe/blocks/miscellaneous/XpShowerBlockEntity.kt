@@ -1,12 +1,11 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FluidAttributes
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.ExperienceOrbEntity
@@ -30,7 +29,7 @@ class XpShowerBlockEntity(xpShower: XpShower, pos: BlockPos, state: BlockState):
             var dir = state[Properties.FACING]
             if(dir != Direction.UP) dir = dir.opposite
 
-            val extractable = FluidAttributes.EXTRACTABLE.get(world, pos.add(dir.vector))
+            val extractable = FluidStorage.SIDED.find(world, pos.add(dir.vector), dir.opposite)
 
             var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
             i = MathHelper.fastFloor(i* MOD_CONFIG.miscellaneousModule.xpShowerSpeedMultiplier)
@@ -38,11 +37,14 @@ class XpShowerBlockEntity(xpShower: XpShower, pos: BlockPos, state: BlockState):
             while (i > 0) {
                 val j = ExperienceOrbEntity.roundToOrbSize(i)
                 i -= j
-                val toExtractAmount = FluidAmount.of(j*10L, 1000L)
-                val extractedVolume = extractable.attemptExtraction({ fluidKey: FluidKey -> fluidKey == LIQUID_XP.key }, toExtractAmount, Simulation.ACTION)
-                val extractedAmount = extractedVolume.amount().asInt(1000)/10
+                val toExtractAmount = j*810L
+                var extractedVolume = -1L
+                Transaction.openOuter().also {
+                    extractable?.extract(FluidVariant.of(LIQUID_XP), toExtractAmount, it)?.let { extractedVolume = it }
+                }.commit()
+                val extractedAmount = extractedVolume/810
                 if(extractedAmount > 0) {
-                    val entity = ExperienceOrbEntity(world, pos.x+.5, pos.y+.2, pos.z+.5, extractedAmount)
+                    val entity = ExperienceOrbEntity(world, pos.x+.5, pos.y+.2, pos.z+.5, extractedAmount.toInt())
                     entity.move(MovementType.SELF, Vec3d(0.0, 0.0, 0.0))
                     entity.setVelocity(0.0, -0.5, 0.0)
                     world.spawnEntity(entity)

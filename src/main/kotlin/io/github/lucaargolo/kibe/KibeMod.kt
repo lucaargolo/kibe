@@ -2,10 +2,6 @@
 
 package io.github.lucaargolo.kibe
 
-import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import io.github.lucaargolo.kibe.blocks.*
@@ -35,6 +31,8 @@ import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.item.Items
@@ -172,7 +170,7 @@ fun initExtras() {
     }
     ServerTickEvents.END_SERVER_TICK.register { server ->
         EntangledTankState.SERVER_PLAYER_REQUESTS.forEach { (player, requests) ->
-            val finalMap = mutableMapOf<String, MutableMap<String, FluidVolume>>()
+            val finalMap = mutableMapOf<String, MutableMap<String, Pair<FluidVariant, Long>>>()
             requests.forEach { pair ->
                 val key = pair.first
                 val colorCode = pair.second
@@ -181,7 +179,7 @@ fun initExtras() {
                 val allTimeRequests = EntangledTankState.ALL_TIME_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
                 if(!allTimeRequests.contains(pair) || state.dirtyColors.contains(colorCode)) {
                     allTimeRequests.add(pair)
-                    val fluidVolume = state.getOrCreateInventory(colorCode).getInvFluid(0)
+                    val fluidVolume = state.getOrCreateInventory(colorCode).let { Pair(it.variant, it.amount) }
 
                     val secondMap = finalMap[key] ?: mutableMapOf()
                     secondMap[colorCode] = fluidVolume
@@ -196,7 +194,8 @@ fun initExtras() {
                     passedData.writeInt(secondMap.size)
                     secondMap.forEach { (colorCode, fluidVolume) ->
                         passedData.writeString(colorCode, 32767)
-                        fluidVolume.toMcBuffer(passedData)
+                        fluidVolume.first.toPacket(passedData)
+                        passedData.writeLong(fluidVolume.second)
                     }
                 }
                 ServerPlayNetworking.send(player, SYNCHRONIZE_DIRTY_TANK_STATES, passedData)
@@ -206,8 +205,9 @@ fun initExtras() {
             (state as? EntangledTankState)?.dirtyColors?.clear()
         }
     }
-    FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
-    FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
+    //TODO: Fix this
+//    FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
+//    FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
 }
 
 fun initLootTables() {

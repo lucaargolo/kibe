@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.fluids
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.fluids.miscellaneous.LiquidXpFluid
 import io.github.lucaargolo.kibe.fluids.miscellaneous.ModdedFluid
@@ -64,7 +63,6 @@ fun initFluids() {
             Registry.register(Registry.FLUID, identifierFlowing, fluidFlowing)
             Registry.register(Registry.ITEM, Identifier(it.key.namespace, "${identifierStill.path}_bucket"), BucketItem(fluidStill, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
             Registry.register(Registry.BLOCK, it.key, object : FluidBlock(registeredFluid as FlowableFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
-            FluidKeys.put(registeredFluid, registeredFluid.key)
         }
     }
 }

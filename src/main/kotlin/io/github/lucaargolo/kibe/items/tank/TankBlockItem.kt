@@ -1,8 +1,10 @@
 package io.github.lucaargolo.kibe.items.tank
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.blocks.TANK
+import io.github.lucaargolo.kibe.utils.readTank
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
@@ -11,6 +13,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
@@ -38,10 +41,13 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         super.appendTooltip(stack, world, tooltip, context)
         val stackTag = stack.nbt ?: return
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
-        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-        dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))
-        if(!dummyFluidInv.getInvFluid(0).isEmpty)
-            tooltip.add(dummyFluidInv.getInvFluid(0).fluidKey.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${dummyFluidInv.getInvFluid(0).amount().asInt(1000)}mB")))
+        val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
+            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+            override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
+        }
+        readTank(blockEntityTag, dummyFluidTank)
+        if(!dummyFluidTank.isResourceBlank)
+            tooltip.add(TranslatableText(dummyFluidTank.resource.fluid.defaultState.blockState.block.translationKey).append(LiteralText(": ${Formatting.GRAY}${dummyFluidTank.amount/81}mB")))
     }
 
 }
