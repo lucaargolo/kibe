@@ -28,7 +28,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
     var identifier: Identifier? = null
 
     private fun createImage() {
-        val image = NativeImage(NativeImage.Format.ABGR, 256, 256, false)
+        val image = NativeImage(NativeImage.Format.RGBA, 256, 256, false)
         (chunkPos.startX-32..chunkPos.endX+32).forEach {  x ->
             (chunkPos.startZ-32..chunkPos.endZ+32).forEach { z ->
                 var color = MapColor.WHITE
@@ -47,7 +47,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
                 val green: Int = color.color shr 8 and 0xFF
                 val blue: Int = color.color shr 0 and 0xFF
                 val out = (255 shl 24) or (blue shl 16) or (green shl 8) or (red shl 0)
-                image.setPixelColor(x-chunkPos.startX+32, z-chunkPos.startZ+32, out)
+                image.setColor(x-chunkPos.startX+32, z-chunkPos.startZ+32, out)
             }
         }
 

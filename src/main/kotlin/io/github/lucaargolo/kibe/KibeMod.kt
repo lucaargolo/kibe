@@ -1,20 +1,26 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "UnstableApiUsage", "DEPRECATION")
 
 package io.github.lucaargolo.kibe
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
+import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.compat.initTrinketsCompat
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
 import io.github.lucaargolo.kibe.entities.initEntities
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
-import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.items.CURSED_DROPLETS
+import io.github.lucaargolo.kibe.items.WATER_WOODEN_BUCKET
+import io.github.lucaargolo.kibe.items.WOODEN_BUCKET
+import io.github.lucaargolo.kibe.items.initItems
+import io.github.lucaargolo.kibe.items.miscellaneous.ExperiencePotionEmptyStorage
+import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucket
+import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucketEmptyStorage
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -32,17 +38,21 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
+import net.minecraft.fluid.Fluids
+import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider
-import net.minecraft.loot.provider.number.UniformLootNumberProvider
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
 import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.LootingEnchantLootFunction
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider
+import net.minecraft.loot.provider.number.UniformLootNumberProvider
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.particle.DefaultParticleType
 import net.minecraft.predicate.entity.EntityEffectPredicate
@@ -205,9 +215,27 @@ fun initExtras() {
             (state as? EntangledTankState)?.dirtyColors?.clear()
         }
     }
-    //TODO: Fix this
-//    FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
-//    FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
+    FluidStorage.combinedItemApiProvider(WOODEN_BUCKET).register(::WoodenBucketEmptyStorage)
+    FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
+        (context.itemVariant.item as? WoodenBucket)?.let { bucketItem ->
+            val bucketFluid = Fluids.WATER
+            if (bucketItem == WATER_WOODEN_BUCKET) {
+                return@register FullItemFluidStorage(context, WOODEN_BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET)
+            }
+        }
+        return@register null
+    }
+    FluidStorage.combinedItemApiProvider(Items.GLASS_BOTTLE).register(::ExperiencePotionEmptyStorage)
+    FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
+        (context.itemVariant.item as? ExperienceBottleItem)?.let { bottleItem ->
+            val bottleFluid = LIQUID_XP
+            if (bottleItem == Items.EXPERIENCE_BOTTLE) {
+                return@register FullItemFluidStorage(context, Items.GLASS_BOTTLE, FluidVariant.of(bottleFluid), FluidConstants.BOTTLE)
+            }
+        }
+        return@register null
+    }
+
 }
 
 fun initLootTables() {

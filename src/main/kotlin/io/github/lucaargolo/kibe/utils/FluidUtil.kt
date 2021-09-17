@@ -47,13 +47,3 @@ private fun interactPlayerHandInner(tank: Storage<FluidVariant>, player: PlayerE
 
     return false;
 }
-
-fun getMb(amount: Long): String {
-    if (amount == 0L) {
-        return "0"
-    } else if (amount < 81) {
-        return "< 1"
-    } else {
-        return "" + amount / 81;
-    }
-}

@@ -1,3 +1,5 @@
+@file:Suppress("net.fabricmc.fabric.api.transfer:DEPRECATION", "net.fabricmc.fabric.api.transfer:UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.entangledbucket
 
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
@@ -139,12 +141,10 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                                 val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
                                 val stateInv = state.getOrCreateInventory(colorCode)
                                 Transaction.openOuter().also {
-                                    val containedFluidStorage = FluidStorage.ITEM.find(drainedFluid, ContainerItemContext.withInitial(drainedFluid))
-                                    var containedFluid = FluidVariant.blank()
-                                    it.openNested().also {
-                                        StorageUtil.findStoredResource(containedFluidStorage, it)?.let { containedFluid = it }
-                                    }.commit()
-                                    stateInv.insert(containedFluid, FluidConstants.BUCKET, it)
+                                    val containedFluidStorage = ContainerItemContext.withInitial(drainedFluid).find(FluidStorage.ITEM)
+                                    StorageUtil.findExtractableContent(containedFluidStorage, it)?.let { extractableContent ->
+                                        stateInv.insert(extractableContent.resource, extractableContent.amount, it)
+                                    }
                                 }.commit()
                                 state.markDirty(colorCode)
                                 Criteria.FILLED_BUCKET.trigger(user as ServerPlayerEntity, ItemStack(ENTANGLED_BUCKET))
