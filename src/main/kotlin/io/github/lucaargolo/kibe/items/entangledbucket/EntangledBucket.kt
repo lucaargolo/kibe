@@ -1,4 +1,4 @@
-@file:Suppress("net.fabricmc.fabric.api.transfer:DEPRECATION", "net.fabricmc.fabric.api.transfer:UnstableApiUsage")
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
 
 package io.github.lucaargolo.kibe.items.entangledbucket
 
@@ -184,7 +184,6 @@ class EntangledBucket(settings: Settings): Item(settings)  {
 
     }
 
-    @Suppress("DEPRECATION")
     private fun fakeInteraction(bucketItem: BucketItem, world: World, pos: BlockPos, blockHitResult: BlockHitResult): Fluid? {
         val fakePlayer = FakePlayerEntity(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(bucketItem))
@@ -217,35 +216,39 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         return ActionResult.PASS
     }
 
-    private fun getFluidInv(world: World?, tag: NbtCompound): SingleVariantStorage<FluidVariant> {
-        val key = tag.getString("key")
-        val colorCode = tag.getString("colorCode")
-        val fluidInv = if(world is ServerWorld) {
-            val state = world.server.overworld.persistentStateManager.getOrCreate( {EntangledTankState.createFromTag(it, world, key) }, { EntangledTankState(world, key) }, key)
-            state.getOrCreateInventory(colorCode)
-        }else {
-            EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
-            EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: object: SingleVariantStorage<FluidVariant>() {
-                override fun getCapacity(variant: FluidVariant?) = 0L
-                override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+    companion object {
+        fun getFluidInv(world: World?, tag: NbtCompound): SingleVariantStorage<FluidVariant> {
+            val key = tag.getString("key")
+            val colorCode = tag.getString("colorCode")
+            val fluidInv = if(world is ServerWorld) {
+                val state = world.server.overworld.persistentStateManager.getOrCreate( {EntangledTankState.createFromTag(it, world, key) }, { EntangledTankState(world, key) }, key)
+                state.getOrCreateInventory(colorCode)
+            }else {
+                EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
+                EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: object: SingleVariantStorage<FluidVariant>() {
+                    override fun getCapacity(variant: FluidVariant?) = 0L
+                    override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+                }
+            }
+            writeTank(tag, fluidInv)
+            return fluidInv
+        }
+
+        fun getTag(stack: ItemStack): NbtCompound {
+            return if(stack.hasNbt()) {
+                stack.orCreateNbt
+            }else{
+                val newTag = NbtCompound()
+                newTag.putString("key", EntangledTank.DEFAULT_KEY)
+                (1..8).forEach {
+                    newTag.putString("rune$it", DyeColor.WHITE.name)
+                }
+                newTag.putString("colorCode", "00000000")
+                newTag
             }
         }
-        writeTank(tag, fluidInv)
-        return fluidInv
     }
 
-    private fun getTag(stack: ItemStack): NbtCompound {
-        return if(stack.hasNbt()) {
-            stack.orCreateNbt
-        }else{
-            val newTag = NbtCompound()
-            newTag.putString("key", EntangledTank.DEFAULT_KEY)
-            (1..8).forEach {
-                newTag.putString("rune$it", DyeColor.WHITE.name)
-            }
-            newTag.putString("colorCode", "00000000")
-            newTag
-        }
-    }
+
 
 }

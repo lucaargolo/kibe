@@ -1,10 +1,17 @@
 package io.github.lucaargolo.kibe.items.tank
 
 import io.github.lucaargolo.kibe.blocks.TANK
+import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.utils.readTank
+import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
@@ -17,6 +24,7 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
+import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
@@ -48,6 +56,36 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         readTank(blockEntityTag, dummyFluidTank)
         if(!dummyFluidTank.isResourceBlank)
             tooltip.add(TranslatableText(dummyFluidTank.resource.fluid.defaultState.blockState.block.translationKey).append(LiteralText(": ${Formatting.GRAY}${dummyFluidTank.amount/81}mB")))
+    }
+
+    companion object {
+
+        fun getFluidStorage(stack: ItemStack, context: ContainerItemContext): Storage<FluidVariant> {
+            val tank = object: SingleVariantStorage<FluidVariant>() {
+                override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+                override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
+
+                override fun insert(insertedVariant: FluidVariant?, maxAmount: Long, transaction: TransactionContext): Long {
+                    return super.insert(insertedVariant, maxAmount, transaction).also { updateItem(transaction) }
+                }
+
+                override fun extract(extractedVariant: FluidVariant?, maxAmount: Long, transaction: TransactionContext): Long {
+                    return super.extract(extractedVariant, maxAmount, transaction).also { updateItem(transaction) }
+                }
+
+                private fun updateItem(transaction: TransactionContext) {
+                    stack.orCreateNbt.put("BlockEntityTag", writeTank(NbtCompound(), this))
+                    Transaction.openNested(transaction).also { transaction ->
+                        context.exchange(ItemVariant.of(stack), Long.MAX_VALUE, transaction)
+                    }.commit()
+                }
+            }
+            if(stack.hasNbt() && stack.orCreateNbt.contains("BlockEntityTag")) {
+                readTank(stack.orCreateNbt.getCompound("BlockEntityTag"), tank)
+            }
+            return tank
+        }
+
     }
 
 }

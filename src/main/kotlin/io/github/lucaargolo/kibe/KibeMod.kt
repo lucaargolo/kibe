@@ -14,13 +14,12 @@ import io.github.lucaargolo.kibe.effects.initEffects
 import io.github.lucaargolo.kibe.entities.initEntities
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
-import io.github.lucaargolo.kibe.items.CURSED_DROPLETS
-import io.github.lucaargolo.kibe.items.WATER_WOODEN_BUCKET
-import io.github.lucaargolo.kibe.items.WOODEN_BUCKET
-import io.github.lucaargolo.kibe.items.initItems
+import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.items.entangledbucket.EntangledBucket
 import io.github.lucaargolo.kibe.items.miscellaneous.ExperiencePotionEmptyStorage
 import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucket
 import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucketEmptyStorage
+import io.github.lucaargolo.kibe.items.tank.TankBlockItem
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -41,8 +40,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
+import net.minecraft.client.MinecraftClient
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
@@ -57,6 +58,8 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.particle.DefaultParticleType
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
+import net.minecraft.server.MinecraftServer
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.registry.Registry
@@ -235,6 +238,24 @@ fun initExtras() {
         }
         return@register null
     }
+    FluidStorage.ITEM.registerForItems( {stack, context -> TankBlockItem.getFluidStorage(stack, context) }, TANK)
+    FluidStorage.ITEM.registerForItems( {stack, _ ->
+        var tag = EntangledBucket.getTag(stack)
+        if(tag.contains("BlockEntityTag")) {
+            tag = tag.getCompound("BlockEntityTag")
+        }
+        var colorCode = ""
+        (1..8).forEach {
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            colorCode += dc.id.let { int -> Integer.toHexString(int) }
+        }
+        tag.putString("colorCode", colorCode)
+        getServerInstance()?.let { EntangledBucket.getFluidInv(it.overworld, tag) } ?: object: SingleVariantStorage<FluidVariant>() {
+            override fun getCapacity(variant: FluidVariant?) = 0L
+            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+        }
+    }, ENTANGLED_TANK, ENTANGLED_BUCKET)
+
 
 }
 
@@ -267,4 +288,16 @@ fun initLootTables() {
             supplier.pool(poolBuilder)
         }
     })
+}
+
+private fun getServerInstance(): MinecraftServer? {
+    return FabricLoader.getInstance().gameInstance.let {
+        if(CLIENT && it is MinecraftClient && it.isIntegratedServerRunning) {
+            it.server
+        }else if(it is MinecraftServer) {
+            it
+        }else{
+            null
+        }
+    }
 }
