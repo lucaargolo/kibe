@@ -40,12 +40,6 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         super.onCraft(stack, world, player)
     }
 
-    override fun use(world: World?, user: PlayerEntity?, hand: Hand?): TypedActionResult<ItemStack> {
-        val tag = user?.getStackInHand(hand)?.nbt
-        tag?.let { println(tag.toString()) }
-        return super.use(world, user, hand)
-    }
-
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
         val stackTag = stack.nbt ?: return

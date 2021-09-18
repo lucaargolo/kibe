@@ -64,10 +64,6 @@ repositories {
         url = uri("https://maven.fabricmc.net/")
     }
     maven {
-        name = "BuildCraft"
-        url = uri("https://mod-buildcraft.com/maven")
-    }
-    maven {
         name = "Ladysnake Mods"
         url = uri("https://ladysnake.jfrog.io/artifactory/mods")
     }
@@ -175,7 +171,7 @@ curseforge {
         mainArtifact(file(releaseFile), closureOf<CurseArtifact> {
             displayName = releaseName
             relations(closureOf<CurseRelation> {
-                embeddedLibrary("libblockattributes")
+                embeddedLibrary("pal")
                 optionalDependency("roughly-enough-items")
                 requiredDependency("fabric-api")
                 requiredDependency("fabric-language-kotlin")
