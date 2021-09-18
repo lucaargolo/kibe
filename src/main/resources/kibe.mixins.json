@@ -27,14 +27,14 @@
     "WorldMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin",
     "BipedEntityModelMixin",
+    "ClientPlayNetworkHandlerMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",
     "PlayerEntityRendererMixin",
-    "WorldRendererMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

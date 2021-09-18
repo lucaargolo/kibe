@@ -7,7 +7,6 @@ import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import io.github.lucaargolo.kibe.utils.SpikeHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;

@@ -7,9 +7,8 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Formatting
 
-abstract class LiquidXpFluid: ModdedFluid(Formatting.GREEN) {
+abstract class LiquidXpFluid: ModdedFluid() {
 
     override fun getStill() = LIQUID_XP
     override fun getFlowing() = LIQUID_XP_FLOWING

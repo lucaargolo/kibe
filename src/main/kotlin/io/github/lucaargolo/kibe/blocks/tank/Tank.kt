@@ -1,11 +1,9 @@
 package io.github.lucaargolo.kibe.blocks.tank
 
-import alexiil.mc.lib.attributes.AttributeList
-import alexiil.mc.lib.attributes.AttributeProvider
-import alexiil.mc.lib.attributes.fluid.FixedFluidInv
-import alexiil.mc.lib.attributes.fluid.FluidInvUtil
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.utils.interactPlayerHand
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -21,7 +19,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F).nonOpaque().luminance { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)), AttributeProvider {
+class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F).nonOpaque().luminance { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 0)
@@ -42,19 +40,10 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
 
-    override fun addAllAttributes(world: World, pos: BlockPos?, state: BlockState?, to: AttributeList<*>) {
-        (world.getBlockEntity(pos) as? TankBlockEntity)?.let {
-            to.offer(it.fluidInv)
-        }
-    }
-
     override fun hasComparatorOutput(state: BlockState?) = true
 
     override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
-        return (world.getBlockEntity(pos) as? TankBlockEntity)?.fluidInv?.let {
-            val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
-            return (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
-        } ?: 0
+        return StorageUtil.calculateComparatorOutput((world.getBlockEntity(pos) as? TankBlockEntity)?.tank, null)
     }
 
     @Suppress("DEPRECATION")
@@ -68,7 +57,7 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { FluidInvUtil.interactHandWithTank(it.fluidInv as FixedFluidInv, player, hand).asActionResult() } ?: ActionResult.FAIL
+        return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { interactPlayerHand(it.tank, player, hand) } ?: ActionResult.FAIL
     }
 
     override fun afterBreak(world: World?, player: PlayerEntity?, pos: BlockPos?, state: BlockState?, blockEntity: BlockEntity?, stack: ItemStack?) {

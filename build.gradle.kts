@@ -64,10 +64,6 @@ repositories {
         url = uri("https://maven.fabricmc.net/")
     }
     maven {
-        name = "BuildCraft"
-        url = uri("https://mod-buildcraft.com/maven")
-    }
-    maven {
         name = "Ladysnake Mods"
         url = uri("https://ladysnake.jfrog.io/artifactory/mods")
     }
@@ -106,16 +102,7 @@ dependencies {
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
     include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
 
-    modApi("alexiil.mc.lib:libblockattributes-core:${project["lba_version"]}")
-    include("alexiil.mc.lib:libblockattributes-core:${project["lba_version"]}")
-
-    modApi("alexiil.mc.lib:libblockattributes-items:${project["lba_version"]}")
-    include("alexiil.mc.lib:libblockattributes-items:${project["lba_version"]}")
-
-    modApi("alexiil.mc.lib:libblockattributes-fluids:${project["lba_version"]}")
-    include("alexiil.mc.lib:libblockattributes-fluids:${project["lba_version"]}")
-
-    modImplementation ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
+    modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modRuntime("com.terraformersmc:modmenu:${project["modmenu_version"]}")
@@ -184,7 +171,7 @@ curseforge {
         mainArtifact(file(releaseFile), closureOf<CurseArtifact> {
             displayName = releaseName
             relations(closureOf<CurseRelation> {
-                embeddedLibrary("libblockattributes")
+                embeddedLibrary("pal")
                 optionalDependency("roughly-enough-items")
                 requiredDependency("fabric-api")
                 requiredDependency("fabric-language-kotlin")

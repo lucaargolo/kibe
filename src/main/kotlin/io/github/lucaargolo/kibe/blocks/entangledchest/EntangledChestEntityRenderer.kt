@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.entangledchest
 
-import com.google.common.collect.ImmutableList
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
 import io.github.lucaargolo.kibe.items.entangledbag.EntangledBagScreen
@@ -15,7 +14,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Vec3f
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Hand
@@ -25,8 +23,8 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Matrix4f
+import net.minecraft.util.math.Vec3f
 import java.util.*
-import java.util.stream.IntStream
 
 class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledChestEntity> {
 

@@ -1,14 +1,17 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.entangledtank
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntity
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRenderer
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
+import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -47,12 +50,15 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         val key = tag.getString("key")
 
         EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))
-        val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: SimpleFixedFluidInv(1, FluidAmount.ONE)
-        fluidInv.toTag(tag)
+        val fluidInv = EntangledTankState.CLIENT_STATES[key]?.fluidInvMap?.get(colorCode) ?: object: SingleVariantStorage<FluidVariant>() {
+            override fun getCapacity(variant: FluidVariant?) = 0L
+            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+        }
+        writeTank(tag, fluidInv)
 
         val dummyTank = EntangledTankEntity(ENTANGLED_TANK as EntangledTank, MinecraftClient.getInstance().player?.blockPos ?: BlockPos.ORIGIN, ENTANGLED_TANK.defaultState)
         dummyTank.fromClientTag(tag)
-        dummyTank.lastRenderedFluid = dummyTank.fluidInv.getInvFluid(0).amount().asLong(1000L) / 1000f
+        dummyTank.lastRenderedFluid = dummyTank.getTank().amount / 81000f
 
         val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyTank, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)

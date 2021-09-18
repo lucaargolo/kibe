@@ -1,9 +1,8 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.recipes.vacuum
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
-import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import net.minecraft.item.ItemStack
@@ -20,16 +19,15 @@ class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput
 
     override fun matches(inv: VacuumHopperEntity, world: World): Boolean {
         val inputStack = inv.getStack(9)
-        val inputVolume = inv.getTank(0).attemptAnyExtraction(FluidAmount.of(xpInput, 1000), Simulation.SIMULATE)
         val hasSpace = inv.getStack(10).let {
             it.isEmpty || (ItemStack.areItemsEqual(it, output) && ItemStack.areNbtEqual(it, output) && it.count < it.maxCount)
         }
-        return input.test(inputStack) && inputVolume == LIQUID_XP.key.withAmount(FluidAmount.of(xpInput, 1000)) && hasSpace
+        return input.test(inputStack) && inv.tank.amount >= xpInput * 81 && hasSpace
     }
 
     override fun craft(inv: VacuumHopperEntity): ItemStack {
         inv.getStack(9).decrement(1)
-        inv.getTank(0).extract(FluidAmount.of(xpInput, 1000))
+        inv.tank.amount -= xpInput * 81
         if(inv.getStack(10).isEmpty) {
             inv.setStack(10, output.copy())
         }else{

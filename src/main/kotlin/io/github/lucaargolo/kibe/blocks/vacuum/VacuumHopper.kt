@@ -1,7 +1,5 @@
 package io.github.lucaargolo.kibe.blocks.vacuum
 
-import alexiil.mc.lib.attributes.AttributeList
-import alexiil.mc.lib.attributes.AttributeProvider
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -28,7 +26,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), AttributeProvider {
+class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return VacuumHopperEntity(this, blockPos, blockState)
@@ -137,12 +135,6 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
         return BlockRenderType.MODEL
-    }
-
-    override fun addAllAttributes(world: World, pos: BlockPos, state: BlockState, to: AttributeList<*>) {
-        (world.getBlockEntity(pos) as? VacuumHopperEntity)?.let {
-            to.offer(it)
-        }
     }
 
 }

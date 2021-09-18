@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.MOD_ID
-import net.minecraft.client.model.ModelTransform
-import net.minecraft.client.model.ModelPartBuilder
-import net.minecraft.client.model.TexturedModelData
 import net.minecraft.client.model.ModelData
+import net.minecraft.client.model.ModelPartBuilder
+import net.minecraft.client.model.ModelTransform
+import net.minecraft.client.model.TexturedModelData
 import net.minecraft.client.render.entity.model.EntityModelLayer
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
