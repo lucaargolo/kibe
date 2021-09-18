@@ -6,9 +6,9 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,6 +31,7 @@ public class HeldItemRendererMixin {
 
     @Inject(at = @At("TAIL"), method = "updateHeldItems")
     private void updateHeldItems(CallbackInfo info) {
+        assert client.player != null;
         ItemStack mainHandStack = client.player.getMainHandStack();
         ItemStack offHandStack = client.player.getOffHandStack();
         if(offHandStack.getItem() instanceof Glider) {

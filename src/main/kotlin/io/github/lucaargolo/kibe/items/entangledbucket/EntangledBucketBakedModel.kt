@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.entangledbucket
 
 import io.github.lucaargolo.kibe.MOD_ID
@@ -41,7 +43,6 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter(): Boolean = false
 
-    @Suppress("DEPRECATION")
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val background = ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_background"), "inventory")

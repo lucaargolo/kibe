@@ -1,7 +1,11 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.vacuum
 
 import com.mojang.blaze3d.systems.RenderSystem
+import io.github.lucaargolo.kibe.utils.getMb
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.GameRenderer
@@ -42,7 +46,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
             val tank = handler.entity.tank
             val stored = tank.amount
             val capacity = tank.capacity
-            renderTooltip(matrices, listOf(if(tank.isResourceBlank) TranslatableText("tooltip.kibe.empty") else tank.resource.fluid.defaultState.blockState.block.name, LiteralText("${stored/81} / ${capacity/81} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
+            renderTooltip(matrices, listOf(if(tank.isResourceBlank) TranslatableText("tooltip.kibe.empty") else FluidVariantRendering.getName(tank.variant), LiteralText("${getMb(stored)} / ${capacity/81} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
         }
     }
 

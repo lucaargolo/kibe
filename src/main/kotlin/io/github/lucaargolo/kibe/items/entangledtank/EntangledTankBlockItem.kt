@@ -1,9 +1,13 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.entangledtank
 
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
+import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.client.item.TooltipContext
@@ -54,7 +58,7 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
         }
         writeTank(tag, fluidInv)
         if(!fluidInv.isResourceBlank)
-            tooltip.add(fluidInv.resource.fluid.defaultState.blockState.block.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${fluidInv.amount/81}mB")))
+            tooltip.add(FluidVariantRendering.getName(fluidInv.variant).shallowCopy().append(LiteralText(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
     }
 
 }

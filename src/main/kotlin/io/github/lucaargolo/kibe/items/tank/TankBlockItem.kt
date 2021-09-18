@@ -1,9 +1,12 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.tank
 
 import io.github.lucaargolo.kibe.blocks.TANK
-import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
+import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
@@ -20,11 +23,9 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
-import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
@@ -55,7 +56,7 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         }
         readTank(blockEntityTag, dummyFluidTank)
         if(!dummyFluidTank.isResourceBlank)
-            tooltip.add(TranslatableText(dummyFluidTank.resource.fluid.defaultState.blockState.block.translationKey).append(LiteralText(": ${Formatting.GRAY}${dummyFluidTank.amount/81}mB")))
+            tooltip.add(FluidVariantRendering.getName(dummyFluidTank.variant).shallowCopy().append(LiteralText(": ${Formatting.GRAY}${getMb(dummyFluidTank.amount)}mB")))
     }
 
     companion object {
@@ -75,8 +76,8 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
 
                 private fun updateItem(transaction: TransactionContext) {
                     stack.orCreateNbt.put("BlockEntityTag", writeTank(NbtCompound(), this))
-                    Transaction.openNested(transaction).also { transaction ->
-                        context.exchange(ItemVariant.of(stack), Long.MAX_VALUE, transaction)
+                    Transaction.openNested(transaction).also {
+                        context.exchange(ItemVariant.of(stack), Long.MAX_VALUE, it)
                     }.commit()
                 }
             }

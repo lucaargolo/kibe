@@ -1,24 +1,20 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.MOD_ID
-import net.minecraft.client.model.ModelTransform
-import net.minecraft.client.model.ModelPartBuilder
-import net.minecraft.client.model.TexturedModelData
-import net.minecraft.client.model.ModelData
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.model.ModelPart
-import net.minecraft.client.render.*
+import net.minecraft.client.model.*
+import net.minecraft.client.render.RenderLayer
+import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.render.entity.model.EntityModelLayer
-import net.minecraft.client.render.entity.model.EntityModelLayers
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Vec3f
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3f
 import java.util.*
 
 class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<RedstoneTimerEntity> {

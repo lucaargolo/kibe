@@ -1,34 +1,26 @@
-package io.github.lucaargolo.kibe.blocks.entangledtank
+@file:Suppress("DEPRECATION", "UnstableApiUsage", "UNUSED_PARAMETER")
 
+package io.github.lucaargolo.kibe.blocks.entangledtank
 
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
-import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
-@Suppress("DEPRECATION", "UnstableApiUsage")
 class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
 
     var lastRenderedFluid = 0f

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.MOD_ID
@@ -6,14 +8,11 @@ import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.TANK
-import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.getFluidBucket
 import io.github.lucaargolo.kibe.items.*
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids

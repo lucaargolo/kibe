@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
 import io.github.lucaargolo.kibe.utils.readTank
@@ -10,7 +12,6 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.PersistentState
 
-@Suppress("DEPRECATION", "UnstableApiUsage")
 class EntangledTankState(val world: ServerWorld?, val key: String): PersistentState() {
 
     var dirtyColors = mutableListOf<String>()
@@ -29,7 +30,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
         return fluidInvMap.computeIfAbsent(colorCode) {
             object : SingleVariantStorage<FluidVariant>() {
                 override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
-                override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16;
+                override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
 
                 override fun onFinalCommit() {
                     markDirty(colorCode)

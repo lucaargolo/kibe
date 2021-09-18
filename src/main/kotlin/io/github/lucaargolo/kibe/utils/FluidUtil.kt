@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.LOGGER
@@ -83,5 +85,15 @@ private fun interactPlayerHandInner(tank: Storage<FluidVariant>, player: PlayerE
         return true
     }
 
-    return false;
+    return false
+}
+
+fun getMb(amount: Long): String {
+    return if (amount == 0L) {
+        "0"
+    } else if (amount < 81) {
+        "< 1"
+    } else {
+        "" + amount / 81
+    }
 }

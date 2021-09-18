@@ -7,7 +7,6 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Formatting
 
 abstract class LiquidXpFluid: ModdedFluid() {
 

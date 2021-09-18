@@ -1,7 +1,8 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.recipes.vacuum
 
 import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
-import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import net.minecraft.item.ItemStack

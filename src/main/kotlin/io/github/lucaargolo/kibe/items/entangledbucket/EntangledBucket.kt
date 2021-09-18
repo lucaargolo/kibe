@@ -8,7 +8,9 @@ import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.items.ENTANGLED_BUCKET
 import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
@@ -63,7 +65,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         tooltip.add(color)
         val fluidInv = getFluidInv(world, tag)
         if(!fluidInv.isResourceBlank)
-            tooltip.add(fluidInv.resource.fluid.defaultState.blockState.block.name.shallowCopy().append(LiteralText(": ${Formatting.GRAY}${fluidInv.amount/81}mB")))
+            tooltip.add(FluidVariantRendering.getName(fluidInv.variant).shallowCopy().append(LiteralText(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
     }
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {

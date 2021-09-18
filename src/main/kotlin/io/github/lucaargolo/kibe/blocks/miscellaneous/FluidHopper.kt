@@ -1,10 +1,15 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntity
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
-import net.minecraft.block.*
+import net.minecraft.block.BlockState
+import net.minecraft.block.HopperBlock
+import net.minecraft.block.MapColor
+import net.minecraft.block.Material
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType

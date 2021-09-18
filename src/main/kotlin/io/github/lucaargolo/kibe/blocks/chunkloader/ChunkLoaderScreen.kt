@@ -3,8 +3,8 @@ package io.github.lucaargolo.kibe.blocks.chunkloader
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
 import io.netty.buffer.Unpooled
-import net.minecraft.block.MapColor
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.minecraft.block.MapColor
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.gui.screen.Screen

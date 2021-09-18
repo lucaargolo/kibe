@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.entangledtank
 
 import io.github.lucaargolo.kibe.MOD_ID
