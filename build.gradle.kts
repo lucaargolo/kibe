@@ -106,7 +106,7 @@ dependencies {
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
     include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
 
-    modImplementation ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
+    modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modRuntime("com.terraformersmc:modmenu:${project["modmenu_version"]}")
