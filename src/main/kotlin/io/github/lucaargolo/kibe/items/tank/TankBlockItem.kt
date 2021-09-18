@@ -24,8 +24,6 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import net.minecraft.util.Hand
-import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
 
 class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
