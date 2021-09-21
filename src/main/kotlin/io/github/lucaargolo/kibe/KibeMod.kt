@@ -250,7 +250,22 @@ fun initExtras() {
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
         tag.putString("colorCode", colorCode)
-        getServerInstance()?.let { EntangledBucket.getFluidInv(it.overworld, tag) } ?: object: SingleVariantStorage<FluidVariant>() {
+
+        FabricLoader.getInstance().gameInstance.let {
+            if(CLIENT && it is MinecraftClient) {
+                if(it.isOnThread) {
+                    EntangledBucket.getFluidInv(null, tag)
+                }else if(it.isIntegratedServerRunning && it.server?.isOnThread == true) {
+                    EntangledBucket.getFluidInv(it.server?.overworld, tag)
+                }else{
+                    null
+                }
+            }else if(it is MinecraftServer) {
+                EntangledBucket.getFluidInv(it.overworld, tag)
+            }else{
+                null
+            }
+        } ?: object: SingleVariantStorage<FluidVariant>() {
             override fun getCapacity(variant: FluidVariant?) = 0L
             override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
         }
@@ -288,16 +303,4 @@ fun initLootTables() {
             supplier.pool(poolBuilder)
         }
     })
-}
-
-private fun getServerInstance(): MinecraftServer? {
-    return FabricLoader.getInstance().gameInstance.let {
-        if(CLIENT && it is MinecraftClient && it.isIntegratedServerRunning) {
-            it.server
-        }else if(it is MinecraftServer) {
-            it
-        }else{
-            null
-        }
-    }
 }
