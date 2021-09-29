@@ -50,6 +50,8 @@ import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
@@ -177,7 +179,7 @@ val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), Conv
 val EXPRESS_CONVEYOR_BELT = register(Identifier(MOD_ID, "express_conveyor_belt"), ConveyorBelt(0.2))
 
 val ENTANGLED_TANK = registerWithEntity<EntangledTankEntity>(Identifier(MOD_ID, "entangled_tank"), EntangledTank(), renderer = { EntangledTankEntityRenderer::class }, hasBlockItem = false, apiRegistrations = { FluidStorage.SIDED.registerForBlockEntity(EntangledTankEntity.Companion::getFluidStorage, it) })
-val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = { EntangledChestEntityRenderer::class }, hasBlockItem = false, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, { EntangledChestScreen::class })), apiRegistrations = { EntangledChestEntity.registerItemApi(it) })
+val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(Identifier(MOD_ID, "entangled_chest"), EntangledChest(), renderer = { EntangledChestEntityRenderer::class }, hasBlockItem = false, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(EntangledChestScreenHandler::class, { EntangledChestScreen::class })), apiRegistrations = { ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, it) })
 val TRASH_CAN = registerWithEntity<TrashCanEntity>(Identifier(MOD_ID, "trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(TrashCanScreenHandler::class, {  TrashCanScreen::class })))
 val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(Identifier(MOD_ID, "vacuum_hopper"), VacuumHopper(), renderer = { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(VacuumHopperScreenHandler::class, {  VacuumHopperScreen::class })), apiRegistrations = { FluidStorage.SIDED.registerForBlockEntity(VacuumHopperEntity.Companion::getFluidStorage, it) })
 val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(BigTorchScreenHandler::class, { BigTorchScreen::class })))
