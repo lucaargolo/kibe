@@ -11,6 +11,7 @@ import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
+import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import java.io.BufferedReader
 import java.io.IOException
@@ -62,7 +63,7 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
         matrixStack.translate(-0.5, -0.5, -0.5)
 
-        val cutoutBuffer = vertexConsumerProvider.getBuffer(RenderLayer.getCutout())
+        val cutoutBuffer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityCutout(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE))
         val itemId = getItemId(stack.item) ?: Identifier(MOD_ID, "white_glider")
 
         if(force3d || (isEnabled && !isGui)) {

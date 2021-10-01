@@ -15,15 +15,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin {
 
+    /*
+        Code adapted from Open Gliders
+        Available at: https://github.com/gr8pefish/OpenGlider/blob/002ec43e3b22e9a6c2cc94c0a5fb3d49bcce7594/src/main/java/gr8pefish/openglider/client/event/ClientEventHandler.java#L37
+        Licensed under the MIT license available at: https://github.com/gr8pefish/OpenGlider/blob/1.12/LICENSE
+     */
     @Inject(at = @At("HEAD"), method = "render")
     private void renderPre(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
         if(GliderHelper.INSTANCE.isPlayerGliding(abstractClientPlayerEntity)) {
             float partialTicks = MinecraftClient.getInstance().getTickDelta();
             float interpolatedYaw = abstractClientPlayerEntity.prevHeadYaw + (abstractClientPlayerEntity.headYaw - abstractClientPlayerEntity.prevHeadYaw) * partialTicks;
-
-            double x = abstractClientPlayerEntity.getX();
-            double y = abstractClientPlayerEntity.getY();
-            double z = abstractClientPlayerEntity.getZ();
 
             matrixStack.push();
             matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-interpolatedYaw));
@@ -36,6 +37,11 @@ public class PlayerEntityRendererMixin {
         }
     }
 
+    /*
+        Code adapted from Open Gliders
+        Available at: https://github.com/gr8pefish/OpenGlider/blob/002ec43e3b22e9a6c2cc94c0a5fb3d49bcce7594/src/main/java/gr8pefish/openglider/client/event/ClientEventHandler.java#L81
+        Licensed under the MIT license available at: https://github.com/gr8pefish/OpenGlider/blob/1.12/LICENSE
+     */
     @Inject(at = @At("TAIL"), method = "render")
     private void renderPost(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
         if(GliderHelper.INSTANCE.needsPlayerRenderPopping(abstractClientPlayerEntity)) {
