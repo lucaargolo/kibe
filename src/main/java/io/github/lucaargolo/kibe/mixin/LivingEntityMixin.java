@@ -68,6 +68,11 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    /*
+        Code adapted from Tinkers Construct
+        Available at: https://github.com/SlimeKnights/TinkersConstruct/blob/c01173c0408352c50a2e8c5017552323ce42f5b4/src/main/java/slimeknights/tconstruct/gadgets/item/ItemSlimeBoots.java#L127
+        Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
+     */
     @SuppressWarnings("ConstantConditions")
     @Inject(at = @At("HEAD"), method = "handleFallDamage", cancellable = true)
     private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> info) {

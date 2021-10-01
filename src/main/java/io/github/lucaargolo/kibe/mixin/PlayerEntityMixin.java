@@ -105,7 +105,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         }else{
             GliderHelper.INSTANCE.setPlayerGliding(player, false);
         }
-        //Slime Boots Logic
+        // Slime Boots logic
+        /*
+            Code adapted from Tinkers Construct
+            Available at: https://github.com/SlimeKnights/TinkersConstruct/blob/c01173c0408352c50a2e8c5017552323ce42f5b4/src/main/java/slimeknights/tconstruct/library/SlimeBounceHandler.java#L46
+            Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
+         */
         Iterator<Entity> keyIt;
         if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntities().keySet().iterator();
         else keyIt = SlimeBounceHandler.Companion.getServerBouncingEntities().keySet().iterator();

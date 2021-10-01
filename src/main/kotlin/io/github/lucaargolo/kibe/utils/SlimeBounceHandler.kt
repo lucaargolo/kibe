@@ -6,6 +6,11 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import java.util.*
 
+/*
+    Code adapted from Tinkers Construct
+    Available at: https://github.com/SlimeKnights/TinkersConstruct/blob/c01173c0408352c50a2e8c5017552323ce42f5b4/src/main/java/slimeknights/tconstruct/library/SlimeBounceHandler.java
+    Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
+*/
 class SlimeBounceHandler(playerEntity: PlayerEntity, var bounce: Double) {
 
     var timer = 0
