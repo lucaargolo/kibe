@@ -33,6 +33,8 @@ import net.minecraft.world.BlockRenderView
 import java.util.function.Function
 
 val fluidRegistry = mutableMapOf<Identifier, ModdedFluid>()
+val fluidBlockMap = mutableMapOf<Fluid, Block>()
+val fluidBucketMap = mutableMapOf<Fluid, Item>()
 
 val LIQUID_XP = register(Identifier(MOD_ID, "liquid_xp"), LiquidXpFluid.Still())
 val LIQUID_XP_FLOWING = register(Identifier(MOD_ID, "flowing_liquid_xp"), LiquidXpFluid.Flowing())
@@ -42,15 +44,9 @@ private fun register(identifier: Identifier, fluid: ModdedFluid): ModdedFluid {
     return fluid
 }
 
-fun getFluidBucket(fluid: Fluid): Item {
-    val fluidIdentifier = Registry.FLUID.getId(fluid)
-    return Registry.ITEM.get(Identifier(fluidIdentifier.namespace, "${fluidIdentifier.path.replace("flowing_", "")}_bucket"))
-}
+fun getFluidBucket(fluid: Fluid): Item = fluidBucketMap[fluid]!!
 
-fun getFluidBlock(fluid: Fluid): Block {
-    val fluidIdentifier = Registry.FLUID.getId(fluid)
-    return Registry.BLOCK.get(Identifier(fluidIdentifier.namespace, fluidIdentifier.path.replace("flowing_", "")))
-}
+fun getFluidBlock(fluid: Fluid): Block = fluidBlockMap[fluid]!!
 
 fun initFluids() {
     fluidRegistry.forEach{
@@ -59,10 +55,12 @@ fun initFluids() {
         if(!identifierStill.path.startsWith("flowing_")) {
             val registeredFluid = Registry.register(Registry.FLUID, identifierStill, fluidStill)
             val identifierFlowing = Identifier(MOD_ID, "flowing_" + identifierStill.path)
-            val fluidFlowing = fluidRegistry[identifierFlowing]
+            val fluidFlowing = fluidRegistry[identifierFlowing]!!
             Registry.register(Registry.FLUID, identifierFlowing, fluidFlowing)
-            Registry.register(Registry.ITEM, Identifier(it.key.namespace, "${identifierStill.path}_bucket"), BucketItem(fluidStill, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
-            Registry.register(Registry.BLOCK, it.key, object : FluidBlock(registeredFluid as FlowableFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
+            fluidBucketMap[fluidStill] = Registry.register(Registry.ITEM, Identifier(it.key.namespace, "${identifierStill.path}_bucket"), BucketItem(fluidStill, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
+            fluidBucketMap[fluidFlowing] = fluidBucketMap[fluidStill]!!
+            fluidBlockMap[fluidStill] = Registry.register(Registry.BLOCK, it.key, object : FluidBlock(registeredFluid as FlowableFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
+            fluidBlockMap[fluidFlowing] = fluidBlockMap[fluidStill]!!
         }
     }
 }
