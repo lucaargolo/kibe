@@ -1,37 +1,46 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FluidAttributes
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import io.github.lucaargolo.kibe.utils.minus
-import io.github.lucaargolo.kibe.utils.plus
+import io.github.lucaargolo.kibe.utils.readTank
+import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
 import net.minecraft.block.HopperBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(block), pos, state) {
 
-    val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(1))
-    private var volume
-        get() = fluidInv.getInvFluid(0)
-        set(value) {
-            fluidInv.setInvFluid(0, value, Simulation.ACTION)
-        }
+    var extractableBump = 1L
+    var insertableBump = 1L
+
+    val tank = object: SingleVariantStorage<FluidVariant>() {
+        override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+        override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET
+    }
 
     override fun writeNbt(tag: NbtCompound): NbtCompound {
         super.writeNbt(tag)
-        fluidInv.toTag(tag)
+        writeTank(tag, tank)
+        tag.putByte("extractableBump", extractableBump.toByte())
+        tag.putByte("insertableBump", insertableBump.toByte())
         return tag
     }
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
-        fluidInv.fromTag(tag)
+        readTank(tag, tank)
+        extractableBump = tag.getByte("extractableBump").toLong()
+        insertableBump = tag.getByte("insertableBump").toLong()
     }
 
     companion object {
@@ -39,23 +48,37 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
             if(!state[HopperBlock.ENABLED]) return
             val direction = state[HopperBlock.FACING]
 
-            val extractable = FluidAttributes.EXTRACTABLE.get(world, pos.up())
-            val insertable = FluidAttributes.INSERTABLE.get(world, pos.add(direction.vector))
-
-            if(entity.volume.isEmpty) {
-                entity.volume = extractable.attemptAnyExtraction(FluidAmount.of(50, 1000), Simulation.ACTION)
-            }else {
-                if(entity.volume.amount() <= FluidAmount.of(950, 1000)) {
-                    val extracted = extractable.attemptExtraction({it == entity.volume.fluidKey}, FluidAmount.of(50, 1000), Simulation.ACTION)
-                    entity.volume = entity.volume.withAmount(entity.volume.amount()+extracted.amount())
+            FluidStorage.SIDED.find(world, pos.up(), Direction.DOWN)?.let { extractable ->
+                val moved = if(entity.tank.isResourceBlank) {
+                    StorageUtil.move(extractable, entity.tank, { true }, (50*entity.extractableBump)*81, null)
+                }else {
+                    if(entity.tank.amount <= 950*81) {
+                        StorageUtil.move(extractable, entity.tank, { it == entity.tank.variant }, (50*entity.extractableBump)*81, null)
+                    }else{
+                        0
+                    }
+                }
+                if(moved == 0L && entity.extractableBump < 20) {
+                    entity.extractableBump++
+                }else{
+                    entity.extractableBump = 1L
                 }
             }
 
-            if(!entity.volume.isEmpty && entity.volume.amount() >= FluidAmount.of(50, 1000)) {
-                val notInserted = insertable.attemptInsertion(entity.volume.fluidKey.withAmount(FluidAmount.of(50, 1000)), Simulation.ACTION)
-                val insertedAmount = FluidAmount.of(50, 1000) - notInserted.amount()
-                entity.volume = entity.volume.withAmount(entity.volume.amount()-insertedAmount)
+            FluidStorage.SIDED.find(world, pos.add(direction.vector), direction.opposite)?.let { insertable ->
+                val moved = if(!entity.tank.isResourceBlank && entity.tank.amount >= 50*81) {
+                   StorageUtil.move(entity.tank, insertable, { true }, (50*entity.insertableBump)*81, null)
+                } else {
+                    0
+                }
+                if(moved == 0L && entity.insertableBump < 20) {
+                    entity.insertableBump++
+                }else{
+                    entity.insertableBump = 1L
+                }
             }
+
+
         }
     }
 }

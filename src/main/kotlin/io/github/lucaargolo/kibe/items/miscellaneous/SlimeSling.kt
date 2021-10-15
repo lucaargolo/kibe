@@ -14,7 +14,11 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
 
-
+/*
+    Code adapted from Tinkers Construct
+    Available at: https://github.com/SlimeKnights/TinkersConstruct/blob/c01173c0408352c50a2e8c5017552323ce42f5b4/src/main/java/slimeknights/tconstruct/gadgets/item/ItemSlimeSling.java
+    Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
+*/
 class SlimeSling(settings: Settings): Item(settings) {
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {

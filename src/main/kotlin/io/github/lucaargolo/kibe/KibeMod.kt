@@ -1,17 +1,13 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "UnstableApiUsage", "DEPRECATION")
 
 package io.github.lucaargolo.kibe
 
-import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
+import io.github.lucaargolo.kibe.blocks.initBlocks
 import io.github.lucaargolo.kibe.compat.initTrinketsCompat
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
@@ -19,6 +15,11 @@ import io.github.lucaargolo.kibe.entities.initEntities
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.items.entangledbucket.EntangledBucket
+import io.github.lucaargolo.kibe.items.miscellaneous.ExperiencePotionEmptyStorage
+import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucket
+import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucketEmptyStorage
+import io.github.lucaargolo.kibe.items.tank.TankBlockItem
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
@@ -35,20 +36,30 @@ import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.launch.common.FabricLauncherBase
+import net.minecraft.client.MinecraftClient
+import net.minecraft.fluid.Fluids
+import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider
-import net.minecraft.loot.provider.number.UniformLootNumberProvider
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
 import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.LootingEnchantLootFunction
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider
+import net.minecraft.loot.provider.number.UniformLootNumberProvider
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.particle.DefaultParticleType
 import net.minecraft.predicate.entity.EntityEffectPredicate
 import net.minecraft.predicate.entity.EntityPredicate
+import net.minecraft.server.MinecraftServer
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.registry.Registry
@@ -172,7 +183,7 @@ fun initExtras() {
     }
     ServerTickEvents.END_SERVER_TICK.register { server ->
         EntangledTankState.SERVER_PLAYER_REQUESTS.forEach { (player, requests) ->
-            val finalMap = mutableMapOf<String, MutableMap<String, FluidVolume>>()
+            val finalMap = mutableMapOf<String, MutableMap<String, Pair<FluidVariant, Long>>>()
             requests.forEach { pair ->
                 val key = pair.first
                 val colorCode = pair.second
@@ -181,7 +192,7 @@ fun initExtras() {
                 val allTimeRequests = EntangledTankState.ALL_TIME_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
                 if(!allTimeRequests.contains(pair) || state.dirtyColors.contains(colorCode)) {
                     allTimeRequests.add(pair)
-                    val fluidVolume = state.getOrCreateInventory(colorCode).getInvFluid(0)
+                    val fluidVolume = state.getOrCreateInventory(colorCode).let { Pair(it.variant, it.amount) }
 
                     val secondMap = finalMap[key] ?: mutableMapOf()
                     secondMap[colorCode] = fluidVolume
@@ -196,7 +207,8 @@ fun initExtras() {
                     passedData.writeInt(secondMap.size)
                     secondMap.forEach { (colorCode, fluidVolume) ->
                         passedData.writeString(colorCode, 32767)
-                        fluidVolume.toMcBuffer(passedData)
+                        fluidVolume.first.toPacket(passedData)
+                        passedData.writeLong(fluidVolume.second)
                     }
                 }
                 ServerPlayNetworking.send(player, SYNCHRONIZE_DIRTY_TANK_STATES, passedData)
@@ -206,8 +218,60 @@ fun initExtras() {
             (state as? EntangledTankState)?.dirtyColors?.clear()
         }
     }
-    FluidContainerRegistry.mapContainer(Items.GLASS_BOTTLE, Items.EXPERIENCE_BOTTLE, LIQUID_XP.key.withAmount(FluidAmount.BOTTLE))
-    FluidContainerRegistry.mapContainer(WOODEN_BUCKET, WATER_WOODEN_BUCKET, FluidKeys.WATER.withAmount(FluidAmount.BUCKET))
+    FluidStorage.combinedItemApiProvider(WOODEN_BUCKET).register(::WoodenBucketEmptyStorage)
+    FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
+        (context.itemVariant.item as? WoodenBucket)?.let { bucketItem ->
+            val bucketFluid = Fluids.WATER
+            if (bucketItem == WATER_WOODEN_BUCKET) {
+                return@register FullItemFluidStorage(context, WOODEN_BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET)
+            }
+        }
+        return@register null
+    }
+    FluidStorage.combinedItemApiProvider(Items.GLASS_BOTTLE).register(::ExperiencePotionEmptyStorage)
+    FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
+        (context.itemVariant.item as? ExperienceBottleItem)?.let { bottleItem ->
+            val bottleFluid = LIQUID_XP
+            if (bottleItem == Items.EXPERIENCE_BOTTLE) {
+                return@register FullItemFluidStorage(context, Items.GLASS_BOTTLE, FluidVariant.of(bottleFluid), FluidConstants.BOTTLE)
+            }
+        }
+        return@register null
+    }
+    FluidStorage.ITEM.registerForItems( {stack, context -> TankBlockItem.getFluidStorage(stack, context) }, TANK)
+    FluidStorage.ITEM.registerForItems( {stack, _ ->
+        var tag = EntangledBucket.getTag(stack)
+        if(tag.contains("BlockEntityTag")) {
+            tag = tag.getCompound("BlockEntityTag")
+        }
+        var colorCode = ""
+        (1..8).forEach {
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            colorCode += dc.id.let { int -> Integer.toHexString(int) }
+        }
+        tag.putString("colorCode", colorCode)
+
+        FabricLoader.getInstance().gameInstance.let {
+            if(CLIENT && it is MinecraftClient) {
+                if(it.isOnThread) {
+                    EntangledBucket.getFluidInv(null, tag)
+                }else if(it.isIntegratedServerRunning && it.server?.isOnThread == true) {
+                    EntangledBucket.getFluidInv(it.server?.overworld, tag)
+                }else{
+                    null
+                }
+            }else if(it is MinecraftServer) {
+                EntangledBucket.getFluidInv(it.overworld, tag)
+            }else{
+                null
+            }
+        } ?: object: SingleVariantStorage<FluidVariant>() {
+            override fun getCapacity(variant: FluidVariant?) = 0L
+            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+        }
+    }, ENTANGLED_TANK, ENTANGLED_BUCKET)
+
+
 }
 
 fun initLootTables() {

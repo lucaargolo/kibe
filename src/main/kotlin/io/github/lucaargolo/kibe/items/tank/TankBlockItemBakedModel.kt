@@ -1,14 +1,18 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.items.tank
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
+import io.github.lucaargolo.kibe.utils.readTank
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.BakedModel
@@ -18,7 +22,6 @@ import net.minecraft.client.render.model.json.ModelOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.ModelIdentifier
-import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -46,14 +49,17 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         val stackTag = stack.orCreateNbt
         val blockEntityTag = stackTag.getCompound("BlockEntityTag")
 
-        val dummyFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-        dummyFluidInv.fromTag(blockEntityTag.getCompound("fluidInv"))
+        val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
+            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+            override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
+        }
+        readTank(blockEntityTag, dummyFluidTank)
 
         val player = client.player
         val world = player?.world
         val pos = player?.blockPos
 
-        val fluid = dummyFluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+        val fluid = dummyFluidTank.resource.fluid
         val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
         val fluidColor = fluidRenderHandler.getFluidColor(world, pos, fluid.defaultState)
         val fluidSprite = fluidRenderHandler.getFluidSprites(world, pos, fluid.defaultState)[0]
@@ -66,7 +72,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
         val emitter = context.emitter
 
-        val p = dummyFluidInv.getInvFluid(0).amount().asLong(1L)/16f
+        val p = dummyFluidTank.amount/(FluidConstants.BUCKET*16f)
         emitter.draw(Direction.UP, fluidSprite, 0f, 0f, 1f, 1f, (1f-p)+0.001f )
         emitter.draw(Direction.DOWN, fluidSprite, 0f, 0f, 1f, 1f, 0.001f)
         emitter.draw(Direction.NORTH, fluidSprite, 0f, 0f, 1f, p, 0.001f)

@@ -1,7 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import io.github.lucaargolo.kibe.blocks.miscellaneous.BlockGeneratorBlockEntity
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory

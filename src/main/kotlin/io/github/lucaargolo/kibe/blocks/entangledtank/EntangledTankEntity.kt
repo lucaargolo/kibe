@@ -1,37 +1,29 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage", "UNUSED_PARAMETER")
+
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.utils.readTank
+import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
 
     var lastRenderedFluid = 0f
-    var fluidInv = object: SimpleFixedFluidInv(1, FluidAmount.ofWhole(16)) {
-        override fun getInvFluid(tank: Int): FluidVolume {
-            return persistentState?.getOrCreateInventory(colorCode)?.getInvFluid(tank) ?: super.getInvFluid(tank)
-        }
-        override fun setInvFluid(tank: Int, to: FluidVolume?, simulation: Simulation?): Boolean {
-            val bl = persistentState?.getOrCreateInventory(colorCode)?.setInvFluid(tank, to, simulation) ?: super.setInvFluid(tank, to, simulation)
-            markDirty()
-            return bl
-        }
-    }
-
     var runeColors = mutableMapOf<Int, DyeColor>()
     var key = EntangledTank.DEFAULT_KEY
     var owner = ""
@@ -45,10 +37,18 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
 
     var colorCode = "00000000"
 
-    val persistentState: EntangledTankState?
-        get() = (world as? ServerWorld)?.let { serverWorld ->
-            serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledTankState.createFromTag(it, serverWorld, key )}, { EntangledTankState(serverWorld, key) }, key)
+    fun getPersistentState(): EntangledTankState {
+        val serverWorld = world as? ServerWorld
+        if (serverWorld != null) {
+            return serverWorld.server.overworld.persistentStateManager.getOrCreate( {EntangledTankState.createFromTag(it, serverWorld, key )}, { EntangledTankState(serverWorld, key) }, key)
+        } else {
+            return EntangledTankState.getOrCreateClientState(key)
         }
+    }
+
+    fun getTank(): SingleVariantStorage<FluidVariant> {
+        return getPersistentState().getOrCreateInventory(colorCode)
+    }
 
     fun updateColorCode() {
         var code = ""
@@ -65,7 +65,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
     }
 
     override fun markDirty() {
-        persistentState?.markDirty(colorCode)
+        getPersistentState().markDirty(colorCode)
         super.markDirty()
     }
 
@@ -73,13 +73,14 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
     var isBeingCompared = false
 
     fun getComparatorOutput(): Int {
-        val comparatorOutput = fluidInv.let {
-            val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
-            (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
-        }
+        val comparatorOutput = calculateComparatorOutput()
         isBeingCompared = true
         lastComparatorOutput = comparatorOutput
         return comparatorOutput
+    }
+
+    private fun calculateComparatorOutput(): Int {
+        return StorageUtil.calculateComparatorOutput(getPersistentState().getOrCreateInventory(colorCode), null)
     }
 
     override fun readNbt(tag: NbtCompound) {
@@ -101,7 +102,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
-        fluidInv.fromTag(tag)
+        readTank(tag, getTank())
     }
 
     override fun writeNbt(tag: NbtCompound): NbtCompound {
@@ -113,31 +114,25 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         tag.putString("owner", owner)
         tag.putBoolean("isBeingCompared", isBeingCompared)
         tag.putInt("lastComparatorOutput", lastComparatorOutput)
-        if(persistentState != null) {
-            var subTag = NbtCompound()
-            subTag = persistentState!!.writeNbt(subTag)
-            subTag = subTag.getCompound(colorCode)
-            tag.put("tanks", subTag.get("tanks") ?: NbtList())
-        }
-        else fluidInv.toTag(tag)
+        writeTank(tag, getTank())
         return tag
     }
 
     override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
 
     companion object {
+        fun getFluidStorage(be: EntangledTankEntity, dir: Direction): Storage<FluidVariant> {
+            return be.getTank()
+        }
 
         fun tick(world: World, pos: BlockPos, state: BlockState, entity: EntangledTankEntity) {
             if(!world.isClient && entity.isBeingCompared) {
-                val comparatorOutput = entity.fluidInv.let {
-                    val p = it.getInvFluid(0).amount_F.asInt(1000).toFloat()/it.tankCapacity_F.asInt(1000).toFloat()
-                    (p*14).toInt() + if (!it.getInvFluid(0).isEmpty) 1 else 0
-                }
+                val comparatorOutput = entity.calculateComparatorOutput()
                 if(comparatorOutput != entity.lastComparatorOutput) {
                     world.updateComparators(pos, state.block)
                 }
             }
-            val fluid = if(entity.fluidInv.getInvFluid(0).isEmpty) Fluids.EMPTY else entity.fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
+            val fluid = entity.getPersistentState().getOrCreateInventory(entity.colorCode).variant.fluid
             val luminance = fluid.defaultState.blockState.luminance
             if(luminance != state[Properties.LEVEL_15] && MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
                 world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))

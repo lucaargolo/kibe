@@ -70,6 +70,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         @SuppressWarnings("ConstantConditions")
         PlayerEntity player = (PlayerEntity) ((Object) this);
         //Glider logic
+        /*
+            Code adapted from Open Gliders
+            Available at: https://github.com/gr8pefish/OpenGlider/blob/002ec43e3b22e9a6c2cc94c0a5fb3d49bcce7594/src/main/java/gr8pefish/openglider/common/helper/OpenGliderPlayerHelper.java#L29
+            Licensed under the MIT license available at: https://github.com/gr8pefish/OpenGlider/blob/1.12/LICENSE
+         */
         ItemStack cursorStack = player.playerScreenHandler.getCursorStack();
         if(cursorStack.getItem() instanceof Glider && Glider.Companion.isEnabled(cursorStack)) {
             cursorStack.getOrCreateNbt().putBoolean("enabled", false);
@@ -105,7 +110,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         }else{
             GliderHelper.INSTANCE.setPlayerGliding(player, false);
         }
-        //Slime Boots Logic
+        // Slime Boots logic
+        /*
+            Code adapted from Tinkers Construct
+            Available at: https://github.com/SlimeKnights/TinkersConstruct/blob/c01173c0408352c50a2e8c5017552323ce42f5b4/src/main/java/slimeknights/tconstruct/library/SlimeBounceHandler.java#L46
+            Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
+         */
         Iterator<Entity> keyIt;
         if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntities().keySet().iterator();
         else keyIt = SlimeBounceHandler.Companion.getServerBouncingEntities().keySet().iterator();

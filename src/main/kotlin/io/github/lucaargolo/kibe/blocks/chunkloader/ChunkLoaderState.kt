@@ -1,8 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtLong
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
@@ -13,7 +11,6 @@ import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
 
@@ -149,7 +146,7 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
                     }
                 }
             }
-            return state;
+            return state
         }
     }
 

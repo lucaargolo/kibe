@@ -5,10 +5,10 @@ import net.minecraft.entity.attribute.AttributeContainer
 import net.minecraft.entity.attribute.EntityAttributeModifier
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.effect.StatusEffect
-import net.minecraft.entity.effect.StatusEffectType
+import net.minecraft.entity.effect.StatusEffectCategory
 import net.minecraft.entity.player.PlayerEntity
 
-class CursedEffect: StatusEffect(StatusEffectType.HARMFUL, 3484199) {
+class CursedEffect: StatusEffect(StatusEffectCategory.HARMFUL, 3484199) {
 
     init {
         addAttributeModifier(

@@ -1,17 +1,18 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_TANK
 import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import io.github.lucaargolo.kibe.utils.EntangledRendererHelper
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Vec3f
 import net.minecraft.fluid.Fluids
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
@@ -21,6 +22,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3f
 import java.awt.Color
 
 class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledTankEntity> {
@@ -47,10 +49,10 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
-        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
 
         val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
-        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntityCutout(texture) })
+        val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
@@ -80,19 +82,17 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         matrices.pop()
 
         EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(entity.key, entity.colorCode))
-        val fluidInv = EntangledTankState.CLIENT_STATES[entity.key]?.fluidInvMap?.get(entity.colorCode)
-        val fluid = fluidInv?.getInvFluid(0)?.rawFluid ?: Fluids.EMPTY
-
-        val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
-        val fluidColor = fluidRenderHandler.getFluidColor(entity.world, entity.pos, fluid.defaultState)
-        val sprite = fluidRenderHandler.getFluidSprites(entity.world, entity.pos, fluid.defaultState)[0]
+        val tank = EntangledTankState.CLIENT_STATES[entity.key]?.fluidInvMap?.get(entity.colorCode) ?: return
+        val fluid = tank.variant
+        val fluidColor = FluidVariantRendering.getColor(fluid, entity.world, entity.pos)
+        val sprite = FluidVariantRendering.getSprite(fluid) ?: return
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
 
         val renderLayer = if(fluid != Fluids.EMPTY) {
             if(MinecraftClient.isFabulousGraphicsOrBetter()) {
                 RenderLayer.getSolid()
             }else{
-                RenderLayers.getFluidLayer(fluid.defaultState)
+                RenderLayers.getFluidLayer(fluid.fluid.defaultState)
             }
         } else {
             RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
@@ -102,7 +102,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
-        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, (fluidInv?.getInvFluid(0)?.amount()?.asLong(1000L) ?: 0L)/1000f)
+        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, tank.amount / 81000f)
         entity.lastRenderedFluid = p
 
         val partUv = TankBlockEntityRenderer.UV(sprite)

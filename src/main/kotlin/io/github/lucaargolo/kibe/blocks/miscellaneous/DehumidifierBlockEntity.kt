@@ -2,9 +2,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.minecraft.block.BlockState
-
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.world.ClientWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos

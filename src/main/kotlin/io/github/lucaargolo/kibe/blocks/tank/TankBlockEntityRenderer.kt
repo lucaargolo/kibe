@@ -1,6 +1,8 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.tank
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderLayers
@@ -10,11 +12,11 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Vec3f
 import net.minecraft.fluid.Fluids
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3f
 import java.awt.Color
 
 class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<TankBlockEntity> {
@@ -25,19 +27,16 @@ class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Contex
 
     override fun render(entity: TankBlockEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
-        val fluidInv = entity.fluidInv
-        val fluid = fluidInv.getInvFluid(0).rawFluid ?: Fluids.EMPTY
-
-        val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
-        val fluidColor = fluidRenderHandler.getFluidColor(entity.world, entity.pos, fluid.defaultState)
-        val sprite = fluidRenderHandler.getFluidSprites(entity.world, entity.pos, fluid.defaultState)[0]
+        val fluid = entity.tank.variant
+        val fluidColor = FluidVariantRendering.getColor(fluid, entity.world, entity.pos)
+        val sprite = FluidVariantRendering.getSprite(fluid) ?: return
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255))
 
         val renderLayer = if(fluid != Fluids.EMPTY) {
             if(MinecraftClient.isFabulousGraphicsOrBetter()) {
                 RenderLayer.getSolid()
             }else{
-                RenderLayers.getFluidLayer(fluid.defaultState)
+                RenderLayers.getFluidLayer(fluid.fluid.defaultState)
             }
         } else {
             RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
@@ -47,7 +46,7 @@ class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Contex
         val entry = matrices.peek()
         val normal = Direction.NORTH.unitVector
 
-        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, fluidInv.getInvFluid(0).amount().asLong(1000L)/1000f)
+        var p = MathHelper.lerp(tickDelta, entity.lastRenderedFluid, entity.tank.amount / 81000f)
         entity.lastRenderedFluid = p
 
         val partUv = UV(sprite)

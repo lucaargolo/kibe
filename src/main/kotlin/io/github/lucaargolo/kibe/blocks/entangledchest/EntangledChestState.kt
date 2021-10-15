@@ -1,6 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package io.github.lucaargolo.kibe.blocks.entangledchest
 
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
+import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.collection.DefaultedList
@@ -9,6 +16,7 @@ import net.minecraft.world.PersistentState
 class EntangledChestState : PersistentState() {
 
     private var inventoryMap = mutableMapOf<String, DefaultedList<ItemStack>>()
+    private var storageMap = mutableMapOf<String, Storage<ItemVariant>>()
 
     private fun createInventory(colorCode: String) {
         inventoryMap[colorCode] = DefaultedList.ofSize(27, ItemStack.EMPTY)
@@ -16,6 +24,30 @@ class EntangledChestState : PersistentState() {
 
     private fun hasInventory(colorCode: String): Boolean {
         return inventoryMap[colorCode] != null
+    }
+
+    fun getStorage(colorCode: String): Storage<ItemVariant> {
+        val existing = storageMap[colorCode]
+        if (existing != null) return existing
+        if(!hasInventory(colorCode)) return Storage.empty()
+
+        return InventoryStorage.of(
+            object: Inventory {
+                override fun clear() = clear(colorCode)
+                override fun size(): Int = size(colorCode)
+                override fun isEmpty(): Boolean = isEmpty(colorCode)
+                override fun getStack(slot: Int): ItemStack = getStack(slot, colorCode)
+                override fun removeStack(slot: Int, amount: Int): ItemStack = removeStack(slot, amount, colorCode)
+                override fun removeStack(slot: Int): ItemStack = removeStack(slot, colorCode)
+                override fun setStack(slot: Int, stack: ItemStack?) = setStack(slot, stack, colorCode)
+                override fun canPlayerUse(player: PlayerEntity?): Boolean = true
+
+                override fun markDirty() {
+                    this@EntangledChestState.markDirty()
+                }
+            },
+            null
+        )
     }
 
     override fun writeNbt(tag: NbtCompound): NbtCompound {

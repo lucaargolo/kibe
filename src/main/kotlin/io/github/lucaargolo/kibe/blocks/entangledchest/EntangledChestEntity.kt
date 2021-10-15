@@ -176,6 +176,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
     }
 
     companion object {
+
         fun tick(world: World, pos: BlockPos, state: BlockState, entity: EntangledChestEntity) {
             if(!world.isClient && entity.isBeingCompared) {
                 val comparatorOutput = ScreenHandler.calculateComparatorOutput(entity as Inventory)

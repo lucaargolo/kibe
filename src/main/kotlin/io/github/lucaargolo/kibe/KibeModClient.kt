@@ -2,8 +2,6 @@
 
 package io.github.lucaargolo.kibe
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
@@ -32,6 +30,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.minecraft.client.particle.FlameParticle
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
@@ -57,16 +56,19 @@ fun initPacketsClient() {
         repeat(tot) {
             val key = buf.readString()
             val qnt = buf.readInt()
-            val map = mutableMapOf<String, FluidVolume>()
+            val map = mutableMapOf<String, Pair<FluidVariant, Long>>()
             repeat(qnt) {
                 val colorCode = buf.readString()
-                val fluidVolume = FluidVolume.fromMcBuffer(buf)
+                val fluidVolume = Pair(FluidVariant.fromPacket(buf), buf.readLong())
                 map[colorCode] = fluidVolume
             }
             client.execute {
                 val state = EntangledTankState.getOrCreateClientState(key)
                 map.forEach { (colorCode, fluidVolume) ->
-                    state.getOrCreateInventory(colorCode).setInvFluid(0, fluidVolume, Simulation.ACTION)
+                    state.getOrCreateInventory(colorCode).let {
+                        it.variant = fluidVolume.first
+                        it.amount = fluidVolume.second
+                    }
                 }
             }
         }

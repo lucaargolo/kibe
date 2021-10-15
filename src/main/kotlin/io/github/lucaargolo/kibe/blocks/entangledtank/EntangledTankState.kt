@@ -1,7 +1,12 @@
+@file:Suppress("DEPRECATION", "UnstableApiUsage")
+
 package io.github.lucaargolo.kibe.blocks.entangledtank
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
-import alexiil.mc.lib.attributes.fluid.impl.SimpleFixedFluidInv
+import io.github.lucaargolo.kibe.utils.readTank
+import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
@@ -10,16 +15,10 @@ import net.minecraft.world.PersistentState
 class EntangledTankState(val world: ServerWorld?, val key: String): PersistentState() {
 
     var dirtyColors = mutableListOf<String>()
-    var fluidInvMap = mutableMapOf<String, SimpleFixedFluidInv>()
+    var fluidInvMap = mutableMapOf<String, SingleVariantStorage<FluidVariant>>()
 
     init {
         SERVER_STATES[key] = this
-    }
-
-    private fun createInventory(colorCode: String): SimpleFixedFluidInv {
-        val fluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-        fluidInvMap[colorCode] = fluidInv
-        return fluidInv
     }
 
     fun markDirty(colorCode: String) {
@@ -27,13 +26,22 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
         super.markDirty()
     }
 
-    fun getOrCreateInventory(colorCode: String): SimpleFixedFluidInv {
-        return fluidInvMap[colorCode] ?: createInventory(colorCode)
+    fun getOrCreateInventory(colorCode: String): SingleVariantStorage<FluidVariant> {
+        return fluidInvMap.computeIfAbsent(colorCode) {
+            object : SingleVariantStorage<FluidVariant>() {
+                override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+                override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
+
+                override fun onFinalCommit() {
+                    markDirty(colorCode)
+                }
+            }
+        }
     }
 
     override fun writeNbt(tag: NbtCompound): NbtCompound {
-        fluidInvMap.forEach { (colorCode, fluidInv) ->
-            tag.put(colorCode, fluidInv.toTag())
+        fluidInvMap.forEach { (colorCode, tank) ->
+            tag.put(colorCode, writeTank(NbtCompound(), tank))
         }
         return tag
     }
@@ -62,9 +70,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
         fun createFromTag(tag: NbtCompound, world: ServerWorld, key: String): EntangledTankState {
             val state = EntangledTankState(world, key)
             tag.keys.forEach {
-                val tempFluidInv = SimpleFixedFluidInv(1, FluidAmount.ofWhole(16))
-                tempFluidInv.fromTag(tag.getCompound(it))
-                state.fluidInvMap[it] = tempFluidInv
+                readTank(tag.getCompound(it), state.getOrCreateInventory(it))
             }
             return state
         }

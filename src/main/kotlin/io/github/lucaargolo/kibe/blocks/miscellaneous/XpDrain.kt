@@ -1,17 +1,17 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import alexiil.mc.lib.attributes.Simulation
-import alexiil.mc.lib.attributes.fluid.FluidAttributes
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
-import io.github.lucaargolo.kibe.utils.minus
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.block.*
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ExperienceOrbEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
@@ -22,7 +22,7 @@ class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY)
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
         if(!world.isClient && entity is PlayerEntity) {
-            val insertable = FluidAttributes.INSERTABLE.get(world, pos.down())
+            val insertable = FluidStorage.SIDED.find(world, pos.down(), Direction.UP)
 
             var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
             i = MathHelper.fastFloor(i*MOD_CONFIG.miscellaneousModule.xpDrainSpeedMultiplier)
@@ -31,10 +31,14 @@ class XpDrain: Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY)
                 val j = ExperienceOrbEntity.roundToOrbSize(i)
                 i -= j
                 if(getTotalExperience(entity) > j) {
-                    val toInsertAmount = FluidAmount.of(j * 10L, 1000L)
-                    val insertedVolume = insertable.attemptInsertion(LIQUID_XP.key.withAmount(toInsertAmount), Simulation.ACTION)
-                    val insertedAmount = (toInsertAmount - insertedVolume.amount()).asInt(1000)/10
-                    if(insertedAmount > 0) entity.addExperience(-insertedAmount)
+                    val toInsertAmount = j * 810L
+                    var insertedAmount = -1L;
+                    Transaction.openOuter().also {
+                        insertable?.insert(FluidVariant.of(LIQUID_XP), toInsertAmount, it)?.let { insertedAmount = it }
+                    }.commit()
+                    if(insertedAmount > 0) {
+                        entity.addExperience(-insertedAmount.toInt()/810)
+                    }
                 }
             }
         }

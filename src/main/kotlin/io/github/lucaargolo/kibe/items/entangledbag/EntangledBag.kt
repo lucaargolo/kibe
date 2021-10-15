@@ -9,7 +9,10 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.*
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
+import net.minecraft.text.TextColor
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.*
 import net.minecraft.world.World
 
