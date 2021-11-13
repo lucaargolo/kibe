@@ -34,8 +34,8 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
         return TankBlockEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> TankBlockEntity.tick(wrld, pos, state, blockEntity as TankBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return if(!world.isClient) checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> TankBlockEntity.tick(wrld, pos, state, blockEntity as TankBlockEntity) } else null
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL

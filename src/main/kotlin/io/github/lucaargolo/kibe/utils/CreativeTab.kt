@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import java.util.function.Consumer
 
 var CREATIVE_TAB: ItemGroup? = null
 
@@ -29,7 +30,7 @@ fun initCreativeTab() {
     CREATIVE_TAB = FabricItemGroupBuilder
         .create(Identifier(MOD_ID, "creative_tab"))
         .icon { ItemStack(KIBE) }
-        .appendItems { it.addAll(appendItems()) }
+        .appendItems(Consumer { it.addAll(appendItems()) })
         .build()
 }
 

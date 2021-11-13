@@ -67,9 +67,19 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
                 }
 
                 private fun updateItem(transaction: TransactionContext) {
-                    stack.orCreateNbt.put("BlockEntityTag", writeTank(NbtCompound(), this))
+                    var newStack: ItemStack? = null
+                    if(context.amount > 1) {
+                        newStack = stack.copy()
+                        newStack.orCreateNbt.put("BlockEntityTag", writeTank(NbtCompound(), this))
+                    }else{
+                        stack.orCreateNbt.put("BlockEntityTag", writeTank(NbtCompound(), this))
+                    }
                     Transaction.openNested(transaction).also {
                         context.exchange(ItemVariant.of(stack), Long.MAX_VALUE, it)
+                        newStack?.let { newStack ->
+                            context.extract(ItemVariant.of(stack), 1, it)
+                            context.insert(ItemVariant.of(newStack), 1, it)
+                        }
                     }.commit()
                 }
             }

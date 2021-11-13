@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.compat
 
+import dev.emi.trinkets.api.SlotReference
 import dev.emi.trinkets.api.Trinket
 import io.github.ladysnake.pal.PlayerAbility
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing
@@ -13,7 +14,7 @@ fun initTrinketsCompat() {
 
 class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(settings, ability), Trinket {
 
-    override fun canEquip(stack: ItemStack, slot: Trinket.SlotReference, entity: LivingEntity): Boolean {
+    override fun canEquip(stack: ItemStack, slot: SlotReference, entity: LivingEntity): Boolean {
         return true
     }
 
@@ -21,7 +22,7 @@ class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(setti
 //        return group == SlotGroups.HAND && slot == Slots.RING
 //    }
 
-    override fun tick(stack: ItemStack, slot: Trinket.SlotReference, entity: LivingEntity) {
+    override fun tick(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
         (entity as? PlayerEntityMixed)?.let {
             try { it.kibe_activeRingsList.removeAll { pair -> pair.second != entity.world.time } } catch (e: Exception) { }
             it.kibe_activeRingsList.add(Pair(stack, entity.world.time))
@@ -35,7 +36,7 @@ class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(setti
 //        }
 //    }
 
-    override fun onEquip(stack: ItemStack, slot: Trinket.SlotReference, entity: LivingEntity) {
+    override fun onEquip(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
         if(stack.nbt?.getBoolean("enabled") != true)
             stack.orCreateNbt.putBoolean("enabled", true)
     }
@@ -45,7 +46,7 @@ class TrinketRing(settings: Settings, ability: PlayerAbility): AbilityRing(setti
 //            stack.orCreateTag.putBoolean("enabled", true)
 //    }
 
-    override fun onUnequip(stack: ItemStack, slot: Trinket.SlotReference, entity: LivingEntity) {
+    override fun onUnequip(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
         if(stack.nbt?.getBoolean("enabled") == true)
             stack.orCreateNbt.putBoolean("enabled", false)
     }

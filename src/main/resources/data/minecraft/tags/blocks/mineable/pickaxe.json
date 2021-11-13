@@ -8,6 +8,7 @@
     "kibe:wither_builder",
     "kibe:placer",
     "kibe:breaker",
+    "kibe:drawbridge",
     "kibe:igniter",
     "kibe:redstone_timer",
     "kibe:trash_can",

@@ -24,8 +24,8 @@ class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.
         return XpShowerBlockEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> XpShowerBlockEntity.tick(wrld, pos, state, blockEntity as XpShowerBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return if(!world.isClient) checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> XpShowerBlockEntity.tick(wrld, pos, state, blockEntity as XpShowerBlockEntity) } else null
     }
 
     init {

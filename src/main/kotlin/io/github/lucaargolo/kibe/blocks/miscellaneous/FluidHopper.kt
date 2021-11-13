@@ -31,8 +31,8 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.S
         return FluidHopperBlockEntity(this, blockPos, blockState)
     }
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> FluidHopperBlockEntity.tick(wrld, pos, state, blockEntity as FluidHopperBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return if(!world.isClient) checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> FluidHopperBlockEntity.tick(wrld, pos, state, blockEntity as FluidHopperBlockEntity) } else null
     }
 
     override fun hasComparatorOutput(state: BlockState?) = true
