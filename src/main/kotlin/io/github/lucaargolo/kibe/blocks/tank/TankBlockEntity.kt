@@ -1,9 +1,9 @@
 package io.github.lucaargolo.kibe.blocks.tank
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
@@ -19,7 +19,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
 @Suppress("UnstableApiUsage", "DEPRECATION")
-class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(tank), pos, state), BlockEntityClientSerializable {
+class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(tank), pos, state) {
 
     var lastRenderedFluid = 0f
     var tickDelay = 0
@@ -47,9 +47,8 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
         broken = true
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
-        writeTank(tag, tank)
-        return if(broken) tag else super.writeNbt(tag)
+    override fun writeNbt(tag: NbtCompound) {
+        if(!broken) writeTank(tag, tank)
     }
 
 
@@ -58,9 +57,9 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): BlockEntity
         readTank(tag, tank)
     }
 
-    override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
+    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
 
-    override fun fromClientTag(tag: NbtCompound) = readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound) = readNbt(tag)
 
     companion object {
         fun getFluidStorage(be: TankBlockEntity, dir: Direction): Storage<FluidVariant> {

@@ -106,8 +106,8 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
             matrices.translate(-0.5, -0.5, -0.5)
             val entry = matrices.peek()
-            val model = entry.model
-            val normal = entry.normal
+            val model = entry.positionMatrix
+            val normal = entry.normalMatrix
             val sprite = timerTexture.sprite
             val p = (sprite.maxU - sprite.minU)/16f
 

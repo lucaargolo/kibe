@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
 
-class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(block), pos, state), BlockEntityClientSerializable {
+class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(block), pos, state) {
 
     var ownerUUID = ""
 
@@ -36,7 +36,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
         Pair(-1, 1), Pair(0, 1), Pair(1, 1)
     )
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         tag.putString("ownerUUID", ownerUUID)
         tag.putLong("ownerLastSeen", ownerLastSeen)
         tag.putString("disabledReason", disabledReason.name)
@@ -48,7 +48,6 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
             list.add(innerTag)
         }
         tag.put("enabledChunks", list)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {
@@ -66,11 +65,11 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
         }
     }
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
-        return writeNbt(tag)
+    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
+        return tag.also { writeNbt(it) }
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound) {
         readNbt(tag)
     }
 

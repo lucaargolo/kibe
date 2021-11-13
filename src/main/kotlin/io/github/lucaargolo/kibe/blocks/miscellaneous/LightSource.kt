@@ -42,7 +42,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ti
     @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: WorldAccess, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
         if (state.get(HorizontalConnectingBlock.WATERLOGGED) as Boolean) {
-            world.fluidTickScheduler.schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
+            world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
         }
         return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom)
     }

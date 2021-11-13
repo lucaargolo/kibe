@@ -15,9 +15,8 @@ class BreakerBlockEntity(breaker: Breaker, pos: BlockPos, state: BlockState): Bl
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
-    override fun writeNbt(nbt: NbtCompound): NbtCompound {
+    override fun writeNbt(nbt: NbtCompound) {
         Inventories.writeNbt(nbt, inventory)
-        return super.writeNbt(nbt)
     }
 
     override fun readNbt(tag: NbtCompound) {

@@ -39,7 +39,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
         this.renderBackground(matrices)
         super.render(matrices, mouseX, mouseY, delta)
         val p = ((handler.processingTicks/handler.totalProcessingTicks.toFloat())*14).toInt()
-        client?.textureManager?.bindTexture(texture)
+        RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, startX+120, startY+37, 184, 0, 8, p)
         drawMouseoverTooltip(matrices, mouseX, mouseY)
         if(mouseX in (startX+100..startX+112) && mouseY in (startY+18..startY+70)) {
@@ -72,7 +72,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
             val b = (fluidColor and 255)/255f
             val tess = Tessellator.getInstance()
             val bb = tess.buffer
-            val matrix = matrices.peek().model
+            val matrix = matrices.peek().positionMatrix
 
             var percentage = (tank.amount/tank.capacity.toFloat())*52f
 

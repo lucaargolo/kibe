@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -18,20 +18,19 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 
-class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block, var rate: Float, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(generator), pos, state), BlockEntityClientSerializable, SidedInventory {
+class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block, var rate: Float, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(generator), pos, state), SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var lastRenderProgress: Float = 0f
     var renderProgress: Float = 0f
     var progress: Float = 0f
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         Inventories.writeNbt(tag, inventory)
         tag.putString("generator", Registry.BLOCK.getId(generator).toString())
         tag.putString("block", Registry.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         tag.putFloat("progress", progress)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {
@@ -43,13 +42,13 @@ class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block,
         progress = tag.getFloat("progress")
     }
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
+    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
         tag.putString("block", Registry.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         return tag
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound) {
         block = Registry.BLOCK.get(Identifier(tag.getString("block")))
         rate = tag.getFloat("rate")
     }

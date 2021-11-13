@@ -131,7 +131,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
 
-        var m = matrices.peek().model
+        var m = matrices.peek().positionMatrix
         renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
 
         matrices.translate(0.5, 0.0, 0.5)
@@ -181,7 +181,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
 
         topModel.render(matrices, chestConsumer, lightAbove, overlay)
 
-        m = matrices.peek().model
+        m = matrices.peek().positionMatrix
         renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
 
         contextMap[entity.pos]!!.isScreenOpen = isScreenOpen

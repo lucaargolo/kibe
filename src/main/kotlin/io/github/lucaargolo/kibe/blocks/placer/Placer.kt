@@ -42,7 +42,7 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         val isReceivingPower = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up())
         val triggered = state[DispenserBlock.TRIGGERED]
         if (isReceivingPower && !triggered) {
-            world.blockTickScheduler.schedule(pos, this, 4)
+            world.createAndScheduleBlockTick(pos, this, 4)
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, true) as BlockState, 4)
         } else if (!isReceivingPower && triggered) {
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, false) as BlockState, 4)

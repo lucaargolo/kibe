@@ -4,9 +4,9 @@ package io.github.lucaargolo.kibe.blocks.entangledtank
 
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
-class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
+class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(chest), pos, state) {
 
     var lastRenderedFluid = 0f
     var runeColors = mutableMapOf<Int, DyeColor>()
@@ -95,7 +95,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -105,7 +105,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         readTank(tag, getTank())
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         super.writeNbt(tag)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
@@ -115,10 +115,9 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
         tag.putBoolean("isBeingCompared", isBeingCompared)
         tag.putInt("lastComparatorOutput", lastComparatorOutput)
         writeTank(tag, getTank())
-        return tag
     }
 
-    override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
+    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
 
     companion object {
         fun getFluidStorage(be: EntangledTankEntity, dir: Direction): Storage<FluidVariant> {

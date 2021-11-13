@@ -104,7 +104,7 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
         val r = (color shr 16 and 255)/255f
         val g = (color shr 8 and 255)/255f
         val b = (color and 255)/255f
-        val matrix = matrices.peek().model
+        val matrix = matrices.peek().positionMatrix
         val bufferBuilder = Tessellator.getInstance().buffer
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE)
         bufferBuilder.vertex(matrix, x0, y1, z).color(r, g, b, 1.0f).texture(u0, v1).next()

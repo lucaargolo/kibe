@@ -19,9 +19,8 @@ class WitherBuilderBlockEntity(placer: WitherBuilder, pos: BlockPos, state: Bloc
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(7, ItemStack.EMPTY)
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         Inventories.writeNbt(tag, inventory)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {

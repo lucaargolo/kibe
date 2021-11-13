@@ -41,7 +41,7 @@ class TorchSling(settings: Settings): Item(settings) {
             if (!world.isClient) {
                 val thrownTorchEntity = ThrownTorchEntity(world, entity)
                 thrownTorchEntity.setItem(ItemStack(it.item))
-                thrownTorchEntity.setProperties(entity, entity.pitch, entity.yaw, 0f, tickStrength, 0f)
+                thrownTorchEntity.setVelocity(entity, entity.pitch, entity.yaw, 0f, tickStrength, 0f)
                 world.spawnEntity(thrownTorchEntity)
                 if(!player.abilities.creativeMode) it.decrement(1)
             }

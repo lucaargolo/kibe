@@ -5,9 +5,9 @@ import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.mixin.ExperienceOrbEntityAccessor
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
@@ -35,7 +35,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
 @Suppress("UnstableApiUsage", "DEPRECATION")
-class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(vacuumHopper), pos, state), BlockEntityClientSerializable, SidedInventory {
+class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(vacuumHopper), pos, state), SidedInventory {
 
     private var processingRecipe: Identifier? = null
     private var processingTicks = 0
@@ -86,13 +86,12 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
         if(world?.isClient == false) sync()
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         writeTank(tag, tank)
         Inventories.writeNbt(tag, inventory)
-        return super.writeNbt(tag)
     }
 
-    override fun toClientTag(tag: NbtCompound) = writeNbt(tag)
+    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
@@ -100,7 +99,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
         Inventories.readNbt(tag, inventory)
     }
 
-    override fun fromClientTag(tag: NbtCompound) = readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound) = readNbt(tag)
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack

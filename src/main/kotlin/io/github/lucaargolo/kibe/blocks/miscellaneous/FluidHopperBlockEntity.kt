@@ -28,12 +28,11 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
         override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         super.writeNbt(tag)
         writeTank(tag, tank)
         tag.putByte("extractableBump", extractableBump.toByte())
         tag.putByte("insertableBump", insertableBump.toByte())
-        return tag
     }
 
     override fun readNbt(tag: NbtCompound) {

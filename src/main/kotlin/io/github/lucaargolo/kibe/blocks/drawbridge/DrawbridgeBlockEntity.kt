@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.blocks.drawbridge
 
 import io.github.lucaargolo.kibe.blocks.DRAWBRIDGE
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.AirBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -27,7 +27,7 @@ import net.minecraft.util.math.Vec3i
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 
-class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(drawbridge), pos, state), BlockEntityClientSerializable, SidedInventory {
+class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(drawbridge), pos, state), SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(2, ItemStack.EMPTY)
 
@@ -44,7 +44,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         EXTENDED
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registry.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
@@ -57,7 +57,6 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
             nbtList.add(nbtCompound)
         }
         tag.put("Items", nbtList)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {
@@ -72,11 +71,11 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         Inventories.readNbt(tag, inventory)
     }
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
-        return writeNbt(tag)
+    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
+        return tag.also { writeNbt(it) }
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound) {
         readNbt(tag)
         MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }

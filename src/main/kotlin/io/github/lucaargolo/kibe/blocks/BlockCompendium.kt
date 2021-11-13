@@ -57,6 +57,7 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
+import net.minecraft.entity.EntityType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.screen.ScreenHandler
@@ -140,7 +141,7 @@ class BlockInfo<T: BlockEntity> (
 val blockRegistry = linkedMapOf<Block, BlockInfo<*>>()
 
 fun getBlockId(block: Block) = blockRegistry[block]?.identifier
-fun getEntityType(block: Block) = blockRegistry[block]?.entity
+fun getEntityType(block: Block) = blockRegistry[block]?.entity as BlockEntityType<BlockEntity>
 fun getContainerInfo(block: Block) = blockRegistry[block]?.containers?.get(0)
 fun getContainerInfo(block: Block, identifier: Identifier): ContainerInfo<*>? {
     blockRegistry[block]?.containers?.forEach {

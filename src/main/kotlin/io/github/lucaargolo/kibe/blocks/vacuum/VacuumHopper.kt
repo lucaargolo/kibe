@@ -52,7 +52,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
         if (!world.isClient) {
             val isEnabled = state[Properties.ENABLED]
             if (isEnabled == world.isReceivingRedstonePower(pos)) {
-                if (isEnabled) world.blockTickScheduler.schedule(pos, this, 4)
+                if (isEnabled) world.createAndScheduleBlockTick(pos, this, 4)
                 else world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
             }
         }

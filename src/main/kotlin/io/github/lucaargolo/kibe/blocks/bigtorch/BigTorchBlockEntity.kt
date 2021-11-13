@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.blocks.bigtorch
 
 import io.github.lucaargolo.kibe.blocks.BIG_TORCH
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -22,7 +22,7 @@ import net.minecraft.world.World
 import kotlin.math.min
 import kotlin.math.sqrt
 
-class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(bigTorch), pos, state), BlockEntityClientSerializable, SidedInventory {
+class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(bigTorch), pos, state), SidedInventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
@@ -52,10 +52,9 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
         updateValues()
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         //tag.putInt("suppressedSpawns", suppressedSpawns)
         Inventories.writeNbt(tag, inventory)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound?) {
@@ -65,11 +64,11 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
         updateValues()
     }
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
-        return writeNbt(tag)
+    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
+        return tag.also { writeNbt(it) }
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound) {
         readNbt(tag)
     }
 

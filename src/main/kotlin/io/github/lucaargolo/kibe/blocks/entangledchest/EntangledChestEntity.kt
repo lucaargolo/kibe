@@ -1,25 +1,21 @@
 package io.github.lucaargolo.kibe.blocks.entangledchest
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
-import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockState): LockableContainerBlockEntity(getEntityType(chest), pos, state), BlockEntityClientSerializable {
+class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(chest), pos, state), Inventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
     var runeColors = mutableMapOf<Int, DyeColor>()
@@ -41,10 +37,6 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
             code += runeColors[it]?.id?.let { int -> Integer.toHexString(int) }
         }
         colorCode = code
-    }
-
-    override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
-        return null
     }
 
     private fun hasPersistentState(): Boolean = hasWorld() && !world!!.isClient
@@ -84,7 +76,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
-    override fun fromClientTag(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
         }
@@ -95,7 +87,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
         Inventories.readNbt(tag, this.inventory)
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         super.writeNbt(tag)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
@@ -113,10 +105,9 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
             }
         }
         else Inventories.writeNbt(tag, this.inventory)
-        return tag
     }
 
-    override fun toClientTag(tag: NbtCompound): NbtCompound {
+    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
@@ -164,8 +155,6 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
     override fun clear() {
         inventory.clear()
     }
-
-    override fun getContainerName(): Text = TranslatableText("screen.kibe.entangled_chest")
 
     override fun canPlayerUse(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {

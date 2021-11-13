@@ -97,6 +97,7 @@ dependencies {
     modCompileOnly ("com.github.emilyalexandra:trinkets:${project["trinkets_version"]}") {
         exclude(group = "io.github.onyxstudios.Cardinal-Components-API", module = "cardinal-components-base")
         exclude(group = "io.github.onyxstudios.Cardinal-Components-API", module = "cardinal-components-entity")
+        exclude(group = "net.fabricmc.fabric-api")
     }
 
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
@@ -104,7 +105,7 @@ dependencies {
 
     modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
+    //modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modRuntime("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 }
 

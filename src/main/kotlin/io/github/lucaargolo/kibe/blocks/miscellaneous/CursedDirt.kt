@@ -85,7 +85,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         }
 
         //I dont really know what this does
-        world.blockTickScheduler.schedule(pos, state.block, random.nextInt(200))
+        world.createAndScheduleBlockTick(pos, state.block, random.nextInt(200))
 
         //Dont spawn mobs in peaceful, in non water liquids or when doMobSpawning is set to false
         if ((world.getFluidState(pos.up()).fluid !is EmptyFluid && world.getFluidState(pos.up()).fluid != Fluids.WATER && world.getFluidState(pos.up()).fluid != Fluids.FLOWING_WATER) || world.difficulty == Difficulty.PEACEFUL || !world.gameRules[GameRules.DO_MOB_SPAWNING].get()) return

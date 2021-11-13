@@ -201,7 +201,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         if(context.player?.isSneaking == true) {
             (context.world.getBlockEntity(context.blockPos) as? EntangledTankEntity)?.let{ blockEntity ->
-                val blockEntityTag = blockEntity.writeNbt(NbtCompound())
+                val blockEntityTag = blockEntity.writeClientNbt(NbtCompound())
                 val newTag = NbtCompound()
                 newTag.putString("key", blockEntityTag.getString("key"))
                 newTag.putString("owner", blockEntityTag.getString("owner"))

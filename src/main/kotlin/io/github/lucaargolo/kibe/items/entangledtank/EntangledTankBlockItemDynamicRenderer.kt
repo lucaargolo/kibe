@@ -57,7 +57,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         writeTank(tag, fluidInv)
 
         val dummyTank = EntangledTankEntity(ENTANGLED_TANK as EntangledTank, MinecraftClient.getInstance().player?.blockPos ?: BlockPos.ORIGIN, ENTANGLED_TANK.defaultState)
-        dummyTank.fromClientTag(tag)
+        dummyTank.readClientNbt(tag)
         dummyTank.lastRenderedFluid = dummyTank.getTank().amount / 81000f
 
         val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))

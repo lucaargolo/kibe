@@ -5,7 +5,7 @@ import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -85,7 +85,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                             player.getStackInHand(hand).decrement(1)
                         }
                         (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
-                        (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
+                        (world.getBlockEntity(pos) as SyncableBlockEntity).sync()
                     }
                     return ActionResult.CONSUME
                 }
@@ -99,7 +99,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                             (world.getBlockEntity(pos) as EntangledChestEntity).owner = player.name.asString()
                             (world.getBlockEntity(pos) as EntangledChestEntity).key = "entangledchest-${player.uuid}"
                             (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
-                            (world.getBlockEntity(pos) as BlockEntityClientSerializable).sync()
+                            (world.getBlockEntity(pos) as SyncableBlockEntity).sync()
                         }
                         player.getStackInHand(hand).decrement(1)
                         return ActionResult.CONSUME

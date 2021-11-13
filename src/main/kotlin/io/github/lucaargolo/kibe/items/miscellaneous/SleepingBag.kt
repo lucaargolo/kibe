@@ -25,7 +25,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         if(!world.isClient) {
             customTrySleep(player).ifLeft { sleepFailureReason ->
                 if (sleepFailureReason != null) {
-                    player.sendMessage(sleepFailureReason.toText(), true)
+                    player.sendMessage(sleepFailureReason.message, true)
                 }
             }
         }

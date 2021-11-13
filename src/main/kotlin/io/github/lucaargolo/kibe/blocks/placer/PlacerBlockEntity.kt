@@ -17,9 +17,8 @@ class PlacerBlockEntity(placer: Placer, pos: BlockPos, state: BlockState): Block
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound) {
         Inventories.writeNbt(tag, inventory)
-        return super.writeNbt(tag)
     }
 
     override fun readNbt(tag: NbtCompound) {

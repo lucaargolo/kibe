@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -58,7 +58,7 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapC
                 }
                 blockEntity.markDirty()
             }
-            (blockEntity as BlockEntityClientSerializable).sync()
+            (blockEntity as SyncableBlockEntity).sync()
         }
         return ActionResult.SUCCESS
     }

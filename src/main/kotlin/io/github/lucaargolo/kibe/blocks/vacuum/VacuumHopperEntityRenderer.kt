@@ -17,7 +17,7 @@ class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Con
     override fun render(blockEntity: VacuumHopperEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         if(blockEntity.cachedState[Properties.ENABLED] == true) {
             matrices.push()
-            val m = matrices.peek().model
+            val m = matrices.peek().positionMatrix
             renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
             matrices.pop()
         }
