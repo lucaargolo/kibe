@@ -45,9 +45,13 @@
     "kibe.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.12.5",
-    "fabric": ">=0.42.2",
-    "fabric-language-kotlin": ">=1.6.0",
-    "minecraft": "1.18.x"
+    "fabricloader": ">=${loader_version}",
+    "fabric": ">=${fabric_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "minecraft": ">=${minecraft_version}"
+  },
+  "suggests": {
+    "modmenu": ">=${modmenu_version}",
+    "trinkets": ">=${trinkets_version}"
   }
 }

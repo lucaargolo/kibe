@@ -116,7 +116,7 @@ tasks.processResources {
 
     from(sourceSets["main"].resources.srcDirs) {
         include("fabric.mod.json")
-        expand(mutableMapOf("version" to project.version))
+        expand(project.properties.plus("version" to version))
     }
 
     from(sourceSets["main"].resources.srcDirs) {
