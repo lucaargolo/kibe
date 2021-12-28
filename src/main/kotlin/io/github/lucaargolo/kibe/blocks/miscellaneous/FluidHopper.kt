@@ -32,7 +32,11 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.S
     }
 
     override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return if(!world.isClient) checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> FluidHopperBlockEntity.tick(wrld, pos, state, blockEntity as FluidHopperBlockEntity) } else null
+        return if (!world.isClient) checkType(
+            blockEntityType,
+            getEntityType(this),
+            FluidHopperBlockEntity::serverTick
+        ) else null
     }
 
     override fun hasComparatorOutput(state: BlockState?) = true
