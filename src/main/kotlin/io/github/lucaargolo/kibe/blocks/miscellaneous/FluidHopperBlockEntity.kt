@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.block.BlockState
+import net.minecraft.block.FluidDrainable
 import net.minecraft.block.HopperBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.NbtCompound
@@ -34,8 +35,8 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
         }
     }
 
-    private var topContainerFinder: BlockApiCache<Storage<FluidVariant>, Direction>? = null
-    private var toContainerFinder: BlockApiCache<Storage<FluidVariant>, Direction>? = null
+    private var extractableFinder: BlockApiCache<Storage<FluidVariant>, Direction>? = null
+    private var insertableFinder: BlockApiCache<Storage<FluidVariant>, Direction>? = null
     private var cachedDirection: Direction? = null
 
     private var extractionBump = CAPACITY
@@ -58,47 +59,62 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
 
     private fun tick(world: ServerWorld, pos: BlockPos, state: BlockState) {
         if (!state[HopperBlock.ENABLED]) return
+        pull(world, pos.up())
+        push(world, pos, state)
+    }
 
-        if (tank.amount < tank.capacity) {
-            if (topContainerFinder == null) {
-                topContainerFinder = BlockApiCache.create(FluidStorage.SIDED, world, pos.up())
-            }
+    private fun pull(world: ServerWorld, pos: BlockPos) {
+        if (tank.amount == tank.capacity) return
 
-            topContainerFinder?.find(Direction.DOWN)?.let { extractable ->
-                Transaction.openOuter().use { transaction ->
-                    val moved = StorageUtil.move(
-                        extractable,
-                        tank,
-                        { true },
-                        extractionBump,
-                        transaction
-                    )
-                    transaction.commit()
-                    extractionBump = min(extractionBump - moved + TRANSFER_RATE, CAPACITY)
-                }
-            }
+        val moved = findExtractable(world, pos)?.let { StorageUtil.move(it, tank, { true }, extractionBump, null) }
+            ?: tryDrain(world, pos, extractionBump)
+
+        extractionBump = min(extractionBump - moved + TRANSFER_RATE, CAPACITY)
+    }
+
+    private fun findExtractable(world: ServerWorld, pos: BlockPos): Storage<FluidVariant>? {
+        if (extractableFinder == null) {
+            extractableFinder = BlockApiCache.create(FluidStorage.SIDED, world, pos)
         }
+        return extractableFinder?.find(Direction.DOWN)
+    }
 
-        if (!tank.isResourceBlank) {
-            val direction = state[HopperBlock.FACING]
-            if (toContainerFinder == null || direction != cachedDirection) {
-                toContainerFinder = BlockApiCache.create(FluidStorage.SIDED, world, pos.offset(direction))
-                cachedDirection = direction
+    private fun tryDrain(world: ServerWorld, pos: BlockPos, amount: Long): Long {
+        if (amount != FluidConstants.BUCKET) return 0
+        val state = world.getBlockState(pos)
+        if (!state.fluidState.isStill) return 0
+        val block = state.block as? FluidDrainable ?: return 0
+        Transaction.openOuter().use { transaction ->
+            val inserted = tank.insert(FluidVariant.of(state.fluidState.fluid), amount, transaction)
+            if (inserted != amount || block.tryDrainFluid(world, pos, state).isEmpty) {
+                transaction.abort()
+                return 0
             }
-
-            toContainerFinder?.find(direction.opposite)?.let { insertable ->
-                Transaction.openOuter().use { transaction ->
-                    val moved = StorageUtil.move(
-                        tank,
-                        insertable,
-                        { true },
-                        insertionBump,
-                        transaction
-                    )
-                    transaction.commit()
-                    insertionBump = min(insertionBump - moved + TRANSFER_RATE, CAPACITY)
-                }
-            }
+            transaction.commit()
+            return inserted
         }
+    }
+
+    private fun push(world: ServerWorld, pos: BlockPos, state: BlockState) {
+        if (tank.isResourceBlank) return
+
+        findInsertable(world, pos, state[HopperBlock.FACING])?.let { insertable ->
+            val moved = StorageUtil.move(
+                tank,
+                insertable,
+                { true },
+                insertionBump,
+                null
+            )
+            insertionBump = min(insertionBump - moved + TRANSFER_RATE, CAPACITY)
+        }
+    }
+
+    private fun findInsertable(world: ServerWorld, pos: BlockPos, direction: Direction): Storage<FluidVariant>? {
+        if (insertableFinder == null || direction != cachedDirection) {
+            insertableFinder = BlockApiCache.create(FluidStorage.SIDED, world, pos.offset(direction))
+            cachedDirection = direction
+        }
+        return insertableFinder?.find(direction.opposite)
     }
 }
