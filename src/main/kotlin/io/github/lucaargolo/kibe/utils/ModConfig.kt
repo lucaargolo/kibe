@@ -16,6 +16,8 @@ class ModConfig {
         var xpDrainSpeedMultiplier = 1.0
         //The xp drain speed multiplier
         var xpShowerSpeedMultiplier = 1.0
+        //The range of the magnet
+        var magnetRange = 8.0
     }
 
     class ChunkLoaderModule {
