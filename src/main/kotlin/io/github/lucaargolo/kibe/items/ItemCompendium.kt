@@ -5,8 +5,6 @@ package io.github.lucaargolo.kibe.items
 import com.mojang.datafixers.util.Pair
 import io.github.ladysnake.pal.VanillaAbilities
 import io.github.lucaargolo.kibe.MOD_ID
-import io.github.lucaargolo.kibe.TRINKET
-import io.github.lucaargolo.kibe.compat.TrinketRing
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreen
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreenHandler
@@ -138,12 +136,12 @@ val DIAMOND_KIBE = register(Identifier(MOD_ID, "diamond_kibe"), Item(settingsWit
 val CURSED_DROPLETS = register(Identifier(MOD_ID, "cursed_droplets"), Item(settingsWithTab()))
 val CURSED_SEEDS    = register(Identifier(MOD_ID, "cursed_seeds"), CursedSeeds(settingsWithTab()))
 
-val MAGNET = register(Identifier(MOD_ID, "magnet"), Magnet(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
+val MAGNET = register(Identifier(MOD_ID, "magnet"), Magnet.create(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val DIAMOND_RING = register(Identifier(MOD_ID, "diamond_ring"),  Item(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val ANGEL_RING   = register(Identifier(MOD_ID, "angel_ring"),  if(TRINKET) TrinketRing(settingsWithTab().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING) else AbilityRing(settingsWithTab().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING))
-val MAGMA_RING   = register(Identifier(MOD_ID, "magma_ring"),  if(TRINKET) TrinketRing(settingsWithTab().maxCount(1).rarity(Rarity.RARE), INFINITE_FIRE_RESISTENCE) else AbilityRing(settingsWithTab().maxCount(1).rarity(Rarity.RARE), INFINITE_FIRE_RESISTENCE))
-val WATER_RING   = register(Identifier(MOD_ID, "water_ring"),  if(TRINKET) TrinketRing(settingsWithTab().maxCount(1).rarity(Rarity.RARE), INFINITE_WATER_BREATHING) else AbilityRing(settingsWithTab().maxCount(1).rarity(Rarity.RARE), INFINITE_WATER_BREATHING))
+val ANGEL_RING = register(Identifier(MOD_ID, "angel_ring"), AbilityRing.create(settingsWithTab().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING))
+val MAGMA_RING = register(Identifier(MOD_ID, "magma_ring"), AbilityRing.create(settingsWithTab().maxCount(1).rarity(Rarity.RARE), INFINITE_FIRE_RESISTENCE))
+val WATER_RING = register(Identifier(MOD_ID, "water_ring"), AbilityRing.create(settingsWithTab().maxCount(1).rarity(Rarity.RARE), INFINITE_WATER_BREATHING))
 val LIGHT_RING   = register(Identifier(MOD_ID, "light_ring"),  LightRing(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val GOLDEN_LASSO  = register(Identifier(MOD_ID, "golden_lasso"),  Lasso.GoldenLasso(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))

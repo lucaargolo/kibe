@@ -8,7 +8,6 @@ import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.chunkloader.ChunkLoaderState
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.blocks.initBlocks
-import io.github.lucaargolo.kibe.compat.initTrinketsCompat
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import io.github.lucaargolo.kibe.effects.initEffects
 import io.github.lucaargolo.kibe.entities.initEntities
@@ -42,7 +41,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.launch.common.FabricLauncherBase
 import net.minecraft.client.MinecraftClient
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
@@ -75,8 +73,8 @@ val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
 val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_states")
-val CLIENT = FabricLauncherBase.getLauncher().environmentType == EnvType.CLIENT
-val TRINKET = FabricLauncherBase.getLauncher().isClassLoaded("dev.emi.trinkets.api.Trinket")
+val CLIENT: Boolean by lazy { FabricLoader.getInstance().environmentType == EnvType.CLIENT }
+val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
 val WATER_DROPS: DefaultParticleType by lazy {
     Registry.register(Registry.PARTICLE_TYPE, Identifier(MOD_ID, "water_drops"), FabricParticleTypes.simple())
 }
@@ -126,9 +124,6 @@ fun init() {
     initFluids()
     initPackets()
     initExtras()
-    if(TRINKET) {
-        initTrinketsCompat()
-    }
 }
 
 fun initPackets() {
