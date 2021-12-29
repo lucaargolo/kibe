@@ -136,7 +136,7 @@ val DIAMOND_KIBE = register(Identifier(MOD_ID, "diamond_kibe"), Item(settingsWit
 val CURSED_DROPLETS = register(Identifier(MOD_ID, "cursed_droplets"), Item(settingsWithTab()))
 val CURSED_SEEDS    = register(Identifier(MOD_ID, "cursed_seeds"), CursedSeeds(settingsWithTab()))
 
-val MAGNET = register(Identifier(MOD_ID, "magnet"), Magnet(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
+val MAGNET = register(Identifier(MOD_ID, "magnet"), Magnet.create(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
 
 val DIAMOND_RING = register(Identifier(MOD_ID, "diamond_ring"),  Item(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
 val ANGEL_RING = register(Identifier(MOD_ID, "angel_ring"), AbilityRing.create(settingsWithTab().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING))
