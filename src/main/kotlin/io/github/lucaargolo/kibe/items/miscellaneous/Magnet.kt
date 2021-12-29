@@ -14,17 +14,16 @@ class Magnet(settings: Settings): BooleanItem(settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         val player = entity as? PlayerEntity ?: return
-        if(isEnabled(stack)) {
-            val pos = player.blockPos
-            val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
-            val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
-            val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-            val validEntities = world.getOtherEntities(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
-            validEntities.forEach {
-                val vel = it.pos.relativize(vecPos).normalize().multiply(0.1)
+        if (!isEnabled(stack) || world.isClient) return
+        val pos = player.blockPos
+        val target = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+        val areaOfEffect = Box.from(target).expand(MOD_CONFIG.miscellaneousModule.magnetRange)
+
+        world.getOtherEntities(player, areaOfEffect) { ((it is ItemEntity && !it.cannotPickup()) || it is ExperienceOrbEntity) }
+            .forEach {
+                val vel = it.pos.relativize(target).normalize().multiply(0.1)
                 it.addVelocity(vel.x, vel.y, vel.z)
             }
-        }
     }
 
 }
