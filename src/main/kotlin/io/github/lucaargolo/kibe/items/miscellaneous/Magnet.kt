@@ -3,6 +3,8 @@ package io.github.lucaargolo.kibe.items.miscellaneous
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.MOD_ID
 import net.fabricmc.fabric.api.tag.TagFactory
+import io.github.lucaargolo.kibe.TRINKET
+import io.github.lucaargolo.kibe.compat.trinkets.TrinketMagnet
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ExperienceOrbEntity
 import net.minecraft.entity.ItemEntity
@@ -13,7 +15,7 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
-class Magnet(settings: Settings): BooleanItem(settings) {
+open class Magnet(settings: Settings) : BooleanItem(settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         val player = entity as? PlayerEntity ?: return
@@ -33,5 +35,6 @@ class Magnet(settings: Settings): BooleanItem(settings) {
 
     companion object {
         val MAGNET_INHIBITOR_TAG = TagFactory.BLOCK.create(Identifier(MOD_ID, "magnet_inhibitor"))
+        fun create(settings: Settings): Magnet = if (TRINKET) TrinketMagnet(settings) else Magnet(settings)
     }
 }

@@ -1,6 +1,8 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.ladysnake.pal.PlayerAbility
+import io.github.lucaargolo.kibe.TRINKET
+import io.github.lucaargolo.kibe.compat.trinkets.TrinketAbilityRing
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
@@ -48,6 +50,8 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
 
     companion object {
         val RINGS = mutableListOf<AbilityRing>()
-    }
 
+        fun create(settings: Settings, ability: PlayerAbility): AbilityRing =
+            if (TRINKET) TrinketAbilityRing(settings, ability) else AbilityRing(settings, ability)
+    }
 }
