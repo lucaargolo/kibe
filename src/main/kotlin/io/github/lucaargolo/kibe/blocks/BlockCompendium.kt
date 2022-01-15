@@ -217,7 +217,16 @@ val TANK = registerWithEntity<TankBlockEntity>(Identifier(MOD_ID, "tank"), Tank(
 val XP_SHOWER = registerWithEntity<XpShowerBlockEntity>(Identifier(MOD_ID, "xp_shower"), XpShower())
 val XP_DRAIN = register(Identifier(MOD_ID, "xp_drain"), XpDrain())
 val IGNITER = register(Identifier(MOD_ID, "igniter"), Igniter())
-val FLUID_HOPPER = registerWithEntity<FluidHopperBlockEntity>(Identifier(MOD_ID, "fluid_hopper"), FluidHopper())
+val FLUID_HOPPER = registerWithEntity<FluidHopperBlockEntity>(
+    Identifier(MOD_ID, "fluid_hopper"),
+    FluidHopper(),
+    apiRegistrations = { blockEntityType ->
+        FluidStorage.SIDED.registerForBlockEntities(
+            { blockEntity, _ -> (blockEntity as FluidHopperBlockEntity).tank },
+            blockEntityType
+        )
+    }
+)
 
 val WHITE_ELEVATOR = register(Identifier(MOD_ID, "white_elevator"), Elevator())
 val ORANGE_ELEVATOR = register(Identifier(MOD_ID, "orange_elevator"), Elevator())
