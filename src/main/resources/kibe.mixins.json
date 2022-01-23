@@ -22,7 +22,6 @@
     "ShapedRecipeMixin",
     "SpawnHelperInvoker",
     "SpawnRestrictionMixin",
-    "ThreadedAnvilChunkStorageMixin",
     "WitherRoseBlockMixin",
     "WorldChunkMixin",
     "WorldMixin"
