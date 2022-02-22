@@ -14,8 +14,8 @@ class TrinketMagnet(settings: Settings) : Magnet(settings), Trinket {
     }
 
     override fun tick(stack: ItemStack?, slot: SlotReference?, entity: LivingEntity?) {
-        if (stack == null || entity !is PlayerEntity) return
-        pullItems(stack, entity.entityWorld, entity)
+        if (stack == null || slot == null || entity !is PlayerEntity) return
+        inventoryTick(stack, entity.entityWorld, entity, slot.index, false)
     }
 
     override fun onEquip(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
