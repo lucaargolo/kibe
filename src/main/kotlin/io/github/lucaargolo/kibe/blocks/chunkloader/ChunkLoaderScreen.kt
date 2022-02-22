@@ -56,7 +56,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
         identifier = mc.textureManager.registerDynamicTexture("chunk_loader_minimap", texture)
     }
 
-    override fun isPauseScreen() = false
+    override fun shouldPause() = false
 
     private val backgroundHeight = 102
     private val backgroundWidth = 94
