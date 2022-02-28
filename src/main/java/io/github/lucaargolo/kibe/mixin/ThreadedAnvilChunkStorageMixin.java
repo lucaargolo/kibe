@@ -21,7 +21,7 @@ public class ThreadedAnvilChunkStorageMixin {
     public void isTooFarFromPlayersToSpawnMobs(ServerPlayerEntity player, ChunkPos pos, CallbackInfoReturnable<Boolean> info) {
         ChunkLoaderState state = world.getServer().getOverworld().getPersistentStateManager().getOrCreate( tag -> ChunkLoaderState.Companion.createFromTag(tag, world.getServer()), () -> new ChunkLoaderState(world.getServer()) , "kibe_chunk_loaders");
         boolean bl = state.isItBeingChunkLoaded(world, pos);
-        if(bl) info.setReturnValue(false);
+        if(bl) info.setReturnValue(true);
     }
 
 

@@ -94,10 +94,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project["fabric_version"]}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project["fabric_kotlin_version"]}")
 
-    modCompileOnly ("com.github.emilyalexandra:trinkets:${project["trinkets_version"]}") {
-        exclude(group = "io.github.onyxstudios.Cardinal-Components-API", module = "cardinal-components-base")
-        exclude(group = "io.github.onyxstudios.Cardinal-Components-API", module = "cardinal-components-entity")
-        exclude(group = "net.fabricmc.fabric-api")
+    modImplementation ("com.github.emilyalexandra:trinkets:${project["trinkets_version"]}") {
+        exclude(group = "net.fabricmc")
     }
 
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
