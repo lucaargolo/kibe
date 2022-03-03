@@ -48,7 +48,6 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
@@ -187,9 +186,9 @@ val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(Identifier(MOD_ID, "big_
 val COOLER = registerWithEntity<CoolerBlockEntity>(Identifier(MOD_ID, "cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(CoolerScreenHandler::class, { CoolerScreen::class })))
 val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(Identifier(MOD_ID, "drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(DrawbridgeScreenHandler::class, { DrawbridgeScreen::class })))
 
-val OBSIDIAN_SAND = register(Identifier(MOD_ID, "obsidian_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
+val OBSIDIAN_SAND = register(Identifier(MOD_ID, "obsidian_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)))
 val WITHER_PROOF_BLOCK = register(Identifier(MOD_ID, "wither_proof_block"), Block(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)))
-val WITHER_PROOF_SAND = register(Identifier(MOD_ID, "wither_proof_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND).breakByTool(FabricToolTags.SHOVELS, 3)))
+val WITHER_PROOF_SAND = register(Identifier(MOD_ID, "wither_proof_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)))
 val WITHER_PROOF_GLASS = register(Identifier(MOD_ID, "wither_proof_glass"), GlassBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).nonOpaque()))
 val WITHER_BUILDER = registerWithEntity<WitherBuilderBlockEntity>(Identifier(MOD_ID, "wither_builder"), WitherBuilder(), containers = listOf(ContainerInfo<WitherBuilderScreenHandler>(WitherBuilderScreenHandler::class, { WitherBuilderScreen::class })))
 

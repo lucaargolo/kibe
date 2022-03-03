@@ -24,12 +24,12 @@ class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInvento
         inventory.onOpen(playerInventory.player)
 
         addSlot(object: Slot(inventory, 0, 80, 54) {
-            override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.let{BlockTags.WITHER_SUMMON_BASE_BLOCKS.contains(it.block)} ?: false
+            override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.block?.registryEntry?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
         })
 
         (0..2).forEach { n ->
             addSlot(object: Slot(inventory, 1+n, 62 + n*18, 36) {
-                override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.let{BlockTags.WITHER_SUMMON_BASE_BLOCKS.contains(it.block)} ?: false
+                override fun canInsert(stack: ItemStack) = (stack.item as? BlockItem)?.block?.registryEntry?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
             })
             addSlot(object: Slot(inventory, 4+n, 62 + n*18, 18) {
                 override fun canInsert(stack: ItemStack) = stack.item == Items.WITHER_SKELETON_SKULL
