@@ -28,16 +28,6 @@ import net.minecraft.world.World
 
 class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
 
-    override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
-        if(!stack.hasNbt()) stack.orCreateNbt.put("BlockEntityTag", NbtCompound())
-        super.inventoryTick(stack, world, entity, slot, selected)
-    }
-
-    override fun onCraft(stack: ItemStack, world: World, player: PlayerEntity) {
-        stack.orCreateNbt.put("BlockEntityTag", NbtCompound())
-        super.onCraft(stack, world, player)
-    }
-
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
         val stackTag = stack.nbt ?: return

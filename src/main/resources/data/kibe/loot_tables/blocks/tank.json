@@ -11,12 +11,17 @@
               "function": "minecraft:copy_nbt",
               "source": "block_entity",
 			  "ops": [
-                    {
-                      "source": "",
-                      "target": "BlockEntityTag",
-                      "op": "merge"
-                    }
-                  ]
+                {
+                  "source": "variant",
+                  "target": "BlockEntityTag.variant",
+                  "op": "merge"
+                },
+                {
+                  "source": "amount",
+                  "target": "BlockEntityTag.amount",
+                  "op": "replace"
+                }
+              ]
             }
           ],
           "name": "kibe:tank"

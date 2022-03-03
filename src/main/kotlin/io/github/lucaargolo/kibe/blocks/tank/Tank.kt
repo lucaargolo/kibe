@@ -60,9 +60,4 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
         return (world.getBlockEntity(pos) as? TankBlockEntity)?.let { interactPlayerHand(it.tank, player, hand) } ?: ActionResult.FAIL
     }
 
-    override fun afterBreak(world: World?, player: PlayerEntity?, pos: BlockPos?, state: BlockState?, blockEntity: BlockEntity?, stack: ItemStack?) {
-        (blockEntity as? TankBlockEntity)?.markBroken()
-        super.afterBreak(world, player, pos, state, blockEntity, stack)
-    }
-
 }

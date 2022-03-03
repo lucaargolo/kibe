@@ -41,16 +41,10 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): SyncableBlo
             sync()
     }
 
-    private var broken = false
-
-    fun markBroken() {
-        broken = true
-    }
-
     override fun writeNbt(tag: NbtCompound) {
-        if(!broken) writeTank(tag, tank)
+        if(!tank.isResourceBlank && !isEmpty)
+            writeTank(tag, tank)
     }
-
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
