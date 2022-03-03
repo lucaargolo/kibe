@@ -64,8 +64,8 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
     var x = 0
     var y = 0
 
-    override fun close() {
-        super.close()
+    override fun onClose() {
+        super.onClose()
         identifier?.let{ client?.textureManager?.destroyTexture(it) }
     }
 

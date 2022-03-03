@@ -61,7 +61,7 @@ class WitherBuilderBlockEntity(placer: WitherBuilder, pos: BlockPos, state: Bloc
 
     override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?): Boolean {
         return if((0..3).contains(slot)) {
-            (stack.item as? BlockItem)?.block?.registryEntry?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false
+            (stack.item as? BlockItem)?.let{ BlockTags.WITHER_SUMMON_BASE_BLOCKS.contains(it.block) } ?: false
         }else{
             stack.item == Items.WITHER_SKELETON_SKULL
         }
