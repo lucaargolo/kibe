@@ -6,6 +6,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
+import net.minecraft.util.math.Vec3d
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.PersistentState
@@ -16,23 +17,31 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
 
     private var chunkReferenceMap: MutableMap<RegistryKey<World>, MutableMap<ChunkPos, ArrayList<BlockPos>>> = mutableMapOf()
 
+    var lastCacheReset: MutableMap<RegistryKey<World>, Long> = mutableMapOf()
+    var chunkLoaderCache: MutableMap<RegistryKey<World>, MutableSet<ChunkPos>> = mutableMapOf()
     var loadedChunkMap: MutableMap<RegistryKey<World>, MutableList<BlockPos>> = mutableMapOf()
     var loadersPerUUID: MutableMap<String, Int> = mutableMapOf()
 
     fun getLoaded(uuid: UUID) = loadersPerUUID.getOrDefault(uuid.toString(), 0)
 
     fun isItBeingChunkLoaded(world: ServerWorld, chunkPos: ChunkPos): Boolean {
-        loadedChunkMap.forEach { (wrldKey, list) ->
-            list.forEach { pos ->
-                val chunkList = mutableListOf<ChunkPos>()
-                val blockEntity = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
-                blockEntity?.enabledChunks?.forEach {
-                    val centerChunkPos = ChunkPos(blockEntity.pos)
-                    chunkList.add(ChunkPos(centerChunkPos.x+it.first, centerChunkPos.z+it.second))
-                }
-                if(chunkList.contains(chunkPos) && world.registryKey == wrldKey)  {
-                    return true
-                }
+        if(world.time - (lastCacheReset[world.registryKey] ?: 0L) >= 100) {
+            lastCacheReset.clear()
+            lastCacheReset[world.registryKey] = world.time
+        }
+        if(chunkLoaderCache[world.registryKey]?.contains(chunkPos) == true) {
+            return true
+        }
+        loadedChunkMap[world.registryKey]?.filter { Vec3d(chunkPos.centerX+0.5, 0.0, chunkPos.centerZ+0.5).distanceTo(Vec3d(it.x+0.5, 0.0, it.z+0.5)) <= 160.0 }?.forEach { pos ->
+            val chunkList = mutableListOf<ChunkPos>()
+            val blockEntity = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
+            blockEntity?.enabledChunks?.forEach {
+                val centerChunkPos = ChunkPos(blockEntity.pos)
+                chunkList.add(ChunkPos(centerChunkPos.x+it.first, centerChunkPos.z+it.second))
+            }
+            if(chunkList.contains(chunkPos))  {
+                chunkLoaderCache.getOrPut(world.registryKey) { mutableSetOf() }.add(chunkPos)
+                return true
             }
         }
         return false
