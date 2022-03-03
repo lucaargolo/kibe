@@ -50,7 +50,7 @@ public class ServerWorldMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "shouldTickEntity(Lnet/minecraft/util/math/BlockPos;)Z", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "shouldTick(Lnet/minecraft/util/math/BlockPos;)Z", cancellable = true)
     public void shouldTick(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ServerWorld serverWorld = (ServerWorld) (Object) this;
         ChunkLoaderState chunkLoaderState = getCachedChunkLoaderState();
@@ -60,7 +60,7 @@ public class ServerWorldMixin {
     }
 
 
-    @Inject(at = @At("HEAD"), method = "shouldTickEntity(Lnet/minecraft/util/math/ChunkPos;)Z", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "shouldTick(Lnet/minecraft/util/math/ChunkPos;)Z", cancellable = true)
     public void shouldTick(ChunkPos pos, CallbackInfoReturnable<Boolean> cir) {
         ServerWorld serverWorld = (ServerWorld) (Object) this;
         ChunkLoaderState chunkLoaderState = getCachedChunkLoaderState();

@@ -94,7 +94,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project["fabric_version"]}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project["fabric_kotlin_version"]}")
 
-    modImplementation ("com.github.emilyalexandra:trinkets:${project["trinkets_version"]}") {
+    modCompileOnly ("com.github.emilyalexandra:trinkets:${project["trinkets_version"]}") {
         exclude(group = "net.fabricmc")
     }
 
@@ -103,7 +103,7 @@ dependencies {
 
     modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
-    //modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modRuntime("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 }
 

@@ -63,7 +63,9 @@ private fun appendItems(): List<ItemStack> {
             else -> ItemStack.EMPTY
         })
     }
-    Registry.FLUID.entries.forEach { (fluidKey, fluid) ->
+    Registry.FLUID.indexedEntries.forEach { fluidEntry ->
+        val fluid = fluidEntry.value()
+        val fluidKey = fluidEntry.key.get()
         val itemStack = ItemStack(TANK)
         if(fluid == Fluids.EMPTY) {
             list.add(itemStack)
