@@ -15,7 +15,7 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3f
-import java.util.*
+import net.minecraft.util.math.random.AbstractRandom
 
 class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<RedstoneTimerEntity> {
 
@@ -123,7 +123,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumers.getBuffer(RenderLayer.getCutout())
-        tankGlassModel.getQuads(null, null, Random()).forEach { q ->
+        tankGlassModel.getQuads(null, null, AbstractRandom.create()).forEach { q ->
             cutoutBuffer.quad(matrices.peek(), q, 1f, 1f, 1f, light, overlay)
         }
 

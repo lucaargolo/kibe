@@ -29,13 +29,13 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.world.BlockRenderView
 import java.awt.Color
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.Reader
-import java.util.*
 import java.util.function.Consumer
 import java.util.function.Supplier
 
@@ -43,7 +43,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter(): Boolean = false
 
-    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
+    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<AbstractRandom>, context: RenderContext) {
 
         val background = ModelIdentifier(Identifier(MOD_ID, "entangled_bucket_background"), "inventory")
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
@@ -63,7 +63,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
 
         var colorCode = ""
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
         val key = tag.getString("key")
@@ -115,7 +115,7 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
             var sumg = 0
             var sumb = 0
             (1..8).forEach {
-                val dye = DyeColor.byName(stack.nbt!!.getString("rune$it"), DyeColor.WHITE)
+                val dye = DyeColor.byName(stack.nbt!!.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
                 val dyeColor = Color(dye.mapColor.color)
                 sumr += dyeColor.red
                 sumg += dyeColor.green
@@ -138,18 +138,18 @@ class EntangledBucketBakedModel: BakedModel, FabricBakedModel {
     }
 
 
-    override fun emitBlockQuads(p0: BlockRenderView?, p1: BlockState?, p2: BlockPos?, p3: Supplier<Random>?, p4: RenderContext?) {}
+    override fun emitBlockQuads(p0: BlockRenderView?, p1: BlockState?, p2: BlockPos?, p3: Supplier<AbstractRandom>?, p4: RenderContext?) {}
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, NoSuchElementException::class)
     private fun getReaderForResource(location: Identifier): Reader {
         val file = Identifier(location.namespace, location.path + ".json")
-        val resource = MinecraftClient.getInstance().resourceManager.getResource(file)
+        val resource = MinecraftClient.getInstance().resourceManager.getResource(file).get()
         return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
     }
 
     override fun getOverrides(): ModelOverrideList = ModelOverrideList.EMPTY
 
-    override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
+    override fun getQuads(state: BlockState?, face: Direction?, random: AbstractRandom?): MutableList<BakedQuad> = mutableListOf()
 
     override fun getParticleSprite() = null
 

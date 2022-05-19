@@ -44,7 +44,7 @@ class EntangledRendererHelper(val parent: String) {
         runeModelLayers.forEach { (string, entityModelLayer) ->
             val stringList: List<String> = string.replace("rune", "").split("_")
             val runeId = stringList[0].toInt()
-            val runeColor = DyeColor.byName(stringList.subList(1, stringList.size).joinToString("_"), DyeColor.WHITE)
+            val runeColor = DyeColor.byName(stringList.subList(1, stringList.size).joinToString("_"), DyeColor.WHITE) ?: DyeColor.WHITE
             map[entityModelLayer] = setupRuneModel(runeId, runeColor)
         }
         map[coreModelLayerGold] = setupCoreModel(false)

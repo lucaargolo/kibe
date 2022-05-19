@@ -111,8 +111,7 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
         bufferBuilder.vertex(matrix, x1, y1, z).color(r, g, b, 1.0f).texture(u1, v1).next()
         bufferBuilder.vertex(matrix, x1, y0, z).color(r, g, b, 1.0f).texture(u1, v0).next()
         bufferBuilder.vertex(matrix, x0, y0, z).color(r, g, b, 1.0f).texture(u0, v0).next()
-        bufferBuilder.end()
-        BufferRenderer.draw(bufferBuilder)
+        BufferRenderer.drawWithoutShader(bufferBuilder.end())
     }
 
 }

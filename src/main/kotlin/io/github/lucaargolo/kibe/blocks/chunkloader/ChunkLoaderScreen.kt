@@ -12,14 +12,14 @@ import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.PacketByteBuf
-import net.minecraft.text.LiteralText
+
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 
-class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("screen.kibe.chunk_loader")) {
+class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("screen.kibe.chunk_loader")) {
 
     private val chunkPos = ChunkPos(be.pos)
     val world = be.world!!
@@ -104,8 +104,8 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(TranslatableText("sc
             val chunkZ = (mouseY-(y+15))/16
             DrawableHelper.fill(matrices, x+7+(chunkX*16), y+15+(chunkZ*16), x+7+(chunkX*16)+16, y+15+(chunkZ*16)+16, -2130706433)
             val tooltip = mutableListOf<Text>()
-            tooltip.add(TranslatableText("tooltip.kibe.chunk_at").append(LiteralText("${chunkPos.x+chunkX-2}, ${chunkPos.z+chunkZ-2}")))
-            tooltip.add(TranslatableText("tooltip.kibe.forced").append(TranslatableText(if(entity.enabledChunks.contains(Pair(chunkX-2, chunkZ-2))) "tooltip.kibe.enabled" else "tooltip.kibe.disabled")))
+            tooltip.add(Text.translatable("tooltip.kibe.chunk_at").append(Text.literal("${chunkPos.x+chunkX-2}, ${chunkPos.z+chunkZ-2}")))
+            tooltip.add(Text.translatable("tooltip.kibe.forced").append(Text.translatable(if(entity.enabledChunks.contains(Pair(chunkX-2, chunkZ-2))) "tooltip.kibe.enabled" else "tooltip.kibe.disabled")))
             renderTooltip(matrices, tooltip, mouseX, mouseY)
         }
         super.render(matrices, mouseX, mouseY, delta)

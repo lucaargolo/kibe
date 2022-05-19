@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker

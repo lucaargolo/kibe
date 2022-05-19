@@ -12,11 +12,11 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import java.util.*
 
 class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY).requiresTool().strength(1.5F, 6.0F)) {
 
@@ -53,7 +53,7 @@ class XpShower: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.
         }
     }
 
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: Random?) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: AbstractRandom?) {
         if (state[Properties.ENABLED] && !world.isReceivingRedstonePower(pos)) {
             world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
         }

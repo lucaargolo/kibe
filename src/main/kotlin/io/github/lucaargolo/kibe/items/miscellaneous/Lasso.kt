@@ -11,7 +11,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
@@ -48,7 +48,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
                 val newEntity = EntityType.loadEntityWithPassengers(newTag, context.world) {
                     it.refreshPositionAndAngles(targetPos.x+.5, targetPos.y+.0, targetPos.z+.5, it.yaw, it.pitch)
                     if (!(context.world as ServerWorld).tryLoadEntity(it)) {
-                        context.player?.sendMessage(TranslatableText("chat.kibe.lasso.cannot_spawn"), true)
+                        context.player?.sendMessage(Text.translatable("chat.kibe.lasso.cannot_spawn"), true)
                         null
                     }
                     else it
@@ -66,7 +66,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         if(stack.orCreateNbt.contains("Entity"))
-            tooltip.add(TranslatableText("tooltip.kibe.stored").append(TranslatableText("entity."+stack.nbt!!.getCompound("Entity").getString("id").replace(":", "."))))
+            tooltip.add(Text.translatable("tooltip.kibe.stored").append(Text.translatable("entity."+stack.nbt!!.getCompound("Entity").getString("id").replace(":", "."))))
         super.appendTooltip(stack, world, tooltip, context)
     }
 

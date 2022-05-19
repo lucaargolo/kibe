@@ -24,7 +24,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import java.util.*
+import net.minecraft.util.math.random.AbstractRandom
 
 class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
@@ -43,7 +43,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
 
         var colorCode = ""
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
 
@@ -60,14 +60,14 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         dummyTank.readClientNbt(tag)
         dummyTank.lastRenderedFluid = dummyTank.getTank().amount / 81000f
 
-        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
+        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyTank, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)
 
         val tankGlassIdentifier = ModelIdentifier(Identifier(MOD_ID, "entangled_tank"), "facing=north,level=0")
         val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumerProvider.getBuffer(RenderLayer.getCutout())
-        tankGlassModel.getQuads(null, null, Random()).forEach { q ->
+        tankGlassModel.getQuads(null, null, AbstractRandom.create()).forEach { q ->
             cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, lightmap, overlay)
         }
 

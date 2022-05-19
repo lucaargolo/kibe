@@ -8,7 +8,7 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.world.World
 
 @Suppress("LeakingThis")
@@ -28,17 +28,17 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         super.appendTooltip(stack, world, tooltip, context)
         if(isEnabled(stack)) {
-            tooltip.add(TranslatableText("tooltip.kibe.enabled"))
-            tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
+            tooltip.add(Text.translatable("tooltip.kibe.enabled"))
+            tooltip.add(Text.translatable("tooltip.kibe.shift2disable"))
         }else {
             val tag = stack.orCreateNbt
             if(tag.contains("enabled") && tag.getBoolean("enabled") && tag.contains("unique") && !tag.getBoolean("unique")) {
-                tooltip.add(TranslatableText("tooltip.kibe.overflow"))
-                tooltip.add(TranslatableText("tooltip.kibe.overflowed"))
-                tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
+                tooltip.add(Text.translatable("tooltip.kibe.overflow"))
+                tooltip.add(Text.translatable("tooltip.kibe.overflowed"))
+                tooltip.add(Text.translatable("tooltip.kibe.shift2disable"))
             }else{
-                tooltip.add(TranslatableText("tooltip.kibe.disabled"))
-                tooltip.add(TranslatableText("tooltip.kibe.shift2enable"))
+                tooltip.add(Text.translatable("tooltip.kibe.disabled"))
+                tooltip.add(Text.translatable("tooltip.kibe.shift2enable"))
             }
         }
     }

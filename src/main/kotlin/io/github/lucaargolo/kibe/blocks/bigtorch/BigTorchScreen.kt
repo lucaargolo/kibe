@@ -4,9 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.text.LiteralText
+
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 
@@ -27,9 +27,9 @@ class BigTorchScreen(handler: BigTorchScreenHandler, inventory: PlayerInventory,
         drawMouseoverTooltip(matrices, mouseX, mouseY)
         if(mouseX in (x+8..x+168) && mouseY in (y+19..y+33)) {
             val list = listOf(
-                TranslatableText("tooltip.kibe.torch_percentage").append(LiteralText("${(handler.entity.torchPercentage*100).toInt()}%").formatted(Formatting.GRAY)),
-                TranslatableText("tooltip.kibe.chunk_radius").append(LiteralText("${handler.entity.chunkRadius}").formatted(Formatting.GRAY))
-                //TranslatableText("tooltip.kibe.suppressed_spawns").append(LiteralText("${handler.entity.suppressedSpawns}").formatted(Formatting.GRAY))
+                Text.translatable("tooltip.kibe.torch_percentage").append(Text.literal("${(handler.entity.torchPercentage*100).toInt()}%").formatted(Formatting.GRAY)),
+                Text.translatable("tooltip.kibe.chunk_radius").append(Text.literal("${handler.entity.chunkRadius}").formatted(Formatting.GRAY))
+                //Text.translatable("tooltip.kibe.suppressed_spawns").append(Text.literal("${handler.entity.suppressedSpawns}").formatted(Formatting.GRAY))
             )
             renderTooltip(matrices, list, mouseX, mouseY)
         }

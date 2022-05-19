@@ -19,7 +19,7 @@ class EntangledChestBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynami
         val dummyChest = EntangledChestEntity(ENTANGLED_CHEST as EntangledChest, BlockPos.ORIGIN, ENTANGLED_CHEST.defaultState)
         stack.nbt?.getCompound("BlockEntityTag")?.let { dummyChest.readClientNbt(it) }
 
-        val dummyRenderer = EntangledChestEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
+        val dummyRenderer = EntangledChestEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyChest, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)
     }
 }

@@ -26,20 +26,20 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.world.BlockRenderView
 import java.awt.Color
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.Reader
-import java.util.*
 import java.util.function.Supplier
 
 class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter(): Boolean = false
 
-    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
+    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<AbstractRandom>, context: RenderContext) {
 
         val client = MinecraftClient.getInstance()
         val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(Identifier(MOD_ID, "tank"), "level=0"))
@@ -90,18 +90,18 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         emit()
     }
 
-    override fun emitBlockQuads(p0: BlockRenderView?, p1: BlockState?, p2: BlockPos?, p3: Supplier<Random>?, p4: RenderContext?) {}
+    override fun emitBlockQuads(p0: BlockRenderView?, p1: BlockState?, p2: BlockPos?, p3: Supplier<AbstractRandom>?, p4: RenderContext?) {}
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, NoSuchElementException::class)
     private fun getReaderForResource(location: Identifier): Reader {
         val file = Identifier(location.namespace, location.path + ".json")
-        val resource = MinecraftClient.getInstance().resourceManager.getResource(file)
+        val resource = MinecraftClient.getInstance().resourceManager.getResource(file).get()
         return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
     }
 
     override fun getOverrides(): ModelOverrideList = ModelOverrideList.EMPTY
 
-    override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
+    override fun getQuads(state: BlockState?, face: Direction?, random: AbstractRandom?): MutableList<BakedQuad> = mutableListOf()
 
     override fun getParticleSprite() = null
 

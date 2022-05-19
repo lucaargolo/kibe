@@ -16,9 +16,9 @@ import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.world.BlockRenderView
 import java.awt.Color
-import java.util.*
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -44,7 +44,7 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter() = false
 
-    override fun emitBlockQuads(world: BlockRenderView?, state: BlockState?, pos: BlockPos, randomSupplier: Supplier<Random>, context: RenderContext) {
+    override fun emitBlockQuads(world: BlockRenderView?, state: BlockState?, pos: BlockPos, randomSupplier: Supplier<AbstractRandom>, context: RenderContext) {
         val color = Color(255, 255, 255, 255).rgb
 
         context.pushTransform { quad ->
@@ -128,9 +128,9 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         emit()
     }
 
-    override fun emitItemQuads(p0: ItemStack?, p1: Supplier<Random>?, p2: RenderContext?) {}
+    override fun emitItemQuads(p0: ItemStack?, p1: Supplier<AbstractRandom>?, p2: RenderContext?) {}
 
-    override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
+    override fun getQuads(state: BlockState?, face: Direction?, random: AbstractRandom?): MutableList<BakedQuad> = mutableListOf()
 
     override fun useAmbientOcclusion() = false
     override fun hasDepth() = false

@@ -65,7 +65,7 @@ class HeaterBlockEntity(heater: Heater, pos: BlockPos, state: BlockState): Block
                     val meltBlockState = world.getBlockState(meltPos)
                     val meltBlock = meltBlockState.block
                     (meltBlock as? IceBlock)?.let {
-                        if (world.dimension.isUltrawarm) {
+                        if (world.dimension.ultrawarm) {
                             world.removeBlock(meltPos, false)
                         } else {
                             world.setBlockState(meltPos, Blocks.WATER.defaultState)

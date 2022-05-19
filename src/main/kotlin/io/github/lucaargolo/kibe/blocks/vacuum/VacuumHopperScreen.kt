@@ -5,7 +5,7 @@ package io.github.lucaargolo.kibe.blocks.vacuum
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.utils.getMb
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.GameRenderer
@@ -15,9 +15,7 @@ import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -46,7 +44,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
             val tank = handler.entity.tank
             val stored = tank.amount
             val capacity = tank.capacity
-            renderTooltip(matrices, listOf(if(tank.isResourceBlank) TranslatableText("tooltip.kibe.empty") else FluidVariantRendering.getName(tank.variant), LiteralText("${getMb(stored)} / ${capacity/81} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
+            renderTooltip(matrices, listOf(if(tank.isResourceBlank) Text.translatable("tooltip.kibe.empty") else FluidVariantAttributes.getName(tank.variant), Text.literal("${getMb(stored)} / ${capacity/81} mB").formatted(Formatting.GRAY)), mouseX, mouseY)
         }
     }
 

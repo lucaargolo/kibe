@@ -44,9 +44,9 @@ import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderBlockEntity
 import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreen
 import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreenHandler
 import io.github.lucaargolo.kibe.utils.CREATIVE_TAB
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
@@ -56,16 +56,13 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
-import net.minecraft.entity.EntityType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.sound.BlockSoundGroup
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import java.util.function.Supplier
@@ -83,11 +80,11 @@ class ContainerInfo<T: ScreenHandler>(
     var handlerType: ScreenHandlerType<T>? = null
     var handler: T? = null
 
-    var title: Text = LiteralText("")
+    var title: Text = Text.literal("")
 
     fun init(blockIdentifier: Identifier) {
         val id = identifier ?: blockIdentifier
-        title = TranslatableText("screen.$MOD_ID.${id.path}")
+        title = Text.translatable("screen.$MOD_ID.${id.path}")
         handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
             val pos = packetByteBuf.readBlockPos()
             val player = playerInventory.player
@@ -129,7 +126,7 @@ class BlockInfo<T: BlockEntity> (
     fun initClient() {
         containers.forEach { it.initClient() }
         if(renderer != null) {
-            BlockEntityRendererRegistry.INSTANCE.register(entity) { it2 ->
+            BlockEntityRendererRegistry.register(entity) { it2 ->
                 renderer!!.java.constructors[0].newInstance(it2) as BlockEntityRenderer<T>
             }
         }

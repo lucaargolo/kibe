@@ -2,8 +2,8 @@ package io.github.lucaargolo.kibe.entities
 
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.entities.miscellaneous.ThrownTorchEntity
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry
 import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricEntityTypeBuilder
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityDimensions
@@ -30,7 +30,7 @@ fun initEntities() {
 }
 
 fun initEntitiesClient() {
-    EntityRendererRegistry.INSTANCE.register(THROWN_TORCH) { context ->
+    EntityRendererRegistry.register(THROWN_TORCH) { context ->
         FlyingItemEntityRenderer(context)
     }
 }

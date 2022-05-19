@@ -19,8 +19,8 @@ import net.minecraft.state.property.Properties
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.world.BlockRenderView
-import java.util.*
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -66,7 +66,7 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter() = false
 
-    override fun emitBlockQuads(world: BlockRenderView, state: BlockState, pos: BlockPos, randomSupplier: Supplier<Random>, context: RenderContext) {
+    override fun emitBlockQuads(world: BlockRenderView, state: BlockState, pos: BlockPos, randomSupplier: Supplier<AbstractRandom>, context: RenderContext) {
         (world.getBlockEntity(pos) as? DrawbridgeBlockEntity)?.let {  blockEntity ->
             val coverState = (blockEntity.inventory[1].item as? BlockItem)?.block?.defaultState ?: return@let
             val model = MinecraftClient.getInstance().bakedModelManager.blockModels.getModel(coverState)
@@ -100,12 +100,12 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
     }
 
-    override fun emitItemQuads(stack: ItemStack, randomSupplier: Supplier<Random>, context: RenderContext) {
+    override fun emitItemQuads(stack: ItemStack, randomSupplier: Supplier<AbstractRandom>, context: RenderContext) {
         context.fallbackConsumer().accept(modelList[4])
     }
 
     @Suppress("DEPRECATION")
-    private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {
+    private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<AbstractRandom>, shouldEmit: (BakedQuad) -> Boolean) {
         val emitter = context.emitter
         Direction.values().forEach { dir ->
             getQuads(state, dir, randSupplier.get()).forEach { quad ->
@@ -123,7 +123,7 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
     }
 
-    override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
+    override fun getQuads(state: BlockState?, face: Direction?, random: AbstractRandom?): MutableList<BakedQuad> = mutableListOf()
 
     override fun useAmbientOcclusion() = true
     override fun hasDepth() = false

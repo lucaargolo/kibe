@@ -27,9 +27,15 @@ operator fun Project.get(property: String): String {
     return property(property) as String
 }
 
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+configure<JavaPluginExtension> {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.compileKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 version = project["mod_version"]
@@ -95,7 +101,9 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project["fabric_kotlin_version"]}")
 
     modCompileOnly ("com.github.emilyalexandra:trinkets:${project["trinkets_version"]}") {
-        exclude(group = "net.fabricmc")
+        exclude(group = "net.fabricmc.fabric-api")
+        exclude(group = "dev.onyxstudios.cardinal-components-api")
+        exclude(group = "com.terraformersmc")
     }
 
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
@@ -103,8 +111,8 @@ dependencies {
 
     modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
-    modRuntime("com.terraformersmc:modmenu:${project["modmenu_version"]}")
+    //modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
+    modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 }
 
 tasks.processResources {
@@ -124,7 +132,7 @@ tasks.processResources {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(16)
+    options.release.set(17)
 }
 
 java {

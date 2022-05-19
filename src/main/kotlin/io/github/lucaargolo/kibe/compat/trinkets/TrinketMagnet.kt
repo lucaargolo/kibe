@@ -5,7 +5,6 @@ import dev.emi.trinkets.api.Trinket
 import dev.emi.trinkets.api.TrinketsApi
 import io.github.lucaargolo.kibe.items.miscellaneous.Magnet
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 
 class TrinketMagnet(settings: Settings) : Magnet(settings), Trinket {

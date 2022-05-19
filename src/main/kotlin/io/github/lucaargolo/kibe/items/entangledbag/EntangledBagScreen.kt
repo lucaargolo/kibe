@@ -32,7 +32,7 @@ class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: Pl
 
     private fun drawRunes() {
         (1..8).forEach {
-            val color = DyeColor.byName(handler.tag.getString("rune$it"), DyeColor.WHITE)
+            val color = DyeColor.byName(handler.tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             itemRenderer.renderGuiItemIcon(ItemStack(Rune.getRuneByColor(color)), startX+87+(it-1)*10, startY+2)
         }
     }

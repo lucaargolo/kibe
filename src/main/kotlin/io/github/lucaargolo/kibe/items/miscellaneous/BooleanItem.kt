@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
@@ -20,11 +20,11 @@ open class BooleanItem(settings: Settings): Item(settings) {
         super.appendTooltip(stack, world, tooltip, context)
         if (stack.item is AbilityRing) return
         if (isEnabled(stack)) {
-            tooltip.add(TranslatableText("tooltip.kibe.enabled"))
-            tooltip.add(TranslatableText("tooltip.kibe.shift2disable"))
+            tooltip.add(Text.translatable("tooltip.kibe.enabled"))
+            tooltip.add(Text.translatable("tooltip.kibe.shift2disable"))
         } else {
-            tooltip.add(TranslatableText("tooltip.kibe.disabled"))
-            tooltip.add(TranslatableText("tooltip.kibe.shift2enable"))
+            tooltip.add(Text.translatable("tooltip.kibe.disabled"))
+            tooltip.add(Text.translatable("tooltip.kibe.shift2enable"))
         }
     }
 

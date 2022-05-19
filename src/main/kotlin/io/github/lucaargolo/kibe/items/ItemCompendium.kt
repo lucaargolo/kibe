@@ -41,9 +41,9 @@ import net.minecraft.item.Item
 import net.minecraft.item.Item.Settings
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerType
-import net.minecraft.text.LiteralText
+
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
@@ -65,11 +65,11 @@ class ContainerInfo<T: ScreenHandler>(
     var handlerType: ScreenHandlerType<T>? = null
     var handler: T? = null
 
-    var title: Text = LiteralText("")
+    var title: Text = Text.literal("")
 
     fun init(itemIdentifier: Identifier) {
         val id = identifier ?: itemIdentifier
-        title = TranslatableText("screen.$MOD_ID.${id.path}")
+        title = Text.translatable("screen.$MOD_ID.${id.path}")
         handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
             val hand = packetByteBuf.readEnumConstant(Hand::class.java)
             val tag = packetByteBuf.readNbt()!!

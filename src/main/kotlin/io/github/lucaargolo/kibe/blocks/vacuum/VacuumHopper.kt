@@ -22,9 +22,9 @@ import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import java.util.*
 
 class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
 
@@ -58,7 +58,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
         }
     }
 
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: Random?) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: AbstractRandom?) {
         if (state[Properties.ENABLED] && world.isReceivingRedstonePower(pos)) {
             world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
         }
@@ -81,7 +81,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
         }
     }
 
-    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: AbstractRandom) {
         if(state[Properties.ENABLED]) {
             repeat(4) {
                 var x = pos.x.toDouble() + random.nextDouble()

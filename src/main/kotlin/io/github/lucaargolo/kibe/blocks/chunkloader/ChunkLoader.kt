@@ -14,7 +14,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.text.TranslatableText
+import net.minecraft.text.Text
+
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
@@ -73,7 +74,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requir
                 if (state[Properties.ENABLED]) {
                     MinecraftClient.getInstance().setScreen(ChunkLoaderScreen(be))
                 } else {
-                    player.sendMessage(TranslatableText("chat.kibe.chunk_loader.${be.disabledReason.name.lowercase()}"), false)
+                    player.sendMessage(Text.translatable("chat.kibe.chunk_loader.${be.disabledReason.name.lowercase()}"), false)
                 }
             }
         }

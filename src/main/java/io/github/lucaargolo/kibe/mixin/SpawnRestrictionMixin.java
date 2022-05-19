@@ -7,6 +7,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.random.AbstractRandom;
 import net.minecraft.world.ServerWorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,15 +20,15 @@ import java.util.Random;
 public class SpawnRestrictionMixin {
 
     @Inject(at = @At("HEAD"), method = "canSpawn")
-    private static <T extends Entity> void headCanSpawn(EntityType<T> type, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
-        if (BigTorchBlockEntity.Companion.isChunkSuppressed(serverWorldAccess.toServerWorld().getRegistryKey(), new ChunkPos(pos))) {
+    private static <T extends Entity> void headCanSpawn(EntityType<T> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, AbstractRandom random, CallbackInfoReturnable<Boolean> cir) {
+        if (BigTorchBlockEntity.Companion.isChunkSuppressed(world.toServerWorld().getRegistryKey(), new ChunkPos(pos))) {
             BigTorchBlockEntity.Companion.setTestingThread(Thread.currentThread());
             BigTorchBlockEntity.Companion.setTesting(true);
         }
     }
 
     @Inject(at = @At("TAIL"), method = "canSpawn")
-    private static <T extends Entity> void tailCanSpawn(EntityType<T> type, ServerWorldAccess serverWorldAccess, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
+    private static <T extends Entity> void tailCanSpawn(EntityType<T> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, AbstractRandom random, CallbackInfoReturnable<Boolean> cir) {
         BigTorchBlockEntity.Companion.setTestingThread(null);
         BigTorchBlockEntity.Companion.setTesting(false);
     }

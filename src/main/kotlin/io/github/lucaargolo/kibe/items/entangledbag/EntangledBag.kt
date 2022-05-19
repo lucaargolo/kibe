@@ -9,10 +9,10 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.LiteralText
+
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.*
 import net.minecraft.world.World
 
@@ -20,12 +20,12 @@ class EntangledBag(settings: Settings): Item(settings){
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         val tag = getTag(stack)
-        val ownerText = TranslatableText("tooltip.kibe.owner")
-        if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
-        val color = TranslatableText("tooltip.kibe.color")
+        val ownerText = Text.translatable("tooltip.kibe.owner")
+        if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(Text.literal(tag.getString("owner")).formatted(Formatting.GRAY)))
+        val color = Text.translatable("tooltip.kibe.color")
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
-            val text = LiteralText("■")
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+            val text = Text.literal("■")
             text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
             color.append(text)
         }
@@ -44,7 +44,7 @@ class EntangledBag(settings: Settings): Item(settings){
             }
             newTag.putString("colorCode", blockEntity.colorCode)
             context.stack.nbt = newTag
-            if(!context.world.isClient) context.player!!.sendMessage(TranslatableText("chat.kibe.entangled_bag.success"), true)
+            if(!context.world.isClient) context.player!!.sendMessage(Text.translatable("chat.kibe.entangled_bag.success"), true)
             return ActionResult.SUCCESS
         }
         return ActionResult.PASS

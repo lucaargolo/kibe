@@ -10,11 +10,11 @@ import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.writeTank
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
@@ -34,10 +34,8 @@ import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.state.property.Properties
 import net.minecraft.tag.FluidTags
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
@@ -50,14 +48,14 @@ class EntangledBucket(settings: Settings): Item(settings)  {
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
         val tag = getTag(stack)
-        val ownerText = TranslatableText("tooltip.kibe.owner")
-        if(tag.getString("key") != EntangledTank.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
-        val color = TranslatableText("tooltip.kibe.color")
+        val ownerText = Text.translatable("tooltip.kibe.owner")
+        if(tag.getString("key") != EntangledTank.DEFAULT_KEY) tooltip.add(ownerText.append(Text.literal(tag.getString("owner")).formatted(Formatting.GRAY)))
+        val color = Text.translatable("tooltip.kibe.color")
         var colorCode = ""
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
-            val text = LiteralText("■")
+            val text = Text.literal("■")
             text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
             color.append(text)
         }
@@ -65,7 +63,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         tooltip.add(color)
         val fluidInv = getFluidInv(world, tag)
         if(!fluidInv.isResourceBlank)
-            tooltip.add(FluidVariantRendering.getName(fluidInv.variant).shallowCopy().append(LiteralText(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
+            tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).shallowCopy().append(Text.literal(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
     }
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {
@@ -75,7 +73,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         val key = tag.getString("key")
         var colorCode = ""
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
         tag.putString("colorCode", colorCode)
@@ -210,7 +208,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                 }
                 newTag.putString("colorCode", blockEntity.colorCode)
                 context.stack.nbt = newTag
-                if(!context.world.isClient) context.player!!.sendMessage(TranslatableText("chat.kibe.entangled_bucket.success"), true)
+                if(!context.world.isClient) context.player!!.sendMessage(Text.translatable("chat.kibe.entangled_bucket.success"), true)
                 return ActionResult.SUCCESS
             }
 

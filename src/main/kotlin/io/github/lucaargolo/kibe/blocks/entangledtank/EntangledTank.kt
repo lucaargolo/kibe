@@ -137,7 +137,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                     if ((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
                         if (tank.key == DEFAULT_KEY) {
                             if (!world.isClient) {
-                                tank.owner = player.name.asString()
+                                tank.owner = player.name.string
                                 tank.key = "entangledtank-${player.uuid}"
                             }
                             tank.markDirtyAndSync()

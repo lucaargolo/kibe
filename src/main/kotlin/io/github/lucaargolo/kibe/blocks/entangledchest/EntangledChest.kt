@@ -4,8 +4,8 @@ import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.items.itemRegistry
 import io.github.lucaargolo.kibe.items.miscellaneous.Rune
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -96,7 +96,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                 if((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
                     if((world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
                         if(!world.isClient) {
-                            (world.getBlockEntity(pos) as EntangledChestEntity).owner = player.name.asString()
+                            (world.getBlockEntity(pos) as EntangledChestEntity).owner = player.name.string
                             (world.getBlockEntity(pos) as EntangledChestEntity).key = "entangledchest-${player.uuid}"
                             (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
                             (world.getBlockEntity(pos) as SyncableBlockEntity).sync()

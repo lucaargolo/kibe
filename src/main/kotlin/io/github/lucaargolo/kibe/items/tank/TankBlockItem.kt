@@ -6,22 +6,19 @@ import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext
 import net.minecraft.client.item.TooltipContext
-import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.world.World
@@ -38,7 +35,7 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         }
         readTank(blockEntityTag, dummyFluidTank)
         if(!dummyFluidTank.isResourceBlank)
-            tooltip.add(FluidVariantRendering.getName(dummyFluidTank.variant).shallowCopy().append(LiteralText(": ${Formatting.GRAY}${getMb(dummyFluidTank.amount)}mB")))
+            tooltip.add(FluidVariantAttributes.getName(dummyFluidTank.variant).shallowCopy().append(Text.literal(": ${Formatting.GRAY}${getMb(dummyFluidTank.amount)}mB")))
     }
 
     companion object {

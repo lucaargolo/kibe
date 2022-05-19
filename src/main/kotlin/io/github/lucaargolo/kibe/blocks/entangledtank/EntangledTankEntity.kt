@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
-import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
@@ -80,13 +79,13 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
     }
 
     private fun calculateComparatorOutput(): Int {
-        return StorageUtil.calculateComparatorOutput(getPersistentState().getOrCreateInventory(colorCode), null)
+        return StorageUtil.calculateComparatorOutput(getPersistentState().getOrCreateInventory(colorCode))
     }
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
         updateColorCode()
         key = tag.getString("key")
@@ -97,7 +96,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
 
     override fun readClientNbt(tag: NbtCompound) {
         (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
         updateColorCode()
         key = tag.getString("key")

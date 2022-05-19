@@ -6,10 +6,10 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.LiteralText
+
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Rarity
@@ -30,12 +30,12 @@ class EntangledChestBlockItem(settings: Settings): BlockItem(ENTANGLED_CHEST, se
             newTag.putString("colorCode", "00000000")
             newTag
         }
-        val ownerText = TranslatableText("tooltip.kibe.owner")
-        if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
-        val color = TranslatableText("tooltip.kibe.color")
+        val ownerText = Text.translatable("tooltip.kibe.owner")
+        if(tag.getString("key") != EntangledChest.DEFAULT_KEY) tooltip.add(ownerText.append(Text.literal(tag.getString("owner")).formatted(Formatting.GRAY)))
+        val color = Text.translatable("tooltip.kibe.color")
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
-            val text = LiteralText("■")
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+            val text = Text.literal("■")
             text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
             color.append(text)
         }

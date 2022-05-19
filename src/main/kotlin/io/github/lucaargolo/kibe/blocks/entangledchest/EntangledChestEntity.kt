@@ -67,7 +67,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
         updateColorCode()
         key = tag.getString("key")
@@ -78,7 +78,7 @@ class EntangledChestEntity(chest: EntangledChest, pos: BlockPos, state: BlockSta
 
     override fun readClientNbt(tag: NbtCompound) {
         (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
         updateColorCode()
         key = tag.getString("key")

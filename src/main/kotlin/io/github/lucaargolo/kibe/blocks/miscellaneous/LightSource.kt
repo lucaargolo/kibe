@@ -11,11 +11,11 @@ import net.minecraft.state.property.Properties
 import net.minecraft.tag.FluidTags
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
-import java.util.*
 
 class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ticksRandomly().collidable(false)), Waterloggable {
 
@@ -47,7 +47,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ti
         return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom)
     }
 
-    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: AbstractRandom) {
         (0..2).forEach { _ ->
             val vx = (random.nextDouble()-0.5)/5.0
             val vy = (random.nextDouble()-0.5)/5.0

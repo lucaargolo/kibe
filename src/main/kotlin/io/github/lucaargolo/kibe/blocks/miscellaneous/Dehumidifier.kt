@@ -9,8 +9,8 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.world.World
-import java.util.*
 
 class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
 
@@ -46,13 +46,13 @@ class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTON
         }
     }
 
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: Random?) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: AbstractRandom?) {
         if (state[Properties.ENABLED] && !world.isReceivingRedstonePower(pos)) {
             world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
         }
     }
 
-    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: AbstractRandom) {
         val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
         if(state[Properties.ENABLED]) {
             repeat(4) {

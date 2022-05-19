@@ -6,7 +6,7 @@ import io.github.lucaargolo.kibe.items.*
 import net.minecraft.block.Block
 import net.minecraft.item.ItemConvertible
 import net.minecraft.text.Text
-import net.minecraft.text.TranslatableText
+
 import net.minecraft.util.Identifier
 
 val tooltipRegistry = mutableMapOf<ItemConvertible, List<Text>>()
@@ -50,14 +50,14 @@ fun initTooltip() {
 
 fun registerTooltip(item: ItemConvertible) {
     val id = getIdentifier(item)
-    tooltipRegistry[item] = arrayListOf(TranslatableText("tooltip.kibe.lore.${id!!.path}"))
+    tooltipRegistry[item] = arrayListOf(Text.translatable("tooltip.kibe.lore.${id!!.path}"))
 }
 
 fun registerTooltip(item: ItemConvertible, number: Int) {
     val id = getIdentifier(item)
     val list = mutableListOf<Text>()
     (1..number).forEach {
-        list.add(TranslatableText("tooltip.kibe.lore.${id!!.path}.${it}"))
+        list.add(Text.translatable("tooltip.kibe.lore.${id!!.path}.${it}"))
     }
     tooltipRegistry[item] = list
 }

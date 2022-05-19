@@ -7,17 +7,15 @@ import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTank
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.writeTank
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
-import net.minecraft.text.TranslatableText
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Rarity
@@ -38,14 +36,14 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
             newTag.putString("colorCode", "00000000")
             newTag
         }
-        val ownerText = TranslatableText("tooltip.kibe.owner")
-        if(tag.getString("key") != EntangledTank.DEFAULT_KEY) tooltip.add(ownerText.append(LiteralText(tag.getString("owner")).formatted(Formatting.GRAY)))
-        val color = TranslatableText("tooltip.kibe.color")
+        val ownerText = Text.translatable("tooltip.kibe.owner")
+        if(tag.getString("key") != EntangledTank.DEFAULT_KEY) tooltip.add(ownerText.append(Text.literal(tag.getString("owner")).formatted(Formatting.GRAY)))
+        val color = Text.translatable("tooltip.kibe.color")
         var colorCode = ""
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
-            val text = LiteralText("■")
+            val text = Text.literal("■")
             text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
             color.append(text)
         }
@@ -58,7 +56,7 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
         }
         writeTank(tag, fluidInv)
         if(!fluidInv.isResourceBlank)
-            tooltip.add(FluidVariantRendering.getName(fluidInv.variant).shallowCopy().append(LiteralText(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
+            tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).shallowCopy().append(Text.literal(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
     }
 
 }

@@ -15,9 +15,7 @@ import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.items.*
 import io.github.lucaargolo.kibe.items.entangledbucket.EntangledBucket
-import io.github.lucaargolo.kibe.items.miscellaneous.ExperiencePotionEmptyStorage
 import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucket
-import io.github.lucaargolo.kibe.items.miscellaneous.WoodenBucketEmptyStorage
 import io.github.lucaargolo.kibe.items.tank.TankBlockItem
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
@@ -38,6 +36,7 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.loader.api.FabricLoader
@@ -213,7 +212,9 @@ fun initExtras() {
             (state as? EntangledTankState)?.dirtyColors?.clear()
         }
     }
-    FluidStorage.combinedItemApiProvider(WOODEN_BUCKET).register(::WoodenBucketEmptyStorage)
+    FluidStorage.combinedItemApiProvider(WOODEN_BUCKET).register {
+        EmptyItemFluidStorage(it, WATER_WOODEN_BUCKET, Fluids.WATER, FluidConstants.BUCKET)
+    }
     FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
         (context.itemVariant.item as? WoodenBucket)?.let { bucketItem ->
             val bucketFluid = Fluids.WATER
@@ -223,7 +224,9 @@ fun initExtras() {
         }
         return@register null
     }
-    FluidStorage.combinedItemApiProvider(Items.GLASS_BOTTLE).register(::ExperiencePotionEmptyStorage)
+    FluidStorage.combinedItemApiProvider(Items.GLASS_BOTTLE).register {
+        EmptyItemFluidStorage(it, Items.EXPERIENCE_BOTTLE, LIQUID_XP, FluidConstants.BOTTLE)
+    }
     FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
         (context.itemVariant.item as? ExperienceBottleItem)?.let { bottleItem ->
             val bottleFluid = LIQUID_XP
@@ -241,7 +244,7 @@ fun initExtras() {
         }
         var colorCode = ""
         (1..8).forEach {
-            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE)
+            val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
             colorCode += dc.id.let { int -> Integer.toHexString(int) }
         }
         tag.putString("colorCode", colorCode)

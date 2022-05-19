@@ -20,8 +20,9 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.text.LiteralText
-import net.minecraft.text.TranslatableText
+import net.minecraft.text.Text
+
+
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
@@ -29,6 +30,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3i
+import net.minecraft.util.math.random.AbstractRandom
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.*
 import net.minecraft.world.biome.SpawnSettings
@@ -50,10 +52,10 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         if (player.isSneaking && !world.isClient && hand === Hand.MAIN_HAND) {
             val entries = (world as ServerWorld).chunkManager.chunkGenerator.getEntitySpawnList(world.getBiome(pos), world.structureAccessor, SpawnGroup.MONSTER, pos.up()).entries
             if (entries.isEmpty()) {
-                player.sendMessage(LiteralText("Nothing can spawn"), false)
+                player.sendMessage(Text.literal("Nothing can spawn"), false)
                 return ActionResult.SUCCESS
             } else {
-                val names = TranslatableText("chat.kibe.cursed_dirt.spawn")
+                val names = Text.translatable("chat.kibe.cursed_dirt.spawn")
                 entries.forEachIndexed { index, entry ->
                     names.append(entry.type.name)
                     if(index < entries.size-1) names.append(", ")
@@ -66,7 +68,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     }
 
     @Suppress("DEPRECATION")
-    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
+    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: AbstractRandom) {
         if (!world.isChunkLoaded(pos)) return
 
         //Checks if its exposed to sunlight and spreads itself
@@ -139,7 +141,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         }
     }
 
-    private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
+    private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: AbstractRandom): EntityType<*>? {
         val optionalEntry: Optional<SpawnSettings.SpawnEntry> = SpawnHelperInvoker.pickRandomSpawnEntry(world, world.structureAccessor, world.chunkManager.chunkGenerator, SpawnGroup.MONSTER, random, pos)
         val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
         if(MOD_CONFIG.miscellaneousModule.cursedDirtBlacklist.contains(Registry.ENTITY_TYPE.getId(entry.type).toString())) return null
