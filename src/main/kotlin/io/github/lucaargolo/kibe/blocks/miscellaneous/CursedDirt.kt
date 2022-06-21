@@ -30,7 +30,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3i
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.*
 import net.minecraft.world.biome.SpawnSettings
@@ -68,7 +68,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     }
 
     @Suppress("DEPRECATION")
-    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: AbstractRandom) {
+    override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         if (!world.isChunkLoaded(pos)) return
 
         //Checks if its exposed to sunlight and spreads itself
@@ -141,7 +141,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         }
     }
 
-    private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: AbstractRandom): EntityType<*>? {
+    private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
         val optionalEntry: Optional<SpawnSettings.SpawnEntry> = SpawnHelperInvoker.pickRandomSpawnEntry(world, world.structureAccessor, world.chunkManager.chunkGenerator, SpawnGroup.MONSTER, random, pos)
         val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
         if(MOD_CONFIG.miscellaneousModule.cursedDirtBlacklist.contains(Registry.ENTITY_TYPE.getId(entry.type).toString())) return null

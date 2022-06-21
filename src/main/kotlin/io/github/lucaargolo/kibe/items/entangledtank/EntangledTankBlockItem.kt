@@ -56,7 +56,7 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(ENTANGLED_TANK, sett
         }
         writeTank(tag, fluidInv)
         if(!fluidInv.isResourceBlank)
-            tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).shallowCopy().append(Text.literal(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
+            tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).copyContentOnly().append(Text.literal(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
     }
 
 }

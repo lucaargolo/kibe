@@ -17,7 +17,7 @@ import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
 class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
@@ -45,7 +45,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, false) as BlockState, 4)
         }
     }
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: AbstractRandom) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         val facing = state[Properties.FACING]
         val facingPos = pos.offset(facing)
         val facingState = world.getBlockState(facingPos)

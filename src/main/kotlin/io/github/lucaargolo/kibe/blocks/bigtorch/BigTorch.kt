@@ -19,7 +19,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
@@ -44,7 +44,7 @@ class BigTorch: BlockWithEntity(Settings.of(Material.DECORATION).strength(0.5f).
         return defaultState.with(Properties.LEVEL_8, 0)
     }
 
-    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: AbstractRandom) {
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
         (0..state[Properties.LEVEL_8]).forEach { radius ->
             (1..radius*9).forEach {
                 val x = (cos(it * 180/(radius*9) * Math.PI / 90))

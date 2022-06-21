@@ -13,7 +13,7 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
 class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
@@ -42,7 +42,7 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
         }
     }
 
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: AbstractRandom) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         val facingPos = pos.offset(state[Properties.FACING])
         val facingState = world.getBlockState(facingPos)
         if(facingState.material.isReplaceable && !facingState.isOf(Blocks.FIRE)) {

@@ -27,9 +27,8 @@ import io.netty.buffer.Unpooled
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback
+import net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
@@ -44,6 +43,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
+import net.minecraft.loot.LootPool
 import net.minecraft.loot.condition.EntityPropertiesLootCondition
 import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
@@ -274,9 +274,9 @@ fun initExtras() {
 
 fun initLootTables() {
     //Add cursed droplets drop to mobs with the cursed effect
-    LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
+    LootTableEvents.MODIFY.register { _, _, id, supplier, _ ->
         if (id.toString().startsWith("minecraft:entities")) {
-            val poolBuilder = FabricLootPoolBuilder.builder()
+            val poolBuilder = LootPool.Builder()
                 .rolls(ConstantLootNumberProvider.create(1f))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(
@@ -286,19 +286,19 @@ fun initLootTables() {
                     )
                 )
                 .conditionally(RandomChanceLootCondition.builder(0.05F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
+                .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
-    })
+    }
     //Add cursed droplets to wither skeletons
-    LootTableLoadingCallback.EVENT.register(LootTableLoadingCallback { _, _, id: Identifier, supplier: FabricLootSupplierBuilder, _ ->
+    LootTableEvents.MODIFY.register { _, _, id, supplier, _ ->
         if (id.toString() == "minecraft:entities/wither_skeleton") {
-            val poolBuilder = FabricLootPoolBuilder.builder()
+            val poolBuilder = LootPool.Builder()
                 .rolls(ConstantLootNumberProvider.create(1f))
                 .with(ItemEntry.builder(CURSED_DROPLETS))
                 .conditionally(RandomChanceLootCondition.builder(0.1F))
-                .withFunction(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
+                .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
             supplier.pool(poolBuilder)
         }
-    })
+    }
 }

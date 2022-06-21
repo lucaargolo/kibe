@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.world.BlockRenderView
 import java.awt.Color
 import java.io.BufferedReader
@@ -39,7 +39,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
     override fun isVanillaAdapter(): Boolean = false
 
-    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<AbstractRandom>, context: RenderContext) {
+    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val client = MinecraftClient.getInstance()
         val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(Identifier(MOD_ID, "tank"), "level=0"))
@@ -90,7 +90,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
         emit()
     }
 
-    override fun emitBlockQuads(p0: BlockRenderView?, p1: BlockState?, p2: BlockPos?, p3: Supplier<AbstractRandom>?, p4: RenderContext?) {}
+    override fun emitBlockQuads(p0: BlockRenderView?, p1: BlockState?, p2: BlockPos?, p3: Supplier<Random>?, p4: RenderContext?) {}
 
     @Throws(IOException::class, NoSuchElementException::class)
     private fun getReaderForResource(location: Identifier): Reader {
@@ -101,7 +101,7 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
 
     override fun getOverrides(): ModelOverrideList = ModelOverrideList.EMPTY
 
-    override fun getQuads(state: BlockState?, face: Direction?, random: AbstractRandom?): MutableList<BakedQuad> = mutableListOf()
+    override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
 
     override fun getParticleSprite() = null
 

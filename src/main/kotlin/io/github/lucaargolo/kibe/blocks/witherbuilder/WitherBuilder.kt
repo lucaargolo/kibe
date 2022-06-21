@@ -22,7 +22,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
 class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)) {
@@ -61,7 +61,7 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         }
     }
 
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: AbstractRandom) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         val facing = state[Properties.HORIZONTAL_FACING]
         val facingPos = pos.offset(if(state[VERTICAL]) state[VERTICAL_FACING] else facing, if(state[VERTICAL_FACING] == Direction.DOWN) 3 else 1)
         val xOffset = if(facing.axis == Direction.Axis.Z) 1 else 0

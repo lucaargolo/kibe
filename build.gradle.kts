@@ -111,7 +111,7 @@ dependencies {
 
     modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
 
-    //modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 }
 

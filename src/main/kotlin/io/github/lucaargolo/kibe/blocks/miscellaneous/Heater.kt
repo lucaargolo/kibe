@@ -12,7 +12,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
 class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).luminance { if(it[Properties.ENABLED]) 15 else 0 }) {
@@ -53,13 +53,13 @@ class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).lum
         }
     }
 
-    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: AbstractRandom?) {
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: Random?) {
         if (state[Properties.ENABLED] && !world.isReceivingRedstonePower(pos)) {
             world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
         }
     }
 
-    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: AbstractRandom) {
+    override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
         if(state[Properties.ENABLED]) {
             repeat(4) {
                 val x = pos.x.toDouble() + 0.5

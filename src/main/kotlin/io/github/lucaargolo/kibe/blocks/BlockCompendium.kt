@@ -45,9 +45,8 @@ import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreen
 import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreenHandler
 import io.github.lucaargolo.kibe.utils.CREATIVE_TAB
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
@@ -55,6 +54,7 @@ import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreens
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
@@ -85,7 +85,7 @@ class ContainerInfo<T: ScreenHandler>(
     fun init(blockIdentifier: Identifier) {
         val id = identifier ?: blockIdentifier
         title = Text.translatable("screen.$MOD_ID.${id.path}")
-        handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
+        handlerType = ExtendedScreenHandlerType { i, playerInventory, packetByteBuf ->
             val pos = packetByteBuf.readBlockPos()
             val player = playerInventory.player
             val world = player.world
@@ -93,10 +93,11 @@ class ContainerInfo<T: ScreenHandler>(
             handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, be, ScreenHandlerContext.create(world, pos)) as T
             handler
         }
+        Registry.register(Registry.SCREEN_HANDLER, id, handlerType)
     }
 
     fun initClient() {
-        ScreenRegistry.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T>  }
+        HandledScreens.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T>  }
     }
 
 }

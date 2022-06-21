@@ -24,7 +24,7 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 
 class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
@@ -67,7 +67,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumerProvider.getBuffer(RenderLayer.getCutout())
-        tankGlassModel.getQuads(null, null, AbstractRandom.create()).forEach { q ->
+        tankGlassModel.getQuads(null, null, Random.create()).forEach { q ->
             cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, lightmap, overlay)
         }
 

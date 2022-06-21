@@ -63,7 +63,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         tooltip.add(color)
         val fluidInv = getFluidInv(world, tag)
         if(!fluidInv.isResourceBlank)
-            tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).shallowCopy().append(Text.literal(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
+            tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).copyContentOnly().append(Text.literal(": ${Formatting.GRAY}${getMb(fluidInv.amount)}mB")))
     }
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {

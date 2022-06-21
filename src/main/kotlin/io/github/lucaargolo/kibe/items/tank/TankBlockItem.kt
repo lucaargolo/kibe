@@ -35,7 +35,7 @@ class TankBlockItem(settings: Settings): BlockItem(TANK, settings) {
         }
         readTank(blockEntityTag, dummyFluidTank)
         if(!dummyFluidTank.isResourceBlank)
-            tooltip.add(FluidVariantAttributes.getName(dummyFluidTank.variant).shallowCopy().append(Text.literal(": ${Formatting.GRAY}${getMb(dummyFluidTank.amount)}mB")))
+            tooltip.add(FluidVariantAttributes.getName(dummyFluidTank.variant).copyContentOnly().append(Text.literal(": ${Formatting.GRAY}${getMb(dummyFluidTank.amount)}mB")))
     }
 
     companion object {

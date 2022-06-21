@@ -13,7 +13,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.random.AbstractRandom
+import net.minecraft.util.math.random.Random
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -70,14 +70,14 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
             val handleIdentifier = ModelIdentifier(Identifier(MOD_ID, "glider_handle"), "inventory")
             val handleModel = MinecraftClient.getInstance().bakedModelManager.getModel(handleIdentifier)
 
-            handleModel.getQuads(null, null, AbstractRandom.create()).forEach { q ->
+            handleModel.getQuads(null, null, Random.create()).forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, lightmap, overlay)
             }
 
             val gliderIdentifier = ModelIdentifier(Identifier(MOD_ID, itemId.path + "_active"), "inventory")
             val gliderModel = MinecraftClient.getInstance().bakedModelManager.getModel(gliderIdentifier)
 
-            gliderModel.getQuads(null, null, AbstractRandom.create()).forEach { q ->
+            gliderModel.getQuads(null, null, Random.create()).forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, lightmap, overlay)
             }
         }else {
@@ -85,7 +85,7 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
             val invIdentifier = ModelIdentifier(statusId, "inventory")
             val invModel = MinecraftClient.getInstance().bakedModelManager.getModel(invIdentifier)
 
-            invModel.getQuads(null, null, AbstractRandom.create()).forEach { q ->
+            invModel.getQuads(null, null, Random.create()).forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, lightmap, overlay)
             }
         }

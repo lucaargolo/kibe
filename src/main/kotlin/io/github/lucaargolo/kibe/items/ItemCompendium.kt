@@ -27,9 +27,9 @@ import io.github.lucaargolo.kibe.utils.INFINITE_FIRE_RESISTENCE
 import io.github.lucaargolo.kibe.utils.INFINITE_WATER_BREATHING
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreens
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.render.model.ModelBakeSettings
 import net.minecraft.client.render.model.ModelLoader
@@ -70,16 +70,17 @@ class ContainerInfo<T: ScreenHandler>(
     fun init(itemIdentifier: Identifier) {
         val id = identifier ?: itemIdentifier
         title = Text.translatable("screen.$MOD_ID.${id.path}")
-        handlerType = ScreenHandlerRegistry.registerExtended(id) { i, playerInventory, packetByteBuf ->
+        handlerType = ExtendedScreenHandlerType { i, playerInventory, packetByteBuf ->
             val hand = packetByteBuf.readEnumConstant(Hand::class.java)
             val tag = packetByteBuf.readNbt()!!
             handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, hand, playerInventory.player.world, tag) as T
             handler
         }
+        Registry.register(Registry.SCREEN_HANDLER, id, handlerType)
     }
 
     fun initClient() {
-        ScreenRegistry.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T> }
+        HandledScreens.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T> }
     }
 
 }
