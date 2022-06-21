@@ -64,7 +64,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
     val tank = object: SingleVariantStorage<FluidVariant>() {
         override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
         override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
-
+        override fun canInsert(variant: FluidVariant?): Boolean = variant?.isOf(LIQUID_XP) ?: false
         override fun onFinalCommit() {
             markDirty()
         }
