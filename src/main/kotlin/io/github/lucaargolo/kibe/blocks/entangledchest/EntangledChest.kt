@@ -10,8 +10,10 @@ import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.entity.mob.ShulkerEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -51,7 +53,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
         var isHoldingRune = false
         itemRegistry.forEach { (_, modItem) -> if(modItem.item is Rune && context.isHolding(modItem.item)) isHoldingRune = true }
         if(isHoldingRune) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
-        if(context.isHolding(Items.DIAMOND)) return VoxelShapes.union(
+        if(context.isHolding(Items.DIAMOND) || context.isHolding(Items.GOLD_INGOT)) return VoxelShapes.union(
             VoxelShapes.union(
                 createCuboidShape(9.0, 14.0, 7.0, 10.0, 16.0, 9.0),
                 createCuboidShape(7.0, 14.0, 6.0, 9.0, 16.0, 10.0)
@@ -82,7 +84,12 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                         if(oldColor != newColor) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = newColor
                             (world.getBlockEntity(pos) as EntangledChestEntity).updateColorCode()
-                            player.getStackInHand(hand).decrement(1)
+                            if(!player.isCreative) {
+                                oldColor?.let(Rune::getRuneByColor)?.let {
+                                    Block.dropStack(world, pos.up(), ItemStack(it))
+                                }
+                                player.getStackInHand(hand).decrement(1)
+                            }
                         }
                         (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
                         (world.getBlockEntity(pos) as SyncableBlockEntity).sync()
@@ -90,24 +97,39 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
                     return ActionResult.CONSUME
                 }
             }
-            if(player.getStackInHand(hand).item == Items.DIAMOND) {
+            if(player.getStackInHand(hand).item == Items.DIAMOND || player.getStackInHand(hand).item == Items.GOLD_INGOT) {
                 val x = poss.x-pos.x
                 val z = poss.z-pos.z
                 if((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
-                    if((world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
+                    if(player.getStackInHand(hand).item == Items.DIAMOND && (world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
                         if(!world.isClient) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).owner = player.name.string
                             (world.getBlockEntity(pos) as EntangledChestEntity).key = "entangledchest-${player.uuid}"
                             (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
                             (world.getBlockEntity(pos) as SyncableBlockEntity).sync()
                         }
-                        player.getStackInHand(hand).decrement(1)
+                        if(!player.isCreative) {
+                            Block.dropStack(world, pos.up(), ItemStack(Items.GOLD_INGOT))
+                            player.getStackInHand(hand).decrement(1)
+                        }
+                        return ActionResult.CONSUME
+                    }else if(player.getStackInHand(hand).item == Items.GOLD_INGOT && (world.getBlockEntity(pos) as EntangledChestEntity).key != DEFAULT_KEY) {
+                        if(!world.isClient) {
+                            (world.getBlockEntity(pos) as EntangledChestEntity).owner = ""
+                            (world.getBlockEntity(pos) as EntangledChestEntity).key = DEFAULT_KEY
+                            (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
+                            (world.getBlockEntity(pos) as SyncableBlockEntity).sync()
+                        }
+                        if(!player.isCreative) {
+                            Block.dropStack(world, pos.up(), ItemStack(Items.DIAMOND))
+                            player.getStackInHand(hand).decrement(1)
+                        }
                         return ActionResult.CONSUME
                     }
                 }
             }
         }
-        return if(world.getBlockState(pos.up()).isAir) {
+        return if(canOpen(world, pos)) {
             player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
             ActionResult.SUCCESS
         }else{
@@ -156,6 +178,10 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).req
     companion object {
         const val DEFAULT_KEY = "entangledchest-global"
 
+        fun canOpen(world: World?, pos: BlockPos): Boolean {
+            val box = ShulkerEntity.calculateBoundingBox(Direction.UP, 0.0f, 0.25f).offset(pos).contract(1.0E-6)
+            return world?.isSpaceEmpty(box) ?: true
+        }
         fun getRuneByPos(x: Double, z: Double, direction: Direction): Int? {
             val int = when(x) {
                 in 0.6875..0.8125 -> {

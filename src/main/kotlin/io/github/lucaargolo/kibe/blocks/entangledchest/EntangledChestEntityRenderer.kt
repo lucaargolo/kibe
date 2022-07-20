@@ -76,7 +76,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
             screen.hasSameColors(entity.runeColors)
         }else false
 
-        if((isChestScreenOpen || isBagScreenOpen) && entity.world?.getBlockState(entity.pos.up())?.isAir == true) {
+        if((isChestScreenOpen || isBagScreenOpen) && EntangledChest.canOpen(entity.world, entity.pos)) {
             if(!isScreenOpen) {
                 isScreenOpen = true
                 when(currentState){
