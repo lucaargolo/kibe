@@ -11,12 +11,57 @@
               "function": "minecraft:copy_nbt",
               "source": "block_entity",
 			  "ops": [
-                    {
-                      "source": "",
-                      "target": "BlockEntityTag",
-                      "op": "merge"
-                    }
-                  ]
+                {
+                  "source": "key",
+                  "target": "BlockEntityTag.key",
+                  "op": "replace"
+                },
+                {
+                  "source": "owner",
+                  "target": "BlockEntityTag.owner",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune1",
+                  "target": "BlockEntityTag.rune1",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune2",
+                  "target": "BlockEntityTag.rune2",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune3",
+                  "target": "BlockEntityTag.rune3",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune4",
+                  "target": "BlockEntityTag.rune4",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune5",
+                  "target": "BlockEntityTag.rune5",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune6",
+                  "target": "BlockEntityTag.rune6",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune7",
+                  "target": "BlockEntityTag.rune7",
+                  "op": "replace"
+                },
+                {
+                  "source": "rune8",
+                  "target": "BlockEntityTag.rune8",
+                  "op": "replace"
+                }
+              ]
             }
           ],
           "name": "kibe:entangled_tank"

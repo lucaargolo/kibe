@@ -12,6 +12,7 @@ import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
@@ -99,7 +100,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
             createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
         )
 
-        if(context.isHolding(Items.DIAMOND)) return VoxelShapes.union(
+        if(context.isHolding(Items.DIAMOND) || context.isHolding(Items.GOLD_INGOT)) return VoxelShapes.union(
             VoxelShapes.union(
                 createCuboidShape(9.0, 14.0, 7.0, 10.0, 16.0, 9.0),
                 createCuboidShape(7.0, 14.0, 6.0, 9.0, 16.0, 10.0)
@@ -124,24 +125,43 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requ
                             if(oldColor != newColor) {
                                 tank.runeColors[int] = newColor
                                 tank.updateColorCode()
-                                player.getStackInHand(hand).decrement(1)
+                                if(!player.isCreative) {
+                                    oldColor?.let(Rune::getRuneByColor)?.let {
+                                        Block.dropStack(world, pos.up(), ItemStack(it))
+                                    }
+                                    player.getStackInHand(hand).decrement(1)
+                                }
                             }
                         }
                         tank.markDirtyAndSync()
                         return ActionResult.CONSUME
                     }
                 }
-                if (player.getStackInHand(hand).item == Items.DIAMOND) {
+                if(player.getStackInHand(hand).item == Items.DIAMOND || player.getStackInHand(hand).item == Items.GOLD_INGOT) {
                     val x = poss.x - pos.x
                     val z = poss.z - pos.z
                     if ((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
-                        if (tank.key == DEFAULT_KEY) {
+                        if(player.getStackInHand(hand).item == Items.DIAMOND && tank.key == DEFAULT_KEY) {
                             if (!world.isClient) {
                                 tank.owner = player.name.asString()
                                 tank.key = "entangledtank-${player.uuid}"
                             }
                             tank.markDirtyAndSync()
-                            player.getStackInHand(hand).decrement(1)
+                            if(!player.isCreative) {
+                                Block.dropStack(world, pos.up(), ItemStack(Items.GOLD_INGOT))
+                                player.getStackInHand(hand).decrement(1)
+                            }
+                            return ActionResult.CONSUME
+                        }else if(player.getStackInHand(hand).item == Items.GOLD_INGOT && tank.key != DEFAULT_KEY) {
+                            if (!world.isClient) {
+                                tank.owner = ""
+                                tank.key = DEFAULT_KEY
+                            }
+                            tank.markDirtyAndSync()
+                            if(!player.isCreative) {
+                                Block.dropStack(world, pos.up(), ItemStack(Items.DIAMOND))
+                                player.getStackInHand(hand).decrement(1)
+                            }
                             return ActionResult.CONSUME
                         }
                     }
