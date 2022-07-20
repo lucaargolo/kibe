@@ -24,9 +24,11 @@ public abstract class EntityMixin {
 
     @Shadow private Vec3d pos;
 
-    @Inject(at = @At("HEAD"), method = "setSneaking", cancellable = true)
+    @Shadow public abstract boolean isSpectator();
+
+    @Inject(at = @At("HEAD"), method = "setSneaking")
     private void setSneaking(boolean sneaking, CallbackInfo info) {
-        if(sneaking) {
+        if(sneaking && !isSpectator()) {
             BlockPos pos = getBlockPos();
             Block block = world.getBlockState(pos.down()).getBlock();
             if (block instanceof Elevator && world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
