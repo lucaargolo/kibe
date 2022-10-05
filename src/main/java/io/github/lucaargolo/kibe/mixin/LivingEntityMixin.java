@@ -54,7 +54,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(at = @At("HEAD"), method = "jump", cancellable = true)
     private void jump(CallbackInfo info) {
         BlockPos pos = this.getBlockPos();
-        Block block = this.world.getBlockState(pos.down()).getBlock();
+        Block block = this.world.getBlockState(pos.up()).getBlock();
         if (block instanceof Elevator && world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
             while(pos.getY() < world.getTopY()) {
                 if(world.getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.up())) {
