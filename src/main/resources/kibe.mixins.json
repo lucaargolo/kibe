@@ -10,7 +10,7 @@
     "EntityMixin",
     "ExperienceOrbEntityAccessor",
     "HostileEntityMixin",
-    "LightingProviderMixin",
+    "BlockRenderViewMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
     "MobSpawnerLogicMixin",
