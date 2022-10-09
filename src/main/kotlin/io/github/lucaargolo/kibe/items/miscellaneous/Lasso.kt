@@ -2,8 +2,12 @@ package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.SpawnGroup
+import net.minecraft.entity.mob.MobEntity
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
@@ -13,6 +17,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
@@ -21,6 +26,25 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun hasGlint(stack: ItemStack): Boolean {
         return stack.orCreateNbt.contains("Entity")
+    }
+
+    override fun useOnEntity(stack: ItemStack, user: PlayerEntity, entity: LivingEntity, hand: Hand): ActionResult {
+        val stackTag = stack.nbt
+        if (stackTag != null && !stackTag.contains("Entity")) {
+            if (entity is MobEntity && canStoreEntity(entity.type)) {
+                if(!user.world.isClient) {
+                    if (entity.isLeashed) entity.detachLeash(true, true)
+                    entity.fallDistance = 0f
+                    val tag = NbtCompound()
+                    entity.saveSelfNbt(tag)
+                    stackTag.put("Entity", tag)
+                    stack.nbt = stackTag
+                    entity.remove(Entity.RemovalReason.DISCARDED)
+                }
+                return ActionResult.SUCCESS
+            }
+        }
+        return ActionResult.PASS
     }
 
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
