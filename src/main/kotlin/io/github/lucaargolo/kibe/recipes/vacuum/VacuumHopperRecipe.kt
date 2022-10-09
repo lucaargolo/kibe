@@ -49,4 +49,6 @@ class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput
 
     override fun getIngredients(): DefaultedList<Ingredient> = DefaultedList.ofSize(1, input)
 
+    override fun isIgnoredInRecipeBook(): Boolean = true
+
 }
