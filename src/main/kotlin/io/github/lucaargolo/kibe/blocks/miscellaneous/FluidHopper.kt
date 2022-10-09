@@ -25,7 +25,9 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
+import kotlin.math.roundToInt
 
 class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.STONE_GRAY).requiresTool().strength(3.0F, 4.8F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
 
@@ -44,7 +46,7 @@ class FluidHopper: HopperBlock(FabricBlockSettings.of(Material.METAL, MapColor.S
     override fun hasComparatorOutput(state: BlockState?) = true
 
     override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
-        return StorageUtil.calculateComparatorOutput((world.getBlockEntity(pos) as? TankBlockEntity)?.tank, null)
+        return (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.tank?.let { MathHelper.lerp(it.amount.toFloat()/it.capacity.toFloat(), 0f, 15f).roundToInt() } ?: 0
     }
 
     override fun onUse(

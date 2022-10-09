@@ -9,17 +9,17 @@ import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
-import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
+import kotlin.math.roundToInt
 
 class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(chest), pos, state) {
 
@@ -80,7 +80,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
     }
 
     private fun calculateComparatorOutput(): Int {
-        return StorageUtil.calculateComparatorOutput(getPersistentState().getOrCreateInventory(colorCode), null)
+        return getPersistentState().getOrCreateInventory(colorCode).let { MathHelper.lerp(it.amount.toFloat()/it.capacity.toFloat(), 0f, 15f).roundToInt() }
     }
 
     override fun readNbt(tag: NbtCompound) {

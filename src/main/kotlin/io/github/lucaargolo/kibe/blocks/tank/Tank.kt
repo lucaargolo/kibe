@@ -17,7 +17,9 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
+import kotlin.math.roundToInt
 
 class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F).nonOpaque().luminance { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)) {
 
@@ -43,7 +45,7 @@ class Tank: BlockWithEntity(FabricBlockSettings.of(Material.GLASS).strength(0.5F
     override fun hasComparatorOutput(state: BlockState?) = true
 
     override fun getComparatorOutput(state: BlockState?, world: World, pos: BlockPos): Int {
-        return StorageUtil.calculateComparatorOutput((world.getBlockEntity(pos) as? TankBlockEntity)?.tank, null)
+        return (world.getBlockEntity(pos) as? TankBlockEntity)?.tank?.let { MathHelper.lerp(it.amount.toFloat()/it.capacity.toFloat(), 0f, 15f).roundToInt() } ?: 0
     }
 
     @Suppress("DEPRECATION")
