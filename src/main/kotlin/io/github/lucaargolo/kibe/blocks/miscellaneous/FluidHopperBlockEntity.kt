@@ -3,6 +3,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
+import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.readTank
 import io.github.lucaargolo.kibe.utils.writeTank
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache
@@ -23,7 +24,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 import kotlin.math.min
 
-class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(block), pos, state) {
+class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(block), pos, state) {
 
     companion object {
         private const val CAPACITY = FluidConstants.BUCKET
@@ -44,6 +45,16 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
     val tank = object : SingleVariantStorage<FluidVariant>() {
         override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
         override fun getCapacity(variant: FluidVariant?): Long = CAPACITY
+
+        override fun onFinalCommit() {
+            markDirtyAndSync()
+        }
+    }
+
+    fun markDirtyAndSync() {
+        markDirty()
+        if(world?.isClient == false)
+            sync()
     }
 
     override fun writeNbt(tag: NbtCompound) {
@@ -55,6 +66,10 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
         super.readNbt(tag)
         readTank(tag, tank)
     }
+
+    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
+
+    override fun readClientNbt(tag: NbtCompound) = readNbt(tag)
 
     private fun tick(world: ServerWorld, pos: BlockPos, state: BlockState) {
         if (!state[HopperBlock.ENABLED]) return
