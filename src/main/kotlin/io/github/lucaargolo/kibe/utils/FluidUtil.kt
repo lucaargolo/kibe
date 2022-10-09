@@ -1,13 +1,11 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
+@file:Suppress("UnstableApiUsage")
 
 package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.LOGGER
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluids
@@ -63,29 +61,11 @@ fun writeTank(tag: NbtCompound, tank: SingleVariantStorage<FluidVariant>): NbtCo
 }
 
 fun interactPlayerHand(tank: Storage<FluidVariant>, player: PlayerEntity, hand: Hand): ActionResult {
-    val interacted = interactPlayerHandInner(tank, player, hand)
-    if (interacted) {
-        return ActionResult.success(player.world.isClient)
+    return if (FluidStorageUtil.interactWithFluidStorage(tank, player, hand)) {
+        ActionResult.success(player.world.isClient)
     } else {
-        return ActionResult.PASS
+        ActionResult.PASS
     }
-}
-
-private fun interactPlayerHandInner(tank: Storage<FluidVariant>, player: PlayerEntity, hand: Hand): Boolean {
-    val backupStack = if(player.isCreative) { player.getStackInHand(hand).copy() } else null
-    val handStorage = ContainerItemContext.ofPlayerHand(player, hand).find(FluidStorage.ITEM) ?: return false
-    // Move from hand to tank
-    if (StorageUtil.move(handStorage, tank, { true }, Long.MAX_VALUE, null) > 0) {
-        backupStack?.let { player.setStackInHand(hand, backupStack) }
-        return true
-    }
-    // Move from tank to hand
-    if (StorageUtil.move(tank, handStorage, { true }, Long.MAX_VALUE, null) > 0) {
-        backupStack?.let { player.setStackInHand(hand, backupStack) }
-        return true
-    }
-
-    return false
 }
 
 fun getMb(amount: Long): String {
