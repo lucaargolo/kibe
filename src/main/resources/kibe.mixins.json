@@ -5,6 +5,7 @@
   "mixins": [
     "BiomeMixin",
     "BucketItemAccessor",
+    "CauldronBehaviorMixin",
     "CraftingTableContainerMixin",
     "EndermanEntityMixin",
     "EntityMixin",
