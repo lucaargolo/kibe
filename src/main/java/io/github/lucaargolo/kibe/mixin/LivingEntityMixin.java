@@ -5,6 +5,7 @@ import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
 import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
+import io.github.lucaargolo.kibe.utils.SpikeDamageSource;
 import io.github.lucaargolo.kibe.utils.SpikeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -30,6 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public abstract ItemStack getStackInHand(Hand hand);
+    @Shadow protected int playerHitTimer;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -101,7 +103,12 @@ public abstract class LivingEntityMixin extends Entity {
             }
         }
     }
-
+    @Inject(at = @At("HEAD"), method = "damage", cancellable = true)
+    private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if(source instanceof SpikeDamageSource.DiamondSpikeDamageSource) {
+            this.playerHitTimer = 100;
+        }
+    }
     @SuppressWarnings("ConstantConditions")
     @Inject(at = @At("HEAD"), method = "shouldDropLoot", cancellable = true)
     private void shouldDropLoot(CallbackInfoReturnable<Boolean> cir) {
