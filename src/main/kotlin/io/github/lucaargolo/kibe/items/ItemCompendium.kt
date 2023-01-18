@@ -4,6 +4,7 @@ package io.github.lucaargolo.kibe.items
 
 import com.mojang.datafixers.util.Pair
 import io.github.ladysnake.pal.VanillaAbilities
+import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItem
 import io.github.lucaargolo.kibe.items.cooler.CoolerBlockItemScreen
@@ -178,22 +179,22 @@ val WATER_WOODEN_BUCKET = register(Identifier(MOD_ID, "water_wooden_bucket"), Wo
 val GLIDER_LEFT_WING = register(Identifier(MOD_ID, "glider_left_wing"), Item(settingsWithTab()))
 val GLIDER_RIGHT_WING = register(Identifier(MOD_ID, "glider_right_wing"), Item(settingsWithTab()))
 
-val WHITE_GLIDER = register(Identifier(MOD_ID, "white_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val ORANGE_GLIDER = register(Identifier(MOD_ID, "orange_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val MAGENTA_GLIDER = register(Identifier(MOD_ID, "magenta_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val LIGHT_BLUE_GLIDER = register(Identifier(MOD_ID, "light_blue_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val YELLOW_GLIDER = register(Identifier(MOD_ID, "yellow_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val LIME_GLIDER = register(Identifier(MOD_ID, "lime_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val PINK_GLIDER = register(Identifier(MOD_ID, "pink_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val GRAY_GLIDER = register(Identifier(MOD_ID, "gray_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val LIGHT_GRAY_GLIDER = register(Identifier(MOD_ID, "light_gray_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val CYAN_GLIDER = register(Identifier(MOD_ID, "cyan_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val BLUE_GLIDER = register(Identifier(MOD_ID, "blue_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val PURPLE_GLIDER = register(Identifier(MOD_ID, "purple_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val GREEN_GLIDER = register(Identifier(MOD_ID, "green_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val BROWN_GLIDER = register(Identifier(MOD_ID, "brown_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val RED_GLIDER = register(Identifier(MOD_ID, "red_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
-val BLACK_GLIDER = register(Identifier(MOD_ID, "black_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON)))
+val WHITE_GLIDER = register(Identifier(MOD_ID, "white_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val ORANGE_GLIDER = register(Identifier(MOD_ID, "orange_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val MAGENTA_GLIDER = register(Identifier(MOD_ID, "magenta_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val LIGHT_BLUE_GLIDER = register(Identifier(MOD_ID, "light_blue_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val YELLOW_GLIDER = register(Identifier(MOD_ID, "yellow_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val LIME_GLIDER = register(Identifier(MOD_ID, "lime_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val PINK_GLIDER = register(Identifier(MOD_ID, "pink_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val GRAY_GLIDER = register(Identifier(MOD_ID, "gray_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val LIGHT_GRAY_GLIDER = register(Identifier(MOD_ID, "light_gray_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val CYAN_GLIDER = register(Identifier(MOD_ID, "cyan_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val BLUE_GLIDER = register(Identifier(MOD_ID, "blue_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val PURPLE_GLIDER = register(Identifier(MOD_ID, "purple_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val GREEN_GLIDER = register(Identifier(MOD_ID, "green_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val BROWN_GLIDER = register(Identifier(MOD_ID, "brown_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val RED_GLIDER = register(Identifier(MOD_ID, "red_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val BLACK_GLIDER = register(Identifier(MOD_ID, "black_glider"), Glider(settingsWithTab().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(MOD_CONFIG.miscellaneousModule.gliderDurability)))
 
 val VOID_BUCKET = register(Identifier(MOD_ID, "void_bucket"), VoidBucket(settingsWithTab().maxCount(1).rarity(Rarity.RARE)))
 

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.mixin;
 
 import io.github.ladysnake.pal.PlayerAbility;
 import io.github.ladysnake.pal.impl.PlayerAbilityView;
+import io.github.lucaargolo.kibe.KibeModKt;
 import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing;
 import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
@@ -13,6 +14,7 @@ import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import kotlin.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -82,9 +84,25 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         if(!isOnGround() && !isTouchingWater() && !isFallFlying() && getVelocity().y < 0.0) {
             ItemStack mainHandStack = player.getMainHandStack();
             ItemStack offHandStack = player.getOffHandStack();
-            boolean isGliding = (mainHandStack.getItem() instanceof Glider && Glider.Companion.isEnabled(mainHandStack)) || (offHandStack.getItem() instanceof Glider && Glider.Companion.isEnabled(offHandStack));
+            ItemStack stack;
+            EquipmentSlot slot;
+            if(mainHandStack.getItem() instanceof Glider && Glider.Companion.isEnabled(mainHandStack)) {
+                slot = EquipmentSlot.MAINHAND;
+                stack = mainHandStack;
+            }else if(offHandStack.getItem() instanceof Glider && Glider.Companion.isEnabled(offHandStack)) {
+                slot = EquipmentSlot.OFFHAND;
+                stack = offHandStack;
+            } else {
+                slot = EquipmentSlot.MAINHAND;
+                stack = ItemStack.EMPTY;
+            }
+            boolean isGliding = !stack.isEmpty();
             if(isGliding) {
                 GliderHelper.INSTANCE.setPlayerGliding(player, true);
+
+                if(!KibeModKt.getMOD_CONFIG().getMiscellaneousModule().getGliderUnbreakable()) {
+                    stack.damage(1, player, (e) -> e.sendEquipmentBreakStatus(slot));
+                }
 
                 float hSpeed = 0.05f;
                 float vSpeed = 0.5f;

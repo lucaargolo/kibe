@@ -18,6 +18,10 @@ class ModConfig {
         var xpShowerSpeedMultiplier = 1.0
         //The range of the magnet
         var magnetRange = 8.0
+        //If glider has any durability
+        var gliderUnbreakable: Boolean = true
+        //Glider durability in ticks (36000 = 30 minutes)
+        var gliderDurability: Int = 36000
     }
 
     class ChunkLoaderModule {
