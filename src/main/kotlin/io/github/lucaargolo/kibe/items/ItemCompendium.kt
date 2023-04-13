@@ -225,6 +225,8 @@ val BROWN_SLEEPING_BAG = register(Identifier(MOD_ID, "brown_sleeping_bag"), Slee
 val RED_SLEEPING_BAG = register(Identifier(MOD_ID, "red_sleeping_bag"), SleepingBag(settingsWithTab().maxCount(1).rarity(Rarity.RARE)))
 val BLACK_SLEEPING_BAG = register(Identifier(MOD_ID, "black_sleeping_bag"), SleepingBag(settingsWithTab().maxCount(1).rarity(Rarity.RARE)))
 
+val MEASURING_TAPE = register(Identifier(MOD_ID, "measuring_tape"), MeasuringTape(settingsWithTab().maxCount(1)))
+
 private fun settingsWithTab() = Settings().group(CREATIVE_TAB)
 
 fun register(identifier: Identifier, item: Item, bakedModel: (() -> BakedModel)? = null, containers: List<ContainerInfo<*>> = listOf()): Item {

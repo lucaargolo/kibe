@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " i ",
+    "iyi",
+    " i "
+  ],
+  "key": {
+    "y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "kibe:measuring_tape",
+    "count": 1
+  }
+}
