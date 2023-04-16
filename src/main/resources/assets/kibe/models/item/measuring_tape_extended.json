@@ -1,0 +1,6 @@
+{
+  "parent": "kibe:item/measuring_tape",
+  "textures": {
+    "layer0": "kibe:item/measuring_tape_extended"
+  }
+}

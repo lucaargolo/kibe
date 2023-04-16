@@ -1,6 +1,10 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
+import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.items.IdentifiedModelPredicateProvider
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.client.world.ClientWorld
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -96,5 +100,18 @@ class MeasuringTape(settings: Settings) : Item(settings) {
         nbt.putInt(MEASURING_FROM_Y, pos.y)
         nbt.putInt(MEASURING_FROM_Z, pos.z)
         nbt.putString(MEASURING_FROM_LEVEL, world.dimensionKey.value.toString())
+    }
+
+    object ModelPredicateProvider : IdentifiedModelPredicateProvider {
+        override fun unclampedCall(stack: ItemStack, world: ClientWorld?, entity: LivingEntity?, seed: Int): Float {
+            val nbt = stack.nbt ?: return 0f
+            if (MEASURING_FROM_LEVEL in nbt) {
+                return 1f
+            }
+            return 0f
+        }
+
+        override val identifier: Identifier
+            get() = Identifier(MOD_ID, "extended")
     }
 }
