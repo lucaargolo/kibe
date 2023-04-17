@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " i ",
-    "iyi",
-    " i "
+    " l ",
+    "lil",
+    " ly"
   ],
   "key": {
     "y": {
@@ -11,6 +11,9 @@
     },
     "i": {
       "item": "minecraft:iron_ingot"
+    },
+    "l": {
+      "item": "minecraft:lapis_lazuli"
     }
   },
   "result": {
