@@ -65,7 +65,7 @@ class MeasuringTape(settings: Settings) : Item(settings) {
     ) {
         val (fromLevel, fromPos) = measuringFrom
         if (fromLevel != player.world.dimensionKey.value && !player.world.isClient) {
-            player.sendMessage(Text.translatable("chat.kibe.measuring_tape.measuring_between_dimensions").formatted(Formatting.YELLOW))
+            player.sendMessage(Text.translatable("chat.kibe.measuring_tape.measuring_between_dimensions").formatted(Formatting.YELLOW, Formatting.ITALIC))
         }
         val distX = abs(fromPos.x - clicked.x) + 1
         val distY = abs(fromPos.y - clicked.y) + 1

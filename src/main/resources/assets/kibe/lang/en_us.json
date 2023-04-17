@@ -173,9 +173,9 @@
   "chat.kibe.chunk_loader.owner_long_gone": "§cThe chunk loader is offline because it's owner have been offline for a long time",
   "chat.kibe.chunk_loader.owner_offline": "§cThe chunk loader is offline because it's owner is offline",
   "chat.kibe.chunk_loader.too_many_loaders": "§cThe chunk loader is offline because it's owner already reached the limit of active chunk loaders",
-  "chat.kibe.measuring_tape.start": "Started measuring from [%s, %s, %s]",
+  "chat.kibe.measuring_tape.start": "Started measuring from [%s, %s, %s] (X, Y, Z)",
   "chat.kibe.measuring_tape.measuring_between_dimensions": "Measuring between dimensions! Results might not make sense.",
-  "chat.kibe.measuring_tape.result": "Measure result: %s X; %s Y; %s Z; (inclusive)",
+  "chat.kibe.measuring_tape.result": "Measurement: [%s, %s, %s] (X, Y, Z; inclusive)",
 
   "tooltip.kibe.empty": "Empty",
   "tooltip.kibe.enabled": "§aEnabled",
