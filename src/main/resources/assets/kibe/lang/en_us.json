@@ -220,9 +220,9 @@
   "tooltip.kibe.lore.dehumidifier": "§5§oStop rain/snow particles in its surroundings.",
 
   "tooltip.kibe.lore.measuring_tape.start": "Right click a block to start measuring!",
-  "tooltip.kibe.lore.measuring_tape.measuring_1": "Measuring from [%s, %s, %s].",
-  "tooltip.kibe.lore.measuring_tape.measuring_2": "Right click another block to finish measuring.",
-  "tooltip.kibe.lore.measuring_tape.measuring_3": "Sneak to finish measuring without resetting the measuring from position.",
+  "tooltip.kibe.lore.measuring_tape.measuring_1": "Measuring from [%s, %s, %s]",
+  "tooltip.kibe.lore.measuring_tape.measuring_2": "Right click another block to finish measuring",
+  "tooltip.kibe.lore.measuring_tape.measuring_3": "Sneak to finish measuring without resetting the measuring from position",
 
   "tooltip.kibe.lore.cobblestone_generator_mk1": "§5§oGenerates 0.2 Cobblestone per second",
   "tooltip.kibe.lore.cobblestone_generator_mk2": "§5§oGenerates 0.8 Cobblestone per second",
