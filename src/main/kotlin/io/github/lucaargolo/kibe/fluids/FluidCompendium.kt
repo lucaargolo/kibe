@@ -6,7 +6,6 @@ import io.github.lucaargolo.kibe.fluids.miscellaneous.ModdedFluid
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
@@ -16,7 +15,6 @@ import net.minecraft.block.FluidBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.texture.Sprite
-import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
@@ -28,7 +26,8 @@ import net.minecraft.resource.ResourceType
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import net.minecraft.world.BlockRenderView
 import java.util.function.Function
 
@@ -53,13 +52,13 @@ fun initFluids() {
         val identifierStill = it.key
         val fluidStill = it.value
         if(!identifierStill.path.startsWith("flowing_")) {
-            val registeredFluid = Registry.register(Registry.FLUID, identifierStill, fluidStill)
+            val registeredFluid = Registry.register(Registries.FLUID, identifierStill, fluidStill)
             val identifierFlowing = Identifier(MOD_ID, "flowing_" + identifierStill.path)
             val fluidFlowing = fluidRegistry[identifierFlowing]!!
-            Registry.register(Registry.FLUID, identifierFlowing, fluidFlowing)
-            fluidBucketMap[fluidStill] = Registry.register(Registry.ITEM, Identifier(it.key.namespace, "${identifierStill.path}_bucket"), BucketItem(fluidStill, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
+            Registry.register(Registries.FLUID, identifierFlowing, fluidFlowing)
+            fluidBucketMap[fluidStill] = Registry.register(Registries.ITEM, Identifier(it.key.namespace, "${identifierStill.path}_bucket"), BucketItem(fluidStill, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
             fluidBucketMap[fluidFlowing] = fluidBucketMap[fluidStill]!!
-            fluidBlockMap[fluidStill] = Registry.register(Registry.BLOCK, it.key, object : FluidBlock(registeredFluid as FlowableFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
+            fluidBlockMap[fluidStill] = Registry.register(Registries.BLOCK, it.key, object : FluidBlock(registeredFluid as FlowableFluid, FabricBlockSettings.copy(Blocks.LAVA)) {})
             fluidBlockMap[fluidFlowing] = fluidBlockMap[fluidStill]!!
         }
     }
@@ -85,13 +84,7 @@ private fun setupFluidRendering(still: Fluid?, flowing: Fluid?, textureFluidId: 
     val stillSpriteId = Identifier(textureFluidId.namespace, "block/" + textureFluidId.path + "_still")
     val flowingSpriteId = Identifier(textureFluidId.namespace, "block/" + textureFluidId.path + "_flow")
 
-    ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
-        .register(ClientSpriteRegistryCallback { _: SpriteAtlasTexture?, registry: ClientSpriteRegistryCallback.Registry ->
-            registry.register(stillSpriteId)
-            registry.register(flowingSpriteId)
-        })
-
-    val fluidId = Registry.FLUID.getId(still)
+    val fluidId = Registries.FLUID.getId(still)
     val listenerId = Identifier(fluidId.namespace, fluidId.path + "_reload_listener")
     val fluidSprites = arrayOf<Sprite?>(null, null)
 

@@ -72,7 +72,7 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
         }
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         if(hand == Hand.MAIN_HAND && invSlot in 0..slots.size && getSlot(invSlot).stack == playerInventory.mainHandStack)
             return ItemStack.EMPTY
         var itemStack = ItemStack.EMPTY

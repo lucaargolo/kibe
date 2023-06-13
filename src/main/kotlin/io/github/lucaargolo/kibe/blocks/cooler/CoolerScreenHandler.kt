@@ -35,7 +35,7 @@ class CoolerScreenHandler(syncId: Int, playerInventory: PlayerInventory, val ent
         }
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
         if (slot.hasStack()) {

@@ -8,7 +8,7 @@ import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,11 +46,11 @@ public class HeldItemRendererMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "renderFirstPersonItem", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "renderFirstPersonItem")
     private void renderFirstPersonItemPre(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo info) {
         if(player.getStackInHand(hand).getItem() instanceof Glider && Glider.Companion.isEnabled(player.getStackInHand(hand))) {
             matrices.push();
-            matrices.multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion(360 - player.getPitch(tickDelta)));
+            matrices.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(360 - player.getPitch(tickDelta)));
         }
     }
 

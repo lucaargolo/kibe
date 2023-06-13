@@ -41,7 +41,7 @@ class SleepingBag(settings: Settings): Item(settings) {
         val rayTraceContext = player.raycast(4.5, 1.0f, false)
         val sleepingPos = rayTraceContext.run {
             if(this.type == HitResult.Type.BLOCK) {
-                return@run BlockPos(this.pos)
+                return@run BlockPos.ofFloored(this.pos)
             }else if(player.isOnGround){
                 return@run player.blockPos
             }else{

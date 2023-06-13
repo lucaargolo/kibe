@@ -35,7 +35,7 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
         val isReceivingPower = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up())
         val triggered = state[DispenserBlock.TRIGGERED]
         if (isReceivingPower && !triggered) {
-            world.createAndScheduleBlockTick(pos, this, 4)
+            world.scheduleBlockTick(pos, this, 4)
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, true) as BlockState, 4)
         } else if (!isReceivingPower && triggered) {
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, false) as BlockState, 4)
@@ -45,7 +45,7 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
     override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         val facingPos = pos.offset(state[Properties.FACING])
         val facingState = world.getBlockState(facingPos)
-        if(facingState.material.isReplaceable && !facingState.isOf(Blocks.FIRE)) {
+        if(facingState.isReplaceable && !facingState.isOf(Blocks.FIRE)) {
             world.setBlockState(facingPos, Blocks.FIRE.defaultState)
             world.playSound(null, pos.x+0.0, pos.y+0.0, pos.z+0.0, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, random.nextFloat() * 0.4f + 0.8f,)
         }

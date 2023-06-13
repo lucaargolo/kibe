@@ -51,14 +51,14 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "jump", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "jump")
     private void jump(CallbackInfo info) {
         BlockPos pos = this.getBlockPos();
-        Block block = this.world.getBlockState(pos.down()).getBlock();
-        if (block instanceof Elevator && world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
-            while(pos.getY() < world.getTopY()) {
-                if(world.getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.up())) {
-                    world.playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.25F + 0.6F);
+        Block block = this.getWorld().getBlockState(pos.down()).getBlock();
+        if (block instanceof Elevator && getWorld().getBlockState(pos).getCollisionShape(getWorld(), pos).isEmpty()) {
+            while(pos.getY() < getWorld().getTopY()) {
+                if(getWorld().getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(getWorld(), pos.up())) {
+                    getWorld().playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, getWorld().random.nextFloat() * 0.25F + 0.6F);
                     this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z);
                     break;
                 }else{
@@ -74,7 +74,7 @@ public abstract class LivingEntityMixin extends Entity {
         Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
      */
     @SuppressWarnings("ConstantConditions")
-    @Inject(at = @At("HEAD"), method = "handleFallDamage", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "handleFallDamage")
     private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if((Object) this instanceof PlayerEntity) {
             PlayerEntity player = ((PlayerEntity) ((Object) this));
@@ -82,10 +82,10 @@ public abstract class LivingEntityMixin extends Entity {
                 if(!isSneaking() && fallDistance > 2) {
                     this.fallDistance = 0;
 
-                    if(world.isClient) {
+                    if(getWorld().isClient) {
                         setVelocity(getVelocity().x, getVelocity().y*-0.9, getVelocity().z);
                         velocityDirty = true;
-                        onGround = false;
+                        setOnGround(false);
                         double f = 0.91d + 0.04d;
                         setVelocity(getVelocity().x/f, getVelocity().y, getVelocity().z/f);
                     }else{
@@ -95,7 +95,7 @@ public abstract class LivingEntityMixin extends Entity {
                     this.playSound(SoundEvents.ENTITY_SLIME_SQUISH, 1f, 1f);
                     SlimeBounceHandler.Companion.addBounceHandler(player, getVelocity().y);
 
-                }else if(!world.isClient && isSneaking()) {
+                }else if(!getWorld().isClient && isSneaking()) {
                     if(fallDistance > 5) this.fallDistance = 5;
                 }
             }

@@ -8,10 +8,10 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.registry.tag.BlockTags
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.slot.Slot
-import net.minecraft.tag.BlockTags
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
@@ -47,7 +47,7 @@ class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInvento
         }
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
         if (slot.hasStack()) {

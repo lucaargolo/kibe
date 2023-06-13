@@ -135,12 +135,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
          */
         Iterator<Entity> keyIt;
-        if(world.isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntities().keySet().iterator();
+        if(getWorld().isClient) keyIt = SlimeBounceHandler.Companion.getClientBouncingEntities().keySet().iterator();
         else keyIt = SlimeBounceHandler.Companion.getServerBouncingEntities().keySet().iterator();
         while(keyIt.hasNext()) {
             Entity entity = keyIt.next();
             SlimeBounceHandler bounce;
-            if(world.isClient) bounce = SlimeBounceHandler.Companion.getClientBouncingEntities().get(entity);
+            if(getWorld().isClient) bounce = SlimeBounceHandler.Companion.getClientBouncingEntities().get(entity);
             else bounce = SlimeBounceHandler.Companion.getServerBouncingEntities().get(entity);
             if(player.equals(entity) && !player.isFallFlying()) {
                 if(player.age == bounce.getBounceTick()) {
@@ -174,7 +174,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             }
         }
         //Ring logic
-        if(!world.isClient && this instanceof PlayerAbilityView) {
+        if(!getWorld().isClient && this instanceof PlayerAbilityView) {
             for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
                 if(pa.isEnabledFor(player)) {
                     StatusEffect se = RingAbilitiesKt.getPotionToAbilityMap().get(pa);

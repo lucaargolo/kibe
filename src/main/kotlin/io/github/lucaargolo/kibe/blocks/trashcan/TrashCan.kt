@@ -13,7 +13,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class TrashCan: BlockWithEntity(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY).requiresTool().strength(1.5F, 6.0F)) {
+class TrashCan: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return TrashCanEntity(this, blockPos, blockState)

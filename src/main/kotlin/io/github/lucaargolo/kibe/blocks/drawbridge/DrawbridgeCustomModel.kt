@@ -40,19 +40,19 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun getModelDependencies(): Collection<Identifier> = listOf()
 
-    override fun getTextureDependencies(unbakedModelGetter: Function<Identifier, UnbakedModel>, unresolvedTextureReferences: MutableSet<Pair<String, String>>) = spriteIdList
+    override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) { }
 
     lateinit var modelTransformation: ModelTransformation
 
-    override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings?, modelId: Identifier?): BakedModel {
-        val model = loader.getOrLoadModel(modelIdList[0])
+    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
+        val model = baker.getOrLoadModel(modelIdList[0])
 
-        modelList.add(model.bake(loader, textureGetter, ModelRotation.X0_Y0, modelId)!!) // NORTH
-        modelList.add(model.bake(loader, textureGetter, ModelRotation.X0_Y180, modelId)!!) // SOUTH
-        modelList.add(model.bake(loader, textureGetter, ModelRotation.X0_Y270, modelId)!!) // WEST
-        modelList.add(model.bake(loader, textureGetter, ModelRotation.X0_Y90, modelId)!!) // EAST
-        modelList.add(model.bake(loader, textureGetter, ModelRotation.X270_Y0, modelId)!!) // UP
-        modelList.add(model.bake(loader, textureGetter, ModelRotation.X90_Y0, modelId)!!) // DOWN
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y0, modelId)!!) // NORTH
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y180, modelId)!!) // SOUTH
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y270, modelId)!!) // WEST
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y90, modelId)!!) // EAST
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X270_Y0, modelId)!!) // UP
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X90_Y0, modelId)!!) // DOWN
 
         modelTransformation = modelList[0].transformation
 
@@ -80,7 +80,7 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
             context.pushTransform { q ->
                 val rawColor = ColorProviderRegistry.BLOCK[coverState.block]!!.getColor(coverState, world, pos, 0)
                 val color = 255 shl 24 or rawColor
-                q.spriteColor(0, color, color, color, color)
+                q.color(color, color, color, color)
                 true
             }
 
@@ -90,18 +90,18 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         when(state[Properties.FACING]) {
-            Direction.NORTH -> context.fallbackConsumer().accept(modelList[0])
-            Direction.SOUTH -> context.fallbackConsumer().accept(modelList[1])
-            Direction.WEST -> context.fallbackConsumer().accept(modelList[2])
-            Direction.EAST -> context.fallbackConsumer().accept(modelList[3])
-            Direction.UP -> context.fallbackConsumer().accept(modelList[4])
-            Direction.DOWN -> context.fallbackConsumer().accept(modelList[5])
+            Direction.NORTH -> context.bakedModelConsumer().accept(modelList[0])
+            Direction.SOUTH -> context.bakedModelConsumer().accept(modelList[1])
+            Direction.WEST -> context.bakedModelConsumer().accept(modelList[2])
+            Direction.EAST -> context.bakedModelConsumer().accept(modelList[3])
+            Direction.UP -> context.bakedModelConsumer().accept(modelList[4])
+            Direction.DOWN -> context.bakedModelConsumer().accept(modelList[5])
             else -> {}
         }
     }
 
     override fun emitItemQuads(stack: ItemStack, randomSupplier: Supplier<Random>, context: RenderContext) {
-        context.fallbackConsumer().accept(modelList[4])
+        context.bakedModelConsumer().accept(modelList[4])
     }
 
     @Suppress("DEPRECATION")

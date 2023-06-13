@@ -7,9 +7,10 @@ import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntity
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.items.ENTANGLED_BUCKET
 import io.github.lucaargolo.kibe.mixin.BucketItemAccessor
-import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import io.github.lucaargolo.kibe.utils.FakeClientPlayerEntity
 import io.github.lucaargolo.kibe.utils.getMb
 import io.github.lucaargolo.kibe.utils.writeTank
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
@@ -27,13 +28,13 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.*
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.tag.FluidTags
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.state.property.Properties
-import net.minecraft.tag.FluidTags
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.*
@@ -141,7 +142,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                                 val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
                                 val stateInv = state.getOrCreateInventory(colorCode)
                                 Transaction.openOuter().also {
-                                    val containedFluidStorage = ContainerItemContext.withInitial(drainedFluid).find(FluidStorage.ITEM)
+                                    val containedFluidStorage = ContainerItemContext.withConstant(drainedFluid).find(FluidStorage.ITEM)
                                     StorageUtil.findExtractableContent(containedFluidStorage, it)?.let { extractableContent ->
                                         stateInv.insert(extractableContent.resource, extractableContent.amount, it)
                                     }
@@ -185,7 +186,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
     }
 
     private fun fakeInteraction(bucketItem: BucketItem, world: World, pos: BlockPos, blockHitResult: BlockHitResult): Fluid? {
-        val fakePlayer = FakePlayerEntity(world)
+        val fakePlayer = if(world is ServerWorld) FakePlayer.get(world) else FakeClientPlayerEntity(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(bucketItem))
         val blockState = world.getBlockState(pos)
         val block = blockState.block

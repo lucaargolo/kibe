@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.witherbuilder
 
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
-import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
@@ -44,9 +44,9 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return when(ctx.playerLookDirection.opposite) {
-            Direction.UP -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite).with(VERTICAL, true).with(VERTICAL_FACING, Direction.UP)
-            Direction.DOWN -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite).with(VERTICAL, true).with(VERTICAL_FACING, Direction.DOWN)
-            else -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite).with(VERTICAL, false)
+            Direction.UP -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing.opposite).with(VERTICAL, true).with(VERTICAL_FACING, Direction.UP)
+            Direction.DOWN -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing.opposite).with(VERTICAL, true).with(VERTICAL_FACING, Direction.DOWN)
+            else -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing.opposite).with(VERTICAL, false)
         }
     }
 
@@ -54,7 +54,7 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         val isReceivingPower = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up())
         val triggered = state[DispenserBlock.TRIGGERED]
         if (isReceivingPower && !triggered) {
-            world.createAndScheduleBlockTick(pos, this, 4)
+            world.scheduleBlockTick(pos, this, 4)
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, true) as BlockState, 4)
         } else if (!isReceivingPower && triggered) {
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, false) as BlockState, 4)
@@ -75,13 +75,13 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
             facingPos.add(0, 2, 0),
             facingPos.add(xOffset, 2, zOffset),
             facingPos.add(-xOffset, 2, -zOffset)
-        ).map { world.getBlockState(it).material.isReplaceable }.none { !it }
+        ).map { world.getBlockState(it).isReplaceable }.none { !it }
 
         if(shouldRun) {
             (world.getBlockEntity(pos) as? WitherBuilderBlockEntity)?.let { blockEntity ->
                 val minCount = (blockEntity.inventory.map { if (it.isEmpty) 0 else it.count }.minOrNull() ?: 0)
                 if(minCount > 0) {
-                    val fakePlayer = FakePlayerEntity(world)
+                    val fakePlayer = FakePlayer.get(world)
 
                     (0..6).forEach { slot ->
                         val stack = blockEntity.getStack(slot)

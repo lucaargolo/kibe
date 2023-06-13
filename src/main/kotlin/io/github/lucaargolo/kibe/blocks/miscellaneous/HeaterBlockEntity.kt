@@ -7,7 +7,8 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.registry.RegistryKey
+import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKey
 import net.minecraft.world.World
 
 class HeaterBlockEntity(heater: Heater, pos: BlockPos, state: BlockState): BlockEntity(getEntityType(heater), pos, state) {

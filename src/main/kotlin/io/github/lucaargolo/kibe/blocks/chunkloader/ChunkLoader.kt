@@ -25,7 +25,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class ChunkLoader: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F)) {
+class ChunkLoader: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.ENCHANTING_TABLE).requiresTool().strength(22.0F, 600.0F)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.ENABLED, false)

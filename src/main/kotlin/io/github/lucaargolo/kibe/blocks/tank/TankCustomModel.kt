@@ -31,9 +31,10 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun getModelDependencies(): Collection<Identifier> = listOf()
 
-    override fun getTextureDependencies(unbakedModelGetter: Function<Identifier, UnbakedModel>, unresolvedTextureReferences: MutableSet<Pair<String, String>>) = spriteIdList
+    override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {
+    }
 
-    override fun bake(loader: ModelLoader, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
+    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
         spriteIdList.forEach { spriteIdentifier ->
             spriteList.add(textureGetter.apply(spriteIdentifier))
         }

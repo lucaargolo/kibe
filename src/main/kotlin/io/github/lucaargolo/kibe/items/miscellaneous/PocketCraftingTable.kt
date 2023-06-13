@@ -24,8 +24,8 @@ class PocketCraftingTable(settings: Settings): Item(settings) {
                         updateResult(this, world, (this as CraftingTableContainerMixin).player, (this as CraftingTableContainerMixin).input, (this as CraftingTableContainerMixin).result)
                     }
 
-                    override fun close(player: PlayerEntity?) {
-                        super.close(player)
+                    override fun onClosed(player: PlayerEntity?) {
+                        super.onClosed(player)
                         dropInventory(player, (this as CraftingTableContainerMixin).input)
                     }
                 }

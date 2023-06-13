@@ -4,6 +4,7 @@ import dev.emi.trinkets.api.SlotReference
 import dev.emi.trinkets.api.Trinket
 import dev.emi.trinkets.api.TrinketsApi
 import io.github.ladysnake.pal.PlayerAbility
+import io.github.lucaargolo.kibe.MOD_NAME
 import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
 import net.minecraft.entity.LivingEntity
@@ -12,7 +13,7 @@ import net.minecraft.item.ItemStack
 class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRing(settings, ability), Trinket {
 
     init {
-        io.github.lucaargolo.kibe.LOGGER.info("creating Trinket AbilityRing for ${ability.id}")
+        io.github.lucaargolo.kibe.LOGGER.info("[$MOD_NAME] Creating Trinket AbilityRing for ${ability.id}")
         TrinketsApi.registerTrinket(this, this)
     }
 

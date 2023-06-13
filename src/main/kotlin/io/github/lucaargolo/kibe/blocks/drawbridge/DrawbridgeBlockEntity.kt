@@ -23,7 +23,8 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3i
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import net.minecraft.world.World
 
 class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(drawbridge), pos, state), SidedInventory {
@@ -45,7 +46,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
 
     override fun writeNbt(tag: NbtCompound) {
         tag.putString("state", state.name)
-        tag.putString("extendedBlock", extendedBlock?.let { Registry.BLOCK.getId(it).toString() } ?: "yeet")
+        tag.putString("extendedBlock", extendedBlock?.let { Registries.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
         val nbtList = NbtList()
         for (i in inventory.indices) {
@@ -65,7 +66,7 @@ class DrawbridgeBlockEntity(drawbridge: Drawbridge, pos: BlockPos, state: BlockS
         }catch (e: IllegalArgumentException) {
             State.CONTRACTED
         }
-        extendedBlock = Registry.BLOCK.get(Identifier(tag.getString("extendedBlock")))
+        extendedBlock = Registries.BLOCK.get(Identifier(tag.getString("extendedBlock")))
         extendedBlocks = tag.getInt("extendedBlocks")
         Inventories.readNbt(tag, inventory)
     }

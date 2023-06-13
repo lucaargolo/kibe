@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.bigtorch
 
 import io.github.lucaargolo.kibe.blocks.getEntityType
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -26,7 +27,7 @@ import net.minecraft.world.World
 import kotlin.math.cos
 import kotlin.math.sin
 
-class BigTorch: BlockWithEntity(Settings.of(Material.DECORATION).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)) {
+class BigTorch: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.TORCH).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_8)

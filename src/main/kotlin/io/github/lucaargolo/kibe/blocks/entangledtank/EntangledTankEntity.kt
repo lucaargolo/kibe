@@ -119,7 +119,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
     override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
 
     companion object {
-        fun getFluidStorage(be: EntangledTankEntity, dir: Direction): Storage<FluidVariant> {
+        fun getFluidStorage(be: EntangledTankEntity, dir: Direction?): Storage<FluidVariant> {
             return be.getTank()
         }
 

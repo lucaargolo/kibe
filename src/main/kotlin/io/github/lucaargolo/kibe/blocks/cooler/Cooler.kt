@@ -19,7 +19,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.PALE_PURPLE).strength(0.2F).sounds(BlockSoundGroup.SNOW)) {
+class Cooler: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.SNOW_BLOCK).strength(0.2F).sounds(BlockSoundGroup.SNOW)) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return CoolerBlockEntity(this, blockPos, blockState)
@@ -30,7 +30,7 @@ class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.PA
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite)
+        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing.opposite)
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {

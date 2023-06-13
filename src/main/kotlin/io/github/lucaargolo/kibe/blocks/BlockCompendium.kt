@@ -43,7 +43,6 @@ import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilder
 import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderBlockEntity
 import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreen
 import io.github.lucaargolo.kibe.blocks.witherbuilder.WitherBuilderScreenHandler
-import io.github.lucaargolo.kibe.utils.CREATIVE_TAB
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
@@ -64,7 +63,8 @@ import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import java.util.function.Supplier
 import kotlin.reflect.KClass
 
@@ -93,7 +93,7 @@ class ContainerInfo<T: ScreenHandler>(
             handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, be, ScreenHandlerContext.create(world, pos)) as T
             handler
         }
-        Registry.register(Registry.SCREEN_HANDLER, id, handlerType)
+        Registry.register(Registries.SCREEN_HANDLER, id, handlerType)
     }
 
     fun initClient() {
@@ -113,14 +113,14 @@ class BlockInfo<T: BlockEntity> (
 ){
 
     fun init() {
-        Registry.register(Registry.BLOCK, identifier, block)
+        Registry.register(Registries.BLOCK, identifier, block)
         if(hasBlockItem) {
             if(blockItem != null)
-                Registry.register(Registry.ITEM, identifier, blockItem.java.constructors[0].newInstance(block, Item.Settings().group(CREATIVE_TAB)) as BlockItem)
+                Registry.register(Registries.ITEM, identifier, blockItem.java.constructors[0].newInstance(block, Item.Settings()) as BlockItem)
             else
-                Registry.register(Registry.ITEM, identifier, BlockItem(block, Item.Settings().group(CREATIVE_TAB)))
+                Registry.register(Registries.ITEM, identifier, BlockItem(block, Item.Settings()))
         }
-        if(entity != null) Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier, entity)
+        if(entity != null) Registry.register(Registries.BLOCK_ENTITY_TYPE, identifier, entity)
         containers.forEach { it.init(identifier) }
     }
 

@@ -14,7 +14,8 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import net.minecraft.world.World
 
 class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block, var rate: Float, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(generator), pos, state), SidedInventory {
@@ -26,8 +27,8 @@ class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block,
 
     override fun writeNbt(tag: NbtCompound) {
         Inventories.writeNbt(tag, inventory)
-        tag.putString("generator", Registry.BLOCK.getId(generator).toString())
-        tag.putString("block", Registry.BLOCK.getId(block).toString())
+        tag.putString("generator", Registries.BLOCK.getId(generator).toString())
+        tag.putString("block", Registries.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         tag.putFloat("progress", progress)
     }
@@ -35,20 +36,20 @@ class BlockGeneratorBlockEntity(var generator: BlockGenerator, var block: Block,
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
         Inventories.readNbt(tag, inventory)
-        generator = Registry.BLOCK.get(Identifier(tag.getString("generator"))) as BlockGenerator
-        block = Registry.BLOCK.get(Identifier(tag.getString("block")))
+        generator = Registries.BLOCK.get(Identifier(tag.getString("generator"))) as BlockGenerator
+        block = Registries.BLOCK.get(Identifier(tag.getString("block")))
         rate = tag.getFloat("rate")
         progress = tag.getFloat("progress")
     }
 
     override fun writeClientNbt(tag: NbtCompound): NbtCompound {
-        tag.putString("block", Registry.BLOCK.getId(block).toString())
+        tag.putString("block", Registries.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         return tag
     }
 
     override fun readClientNbt(tag: NbtCompound) {
-        block = Registry.BLOCK.get(Identifier(tag.getString("block")))
+        block = Registries.BLOCK.get(Identifier(tag.getString("block")))
         rate = tag.getFloat("rate")
     }
 

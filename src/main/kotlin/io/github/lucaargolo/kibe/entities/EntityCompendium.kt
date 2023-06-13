@@ -10,7 +10,8 @@ import net.minecraft.entity.EntityDimensions
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import net.minecraft.world.World
 
 val entityRegistry = mutableMapOf<Identifier, EntityType<*>>()
@@ -26,7 +27,7 @@ private fun <T: Entity> register(identifier: Identifier, entityType: EntityType<
 }
 
 fun initEntities() {
-    entityRegistry.forEach{ Registry.register(Registry.ENTITY_TYPE, it.key, it.value) }
+    entityRegistry.forEach{ Registry.register(Registries.ENTITY_TYPE, it.key, it.value) }
 }
 
 fun initEntitiesClient() {

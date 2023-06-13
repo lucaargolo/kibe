@@ -109,7 +109,7 @@ class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @
         return true
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = slots[invSlot]
         if (slot.hasStack()) {

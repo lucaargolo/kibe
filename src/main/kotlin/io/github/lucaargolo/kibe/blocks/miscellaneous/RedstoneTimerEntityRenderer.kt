@@ -14,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3f
+import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.random.Random
 
 class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<RedstoneTimerEntity> {
@@ -64,12 +64,12 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             matrices.push()
             matrices.translate(0.5, 0.5, 0.5)
             matrices.multiply(when(direction) {
-                Direction.NORTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(0f)
-                Direction.SOUTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(180f)
-                Direction.WEST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(90f)
-                Direction.EAST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(270f)
-                Direction.UP -> Vec3f.POSITIVE_Z.getDegreesQuaternion(90f)
-                Direction.DOWN -> Vec3f.POSITIVE_Z.getDegreesQuaternion(270f)
+                Direction.NORTH -> RotationAxis.POSITIVE_Y.rotationDegrees(0f)
+                Direction.SOUTH -> RotationAxis.POSITIVE_Y.rotationDegrees(180f)
+                Direction.WEST -> RotationAxis.POSITIVE_Y.rotationDegrees(90f)
+                Direction.EAST -> RotationAxis.POSITIVE_Y.rotationDegrees(270f)
+                Direction.UP -> RotationAxis.POSITIVE_Z.rotationDegrees(90f)
+                Direction.DOWN -> RotationAxis.POSITIVE_Z.rotationDegrees(270f)
             })
 
             matrices.translate(-0.5, -0.5, -0.5)
@@ -83,19 +83,19 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             matrices.translate(0.5, 0.5, 0.5)
 
             val rot1 = when(direction) {
-                Direction.NORTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(0f)
-                Direction.SOUTH -> Vec3f.POSITIVE_Y.getDegreesQuaternion(180f)
-                Direction.WEST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(90f)
-                Direction.EAST -> Vec3f.POSITIVE_Y.getDegreesQuaternion(270f)
-                Direction.UP -> Vec3f.POSITIVE_X.getDegreesQuaternion(90f)
-                Direction.DOWN -> Vec3f.POSITIVE_X.getDegreesQuaternion(270f)
+                Direction.NORTH -> RotationAxis.POSITIVE_Y.rotationDegrees(0f)
+                Direction.SOUTH -> RotationAxis.POSITIVE_Y.rotationDegrees(180f)
+                Direction.WEST -> RotationAxis.POSITIVE_Y.rotationDegrees(90f)
+                Direction.EAST -> RotationAxis.POSITIVE_Y.rotationDegrees(270f)
+                Direction.UP -> RotationAxis.POSITIVE_X.rotationDegrees(90f)
+                Direction.DOWN -> RotationAxis.POSITIVE_X.rotationDegrees(270f)
             }
             vec.rotate(rot1)
             matrices.multiply(rot1)
 
             val rot2 = when(direction) {
-                Direction.UP -> Vec3f.POSITIVE_Z.getDegreesQuaternion(90f)
-                Direction.DOWN -> Vec3f.POSITIVE_Z.getDegreesQuaternion(270f)
+                Direction.UP -> RotationAxis.POSITIVE_Z.rotationDegrees(90f)
+                Direction.DOWN -> RotationAxis.POSITIVE_Z.rotationDegrees(270f)
                 else -> null
             }
 
@@ -134,9 +134,9 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val ironTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("block/iron_block"))
         val ironConsumer = ironTexture.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntitySolid(texture) })
 
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180f))
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f))
         matrices.translate(0.0, -1.0, -1.0)
-        matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90f))
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90f))
         matrices.translate(0.0, -1.0, 0.0)
         selector.render(matrices, ironConsumer, light, overlay)
     }

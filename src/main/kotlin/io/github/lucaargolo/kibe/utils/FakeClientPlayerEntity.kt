@@ -7,7 +7,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class FakePlayerEntity(world: World): PlayerEntity(world, BlockPos.ORIGIN, 0f, GameProfile(FAKE_PLAYER_UUID, "fake"), null) {
+class FakeClientPlayerEntity(world: World): PlayerEntity(world, BlockPos.ORIGIN, 0f, GameProfile(FAKE_PLAYER_UUID, "fake")) {
 
     override fun isSpectator() = true
     override fun isCreative() = true

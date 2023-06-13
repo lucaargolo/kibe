@@ -55,7 +55,7 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): SyncableBlo
     override fun readClientNbt(tag: NbtCompound) = readNbt(tag)
 
     companion object {
-        fun getFluidStorage(be: TankBlockEntity, dir: Direction): Storage<FluidVariant> {
+        fun getFluidStorage(be: TankBlockEntity, dir: Direction?): Storage<FluidVariant> {
             return be.tank
         }
 

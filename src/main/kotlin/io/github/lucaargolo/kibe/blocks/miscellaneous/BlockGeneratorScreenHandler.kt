@@ -39,7 +39,7 @@ class BlockGeneratorScreenHandler(syncId: Int, val playerInventory: PlayerInvent
         }
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         val slot = this.slots[invSlot]
         if (slot.hasStack() && invSlot < 27) {
             val itemStack = slot.stack

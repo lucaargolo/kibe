@@ -3,7 +3,8 @@ package io.github.lucaargolo.kibe.effects
 import io.github.lucaargolo.kibe.MOD_ID
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 
 val effectRegistry = mutableMapOf<Identifier, StatusEffect>()
 
@@ -15,5 +16,5 @@ private fun register(identifier: Identifier, effect: StatusEffect): StatusEffect
 }
 
 fun initEffects() {
-    effectRegistry.forEach{ Registry.register(Registry.STATUS_EFFECT, it.key, it.value) }
+    effectRegistry.forEach{ Registry.register(Registries.STATUS_EFFECT, it.key, it.value) }
 }

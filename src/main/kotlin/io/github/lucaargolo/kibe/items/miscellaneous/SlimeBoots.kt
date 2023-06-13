@@ -13,7 +13,7 @@ class SlimeBoots(settings: Settings) : ArmorItem(object : ArmorMaterial {
     override fun getKnockbackResistance() = 0F
     override fun getEquipSound() = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC
     override fun getName() = "slime"
-    override fun getDurability(slot: EquipmentSlot) = 128
+    override fun getDurability(type: Type) = 128
     override fun getEnchantability() = 9
-    override fun getProtectionAmount(slot: EquipmentSlot?) = 2
-}, EquipmentSlot.FEET, settings)
+    override fun getProtection(type: Type) = 2
+}, Type.BOOTS, settings)

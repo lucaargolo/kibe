@@ -26,7 +26,7 @@ public class ClientPlayNetworkHandlerMixin {
     @Inject(at = @At("TAIL"), method = "onEntitySpawn")
     public void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
         double x = packet.getX(), y = packet.getY(), z = packet.getZ();
-        EntityType<?> entityType = packet.getEntityTypeId();
+        EntityType<?> entityType = packet.getEntityType();
         Entity entity = null;
 
         if(entityType == EntityCompendiumKt.getTHROWN_TORCH()) {

@@ -29,14 +29,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.minecraft.client.particle.FlameParticle
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.resource.ResourceManager
-import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
@@ -110,14 +108,6 @@ fun initExtrasClient() {
             EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS = linkedSetOf()
         }
     }
-    ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(ClientSpriteRegistryCallback { _, registry ->
-        registry.register(Identifier(MOD_ID, "block/entangled_chest"))
-        registry.register(Identifier(MOD_ID, "block/entangled_chest_runes"))
-        (0..15).forEach {
-            registry.register(Identifier(MOD_ID, "block/redstone_timer_$it"))
-        }
-        registry.register(Identifier(MOD_ID, "block/tank"))
-    })
     ModelLoadingRegistry.INSTANCE.registerModelProvider { _: ResourceManager, out: Consumer<Identifier> ->
         out.accept(ModelIdentifier(Identifier(MOD_ID, "redstone_timer_structure"), ""))
         out.accept(ModelIdentifier(Identifier(MOD_ID, "glider_active"), "inventory"))

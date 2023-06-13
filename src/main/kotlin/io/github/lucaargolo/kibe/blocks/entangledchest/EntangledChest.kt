@@ -27,14 +27,14 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledChest: BlockWithEntity(FabricBlockSettings.of(Material.STONE).requiresTool().strength(22.0F, 600.0F)) {
+class EntangledChest: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F)) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.HORIZONTAL_FACING)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing)
+        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
     }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {

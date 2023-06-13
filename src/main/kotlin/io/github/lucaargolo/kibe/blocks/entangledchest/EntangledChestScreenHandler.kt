@@ -92,7 +92,7 @@ class EntangledChestScreenHandler(syncId: Int, playerInventory: PlayerInventory,
         }, true)
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
         if (slot.hasStack()) {

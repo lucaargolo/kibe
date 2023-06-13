@@ -8,6 +8,7 @@ import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.model.json.JsonUnbakedModel
 import net.minecraft.client.render.model.json.ModelTransformation
+import net.minecraft.client.render.model.json.ModelTransformationMode
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
@@ -45,16 +46,16 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
         loadTransformFromJson(Identifier("minecraft:models/item/generated"))
     }
 
-    override fun render(stack: ItemStack, mode: ModelTransformation.Mode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
+    override fun render(stack: ItemStack, mode: ModelTransformationMode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
 
         val isEnabled = Glider.isEnabled(stack)
-        val isGui = (mode == ModelTransformation.Mode.GUI || mode == ModelTransformation.Mode.FIXED)
-        val force3d = (mode == ModelTransformation.Mode.GROUND || mode == ModelTransformation.Mode.HEAD || mode == ModelTransformation.Mode.NONE)
+        val isGui = (mode == ModelTransformationMode.GUI || mode == ModelTransformationMode.FIXED)
+        val force3d = (mode == ModelTransformationMode.GROUND || mode == ModelTransformationMode.HEAD || mode == ModelTransformationMode.NONE)
 
         matrixStack.pop()
         matrixStack.push()
 
-        val leftHanded = (mode == ModelTransformation.Mode.FIRST_PERSON_LEFT_HAND || mode == ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND)
+        val leftHanded = (mode == ModelTransformationMode.FIRST_PERSON_LEFT_HAND || mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND)
         if(force3d || (isEnabled && !isGui)) {
             deployedTransform?.getTransformation(mode)?.apply(leftHanded, matrixStack)
         }else{

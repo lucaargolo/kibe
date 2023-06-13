@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.items.trashcan
 
 import com.mojang.blaze3d.systems.RenderSystem
 import joptsimple.internal.Strings
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
@@ -22,23 +23,22 @@ class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory
     }
 
 
-    override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(matrices)
-        super.render(matrices, mouseX, mouseY, delta)
-        drawMouseoverTooltip(matrices, mouseX, mouseY)
+    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        this.renderBackground(context)
+        super.render(context, mouseX, mouseY, delta)
+        drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
-    override fun drawBackground(matrices: MatrixStack?, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.setShaderTexture(0, texture)
-        drawTexture(matrices, startX, startY, 0, 0, 176, 166)
+    override fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
+        context.drawTexture(texture, startX, startY, 0, 0, 176, 166)
     }
 
-    override fun drawForeground(matrices: MatrixStack?, mouseX: Int, mouseY: Int) {
+    override fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {
         val stringArray = title.string.split(" ").toMutableList()
-        drawCenteredText(matrices, textRenderer, stringArray[0],backgroundWidth/2, 6, 0xFFFFFF)
+        context.drawCenteredTextWithShadow(textRenderer, stringArray[0],backgroundWidth/2, 6, 0xFFFFFF)
         stringArray.removeAt(0)
-        drawCenteredText(matrices, textRenderer, Strings.join(stringArray, " "),backgroundWidth/2, 17, 0xFFFFFF)
-        textRenderer.draw(matrices, playerInventoryTitle, 8f, backgroundHeight - 96 + 4f, 0xFFFFFF)
+        context.drawCenteredTextWithShadow(textRenderer, Strings.join(stringArray, " "),backgroundWidth/2, 17, 0xFFFFFF)
+        context.drawText(textRenderer, playerInventoryTitle, 8, backgroundHeight - 96 + 4, 0xFFFFFF, false)
     }
 
 }

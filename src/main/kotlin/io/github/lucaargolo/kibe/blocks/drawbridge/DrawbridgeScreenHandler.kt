@@ -62,7 +62,7 @@ class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory,
         }
     }
 
-    override fun transferSlot(player: PlayerEntity?, invSlot: Int): ItemStack? {
+    override fun quickMove(player: PlayerEntity?, invSlot: Int): ItemStack? {
         var itemStack = ItemStack.EMPTY
         val slot = this.slots[invSlot]
         if (slot.hasStack()) {

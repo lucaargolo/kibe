@@ -35,8 +35,8 @@ class FluidHopperBlockEntity(block: FluidHopper, pos: BlockPos, state: BlockStat
         }
     }
 
-    private var topContainerFinder: BlockApiCache<Storage<FluidVariant>, Direction>? = null
-    private var toContainerFinder: BlockApiCache<Storage<FluidVariant>, Direction>? = null
+    private var topContainerFinder: BlockApiCache<Storage<FluidVariant>, Direction?>? = null
+    private var toContainerFinder: BlockApiCache<Storage<FluidVariant>, Direction?>? = null
     private var cachedDirection: Direction? = null
 
     private var extractionBump = CAPACITY

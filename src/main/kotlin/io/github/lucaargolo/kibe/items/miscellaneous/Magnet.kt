@@ -9,11 +9,11 @@ import net.minecraft.entity.ExperienceOrbEntity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
-import net.minecraft.tag.TagKey
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.RegistryKeys
+import net.minecraft.registry.tag.TagKey
 import net.minecraft.world.World
 
 open class Magnet(settings: Settings) : BooleanItem(settings) {
@@ -36,7 +36,7 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
 
     companion object {
 
-        val MAGNET_INHIBITOR_TAG = TagKey.of(Registry.BLOCK_KEY, Identifier(MOD_ID, "magnet_inhibitor"))
+        val MAGNET_INHIBITOR_TAG = TagKey.of(RegistryKeys.BLOCK, Identifier(MOD_ID, "magnet_inhibitor"))
         fun create(settings: Settings): Magnet = if (TRINKET) TrinketMagnet(settings) else Magnet(settings)
     }
 }

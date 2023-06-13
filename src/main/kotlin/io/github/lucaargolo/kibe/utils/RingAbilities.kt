@@ -14,7 +14,7 @@ val ringAbilitySource: AbilitySource = Pal.getAbilitySource(Identifier("kibe", "
 val potionToAbilityMap = mutableMapOf<PlayerAbility, StatusEffect>()
 
 private fun registerEffect(playerAbility: PlayerAbility, status: StatusEffect): PlayerAbility {
-    potionToAbilityMap.put(playerAbility, status)
+    potionToAbilityMap[playerAbility] = status
     return playerAbility
 }
 

@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.placer
 
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
-import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
@@ -42,7 +42,7 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         val isReceivingPower = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up())
         val triggered = state[DispenserBlock.TRIGGERED]
         if (isReceivingPower && !triggered) {
-            world.createAndScheduleBlockTick(pos, this, 4)
+            world.scheduleBlockTick(pos, this, 4)
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, true) as BlockState, 4)
         } else if (!isReceivingPower && triggered) {
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, false) as BlockState, 4)
@@ -60,7 +60,7 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
             if(index < 9) {
                 val stack = it.getStack(index)
                 val item = stack.item as? BlockItem ?: return
-                val fakePlayer = FakePlayerEntity(world)
+                val fakePlayer = FakePlayer.get(world)
                 fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
                 val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.0, facingPos.z + 0.5)
                 item.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, facingPos, false)))

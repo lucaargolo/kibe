@@ -22,7 +22,8 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3f
+import net.minecraft.util.math.RotationAxis
+import org.joml.Vector3f
 import java.awt.Color
 
 class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledTankEntity> {
@@ -45,7 +46,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
         val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
         matrices.translate(0.5, 0.5, 0.5)
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f))
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
@@ -122,7 +123,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
     }
 
-    private fun renderVertices(bb: VertexConsumer, entry: MatrixStack.Entry, normal: Vec3f, color: Color, overlay: Int, light: Int, uv: TankBlockEntityRenderer.UV, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float) {
+    private fun renderVertices(bb: VertexConsumer, entry: MatrixStack.Entry, normal: Vector3f, color: Color, overlay: Int, light: Int, uv: TankBlockEntityRenderer.UV, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float) {
         bb.vertex(entry.positionMatrix, f, h, j).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.maxU, uv.minV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
         bb.vertex(entry.positionMatrix, g, h, k).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.minV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
         bb.vertex(entry.positionMatrix, g, i, l).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.maxV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()

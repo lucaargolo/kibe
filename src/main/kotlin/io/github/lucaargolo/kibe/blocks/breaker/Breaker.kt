@@ -39,7 +39,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         val isReceivingPower = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up())
         val triggered = state[DispenserBlock.TRIGGERED]
         if (isReceivingPower && !triggered) {
-            world.createAndScheduleBlockTick(pos, this, 4)
+            world.scheduleBlockTick(pos, this, 4)
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, true) as BlockState, 4)
         } else if (!isReceivingPower && triggered) {
             world.setBlockState(pos, state.with(DispenserBlock.TRIGGERED, false) as BlockState, 4)
@@ -61,7 +61,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
                             if (stk.isEmpty) {
                                 it.setStack(slot, stack.copy())
                                 stack.decrement(stack.count)
-                            } else if (ItemStack.areItemsEqual(stack, stk) && ItemStack.areNbtEqual(stack, stk)) {
+                            } else if (ItemStack.canCombine(stack, stk)) {
                                 if (stk.count + stack.count < stk.maxCount) {
                                     stk.increment(stack.count)
                                     stack.decrement(stack.count)

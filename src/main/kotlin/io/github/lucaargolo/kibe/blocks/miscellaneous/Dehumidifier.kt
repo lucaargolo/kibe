@@ -40,7 +40,7 @@ class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTON
         if (!world.isClient) {
             val isEnabled = state[Properties.ENABLED]
             if (isEnabled != world.isReceivingRedstonePower(pos)) {
-                if (isEnabled) world.createAndScheduleBlockTick(pos, this, 4)
+                if (isEnabled) world.scheduleBlockTick(pos, this, 4)
                 else world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
             }
         }

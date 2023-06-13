@@ -11,6 +11,7 @@ import net.minecraft.item.Item
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
+import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
@@ -28,7 +29,7 @@ abstract class ModdedFluid: FlowableFluid() {
         return fluid === still || fluid === flowing
     }
 
-    override fun isInfinite(): Boolean {
+    override fun isInfinite(world: World?): Boolean {
         return false
     }
 

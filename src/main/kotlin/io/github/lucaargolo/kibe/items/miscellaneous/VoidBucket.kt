@@ -1,7 +1,8 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
 import io.github.lucaargolo.kibe.items.VOID_BUCKET
-import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import io.github.lucaargolo.kibe.utils.FakeClientPlayerEntity
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.entity.player.PlayerEntity
@@ -10,6 +11,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.util.Hand
@@ -57,7 +59,7 @@ class VoidBucket(settings: Settings): Item(settings) {
 
     @Suppress("DEPRECATION")
     private fun fakeInteraction(world: World, pos: BlockPos, blockHitResult: BlockHitResult): Boolean {
-        val fakePlayer = FakePlayerEntity(world)
+        val fakePlayer = if(world is ServerWorld) FakePlayer.get(world) else FakeClientPlayerEntity(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(Items.BUCKET))
         val blockState = world.getBlockState(pos)
         val block = blockState.block

@@ -108,7 +108,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
                 inventory[id] = modifiableStack
                 modifiableStack = ItemStack.EMPTY
             }else{
-                if(ItemStack.areItemsEqual(stk, modifiableStack) && ItemStack.areNbtEqual(stk, modifiableStack)) {
+                if(ItemStack.canCombine(stk, modifiableStack)) {
                     when {
                         stk.count+modifiableStack.count > stk.maxCount -> {
                             val aux = stk.maxCount-stk.count
@@ -168,7 +168,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = slot != 9
 
     companion object {
-        fun getFluidStorage(be: VacuumHopperEntity, dir: Direction): Storage<FluidVariant> {
+        fun getFluidStorage(be: VacuumHopperEntity, dir: Direction?): Storage<FluidVariant> {
             return be.tank
         }
 
@@ -189,7 +189,7 @@ class VacuumHopperEntity(vacuumHopper: VacuumHopper, pos: BlockPos, state: Block
                     if(recipe.matches(entity, serverWorld)) {
                         entity.totalProcessingTicks = recipe.ticks
                         if(entity.processingTicks++ >= recipe.ticks) {
-                            recipe.craft(entity)
+                            recipe.craft(entity, world.registryManager)
                             entity.processingRecipe = null
                             entity.processingTicks = 0
                             entity.totalProcessingTicks = 0

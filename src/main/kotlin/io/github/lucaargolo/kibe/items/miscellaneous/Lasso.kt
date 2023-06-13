@@ -19,7 +19,8 @@ import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import net.minecraft.world.World
 
 abstract class Lasso(settings: Settings): Item(settings) {
@@ -105,7 +106,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
     class CursedLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: NbtCompound): NbtCompound {
             val activeEffect = NbtCompound()
-            activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+            activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(CURSED_EFFECT))
             activeEffect.putInt("Amplifier", 1)
             activeEffect.putInt("Duration", 999999)
             val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as NbtList else NbtList()

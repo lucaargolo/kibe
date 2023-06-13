@@ -7,8 +7,8 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryKey
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryKeys
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 import java.util.*
@@ -139,7 +139,7 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
             }
             state.loadedChunkMap = mutableMapOf()
             tag.keys.forEach { key ->
-                val registryKey = RegistryKey.of(Registry.WORLD_KEY, Identifier(key))
+                val registryKey = RegistryKey.of(RegistryKeys.WORLD, Identifier(key))
                 val world = server.getWorld(registryKey)
                 world?.let { _ ->
                     state.loadedChunkMap[registryKey] = mutableListOf()

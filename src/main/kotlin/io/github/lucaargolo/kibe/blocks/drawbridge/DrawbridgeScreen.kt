@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.drawbridge
 
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.blocks.DRAWBRIDGE
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
@@ -20,21 +21,20 @@ class DrawbridgeScreen(handler: DrawbridgeScreenHandler, inventory: PlayerInvent
         y = height / 2 - backgroundHeight / 2
     }
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(matrices)
-        super.render(matrices, mouseX, mouseY, delta)
-        drawMouseoverTooltip(matrices, mouseX, mouseY)
+    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        this.renderBackground(context)
+        super.render(context, mouseX, mouseY, delta)
+        drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
-    override fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
-        drawCenteredText(matrices, textRenderer, title.string, backgroundWidth / 2, 6, 0xFFE000)
-        textRenderer.draw(matrices, playerInventoryTitle, 8f, backgroundHeight - 96 + 4f, 0xFFE000)
+    override fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {
+        context.drawCenteredTextWithShadow(textRenderer, title.string, backgroundWidth / 2, 6, 0xFFE000)
+        context.drawText(textRenderer, playerInventoryTitle, 8, backgroundHeight - 96 + 4, 0xFFE000, false)
     }
 
-    override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.setShaderTexture(0, texture)
-        drawTexture(matrices, x, y, 0, 0, 176, 131)
+    override fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
+        context.drawTexture(texture, x, y, 0, 0, 176, 131)
         if(handler.inventory.getStack(1)?.isEmpty == true)
-            itemRenderer.renderInGuiWithOverrides(ItemStack(DRAWBRIDGE.asItem()), x+134, y+18)
+            context.drawItem(ItemStack(DRAWBRIDGE.asItem()), x+134, y+18)
     }
 }

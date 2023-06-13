@@ -1,16 +1,14 @@
 package io.github.lucaargolo.kibe.blocks.chunkloader
 
-import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.MapColor
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawableHelper
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.PacketByteBuf
 
 import net.minecraft.text.Text
@@ -78,38 +76,36 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
     private val texture = Identifier("kibe:textures/gui/chunk_loader.png")
 
     @Suppress("UNUSED_PARAMETER")
-    private fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
-        textRenderer.draw(matrices, title, (x+47 - textRenderer.getWidth(title) / 2f), y+6f, 4210752)
+    private fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {
+        context.drawText(textRenderer, title, x+47 - textRenderer.getWidth(title) / 2, y+6, 4210752, false)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.setShaderTexture(0, texture)
-        drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight)
+    private fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
+        context.drawTexture(texture, x, y, 0, 0, backgroundWidth, backgroundHeight)
     }
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(matrices)
-        drawBackground(matrices, delta, mouseX, mouseY)
+    override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        this.renderBackground(context)
+        drawBackground(context, delta, mouseX, mouseY)
         if(identifier == null) createImage()
         identifier?.let {
-            RenderSystem.setShaderTexture(0, it)
-            drawTexture(matrices, x+7, y+15, 0, 0, 80, 80)
+            context.drawTexture(it, x+7, y+15, 0, 0, 80, 80)
         }
         entity.enabledChunks.forEach {
-            DrawableHelper.fill(matrices, x+7+((it.first+2)*16), y+15+((it.second+2)*16), x+7+((it.first+2)*16)+16, y+15+((it.second+2)*16)+16, -2147418368)
+            context.fill(x+7+((it.first+2)*16), y+15+((it.second+2)*16), x+7+((it.first+2)*16)+16, y+15+((it.second+2)*16)+16, -2147418368)
         }
         if(mouseX in (x+7 until x+87) && mouseY in (y+15 until y+95)) {
             val chunkX = (mouseX-(x+7))/16
             val chunkZ = (mouseY-(y+15))/16
-            DrawableHelper.fill(matrices, x+7+(chunkX*16), y+15+(chunkZ*16), x+7+(chunkX*16)+16, y+15+(chunkZ*16)+16, -2130706433)
+            context.fill(x+7+(chunkX*16), y+15+(chunkZ*16), x+7+(chunkX*16)+16, y+15+(chunkZ*16)+16, -2130706433)
             val tooltip = mutableListOf<Text>()
             tooltip.add(Text.translatable("tooltip.kibe.chunk_at").append(Text.literal("${chunkPos.x+chunkX-2}, ${chunkPos.z+chunkZ-2}")))
             tooltip.add(Text.translatable("tooltip.kibe.forced").append(Text.translatable(if(entity.enabledChunks.contains(Pair(chunkX-2, chunkZ-2))) "tooltip.kibe.enabled" else "tooltip.kibe.disabled")))
-            renderTooltip(matrices, tooltip, mouseX, mouseY)
+            context.drawTooltip(textRenderer, tooltip, mouseX, mouseY)
         }
-        super.render(matrices, mouseX, mouseY, delta)
-        drawForeground(matrices, mouseX, mouseY)
+        super.render(context, mouseX, mouseY, delta)
+        drawForeground(context, mouseX, mouseY)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

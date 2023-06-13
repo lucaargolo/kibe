@@ -18,7 +18,7 @@ import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import kotlin.math.abs
 
-class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
+class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
@@ -53,7 +53,7 @@ class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.of(Mate
             .with(HorizontalConnectingBlock.SOUTH, ctx.world.getBlockState(ctx.blockPos.north()).block is ConveyorBelt)
             .with(HorizontalConnectingBlock.EAST, ctx.world.getBlockState(ctx.blockPos.west()).block is ConveyorBelt)
             .with(HorizontalConnectingBlock.WEST, ctx.world.getBlockState(ctx.blockPos.east()).block is ConveyorBelt)
-            .with(Properties.HORIZONTAL_FACING, ctx.playerFacing)
+            .with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
     }
 
     @Suppress("DEPRECATION")

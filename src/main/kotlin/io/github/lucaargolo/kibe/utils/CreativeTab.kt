@@ -11,27 +11,26 @@ import io.github.lucaargolo.kibe.blocks.TANK
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.getFluidBucket
 import io.github.lucaargolo.kibe.items.*
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
-import java.util.function.Consumer
-
-var CREATIVE_TAB: ItemGroup? = null
 
 fun initCreativeTab() {
-    CREATIVE_TAB = FabricItemGroupBuilder
-        .create(Identifier(MOD_ID, "creative_tab"))
+    Registry.register(Registries.ITEM_GROUP, Identifier(MOD_ID, "creative_tab"), FabricItemGroup.builder()
         .icon { ItemStack(KIBE) }
-        .appendItems(Consumer { it.addAll(appendItems()) })
+        .displayName(Text.translatable("itemGroup.kibe.creative_tab"))
+        .entries { _, entries -> entries.addAll(appendItems()) }
         .build()
+    )
 }
 
 private fun appendItems(): List<ItemStack> {
@@ -63,7 +62,7 @@ private fun appendItems(): List<ItemStack> {
             else -> ItemStack.EMPTY
         })
     }
-    Registry.FLUID.indexedEntries.forEach { fluidEntry ->
+    Registries.FLUID.indexedEntries.forEach { fluidEntry ->
         val fluid = fluidEntry.value()
         val fluidKey = fluidEntry.key.get()
         val itemStack = ItemStack(TANK)

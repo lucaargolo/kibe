@@ -59,7 +59,8 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.File
@@ -68,6 +69,7 @@ import java.nio.file.Files
 import java.util.*
 
 const val MOD_ID = "kibe"
+const val MOD_NAME = "Kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
@@ -75,7 +77,7 @@ val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_s
 val CLIENT: Boolean by lazy { FabricLoader.getInstance().environmentType == EnvType.CLIENT }
 val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
 val WATER_DROPS: DefaultParticleType by lazy {
-    Registry.register(Registry.PARTICLE_TYPE, Identifier(MOD_ID, "water_drops"), FabricParticleTypes.simple())
+    Registry.register(Registries.PARTICLE_TYPE, Identifier(MOD_ID, "water_drops"), FabricParticleTypes.simple())
 }
 val LOGGER: Logger = LogManager.getLogger("Kibe")
 val MOD_CONFIG: ModConfig by lazy {
@@ -83,27 +85,27 @@ val MOD_CONFIG: ModConfig by lazy {
     val gson = GsonBuilder().setPrettyPrinting().create()
     val configFile = File("${FabricLoader.getInstance().configDir}${File.separator}$MOD_ID.json")
     var finalConfig: ModConfig
-    LOGGER.info("Trying to read config file...")
+    LOGGER.info("[$MOD_NAME] Trying to read config file...")
     try {
         if (configFile.createNewFile()) {
-            LOGGER.info("No config file found, creating a new one...")
+            LOGGER.info("[$MOD_NAME] No config file found, creating a new one...")
             val json: String = gson.toJson(parser.parse(gson.toJson(ModConfig())))
             PrintWriter(configFile).use { out -> out.println(json) }
             finalConfig = ModConfig()
-            LOGGER.info("Successfully created default config file.")
+            LOGGER.info("[$MOD_NAME] Successfully created default config file.")
         } else {
-            LOGGER.info("A config file was found, loading it..")
+            LOGGER.info("[$MOD_NAME] A config file was found, loading it..")
             finalConfig = gson.fromJson(String(Files.readAllBytes(configFile.toPath())), ModConfig::class.java)
             if (finalConfig == null) {
-                throw NullPointerException("The config file was empty.")
+                throw NullPointerException("[$MOD_NAME] The config file was empty.")
             } else {
-                LOGGER.info("Successfully loaded config file.")
+                LOGGER.info("[$MOD_NAME] Successfully loaded config file.")
             }
         }
     } catch (exception: Exception) {
-        LOGGER.error("There was an error creating/loading the config file!", exception)
+        LOGGER.error("[$MOD_NAME] There was an error creating/loading the config file!", exception)
         finalConfig = ModConfig()
-        LOGGER.warn("Defaulting to original config.")
+        LOGGER.warn("[$MOD_NAME] Defaulting to original config.")
     }
     finalConfig
 }

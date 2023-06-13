@@ -6,9 +6,9 @@ import net.minecraft.fluid.FluidState
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.particle.ParticleTypes
+import net.minecraft.registry.tag.FluidTags
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.tag.FluidTags
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
@@ -17,7 +17,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 
-class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ticksRandomly().collidable(false)), Waterloggable {
+class LightSource: Block(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(15).ticksRandomly().collidable(false)), Waterloggable {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.WATERLOGGED, false)
@@ -42,7 +42,7 @@ class LightSource: Block(FabricBlockSettings.of(Material.GLASS).luminance(15).ti
     @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: WorldAccess, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
         if (state.get(HorizontalConnectingBlock.WATERLOGGED) as Boolean) {
-            world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
         }
         return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom)
     }

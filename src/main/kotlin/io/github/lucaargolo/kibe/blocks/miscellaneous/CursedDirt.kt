@@ -31,13 +31,14 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3i
 import net.minecraft.util.math.random.Random
-import net.minecraft.util.registry.Registry
+import net.minecraft.registry.Registry
+import net.minecraft.registry.Registries
 import net.minecraft.world.*
 import net.minecraft.world.biome.SpawnSettings
 import net.minecraft.world.chunk.light.ChunkLightProvider
 import java.util.*
 
-class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS)) {
+class CursedDirt: GrassBlock(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS)) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.LEVEL_15, 15).with(Properties.SNOWY, false)
@@ -87,7 +88,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
         }
 
         //I dont really know what this does
-        world.createAndScheduleBlockTick(pos, state.block, random.nextInt(200))
+        world.scheduleBlockTick(pos, state.block, random.nextInt(200))
 
         //Dont spawn mobs in peaceful, in non water liquids or when doMobSpawning is set to false
         if ((world.getFluidState(pos.up()).fluid !is EmptyFluid && world.getFluidState(pos.up()).fluid != Fluids.WATER && world.getFluidState(pos.up()).fluid != Fluids.FLOWING_WATER) || world.difficulty == Difficulty.PEACEFUL || !world.gameRules[GameRules.DO_MOB_SPAWNING].get()) return
@@ -102,14 +103,14 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
             val location = if(world.getFluidState(pos.up()).fluid is EmptyFluid) SpawnRestriction.Location.ON_GROUND else SpawnRestriction.Location.IN_WATER
             if(SpawnHelper.canSpawn(location, world, pos.up(), mob)) {
                 val tag = getSpawnTag()
-                tag.putString("id", Registry.ENTITY_TYPE.getId(mob).toString())
+                tag.putString("id", Registries.ENTITY_TYPE.getId(mob).toString())
                 val entity = EntityType.loadEntityWithPassengers(tag, world) {
                     it.refreshPositionAndAngles(pos.x+.5, pos.y+1.0, pos.z+.5, it.yaw, it.pitch)
                     if(it.isInsideWall) null else
                     if (!world.tryLoadEntity(it)) null else it
                 }
                 if(entity is MobEntity) {
-                    entity.initialize(world, world.getLocalDifficulty(BlockPos(entity.pos)), SpawnReason.NATURAL, null, null)
+                    entity.initialize(world, world.getLocalDifficulty(BlockPos.ofFloored(entity.pos)), SpawnReason.NATURAL, null, null)
                 }
             }
         }
@@ -117,7 +118,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
 
     private fun getSpawnTag(): NbtCompound {
         val activeEffect = NbtCompound()
-        activeEffect.putInt("Id", Registry.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+        activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(CURSED_EFFECT))
         activeEffect.putInt("Amplifier", 1)
         activeEffect.putInt("Duration", 300)
         val activeEffects = NbtList()
@@ -144,7 +145,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).tick
     private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
         val optionalEntry: Optional<SpawnSettings.SpawnEntry> = SpawnHelperInvoker.pickRandomSpawnEntry(world, world.structureAccessor, world.chunkManager.chunkGenerator, SpawnGroup.MONSTER, random, pos)
         val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
-        if(MOD_CONFIG.miscellaneousModule.cursedDirtBlacklist.contains(Registry.ENTITY_TYPE.getId(entry.type).toString())) return null
+        if(MOD_CONFIG.miscellaneousModule.cursedDirtBlacklist.contains(Registries.ENTITY_TYPE.getId(entry.type).toString())) return null
         BigTorchBlockEntity.setException(true)
         SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random).let {
             BigTorchBlockEntity.setException(false)

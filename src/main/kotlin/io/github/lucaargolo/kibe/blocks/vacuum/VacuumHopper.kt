@@ -26,7 +26,7 @@ import net.minecraft.util.math.random.Random
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
+class VacuumHopper: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return VacuumHopperEntity(this, blockPos, blockState)
@@ -52,7 +52,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
         if (!world.isClient) {
             val isEnabled = state[Properties.ENABLED]
             if (isEnabled == world.isReceivingRedstonePower(pos)) {
-                if (isEnabled) world.createAndScheduleBlockTick(pos, this, 4)
+                if (isEnabled) world.scheduleBlockTick(pos, this, 4)
                 else world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
             }
         }
@@ -125,7 +125,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapCo
         return output
     }
 
-    override fun isTranslucent(state: BlockState?, view: BlockView?, pos: BlockPos?): Boolean {
+    override fun isTransparent(state: BlockState?, world: BlockView?, pos: BlockPos?): Boolean {
         return true
     }
 

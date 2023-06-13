@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import io.github.lucaargolo.kibe.utils.SpikeHelper
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType
 import net.minecraft.block.BlockState
@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
@@ -40,11 +41,11 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
     }
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
-        if(!world.isClient && entity is LivingEntity) {
+        if(world is ServerWorld && entity is LivingEntity) {
             SpikeHelper.setSpike(entity, type)
             when(type) {
-                Type.IRON, Type.STONE -> entity.damage(DamageSource.GENERIC, type.damage)
-                Type.GOLD, Type.DIAMOND -> entity.damage(DamageSource.player(FakePlayerEntity(world)), type.damage)
+                Type.IRON, Type.STONE -> entity.damage(world.damageSources.generic(), type.damage)
+                Type.GOLD, Type.DIAMOND -> entity.damage(world.damageSources.playerAttack(FakePlayer.get(world)), type.damage)
             }
             SpikeHelper.setSpike(entity, null)
         }
