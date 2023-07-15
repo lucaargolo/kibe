@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " l ",
+    "lil",
+    " ly"
+  ],
+  "key": {
+    "y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "l": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "result": {
+    "item": "kibe:measuring_tape",
+    "count": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "kibe:item/measuring_tape"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "kibe:extended": 1
+      },
+      "model": "kibe:item/measuring_tape_extended"
+    }
+  ]
+}
