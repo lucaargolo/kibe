@@ -178,7 +178,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
                 if(pa.isEnabledFor(player)) {
                     StatusEffect se = RingAbilitiesKt.getPotionToAbilityMap().get(pa);
-                    StatusEffectInstance sei = new StatusEffectInstance(se, 100);
+                    StatusEffectInstance sei = new StatusEffectInstance(se, 100, 1, false, false, true);
                     player.addStatusEffect(sei);
                 }
             }
