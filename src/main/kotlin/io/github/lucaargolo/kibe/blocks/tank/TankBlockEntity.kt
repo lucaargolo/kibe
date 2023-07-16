@@ -41,8 +41,7 @@ class TankBlockEntity(tank: Tank, pos: BlockPos, state: BlockState): SyncableBlo
     }
 
     override fun writeNbt(tag: NbtCompound) {
-        if(!tank.isResourceBlank && !isEmpty)
-            writeTank(tag, tank)
+        writeTank(tag, tank)
     }
 
     override fun readNbt(tag: NbtCompound) {

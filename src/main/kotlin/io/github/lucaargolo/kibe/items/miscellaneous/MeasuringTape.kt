@@ -189,6 +189,10 @@ class MeasuringTape(settings: Settings) : Item(settings) {
         }
     }
 
+    override fun hasGlint(stack: ItemStack): Boolean {
+        return measuringTo(stack) != null
+    }
+
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         if(world.isClient && selected) {
             val client = MinecraftClient.getInstance()
