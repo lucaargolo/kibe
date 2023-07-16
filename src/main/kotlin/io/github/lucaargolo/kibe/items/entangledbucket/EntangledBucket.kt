@@ -83,11 +83,9 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         val hasSpace = (fluidInv.amount + FluidConstants.BUCKET) <= fluidInv.capacity
         val hasBucket = fluidInv.amount >= FluidConstants.BUCKET
 
-        val hitResult: HitResult = raycast(world, user,
-            if (hasSpace) RaycastContext.FluidHandling.SOURCE_ONLY else RaycastContext.FluidHandling.NONE
-        )
+        val blockHitResult = raycast(world, user, if (hasSpace) RaycastContext.FluidHandling.SOURCE_ONLY else RaycastContext.FluidHandling.NONE)
 
-        return (hitResult as? BlockHitResult)?.let { blockHitResult ->
+        return if(blockHitResult.type != HitResult.Type.MISS) {
             val dir = blockHitResult.side
             val pos = blockHitResult.blockPos
             val offsetPos = pos.offset(dir)
@@ -150,37 +148,33 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                                 Criteria.FILLED_BUCKET.trigger(user as ServerPlayerEntity, ItemStack(ENTANGLED_BUCKET))
                             }
                             return TypedActionResult.success(itemStack)
-                        }else{
-                            (drainedFluid.item as? BucketItem)?.placeFluid(user, world, pos, blockHitResult)
-                        }
-                    }
-                }else {
-                    val interactablePos = if (blockState.block is FluidFillable && fluid == Fluids.WATER) pos else offsetPos
-                    val interactableBlockState = world.getBlockState(interactablePos)
-                    if(hasBucket && (interactableBlockState.block !is FluidDrainable || (interactableBlockState.contains(Properties.LEVEL_15) && interactableBlockState[Properties.LEVEL_15] != 0))) {
-                        val bucketItem = fluid.bucketItem as BucketItem
-                        if (bucketItem.placeFluid(user, world, interactablePos, blockHitResult)) {
-                            bucketItem.onEmptied(null, world, itemStack, interactablePos)
-                            if (!world.isClient) {
-                                val serverWorld = world as ServerWorld
-                                val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
-                                val stateInv = state.getOrCreateInventory(colorCode)
-                                Transaction.openOuter().also {
-                                    stateInv.extract(FluidVariant.of(fluid), FluidConstants.BUCKET, it)
-                                }.commit()
-                                state.markDirty(colorCode)
-                                Criteria.PLACED_BLOCK.trigger(user as ServerPlayerEntity, interactablePos, itemStack)
-                            }
-                            user.incrementStat(Stats.USED.getOrCreateStat(this))
-                            return TypedActionResult.success(itemStack)
                         }
                     }
                 }
-
+                val interactablePos = if (blockState.block is FluidFillable && fluid == Fluids.WATER) pos else offsetPos
+                val interactableBlockState = world.getBlockState(interactablePos)
+                if(hasBucket && (interactableBlockState.block !is FluidDrainable || interactableBlockState.block is FluidFillable || (interactableBlockState.contains(Properties.LEVEL_15) && interactableBlockState[Properties.LEVEL_15] != 0))) {
+                    val bucketItem = fluid.bucketItem as BucketItem
+                    if (bucketItem.placeFluid(user, world, interactablePos, blockHitResult)) {
+                        bucketItem.onEmptied(null, world, itemStack, interactablePos)
+                        if (!world.isClient) {
+                            val serverWorld = world as ServerWorld
+                            val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
+                            val stateInv = state.getOrCreateInventory(colorCode)
+                            Transaction.openOuter().also {
+                                stateInv.extract(FluidVariant.of(fluid), FluidConstants.BUCKET, it)
+                            }.commit()
+                            state.markDirty(colorCode)
+                            Criteria.PLACED_BLOCK.trigger(user as ServerPlayerEntity, interactablePos, itemStack)
+                        }
+                        user.incrementStat(Stats.USED.getOrCreateStat(this))
+                        return TypedActionResult.success(itemStack)
+                    }
+                }
             }
             TypedActionResult.fail(itemStack)
 
-        } ?: TypedActionResult.pass(itemStack)
+        }else TypedActionResult.pass(itemStack)
 
     }
 
