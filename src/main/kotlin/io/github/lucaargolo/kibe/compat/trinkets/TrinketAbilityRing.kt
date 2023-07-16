@@ -17,12 +17,13 @@ class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRi
     }
 
     override fun tick(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
-        (entity as? PlayerEntityMixed)?.let {
-            try {
-                it.kibe_activeRingsList.removeAll { pair -> pair.second != entity.world.time }
-            } catch (e: Exception) {
+        if(!entity.world.isClient) {
+            (entity as? PlayerEntityMixed)?.let {
+                try {
+                    it.kibe_activeRingsList.removeAll { pair -> pair.second != entity.world.time }
+                } catch (_: Exception) { }
+                it.kibe_activeRingsList.add(Pair(stack, entity.world.time))
             }
-            it.kibe_activeRingsList.add(Pair(stack, entity.world.time))
         }
     }
 

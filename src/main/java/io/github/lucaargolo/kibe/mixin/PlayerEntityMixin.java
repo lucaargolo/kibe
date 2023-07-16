@@ -197,16 +197,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                     if (ringMap.size() == 1 && ringMap.get(ring).size() == 1) {
                         RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
                         ItemStack ringStack = ringMap.get(ring).get(0);
-                        if (!ringStack.getOrCreateNbt().getBoolean("unique")) {
-                            ringStack.getOrCreateNbt().putBoolean("unique", true);
+                        if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+                            ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
                         }
                     } else {
                         if (RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
                             RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
                         }
                         for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (ringStack.getOrCreateNbt().getBoolean("unique")) {
-                                ringStack.getOrCreateNbt().putBoolean("unique", false);
+                            if (ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, false);
                             }
                         }
                     }
