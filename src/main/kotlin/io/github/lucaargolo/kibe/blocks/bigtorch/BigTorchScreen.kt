@@ -43,7 +43,7 @@ class BigTorchScreen(handler: BigTorchScreenHandler, inventory: PlayerInventory,
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.setShaderTexture(0, texture)
         drawTexture(matrices, x, y, 0, 0, 176, 150)
-        drawTexture(matrices, x+8, y+19, 0, 150, (159*handler.entity.torchPercentage).toInt(), 14)
+        drawTexture(matrices, x+8, y+19, 0, 150, (160*handler.entity.torchPercentage).toInt(), 14)
     }
 
 }
