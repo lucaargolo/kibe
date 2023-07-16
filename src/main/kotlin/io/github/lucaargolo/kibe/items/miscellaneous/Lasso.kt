@@ -32,7 +32,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun useOnEntity(stack: ItemStack, user: PlayerEntity, entity: LivingEntity, hand: Hand): ActionResult {
         if (stack.nbt == null || !stack.orCreateNbt.contains("Entity")) {
-            if (entity is MobEntity && canStoreEntity(entity.type) && MOD_CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString())) {
+            if (entity is MobEntity && canStoreEntity(entity.type) && !MOD_CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString())) {
                 if(!user.world.isClient) {
                     if (entity.isLeashed) entity.detachLeash(true, true)
                     entity.fallDistance = 0f
