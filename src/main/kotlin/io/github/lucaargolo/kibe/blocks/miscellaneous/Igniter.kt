@@ -1,20 +1,24 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
+import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.DispenserBlock
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.Items
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvents
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.BlockMirror
 import net.minecraft.util.BlockRotation
+import net.minecraft.util.Hand
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
@@ -53,11 +57,18 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
     }
 
     override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
-        val facingPos = pos.offset(state[Properties.FACING])
+        val facing = state[Properties.FACING]
+        val fakePlayer = FakePlayerEntity(world)
+        fakePlayer.setStackInHand(Hand.MAIN_HAND, Items.FLINT_AND_STEEL.defaultStack)
+        var facingPos = pos.offset(facing)
         val facingState = world.getBlockState(facingPos)
-        if(facingState.material.isReplaceable && !facingState.isOf(Blocks.FIRE)) {
-            world.setBlockState(facingPos, Blocks.FIRE.defaultState)
-            world.playSound(null, pos.x+0.0, pos.y+0.0, pos.z+0.0, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0f, random.nextFloat() * 0.4f + 0.8f,)
+        if(!facingState.isAir) {
+            val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.5, facingPos.z + 0.5)
+            Items.FLINT_AND_STEEL.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, facingPos, false)))
+        }else{
+            facingPos = facingPos.offset(facing)
+            val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.5, facingPos.z + 0.5)
+            Items.FLINT_AND_STEEL.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, facingPos, false)))
         }
     }
 
