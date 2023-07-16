@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blocks.chunkloader
 
 import com.mojang.blaze3d.systems.RenderSystem
 import io.github.lucaargolo.kibe.CHUNK_MAP_CLICK
+import io.github.lucaargolo.kibe.CHUNK_PLAYER_CHECK
 import io.netty.buffer.Unpooled
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.MapColor
@@ -26,6 +27,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
     val entity = be
 
     var identifier: Identifier? = null
+    var notOwner = false
 
     private fun createImage() {
         val image = NativeImage(NativeImage.Format.RGBA, 256, 256, false)
@@ -58,7 +60,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
 
     override fun shouldPause() = false
 
-    private val backgroundHeight = 102
+    private val backgroundHeight = 116
     private val backgroundWidth = 94
 
     var x = 0
@@ -80,6 +82,12 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
     @Suppress("UNUSED_PARAMETER")
     private fun drawForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int) {
         textRenderer.draw(matrices, title, (x+47 - textRenderer.getWidth(title) / 2f), y+6f, 4210752)
+        val toggle = Text.translatable("tooltip.kibe.check_for_owner")
+        matrices.push()
+        matrices.scale(0.5f, 0.5f, 0.5f)
+        textRenderer.draw(matrices, toggle, (x+16)*2f, (y+20f)*2f, 4210752)
+        matrices.pop()
+
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -94,33 +102,59 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
         if(identifier == null) createImage()
         identifier?.let {
             RenderSystem.setShaderTexture(0, it)
-            drawTexture(matrices, x+7, y+15, 0, 0, 80, 80)
+            drawTexture(matrices, x+7, y+28, 0, 0, 80, 80)
         }
         entity.enabledChunks.forEach {
-            DrawableHelper.fill(matrices, x+7+((it.first+2)*16), y+15+((it.second+2)*16), x+7+((it.first+2)*16)+16, y+15+((it.second+2)*16)+16, -2147418368)
+            DrawableHelper.fill(matrices, x+7+((it.first+2)*16), y+28+((it.second+2)*16), x+7+((it.first+2)*16)+16, y+28+((it.second+2)*16)+16, -2147418368)
         }
-        if(mouseX in (x+7 until x+87) && mouseY in (y+15 until y+95)) {
+        if(entity.checkForOwner) {
+            RenderSystem.setShaderTexture(0, texture)
+            drawTexture(matrices, x+7, y+18, 94, 0, 7, 7)
+        }
+        if(mouseX in (x+7 until x+87) && mouseY in (y+28 until y+109)) {
             val chunkX = (mouseX-(x+7))/16
-            val chunkZ = (mouseY-(y+15))/16
-            DrawableHelper.fill(matrices, x+7+(chunkX*16), y+15+(chunkZ*16), x+7+(chunkX*16)+16, y+15+(chunkZ*16)+16, -2130706433)
+            val chunkZ = (mouseY-(y+28))/16
+            DrawableHelper.fill(matrices, x+7+(chunkX*16), y+28+(chunkZ*16), x+7+(chunkX*16)+16, y+28+(chunkZ*16)+16, -2130706433)
             val tooltip = mutableListOf<Text>()
             tooltip.add(Text.translatable("tooltip.kibe.chunk_at").append(Text.literal("${chunkPos.x+chunkX-2}, ${chunkPos.z+chunkZ-2}")))
             tooltip.add(Text.translatable("tooltip.kibe.forced").append(Text.translatable(if(entity.enabledChunks.contains(Pair(chunkX-2, chunkZ-2))) "tooltip.kibe.enabled" else "tooltip.kibe.disabled")))
             renderTooltip(matrices, tooltip, mouseX, mouseY)
+        }else if(mouseX in (x+7 until x+14) && mouseY in (y+18 until y+25)) {
+            DrawableHelper.fill(matrices, x+7, y+18, x+14, y+25, -2130706433)
+            val tooltip = mutableListOf<Text>()
+            tooltip.add(Text.translatable("tooltip.kibe.check_for_owner_status", if (entity.checkForOwner) Text.translatable("tooltip.kibe.enabled") else Text.translatable("tooltip.kibe.disabled")))
+            if(notOwner) {
+                tooltip.add(Text.translatable("tooltip.kibe.lore.not_owner"))
+            }else {
+                tooltip.add(Text.translatable("tooltip.kibe.lore.check_for_owner"))
+            }
+            renderTooltip(matrices, tooltip, mouseX, mouseY)
+        }else{
+            notOwner = false
         }
         super.render(matrices, mouseX, mouseY, delta)
         drawForeground(matrices, mouseX, mouseY)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if(mouseX.toInt() in (x+7 until x+87) && mouseY.toInt() in (y+15 until y+95)) {
+        if(mouseX.toInt() in (x+7 until x+87) && mouseY.toInt() in (y+28 until y+109)) {
             val x = ((mouseX.toInt()-(x+7))/16) - 2
-            val z = ((mouseY.toInt()-(y+15))/16) - 2
+            val z = ((mouseY.toInt()-(y+28))/16) - 2
             val passedData = PacketByteBuf(Unpooled.buffer())
             passedData.writeInt(x)
             passedData.writeInt(z)
             passedData.writeBlockPos(entity.pos)
             ClientPlayNetworking.send(CHUNK_MAP_CLICK, passedData)
+            return true
+        }
+        if(mouseX.toInt() in (x+7 until x+14) && mouseY.toInt() in (y+18 until y+25)) {
+            val passedData = PacketByteBuf(Unpooled.buffer())
+            passedData.writeBlockPos(entity.pos)
+            if(client?.player?.uuidAsString != entity.ownerUUID) {
+                notOwner = true
+            }else{
+                ClientPlayNetworking.send(CHUNK_PLAYER_CHECK, passedData)
+            }
             return true
         }
         return super.mouseClicked(mouseX, mouseY, button)

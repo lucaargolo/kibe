@@ -191,6 +191,10 @@
   "tooltip.kibe.suppressed_spawns": "§9Suppressed Spawns: ",
   "tooltip.kibe.chunk_at": "§9Chunk at: ",
   "tooltip.kibe.forced": "§9Forced: ",
+  "tooltip.kibe.check_for_owner": "Check for owner",
+  "tooltip.kibe.check_for_owner_status": "§9Check for owner: %s",
+  "tooltip.kibe.lore.check_for_owner": "§5§oChunk loader only works when owner is online.",
+  "tooltip.kibe.lore.not_owner": "§c§oYou're not the owner of this chunk loader",
 
   "tooltip.kibe.overflowed": "§4§oMultiple rings enabled",
   "tooltip.kibe.shift2enable": "§9§oShift click to enable",

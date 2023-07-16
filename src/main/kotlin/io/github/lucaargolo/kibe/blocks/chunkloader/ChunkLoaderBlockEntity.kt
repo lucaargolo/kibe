@@ -15,6 +15,7 @@ import java.util.*
 
 class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState): SyncableBlockEntity(getEntityType(block), pos, state) {
 
+    var checkForOwner = false
     var ownerUUID = ""
 
     enum class DisabledReason {
@@ -36,6 +37,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
     )
 
     override fun writeNbt(tag: NbtCompound) {
+        tag.putBoolean("checkForOwner", checkForOwner)
         tag.putString("ownerUUID", ownerUUID)
         tag.putLong("ownerLastSeen", ownerLastSeen)
         tag.putString("disabledReason", disabledReason.name)
@@ -51,6 +53,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
 
     override fun readNbt(tag: NbtCompound) {
         super.readNbt(tag)
+        checkForOwner = tag.getBoolean("checkForOwner")
         ownerUUID = tag.getString("ownerUUID")
         ownerLastSeen = tag.getLong("ownerLastSeen")
         disabledReason = try { DisabledReason.valueOf(tag.getString("disabledReason")) } catch (ignored: Exception) { ignored.printStackTrace(); DisabledReason.NONE }
@@ -130,7 +133,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
                             val player = serverWorld.server.playerManager.getPlayer(validUUID)
                             if(player != null) {
                                 entity.ownerLastSeen = System.currentTimeMillis()
-                            }else if (MOD_CONFIG.chunkLoaderModule.checkForPlayer) {
+                            }else if (entity.checkForOwner || MOD_CONFIG.chunkLoaderModule.checkForPlayer) {
                                 serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
                                 entity.disabledReason = DisabledReason.OWNER_OFFLINE
                                 entity.markDirtyAndSync()
