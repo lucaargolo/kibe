@@ -11,6 +11,8 @@ import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
@@ -29,6 +31,14 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return defaultState.with(Properties.FACING, ctx.playerLookDirection.opposite)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
+        return state.with(DispenserBlock.FACING, rotation.rotate(state[DispenserBlock.FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState {
+        return state.rotate(mirror.getRotation(state[DispenserBlock.FACING]))
     }
 
     override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block?, fromPos: BlockPos?, notify: Boolean) {

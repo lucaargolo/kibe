@@ -15,9 +15,7 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.BooleanProperty
 import net.minecraft.state.property.DirectionProperty
 import net.minecraft.state.property.Properties
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
-import net.minecraft.util.ItemScatterer
+import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -48,6 +46,14 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
             Direction.DOWN -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite).with(VERTICAL, true).with(VERTICAL_FACING, Direction.DOWN)
             else -> defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite).with(VERTICAL, false)
         }
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
+        return state.with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
+        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
     }
 
     override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block?, fromPos: BlockPos?, notify: Boolean) {

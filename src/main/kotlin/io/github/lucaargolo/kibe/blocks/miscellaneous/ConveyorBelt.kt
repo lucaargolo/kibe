@@ -8,6 +8,8 @@ import net.minecraft.item.ItemPlacementContext
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
@@ -32,6 +34,30 @@ class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.of(Mate
         stateManager.add(Properties.EAST)
         stateManager.add(Properties.WEST)
         stateManager.add(Properties.SOUTH)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
+        val mutedProperties = mutableSetOf<Direction>()
+        listOf(
+            Pair(Properties.NORTH, Direction.NORTH),
+            Pair(Properties.EAST, Direction.EAST),
+            Pair(Properties.WEST, Direction.WEST),
+            Pair(Properties.SOUTH, Direction.SOUTH)
+        ).forEach { (property, direction) ->
+            if(state[property]) {
+                mutedProperties.add(rotation.rotate(direction))
+            }
+        }
+        return state
+            .with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
+            .with(Properties.NORTH, mutedProperties.contains(Direction.NORTH))
+            .with(Properties.EAST, mutedProperties.contains(Direction.EAST))
+            .with(Properties.WEST, mutedProperties.contains(Direction.WEST))
+            .with(Properties.SOUTH, mutedProperties.contains(Direction.SOUTH))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
+        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
     }
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {

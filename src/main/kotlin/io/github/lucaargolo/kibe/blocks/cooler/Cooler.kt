@@ -11,6 +11,8 @@ import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -31,6 +33,14 @@ class Cooler: BlockWithEntity(FabricBlockSettings.of(Material.METAL, MapColor.PA
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return defaultState.with(Properties.HORIZONTAL_FACING, ctx.playerFacing.opposite)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
+        return state.with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
+        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {

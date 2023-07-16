@@ -2,16 +2,15 @@ package io.github.lucaargolo.kibe.blocks.miscellaneous
 
 import io.github.lucaargolo.kibe.utils.FakePlayerEntity
 import io.github.lucaargolo.kibe.utils.SpikeHelper
-import net.minecraft.block.Block
-import net.minecraft.block.BlockRenderType
-import net.minecraft.block.BlockState
-import net.minecraft.block.ShapeContext
+import net.minecraft.block.*
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
@@ -37,6 +36,14 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState {
         return defaultState.with(Properties.FACING, ctx.side)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
+        return state.with(DispenserBlock.FACING, rotation.rotate(state[DispenserBlock.FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState {
+        return state.rotate(mirror.getRotation(state[DispenserBlock.FACING]))
     }
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
