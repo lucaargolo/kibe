@@ -173,9 +173,11 @@
   "chat.kibe.chunk_loader.owner_long_gone": "§cThe chunk loader is offline because it's owner have been offline for a long time",
   "chat.kibe.chunk_loader.owner_offline": "§cThe chunk loader is offline because it's owner is offline",
   "chat.kibe.chunk_loader.too_many_loaders": "§cThe chunk loader is offline because it's owner already reached the limit of active chunk loaders",
-  "chat.kibe.measuring_tape.start": "Started measuring from [%s, %s, %s] (X, Y, Z)",
-  "chat.kibe.measuring_tape.measuring_between_dimensions": "Measuring between dimensions! Results might not make sense.",
-  "chat.kibe.measuring_tape.result": "Measurement: [%s, %s, %s] (X, Y, Z; inclusive)",
+
+  "chat.kibe.measuring_tape.measuring_between_dimensions": "Can't measure between dimensions!",
+  "chat.kibe.measuring_tape.result": "Measurement: %s",
+  "chat.kibe.measuring_tape.clear": "Cleared measurement",
+  "chat.kibe.measuring_tape.unit": "blocks",
 
   "tooltip.kibe.empty": "Empty",
   "tooltip.kibe.enabled": "§aEnabled",
@@ -220,9 +222,10 @@
   "tooltip.kibe.lore.dehumidifier": "§5§oStop rain/snow particles in its surroundings.",
 
   "tooltip.kibe.lore.measuring_tape.start": "Right click a block to start measuring!",
-  "tooltip.kibe.lore.measuring_tape.measuring_1": "Measuring from [%s, %s, %s]",
+  "tooltip.kibe.lore.measuring_tape.measuring_from": "Measuring from [%s, %s, %s]",
+  "tooltip.kibe.lore.measuring_tape.measuring_to": "Measuring from [%s, %s, %s] to [%s, %s, %s]",
   "tooltip.kibe.lore.measuring_tape.measuring_2": "Right click another block to finish measuring",
-  "tooltip.kibe.lore.measuring_tape.measuring_3": "Sneak to finish measuring without resetting the measuring from position",
+  "tooltip.kibe.lore.measuring_tape.measuring_3": "Sneak right click to clear the measurement",
 
   "tooltip.kibe.lore.cobblestone_generator_mk1": "§5§oGenerates 0.2 Cobblestone per second",
   "tooltip.kibe.lore.cobblestone_generator_mk2": "§5§oGenerates 0.8 Cobblestone per second",
