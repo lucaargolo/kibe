@@ -41,6 +41,7 @@
       "io.github.lucaargolo.kibe.KibeModClientKt::initClient"
     ]
   },
+  "accessWidener": "kibe.accesswidener",
   "mixins": [
     "kibe.mixins.json"
   ],

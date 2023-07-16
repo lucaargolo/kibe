@@ -71,6 +71,7 @@ import java.util.*
 const val MOD_ID = "kibe"
 const val MOD_NAME = "Kibe"
 val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
+val CHUNK_PLAYER_CHECK = Identifier(MOD_ID, "chunk_player_check")
 val CHUNK_MAP_CLICK = Identifier(MOD_ID, "chunk_map_click")
 val REQUEST_DIRTY_TANK_STATES = Identifier(MOD_ID, "request_dirty_tank_states")
 val SYNCHRONIZE_DIRTY_TANK_STATES = Identifier(MOD_ID, "synchronize_dirty_tank_states")
@@ -128,6 +129,20 @@ fun init() {
 }
 
 fun initPackets() {
+    ServerPlayNetworking.registerGlobalReceiver(CHUNK_PLAYER_CHECK) { server, player, _, attachedData, _ ->
+        val pos = attachedData.readBlockPos()
+        server.execute {
+            val world = player.world
+            val be = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
+            be?.let {
+                if(player.uuidAsString == it.ownerUUID) {
+                    it.checkForOwner = !it.checkForOwner
+                    be.markDirtyAndSync()
+                }
+            }
+        }
+    }
+
     ServerPlayNetworking.registerGlobalReceiver(CHUNK_MAP_CLICK) { server, player, _, attachedData, _ ->
         val x = attachedData.readInt()
         val z = attachedData.readInt()
@@ -144,8 +159,7 @@ fun initPackets() {
                         world.chunkManager.setChunkForced(ChunkPos(ChunkPos(be.pos).x, ChunkPos(be.pos).z), true)
                         be.enabledChunks.add(Pair(x, z))
                     }
-                    be.markDirty()
-                    be.sync()
+                    be.markDirtyAndSync()
                 }
             }
         }

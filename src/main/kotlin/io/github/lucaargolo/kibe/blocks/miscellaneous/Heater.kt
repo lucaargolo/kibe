@@ -19,8 +19,8 @@ class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).lum
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = HeaterBlockEntity(this, pos, state)
 
-    override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> HeaterBlockEntity.tick(wrld, pos, state, blockEntity as HeaterBlockEntity) }
+    override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
+        return if(!world.isClient) checkType(blockEntityType, getEntityType(this)) { wrld, pos, state, blockEntity -> HeaterBlockEntity.tick(wrld, pos, state, blockEntity as HeaterBlockEntity) } else null
     }
 
     init {

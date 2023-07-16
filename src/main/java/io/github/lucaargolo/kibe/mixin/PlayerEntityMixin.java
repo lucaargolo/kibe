@@ -178,7 +178,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             for(PlayerAbility pa : RingAbilitiesKt.getPotionToAbilityMap().keySet()) {
                 if(pa.isEnabledFor(player)) {
                     StatusEffect se = RingAbilitiesKt.getPotionToAbilityMap().get(pa);
-                    StatusEffectInstance sei = new StatusEffectInstance(se, 100);
+                    StatusEffectInstance sei = new StatusEffectInstance(se, 100, 1, false, false, true);
                     player.addStatusEffect(sei);
                 }
             }
@@ -192,21 +192,23 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                     ringMap.get(ringItem).add(ringStack);
                 }
             }
+            int ringQnt = ringMap.values().stream().mapToInt(List::size).sum();
             AbilityRing.Companion.getRINGS().forEach(ring -> {
                 if (ringMap.containsKey(ring)) {
-                    if (ringMap.size() == 1 && ringMap.get(ring).size() == 1) {
+                    if (ringQnt == -1 || ringQnt <= KibeModKt.getMOD_CONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
                         RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
-                        ItemStack ringStack = ringMap.get(ring).get(0);
-                        if (!ringStack.getOrCreateNbt().getBoolean("unique")) {
-                            ringStack.getOrCreateNbt().putBoolean("unique", true);
+                        for (ItemStack ringStack : ringMap.get(ring)) {
+                            if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
+                            }
                         }
                     } else {
                         if (RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {
                             RingAbilitiesKt.getRingAbilitySource().revokeFrom(player, ring.getAbility());
                         }
                         for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (ringStack.getOrCreateNbt().getBoolean("unique")) {
-                                ringStack.getOrCreateNbt().putBoolean("unique", false);
+                            if (ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, false);
                             }
                         }
                     }

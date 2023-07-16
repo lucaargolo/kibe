@@ -29,6 +29,8 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreens
+import net.minecraft.client.item.ModelPredicateProviderRegistry
+import net.minecraft.client.item.UnclampedModelPredicateProvider
 import net.minecraft.client.render.model.*
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.SpriteIdentifier
@@ -37,9 +39,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.Item.Settings
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerType
-
 import net.minecraft.text.Text
-
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
@@ -82,11 +82,18 @@ class ContainerInfo<T: ScreenHandler>(
 
 }
 
+interface Identified {
+    val identifier: Identifier
+}
+
+interface IdentifiedModelPredicateProvider : UnclampedModelPredicateProvider, Identified
+
 class ItemInfo (
     val identifier: Identifier,
     val item: Item,
     private val bakedModel: (() -> BakedModel)?,
-    var containers: List<ContainerInfo<*>>
+    var containers: List<ContainerInfo<*>>,
+    private val modelPredicateProviders: List<IdentifiedModelPredicateProvider>?
 ){
 
     fun init() {
@@ -96,6 +103,11 @@ class ItemInfo (
 
     fun initClient() {
         containers.forEach { it.initClient() }
+        modelPredicateProviders?.let { providers ->
+            for (provider in providers) {
+                ModelPredicateProviderRegistry.register(item, provider.identifier, provider)
+            }
+        }
         if(bakedModel != null) {
             ModelLoadingRegistry.INSTANCE.registerVariantProvider {
                 ModelVariantProvider { modelIdentifier, _ ->
@@ -221,8 +233,10 @@ val BROWN_SLEEPING_BAG = register(Identifier(MOD_ID, "brown_sleeping_bag"), Slee
 val RED_SLEEPING_BAG = register(Identifier(MOD_ID, "red_sleeping_bag"), SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
 val BLACK_SLEEPING_BAG = register(Identifier(MOD_ID, "black_sleeping_bag"), SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
 
-fun register(identifier: Identifier, item: Item, bakedModel: (() -> BakedModel)? = null, containers: List<ContainerInfo<*>> = listOf()): Item {
-    val info = ItemInfo(identifier, item, bakedModel, containers)
+val MEASURING_TAPE = register(Identifier(MOD_ID, "measuring_tape"), MeasuringTape(Settings().maxCount(1)), modelPredicateProviders = listOf(MeasuringTape.ModelPredicateProvider))
+
+fun register(identifier: Identifier, item: Item, bakedModel: (() -> BakedModel)? = null, containers: List<ContainerInfo<*>> = listOf(), modelPredicateProviders: List<IdentifiedModelPredicateProvider>? = null): Item {
+    val info = ItemInfo(identifier, item, bakedModel, containers, modelPredicateProviders)
     itemRegistry[item] = info
     return item
 }

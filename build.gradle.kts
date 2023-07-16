@@ -62,6 +62,10 @@ fun getBranch(): String {
     return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
+loom {
+    accessWidenerPath.set(file("src/main/resources/kibe.accesswidener"))
+}
+
 repositories {
     maven {
         name = "Fabric"
@@ -69,7 +73,7 @@ repositories {
     }
     maven {
         name = "Ladysnake Mods"
-        url = uri("https://ladysnake.jfrog.io/artifactory/mods")
+        url = uri("https://maven.ladysnake.org/releases")
     }
     maven {
         name = "JitPack"

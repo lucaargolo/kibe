@@ -18,6 +18,8 @@ import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -35,6 +37,14 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
+        return state.with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
+        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
     }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {

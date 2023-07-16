@@ -123,8 +123,8 @@ class BigTorchBlockEntity(bigTorch: BigTorch, pos: BlockPos, state: BlockState):
         var isTesting = false
 
         fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: BigTorchBlockEntity) {
-            if(blockEntity.count++ == 40) {
-                blockEntity.count = 0
+            if(blockEntity.count-- == 0) {
+                blockEntity.count = 40
                 (world as? ServerWorld)?.let { addSuppressedChunks(world.registryKey, blockEntity.getSuppressedChunks()) }
             }
         }

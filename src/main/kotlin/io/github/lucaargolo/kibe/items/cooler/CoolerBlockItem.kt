@@ -2,6 +2,8 @@ package io.github.lucaargolo.kibe.items.cooler
 
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.utils.ItemScreenHandlerFactory
+import net.minecraft.client.item.BundleTooltipData
+import net.minecraft.client.item.TooltipData
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
@@ -13,6 +15,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
+import java.util.*
 
 class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
 
@@ -45,6 +48,13 @@ class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
             return TypedActionResult.success(stack)
         }
         return super.use(world, player, hand)
+    }
+
+    override fun getTooltipData(stack: ItemStack): Optional<TooltipData> {
+        val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
+        val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
+        Inventories.readNbt(tag, rawInventory)
+        return if(!rawInventory[0].isEmpty) Optional.of(CoolerTooltipData(rawInventory)) else Optional.empty()
     }
 
 }

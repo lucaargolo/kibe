@@ -3,7 +3,6 @@ package io.github.lucaargolo.kibe.blocks.bigtorch
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 
 import net.minecraft.text.Text
@@ -44,7 +43,7 @@ class BigTorchScreen(handler: BigTorchScreenHandler, inventory: PlayerInventory,
     override fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
         RenderSystem.setShaderTexture(0, texture)
         context.drawTexture(texture, x, y, 0, 0, 176, 150)
-        context.drawTexture(texture, x+8, y+19, 0, 150, (159*handler.entity.torchPercentage).toInt(), 14)
+        context.drawTexture(texture, x+8, y+19, 0, 150, (160*handler.entity.torchPercentage).toInt(), 14)
     }
 
 }

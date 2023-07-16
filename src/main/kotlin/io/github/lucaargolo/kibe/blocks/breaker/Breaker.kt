@@ -11,9 +11,7 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
-import net.minecraft.util.ItemScatterer
+import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -33,6 +31,14 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return defaultState.with(Properties.FACING, ctx.playerLookDirection.opposite)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
+        return state.with(DispenserBlock.FACING, rotation.rotate(state[DispenserBlock.FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState {
+        return state.rotate(mirror.getRotation(state[DispenserBlock.FACING]))
     }
 
     override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block?, fromPos: BlockPos?, notify: Boolean) {

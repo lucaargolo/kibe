@@ -14,9 +14,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
-import net.minecraft.util.ItemScatterer
+import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
@@ -34,6 +32,14 @@ class Drawbridge: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.FACING)
+    }
+
+    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
+        return state.with(DispenserBlock.FACING, rotation.rotate(state[DispenserBlock.FACING]))
+    }
+
+    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState {
+        return state.rotate(mirror.getRotation(state[DispenserBlock.FACING]))
     }
 
     override fun hasComparatorOutput(state: BlockState?) = true
