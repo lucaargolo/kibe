@@ -192,13 +192,15 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                     ringMap.get(ringItem).add(ringStack);
                 }
             }
+            int ringQnt = ringMap.values().stream().mapToInt(List::size).sum();
             AbilityRing.Companion.getRINGS().forEach(ring -> {
                 if (ringMap.containsKey(ring)) {
-                    if (ringMap.size() == 1 && ringMap.get(ring).size() == 1) {
+                    if (ringQnt == -1 || ringQnt <= KibeModKt.getMOD_CONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
                         RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
-                        ItemStack ringStack = ringMap.get(ring).get(0);
-                        if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
-                            ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
+                        for (ItemStack ringStack : ringMap.get(ring)) {
+                            if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
+                            }
                         }
                     } else {
                         if (RingAbilitiesKt.getRingAbilitySource().grants(player, ring.getAbility())) {

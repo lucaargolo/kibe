@@ -24,6 +24,8 @@ class ModConfig {
         var gliderDurability: Int = 36000
         //What mobs aren't allowed to be lassoed
         var lassoDenyList: ArrayList<String> = arrayListOf()
+        //Max rings per player
+        var maxRingsPerPlayer: Int = 1
     }
 
     class ChunkLoaderModule {
