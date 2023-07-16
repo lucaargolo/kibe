@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
+import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
@@ -29,16 +30,14 @@ abstract class Lasso(settings: Settings): Item(settings) {
     }
 
     override fun useOnEntity(stack: ItemStack, user: PlayerEntity, entity: LivingEntity, hand: Hand): ActionResult {
-        val stackTag = stack.nbt
-        if (stackTag != null && !stackTag.contains("Entity")) {
-            if (entity is MobEntity && canStoreEntity(entity.type)) {
+        if (stack.nbt == null || !stack.orCreateNbt.contains("Entity")) {
+            if (entity is MobEntity && canStoreEntity(entity.type) && MOD_CONFIG.miscellaneousModule.lassoDenyList.contains(Registry.ENTITY_TYPE.getId(entity.type).toString())) {
                 if(!user.world.isClient) {
                     if (entity.isLeashed) entity.detachLeash(true, true)
                     entity.fallDistance = 0f
                     val tag = NbtCompound()
                     entity.saveSelfNbt(tag)
-                    stackTag.put("Entity", tag)
-                    stack.nbt = stackTag
+                    stack.orCreateNbt.put("Entity", tag)
                     entity.remove(Entity.RemovalReason.DISCARDED)
                 }
                 return ActionResult.SUCCESS

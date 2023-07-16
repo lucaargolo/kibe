@@ -11,7 +11,7 @@ class ModConfig {
         //How many mobs can the Cursed Dirt spawn in a chunk.
         var cursedDirtMobCap: Int = 25
         //What mobs aren't allowed to spawn in cursed dirt
-        var cursedDirtBlacklist: ArrayList<String> = arrayListOf()
+        var cursedDirtDenyList: ArrayList<String> = arrayListOf()
         //The xp drain speed multiplier
         var xpDrainSpeedMultiplier = 1.0
         //The xp drain speed multiplier
@@ -22,6 +22,8 @@ class ModConfig {
         var gliderUnbreakable: Boolean = true
         //Glider durability in ticks (36000 = 30 minutes)
         var gliderDurability: Int = 36000
+        //What mobs aren't allowed to be lassoed
+        var lassoDenyList: ArrayList<String> = arrayListOf()
     }
 
     class ChunkLoaderModule {
