@@ -29,8 +29,8 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreens
+import net.minecraft.client.item.ClampedModelPredicateProvider
 import net.minecraft.client.item.ModelPredicateProviderRegistry
-import net.minecraft.client.item.UnclampedModelPredicateProvider
 import net.minecraft.client.render.model.*
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.SpriteIdentifier
@@ -86,7 +86,7 @@ interface Identified {
     val identifier: Identifier
 }
 
-interface IdentifiedModelPredicateProvider : UnclampedModelPredicateProvider, Identified
+interface IdentifiedModelPredicateProvider : ClampedModelPredicateProvider, Identified
 
 class ItemInfo (
     val identifier: Identifier,

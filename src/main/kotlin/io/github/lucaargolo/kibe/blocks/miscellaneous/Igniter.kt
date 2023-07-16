@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.blocks.miscellaneous
 
-import io.github.lucaargolo.kibe.utils.FakePlayerEntity
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -58,7 +58,7 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
 
     override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         val facing = state[Properties.FACING]
-        val fakePlayer = FakePlayerEntity(world)
+        val fakePlayer = FakePlayer.get(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, Items.FLINT_AND_STEEL.defaultStack)
         var facingPos = pos.offset(facing)
         val facingState = world.getBlockState(facingPos)

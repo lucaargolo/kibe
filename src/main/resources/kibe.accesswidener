@@ -1,7 +1,7 @@
 accessWidener v1 named
 extendable method net/minecraft/client/gui/tooltip/BundleTooltipComponent getColumns ()I
 extendable method net/minecraft/client/gui/tooltip/BundleTooltipComponent getRows ()I
-extendable method net/minecraft/client/gui/tooltip/BundleTooltipComponent drawSlot (IIIZLnet/minecraft/client/font/TextRenderer;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/item/ItemRenderer;I)V
-extendable method net/minecraft/client/gui/tooltip/BundleTooltipComponent draw (Lnet/minecraft/client/util/math/MatrixStack;IIILnet/minecraft/client/gui/tooltip/BundleTooltipComponent$Sprite;)V
+extendable method net/minecraft/client/gui/tooltip/BundleTooltipComponent drawSlot (IIIZLnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;)V
+extendable method net/minecraft/client/gui/tooltip/BundleTooltipComponent draw (Lnet/minecraft/client/gui/DrawContext;IILnet/minecraft/client/gui/tooltip/BundleTooltipComponent$Sprite;)V
 accessible field net/minecraft/client/gui/tooltip/BundleTooltipComponent inventory Lnet/minecraft/util/collection/DefaultedList;
 accessible class net/minecraft/client/gui/tooltip/BundleTooltipComponent$Sprite

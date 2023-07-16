@@ -43,11 +43,11 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
     }
 
     override fun rotate(state: BlockState, rotation: BlockRotation): BlockState {
-        return state.with(DispenserBlock.FACING, rotation.rotate(state[DispenserBlock.FACING]))
+        return state.with(Properties.FACING, rotation.rotate(state[Properties.FACING]))
     }
 
     override fun mirror(state: BlockState, mirror: BlockMirror): BlockState {
-        return state.rotate(mirror.getRotation(state[DispenserBlock.FACING]))
+        return state.rotate(mirror.getRotation(state[Properties.FACING]))
     }
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {

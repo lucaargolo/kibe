@@ -83,7 +83,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
         val toggle = Text.translatable("tooltip.kibe.check_for_owner")
         context.matrices.push()
         context.matrices.scale(0.5f, 0.5f, 0.5f)
-        context.drawText(textRenderer, toggle, (x+16)*2f, (y+20f)*2f, 4210752)
+        context.drawText(textRenderer, toggle, (x+16)*2, (y+20)*2, 4210752, false)
         context.matrices.pop()
     }
 
@@ -103,8 +103,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
             context.fill(x+7+((it.first+2)*16), y+28+((it.second+2)*16), x+7+((it.first+2)*16)+16, y+28+((it.second+2)*16)+16, -2147418368)
         }
         if(entity.checkForOwner) {
-            RenderSystem.setShaderTexture(0, texture)
-            drawTexture(matrices, x+7, y+18, 94, 0, 7, 7)
+            context.drawTexture(texture, x+7, y+18, 94, 0, 7, 7)
         }
         if(mouseX in (x+7 until x+87) && mouseY in (y+28 until y+109)) {
             val chunkX = (mouseX-(x+7))/16
@@ -115,7 +114,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
             tooltip.add(Text.translatable("tooltip.kibe.forced").append(Text.translatable(if(entity.enabledChunks.contains(Pair(chunkX-2, chunkZ-2))) "tooltip.kibe.enabled" else "tooltip.kibe.disabled")))
             context.drawTooltip(textRenderer, tooltip, mouseX, mouseY)
         }else if(mouseX in (x+7 until x+14) && mouseY in (y+18 until y+25)) {
-            DrawableHelper.fill(matrices, x+7, y+18, x+14, y+25, -2130706433)
+            context.fill(x+7, y+18, x+14, y+25, -2130706433)
             val tooltip = mutableListOf<Text>()
             tooltip.add(Text.translatable("tooltip.kibe.check_for_owner_status", if (entity.checkForOwner) Text.translatable("tooltip.kibe.enabled") else Text.translatable("tooltip.kibe.disabled")))
             if(notOwner) {
@@ -123,7 +122,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
             }else {
                 tooltip.add(Text.translatable("tooltip.kibe.lore.check_for_owner"))
             }
-            renderTooltip(matrices, tooltip, mouseX, mouseY)
+            context.drawTooltip(textRenderer, tooltip, mouseX, mouseY)
         }else{
             notOwner = false
         }
