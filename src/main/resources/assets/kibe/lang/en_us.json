@@ -219,7 +219,7 @@
   "tooltip.kibe.lore.gold_spikes": "§5§oEntities drops xp",
   "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
 
-  "tooltip.kibe.lore.cooler": "§5§Auto consumes any food stored in it",
+  "tooltip.kibe.lore.cooler": "§5§oAuto consumes any food stored in it",
   "tooltip.kibe.lore.big_torch": "§5§oFill with torches to keep chunks mob-free",
   "tooltip.kibe.lore.chunk_loader": "§5§oLet you keep a 5x5 chunk area loaded.",
   "tooltip.kibe.lore.heater": "§5§oMelt ice and snow in its surroundings.",
