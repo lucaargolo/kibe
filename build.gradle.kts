@@ -64,6 +64,10 @@ fun getBranch(): String {
     return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
+loom {
+    accessWidenerPath.set(file("src/main/resources/kibe.accesswidener"))
+}
+
 repositories {
     maven {
         name = "Fabric"

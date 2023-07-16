@@ -12,11 +12,12 @@ import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankEntityRendere
 import io.github.lucaargolo.kibe.blocks.entangledtank.EntangledTankState
 import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimerEntityRenderer.Companion.selectorModelLayers
 import io.github.lucaargolo.kibe.blocks.miscellaneous.RedstoneTimerEntityRenderer.Companion.setupSelectorModel
-import io.github.lucaargolo.kibe.blocks.tank.TankBlockEntityRenderer
 import io.github.lucaargolo.kibe.blocks.tank.TankCustomModel
 import io.github.lucaargolo.kibe.entities.initEntitiesClient
 import io.github.lucaargolo.kibe.fluids.initFluidsClient
 import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.items.cooler.CoolerTooltipComponent
+import io.github.lucaargolo.kibe.items.cooler.CoolerTooltipData
 import io.github.lucaargolo.kibe.items.entangledchest.EntangledChestBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.items.entangledtank.EntangledTankBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.items.miscellaneous.GliderDynamicRenderer
@@ -31,6 +32,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback
@@ -215,6 +217,13 @@ fun initExtrasClient() {
     BuiltinItemRendererRegistry.INSTANCE.register(BROWN_GLIDER, GliderDynamicRenderer())
     BuiltinItemRendererRegistry.INSTANCE.register(RED_GLIDER, GliderDynamicRenderer())
     BuiltinItemRendererRegistry.INSTANCE.register(BLACK_GLIDER, GliderDynamicRenderer())
+    TooltipComponentCallback.EVENT.register { data ->
+        if(data is CoolerTooltipData) {
+            return@register CoolerTooltipComponent(data)
+        }else{
+            return@register null
+        }
+    }
 }
 
 fun drawMeasuringTapeOverlay(context: WorldRenderContext) {
