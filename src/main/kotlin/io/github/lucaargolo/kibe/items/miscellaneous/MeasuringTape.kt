@@ -1,18 +1,11 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
-import io.github.lucaargolo.kibe.MOD_ID
-import io.github.lucaargolo.kibe.items.IdentifiedModelPredicateProvider
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
-import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.item.ItemUsageContext
 import net.minecraft.text.Text
 import net.minecraft.util.*
 import net.minecraft.util.hit.BlockHitResult
@@ -117,7 +110,7 @@ class MeasuringTape(settings: Settings) : Item(settings) {
         }
 
         private fun measureResult(fromPos: BlockPos, toPos: BlockPos): String {
-            val unit = I18n.translate("chat.kibe.measuring_tape.unit")
+            val unit = Text.translatable("chat.kibe.measuring_tape.unit").string
             val dist = (Vec3d.ofCenter(fromPos).distanceTo(Vec3d.ofCenter(toPos)) * 100.0).roundToInt() / 100.0
             val distX = abs(fromPos.x - toPos.x) + 1.0
             val distY = abs(fromPos.y - toPos.y) + 1.0
@@ -138,36 +131,21 @@ class MeasuringTape(settings: Settings) : Item(settings) {
 
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = user.getStackInHand(hand)
-        if(!world.isClient && user.isSneaking && user.mainHandStack.isEmpty) {
-            user.sendMessage(Text.translatable("chat.kibe.measuring_tape.clear").formatted(Formatting.RED, Formatting.ITALIC), true)
-            stack.nbt?.remove(MEASURING_LEVEL)
-            stack.nbt?.remove(MEASURING_FROM_X)
-            stack.nbt?.remove(MEASURING_FROM_Y)
-            stack.nbt?.remove(MEASURING_FROM_Z)
-            stack?.nbt?.remove(MEASURING_TO_X)
-            stack?.nbt?.remove(MEASURING_TO_Y)
-            stack?.nbt?.remove(MEASURING_TO_Z)
-            return TypedActionResult.success(stack)
-        }
-        return super.use(world, user, hand)
-    }
-
-    override fun useOnBlock(context: ItemUsageContext): ActionResult {
-        val player = context.player ?: return super.useOnBlock(context)
-        val world = context.world
-        val pos = context.blockPos.toImmutable()
-
-        if (!world.isClient) {
-            val measuringFrom = measuringFrom(context.stack)
-            val measuringTo = measuringTo(context.stack)
-            if (measuringFrom == null) {
-                startMeasuring(context.stack, world, pos)
-            } else {
-                finishMeasuring(measuringFrom, measuringTo, player, pos, context.stack)
+        if(user.mainHandStack == stack || user.mainHandStack.isEmpty) {
+            val reach = if (user.isCreative) 5.0 else 4.5
+            val pos = (user.raycast(reach, 1f, true) as? BlockHitResult)?.blockPos ?: return TypedActionResult.pass(stack)
+            if(!world.isClient) {
+                val measuringFrom = measuringFrom(stack)
+                val measuringTo = measuringTo(stack)
+                if (measuringFrom == null) {
+                    startMeasuring(stack, world, pos)
+                } else {
+                    finishMeasuring(measuringFrom, measuringTo, user, pos, stack)
+                }
+                return TypedActionResult.success(stack)
             }
         }
-
-        return ActionResult.success(world.isClient)
+        return TypedActionResult.pass(stack)
     }
 
     override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
@@ -206,16 +184,4 @@ class MeasuringTape(settings: Settings) : Item(settings) {
         }
     }
 
-    object ModelPredicateProvider : IdentifiedModelPredicateProvider {
-        override fun unclampedCall(stack: ItemStack, world: ClientWorld?, entity: LivingEntity?, seed: Int): Float {
-            val nbt = stack.nbt ?: return 0f
-            if (MEASURING_LEVEL in nbt) {
-                return 1f
-            }
-            return 0f
-        }
-
-        override val identifier: Identifier
-            get() = Identifier(MOD_ID, "extended")
-    }
 }
