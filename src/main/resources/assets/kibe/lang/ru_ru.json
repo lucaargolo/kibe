@@ -5,6 +5,7 @@
   "block.kibe.iron_spikes": "Железные шипы",
   "block.kibe.gold_spikes": "Золотые шипы",
   "block.kibe.diamond_spikes": "Алмазные шипы",
+  "block.kibe.netherite_spikes": "Незеритовые шипы",
 
   "block.kibe.regular_conveyor_belt": "Обычная конвейерная лента",
   "block.kibe.fast_conveyor_belt": "Быстрая конвейерная лента",
@@ -207,6 +208,7 @@
   "tooltip.kibe.lore.iron_spikes": "§5§oС сущностей выпадают предметы",
   "tooltip.kibe.lore.gold_spikes": "§5§oС сущностей выпадает опыт",
   "tooltip.kibe.lore.diamond_spikes": "§5§oС сущностей выпадает опыт и предметы",
+  "tooltip.kibe.lore.netherite_spikes": "§5§oС сущностей выпадает опыт и предметы",
 
   "tooltip.kibe.lore.cooler": "§5§oАвтоматически употребляет любую еду, хранящуюся в нем.",
   "tooltip.kibe.lore.big_torch": "§5§oЗаполните факелами, чтобы очистить чанки от мобов.",

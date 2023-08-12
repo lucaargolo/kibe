@@ -7,6 +7,7 @@
     "kibe:wither_proof_block",
     "kibe:wither_proof_sand",
     "kibe:wither_proof_glass",
-    "kibe:wither_builder"
+    "kibe:wither_builder",
+    "kibe:netherite_spikes"
   ]
 }

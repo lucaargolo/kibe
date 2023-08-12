@@ -1,0 +1,7 @@
+{
+    "parent": "kibe:block/spikes",
+    "textures": {
+        "0": "block/netherite_block",
+        "particle": "block/netherite_block"
+    }
+}

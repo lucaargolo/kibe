@@ -22,6 +22,7 @@ fun initTooltip() {
     registerTooltip(IRON_SPIKES)
     registerTooltip(GOLD_SPIKES)
     registerTooltip(DIAMOND_SPIKES)
+    registerTooltip(NETHERITE_SPIKES)
 
     registerTooltip(HEATER)
     registerTooltip(DEHUMIDIFIER)
