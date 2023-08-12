@@ -24,6 +24,7 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
         IRON(6F),
         GOLD(6F),
         DIAMOND(8F),
+        NETHERITE(12F)
     }
 
     init {
@@ -51,7 +52,7 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
             SpikeHelper.setSpike(entity, type)
             when(type) {
                 Type.IRON, Type.STONE -> entity.damage(DamageSource.GENERIC, type.damage)
-                Type.GOLD, Type.DIAMOND -> entity.damage(DamageSource.player(FakePlayerEntity(world)), type.damage)
+                Type.GOLD, Type.DIAMOND, Type.NETHERITE -> entity.damage(DamageSource.player(FakePlayerEntity(world)), type.damage)
             }
             SpikeHelper.setSpike(entity, null)
         }

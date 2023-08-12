@@ -5,6 +5,7 @@
   "block.kibe.iron_spikes": "Iron Spikes",
   "block.kibe.gold_spikes": "Gold Spikes",
   "block.kibe.diamond_spikes": "Diamond Spikes",
+  "block.kibe.netherite_spikes": "Netherite Spikes",
 
   "block.kibe.regular_conveyor_belt": "Regular Conveyor Belt",
   "block.kibe.fast_conveyor_belt": "Fast Conveyor Belt",
@@ -218,6 +219,7 @@
   "tooltip.kibe.lore.iron_spikes": "§5§oEntities drops regular items",
   "tooltip.kibe.lore.gold_spikes": "§5§oEntities drops xp",
   "tooltip.kibe.lore.diamond_spikes": "§5§oEntities drops xp and player only items",
+  "tooltip.kibe.lore.netherite_spikes": "§5§oEntities drops xp and player only items",
 
   "tooltip.kibe.lore.cooler": "§5§oAuto consumes any food stored in it",
   "tooltip.kibe.lore.big_torch": "§5§oFill with torches to keep chunks mob-free",

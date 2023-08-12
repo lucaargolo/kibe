@@ -171,6 +171,7 @@ val STONE_SPIKES = register(Identifier(MOD_ID, "stone_spikes"), Spikes(Spikes.Ty
 val IRON_SPIKES = register(Identifier(MOD_ID, "iron_spikes"), Spikes(Spikes.Type.IRON, FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)))
 val GOLD_SPIKES = register(Identifier(MOD_ID, "gold_spikes"), Spikes(Spikes.Type.GOLD, FabricBlockSettings.copyOf(Blocks.GOLD_BLOCK)))
 val DIAMOND_SPIKES = register(Identifier(MOD_ID, "diamond_spikes"), Spikes(Spikes.Type.DIAMOND, FabricBlockSettings.copyOf(Blocks.DIAMOND_BLOCK)))
+val NETHERITE_SPIKES = register(Identifier(MOD_ID, "netherite_spikes"), Spikes(Spikes.Type.NETHERITE, FabricBlockSettings.copyOf(Blocks.NETHERITE_BLOCK)))
 
 val REGULAR_CONVEYOR_BELT = register(Identifier(MOD_ID, "regular_conveyor_belt"), ConveyorBelt(0.050))
 val FAST_CONVEYOR_BELT = register(Identifier(MOD_ID, "fast_conveyor_belt"), ConveyorBelt(0.1))
