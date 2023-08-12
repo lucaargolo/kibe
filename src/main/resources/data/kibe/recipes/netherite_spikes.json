@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#_#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:netherite_sword"
+    },
+    "_": [
+      {
+        "item": "kibe:diamond_spikes"
+      }
+    ]
+  },
+  "result": {
+    "item": "kibe:netherite_spikes",
+    "count": 4
+  }
+}
