@@ -25,6 +25,8 @@ fun writeTank(tag: NbtCompound, tank: SingleVariantStorage<FluidVariant>): NbtCo
 fun interactPlayerHand(tank: Storage<FluidVariant>, player: PlayerEntity, hand: Hand): ActionResult {
     return if (FluidStorageUtil.interactWithFluidStorage(tank, player, hand)) {
         ActionResult.success(player.world.isClient)
+    } else if (!player.world.isClient && XpUtils.canPlayerDrinkXp(tank, player, hand)) {
+        XpUtils.donateXpAction(player, tank as SingleVariantStorage)
     } else {
         ActionResult.PASS
     }
