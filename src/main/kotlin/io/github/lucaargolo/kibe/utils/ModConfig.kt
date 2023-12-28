@@ -26,6 +26,8 @@ class ModConfig {
         var lassoDenyList: ArrayList<String> = arrayListOf()
         //Max rings per player
         var maxRingsPerPlayer: Int = 1
+        // If mega torch blocks the spawn of mobs that are from spawners.
+        var bigTorchBlocksSpawnerMobs: Boolean = false
     }
 
     class ChunkLoaderModule {
