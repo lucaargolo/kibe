@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.items.miscellaneous
 
+import eu.pb4.common.protection.api.CommonProtection
 import io.github.lucaargolo.kibe.MOD_CONFIG
 import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
 import net.minecraft.client.item.TooltipContext
@@ -32,7 +33,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun useOnEntity(stack: ItemStack, user: PlayerEntity, entity: LivingEntity, hand: Hand): ActionResult {
         if (stack.nbt == null || !stack.orCreateNbt.contains("Entity")) {
-            if (entity is MobEntity && canStoreEntity(entity.type) && !MOD_CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString())) {
+            if (entity is MobEntity && canStoreEntity(entity.type) && !MOD_CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString()) && CommonProtection.canInteractEntity(user.world, entity, user.gameProfile, user)) {
                 if(!user.world.isClient) {
                     if (entity.isLeashed) entity.detachLeash(true, true)
                     entity.fallDistance = 0f

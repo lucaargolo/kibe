@@ -91,6 +91,10 @@ repositories {
         name = "Shedaniel"
         url = uri("https://maven.shedaniel.me/")
     }
+    maven {
+        name = "Nucleoid"
+        url = uri("https://maven.nucleoid.xyz/")
+    }
     mavenLocal()
 }
 
@@ -111,6 +115,9 @@ dependencies {
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
+
+    modImplementation("eu.pb4:common-protection-api:${project["cpa_version"]}")
+    include("eu.pb4:common-protection-api:${project["cpa_version"]}")
 }
 
 tasks.processResources {
