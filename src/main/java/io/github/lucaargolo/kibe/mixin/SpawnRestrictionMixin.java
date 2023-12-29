@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
+import io.github.lucaargolo.kibe.KibeModKt;
 import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -19,7 +20,7 @@ public class SpawnRestrictionMixin {
 
     @Inject(at = @At("HEAD"), method = "canSpawn")
     private static <T extends Entity> void headCanSpawn(EntityType<T> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
-        if (BigTorchBlockEntity.Companion.isChunkSuppressed(world.toServerWorld().getRegistryKey(), new ChunkPos(pos))) {
+        if (BigTorchBlockEntity.Companion.isChunkSuppressed(world.toServerWorld().getRegistryKey(), new ChunkPos(pos)) && (spawnReason != SpawnReason.SPAWNER || KibeModKt.getMOD_CONFIG().getMiscellaneousModule().getBigTorchBlocksSpawnerMobs())) {
             BigTorchBlockEntity.Companion.setTestingThread(Thread.currentThread());
             BigTorchBlockEntity.Companion.setTesting(true);
         }
