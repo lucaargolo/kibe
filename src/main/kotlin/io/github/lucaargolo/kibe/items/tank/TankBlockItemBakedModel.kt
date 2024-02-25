@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
+import net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
@@ -42,7 +43,10 @@ class TankBlockItemBakedModel: BakedModel, FabricBakedModel {
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val client = MinecraftClient.getInstance()
-        val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(Identifier(MOD_ID, "tank"), "level=0"))
+        var tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(Identifier(MOD_ID, "tank"), "level=0"))
+
+        while(tankBlockModel is WrapperBakedModel)
+            tankBlockModel = WrapperBakedModel.unwrap(tankBlockModel)
 
         (tankBlockModel as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 

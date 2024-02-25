@@ -160,6 +160,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         matrices.translate(-0.5, 0.0, -0.5)
 
         val popup = if(
+            MinecraftClient.getInstance().crosshairTarget != null &&
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
             MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune

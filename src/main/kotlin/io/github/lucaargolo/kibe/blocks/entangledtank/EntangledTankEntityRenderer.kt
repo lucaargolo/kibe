@@ -59,6 +59,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         bottomModel.render(matrices, chestConsumer, lightAbove, overlay)
 
         val popup = if(
+            MinecraftClient.getInstance().crosshairTarget != null &&
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
             MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
