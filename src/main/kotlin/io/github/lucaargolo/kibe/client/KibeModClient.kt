@@ -17,9 +17,10 @@ import io.github.lucaargolo.kibe.client.blocks.TankCustomModel
 import io.github.lucaargolo.kibe.client.items.EntangledChestBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.client.items.EntangledTankBlockItemDynamicRenderer
 import io.github.lucaargolo.kibe.client.items.GliderDynamicRenderer
-import io.github.lucaargolo.kibe.entities.initEntitiesClient
-import io.github.lucaargolo.kibe.fluids.initFluidsClient
+import io.github.lucaargolo.kibe.effects.EffectCompendium
+import io.github.lucaargolo.kibe.entities.EntityCompendium
 import io.github.lucaargolo.kibe.items.*
+import io.github.lucaargolo.kibe.screenhandlers.ScreenHandlerCompendium
 import io.github.lucaargolo.kibe.utils.EntangledTankState
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import io.netty.buffer.Unpooled
@@ -56,8 +57,9 @@ object KibeModClient: ClientModInitializer {
     override fun onInitializeClient() {
         initBlocksClient()
         initItemsClient()
-        initEntitiesClient()
-        initFluidsClient()
+        ScreenHandlerCompendium.initializeClient()
+        EntityCompendium.initializeClient()
+        EffectCompendium.initializeClient()
         initExtrasClient()
         initPacketsClient()
     }

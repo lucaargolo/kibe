@@ -33,7 +33,7 @@ class XpShowerBlockEntity(xpShower: XpShower, pos: BlockPos, state: BlockState):
             val extractable = FluidStorage.SIDED.find(world, pos.add(dir.vector), dir.opposite)
 
             var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
-            i = MathHelper.floor(i* KibeMod.MOD_CONFIG.miscellaneousModule.xpShowerSpeedMultiplier)
+            i = MathHelper.floor(i* KibeMod.CONFIG.miscellaneousModule.xpShowerSpeedMultiplier)
 
             while (i > 0) {
                 val j = ExperienceOrbEntity.roundToOrbSize(i)

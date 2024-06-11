@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.blockentities.WitherBuilderBlockEntity
+import io.github.lucaargolo.kibe.screenhandlers.WitherBuilderScreenHandler
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -129,7 +130,7 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
-        player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
+        player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::WitherBuilderScreenHandler))
         return ActionResult.SUCCESS
     }
 

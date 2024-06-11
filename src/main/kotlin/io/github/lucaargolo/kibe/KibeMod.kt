@@ -6,15 +6,15 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import io.github.lucaargolo.kibe.blockentities.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.blocks.initBlocks
-import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
-import io.github.lucaargolo.kibe.effects.initEffects
-import io.github.lucaargolo.kibe.entities.initEntities
+import io.github.lucaargolo.kibe.effects.EffectCompendium
+import io.github.lucaargolo.kibe.entities.EntityCompendium
 import io.github.lucaargolo.kibe.fluids.LIQUID_XP
 import io.github.lucaargolo.kibe.fluids.initFluids
 import io.github.lucaargolo.kibe.items.*
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
 import io.github.lucaargolo.kibe.recipes.initRecipeSerializers
 import io.github.lucaargolo.kibe.recipes.initRecipeTypes
+import io.github.lucaargolo.kibe.screenhandlers.ScreenHandlerCompendium
 import io.github.lucaargolo.kibe.utils.*
 import io.netty.buffer.Unpooled
 import net.fabricmc.api.EnvType
@@ -75,7 +75,7 @@ object KibeMod : ModInitializer {
         Registry.register(Registries.PARTICLE_TYPE, ModIdentifier("water_drops"), FabricParticleTypes.simple())
     }
     val LOGGER: Logger = LogManager.getLogger("Kibe")
-    val MOD_CONFIG: ModConfig by lazy {
+    val CONFIG: ModConfig by lazy {
         val parser = JsonParser()
         val gson = GsonBuilder().setPrettyPrinting().create()
         val configFile = File("${FabricLoader.getInstance().configDir}${File.separator}$MOD_ID.json")
@@ -114,8 +114,9 @@ object KibeMod : ModInitializer {
         initTooltip()
         initBlocks()
         initItems()
-        initEntities()
-        initEffects()
+        ScreenHandlerCompendium.initialize()
+        EntityCompendium.initialize()
+        EffectCompendium.initialize()
         initLootTables()
         initFluids()
         initPackets()
@@ -175,7 +176,7 @@ object KibeMod : ModInitializer {
     }
 
     fun initExtras() {
-        MOD_CONFIG.toString() //Used to init mod config here.
+        CONFIG.toString() //Used to init mod config here.
         ServerLifecycleEvents.SERVER_STARTED.register { server ->
             server.overworld.persistentStateManager.getOrCreate(
                 { ChunkLoaderState.createFromTag(it, server) },
@@ -313,7 +314,7 @@ object KibeMod : ModInitializer {
                         EntityPropertiesLootCondition.builder(
                             LootContext.EntityTarget.THIS,
                             EntityPredicate.Builder.create()
-                                .effects(EntityEffectPredicate.create().withEffect(CURSED_EFFECT))
+                                .effects(EntityEffectPredicate.create().withEffect(EffectCompendium.CURSED))
                         )
                     )
                     .conditionally(RandomChanceLootCondition.builder(0.05F))

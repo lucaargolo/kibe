@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.screenhandlers
 
 import io.github.lucaargolo.kibe.blockentities.DrawbridgeBlockEntity
 import io.github.lucaargolo.kibe.blocks.DRAWBRIDGE
-import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -17,7 +16,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: DrawbridgeBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(DRAWBRIDGE)?.handlerType, syncId)  {
+class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: DrawbridgeBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.DRAWBRIDGE, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 

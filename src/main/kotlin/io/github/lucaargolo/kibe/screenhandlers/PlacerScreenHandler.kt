@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.screenhandlers
 
 import io.github.lucaargolo.kibe.blockentities.PlacerBlockEntity
 import io.github.lucaargolo.kibe.blocks.PLACER
-import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -14,7 +13,7 @@ import net.minecraft.screen.slot.Slot
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class PlacerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: PlacerBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(PLACER)?.handlerType, syncId)  {
+class PlacerScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: PlacerBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.PLACER, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 

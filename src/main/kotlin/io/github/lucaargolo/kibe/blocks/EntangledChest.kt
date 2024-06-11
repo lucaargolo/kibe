@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.blocks
 import io.github.lucaargolo.kibe.blockentities.EntangledChestEntity
 import io.github.lucaargolo.kibe.items.Rune
 import io.github.lucaargolo.kibe.items.itemRegistry
+import io.github.lucaargolo.kibe.screenhandlers.EntangledChestScreenHandler
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -140,7 +141,7 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN
             }
         }
         return if(canOpen(world, pos)) {
-            player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
+            player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::EntangledChestScreenHandler))
             ActionResult.SUCCESS
         }else{
             ActionResult.FAIL

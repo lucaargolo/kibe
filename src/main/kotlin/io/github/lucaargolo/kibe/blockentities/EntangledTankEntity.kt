@@ -140,7 +140,7 @@ class EntangledTankEntity(chest: EntangledTank, pos: BlockPos, state: BlockState
             }
             val fluid = entity.getPersistentState().getOrCreateInventory(entity.colorCode).variant.fluid
             val luminance = fluid.defaultState.blockState.luminance
-            if(luminance != state[Properties.LEVEL_15] && KibeMod.MOD_CONFIG.miscellaneousModule.tanksChangeLights) {
+            if(luminance != state[Properties.LEVEL_15] && KibeMod.CONFIG.miscellaneousModule.tanksChangeLights) {
                 world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))
             }
         }

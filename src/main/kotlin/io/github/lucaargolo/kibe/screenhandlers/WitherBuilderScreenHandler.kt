@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.screenhandlers
 
 import io.github.lucaargolo.kibe.blockentities.WitherBuilderBlockEntity
 import io.github.lucaargolo.kibe.blocks.WITHER_BUILDER
-import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -16,7 +15,7 @@ import net.minecraft.screen.slot.Slot
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: WitherBuilderBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(WITHER_BUILDER)?.handlerType, syncId)  {
+class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: WitherBuilderBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.WITHER_BUILDER, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 

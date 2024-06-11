@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.items
 
 import io.github.lucaargolo.kibe.KibeMod
-import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
+import io.github.lucaargolo.kibe.effects.EffectCompendium
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
@@ -30,7 +30,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun useOnEntity(stack: ItemStack, user: PlayerEntity, entity: LivingEntity, hand: Hand): ActionResult {
         if (stack.nbt == null || !stack.orCreateNbt.contains("Entity")) {
-            if (entity is MobEntity && canStoreEntity(entity.type) && !KibeMod.MOD_CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString())) {
+            if (entity is MobEntity && canStoreEntity(entity.type) && !KibeMod.CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString())) {
                 if(!user.world.isClient) {
                     if (entity.isLeashed) entity.detachLeash(true, true)
                     entity.fallDistance = 0f
@@ -103,7 +103,7 @@ abstract class Lasso(settings: Settings): Item(settings) {
     class CursedLasso(settings: Settings): Lasso(settings) {
         override fun addToTag(tag: NbtCompound): NbtCompound {
             val activeEffect = NbtCompound()
-            activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+            activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(EffectCompendium.CURSED))
             activeEffect.putInt("Amplifier", 1)
             activeEffect.putInt("Duration", 999999)
             val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as NbtList else NbtList()

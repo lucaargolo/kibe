@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.items
 
-import io.github.lucaargolo.kibe.entities.miscellaneous.ThrownTorchEntity
+import io.github.lucaargolo.kibe.entities.ThrownTorchEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item

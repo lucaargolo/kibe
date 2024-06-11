@@ -21,7 +21,7 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
         if (!isEnabled(stack) || world.isClient) return
         val pos = player.blockPos
         val target = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-        val areaOfEffect = Box.from(target).expand(KibeMod.MOD_CONFIG.miscellaneousModule.magnetRange)
+        val areaOfEffect = Box.from(target).expand(KibeMod.CONFIG.miscellaneousModule.magnetRange)
 
         if (world.getStatesInBox(areaOfEffect).anyMatch { it.block.registryEntry.isIn(MAGNET_INHIBITOR_TAG) }) return
 

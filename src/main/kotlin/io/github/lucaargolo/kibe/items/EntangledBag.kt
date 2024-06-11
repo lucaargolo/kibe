@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.items
 
 import io.github.lucaargolo.kibe.blockentities.EntangledChestEntity
 import io.github.lucaargolo.kibe.blocks.EntangledChest
+import io.github.lucaargolo.kibe.screenhandlers.EntangledBagScreenHandler
 import io.github.lucaargolo.kibe.utils.ItemScreenHandlerFactory
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
@@ -64,7 +65,7 @@ class EntangledBag(settings: Settings): Item(settings){
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val tag = getTag(player.getStackInHand(hand))
-        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag))
+        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag, ::EntangledBagScreenHandler))
         return TypedActionResult.success(player.getStackInHand(hand))
     }
 

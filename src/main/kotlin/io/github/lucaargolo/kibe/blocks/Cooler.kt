@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.blockentities.CoolerBlockEntity
+import io.github.lucaargolo.kibe.screenhandlers.CoolerScreenHandler
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -45,7 +46,7 @@ class Cooler: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.SNOW_BLOCK).stre
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
-        player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
+        player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::CoolerScreenHandler))
         return ActionResult.SUCCESS
     }
 

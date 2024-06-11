@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.effects.EffectCompendiumKt;
+import io.github.lucaargolo.kibe.effects.EffectCompendium;
 import net.minecraft.entity.mob.EndermanEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +14,7 @@ public class EndermanEntityMixin {
     @Inject(at = @At("HEAD"), method = "teleportRandomly", cancellable = true)
     public void teleportRandomly(CallbackInfoReturnable<Boolean> info) {
         EndermanEntity entity = (EndermanEntity) ((Object) this);
-        if(entity.hasStatusEffect(EffectCompendiumKt.getCURSED_EFFECT())) {
+        if(entity.hasStatusEffect(EffectCompendium.INSTANCE.getCURSED())) {
             info.setReturnValue(false);
         }
     }

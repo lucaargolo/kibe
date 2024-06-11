@@ -1,7 +1,5 @@
 package io.github.lucaargolo.kibe.screenhandlers
 
-import io.github.lucaargolo.kibe.items.POCKET_TRASH_CAN
-import io.github.lucaargolo.kibe.items.getContainerInfo
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -14,7 +12,7 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
 @Suppress("UNUSED_PARAMETER")
-class PocketTrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, hand: Hand, val world: World, tag: NbtCompound?): ScreenHandler(getContainerInfo(POCKET_TRASH_CAN)?.handlerType, syncId) {
+class PocketTrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, hand: Hand, val world: World, tag: NbtCompound?): ScreenHandler(ScreenHandlerCompendium.POCKET_TRASH_CAN, syncId) {
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 

@@ -28,7 +28,7 @@ class XpDrain: Block(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().str
             val insertable = FluidStorage.SIDED.find(world, pos.down(), Direction.UP)
 
             var i = 3 + world.random.nextInt(5) + world.random.nextInt(5)
-            i = MathHelper.floor(i*KibeMod.MOD_CONFIG.miscellaneousModule.xpDrainSpeedMultiplier)
+            i = MathHelper.floor(i*KibeMod.CONFIG.miscellaneousModule.xpDrainSpeedMultiplier)
 
             while (i > 0) {
                 val j = ExperienceOrbEntity.roundToOrbSize(i)

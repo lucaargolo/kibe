@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.entities.EntityCompendiumKt;
-import io.github.lucaargolo.kibe.entities.miscellaneous.ThrownTorchEntity;
+import io.github.lucaargolo.kibe.entities.EntityCompendium;
+import io.github.lucaargolo.kibe.entities.ThrownTorchEntity;
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -29,7 +29,7 @@ public class ClientPlayNetworkHandlerMixin {
         EntityType<?> entityType = packet.getEntityType();
         Entity entity = null;
 
-        if(entityType == EntityCompendiumKt.getTHROWN_TORCH()) {
+        if(entityType == EntityCompendium.INSTANCE.getTHROWN_TORCH()) {
             entity = new ThrownTorchEntity(this.world, x, y, z);
         }
 

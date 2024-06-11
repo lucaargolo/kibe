@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.effects.EffectCompendiumKt;
+import io.github.lucaargolo.kibe.effects.EffectCompendium;
 import io.github.lucaargolo.kibe.items.OldItemCompendiumKt;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -25,7 +25,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(at = @At("HEAD"), method = "cannotDespawn", cancellable = true)
     public void cannotDespawn(CallbackInfoReturnable<Boolean> info) {
-        boolean isCursed = hasStatusEffect(EffectCompendiumKt.getCURSED_EFFECT());
+        boolean isCursed = hasStatusEffect(EffectCompendium.INSTANCE.getCURSED());
         if(isCursed) info.setReturnValue(true);
     }
 

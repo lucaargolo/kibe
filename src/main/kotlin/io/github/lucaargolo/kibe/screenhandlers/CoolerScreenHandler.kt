@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.screenhandlers
 
 import io.github.lucaargolo.kibe.blockentities.CoolerBlockEntity
 import io.github.lucaargolo.kibe.blocks.COOLER
-import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -13,7 +12,7 @@ import net.minecraft.screen.slot.Slot
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class CoolerScreenHandler(syncId: Int, playerInventory: PlayerInventory, val entity: CoolerBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(COOLER)?.handlerType, syncId)  {
+class CoolerScreenHandler(syncId: Int, playerInventory: PlayerInventory, val entity: CoolerBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.COOLER, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 

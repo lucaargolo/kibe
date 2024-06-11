@@ -48,7 +48,7 @@ class CoolerBlockItem(settings: Settings): BlockItem(COOLER, settings) {
         if(!world.isClient) player?.let {
             val stack = player.getStackInHand(hand)
             val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
-            player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag))
+            player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag, ::CoolerBlockItemScreenHandler))
             return TypedActionResult.success(stack)
         }
         return super.use(world, player, hand)

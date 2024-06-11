@@ -117,7 +117,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
                                             world.server
                                         )
                                     }, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
-                                    if(chunkLoaderState.getLoaded(validUUID) < KibeMod.MOD_CONFIG.chunkLoaderModule.maxPerPlayer || KibeMod.MOD_CONFIG.chunkLoaderModule.maxPerPlayer < 0) {
+                                    if(chunkLoaderState.getLoaded(validUUID) < KibeMod.CONFIG.chunkLoaderModule.maxPerPlayer || KibeMod.CONFIG.chunkLoaderModule.maxPerPlayer < 0) {
                                         world.setBlockState(pos, state.with(Properties.ENABLED, true))
                                         entity.disabledReason = DisabledReason.NONE
                                         entity.markDirtyAndSync()
@@ -145,13 +145,13 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
                             val player = serverWorld.server.playerManager.getPlayer(validUUID)
                             if(player != null) {
                                 entity.ownerLastSeen = System.currentTimeMillis()
-                            }else if (entity.checkForOwner || KibeMod.MOD_CONFIG.chunkLoaderModule.checkForPlayer) {
+                            }else if (entity.checkForOwner || KibeMod.CONFIG.chunkLoaderModule.checkForPlayer) {
                                 serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
                                 entity.disabledReason = DisabledReason.OWNER_OFFLINE
                                 entity.markDirtyAndSync()
                                 return
                             }
-                            if (KibeMod.MOD_CONFIG.chunkLoaderModule.maxPerPlayer > -1 && chunkLoaderState.getLoaded(validUUID) > KibeMod.MOD_CONFIG.chunkLoaderModule.maxPerPlayer) {
+                            if (KibeMod.CONFIG.chunkLoaderModule.maxPerPlayer > -1 && chunkLoaderState.getLoaded(validUUID) > KibeMod.CONFIG.chunkLoaderModule.maxPerPlayer) {
                                 serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
                                 entity.disabledReason = DisabledReason.TOO_MANY_LOADERS
                                 entity.markDirtyAndSync()
@@ -159,7 +159,7 @@ class ChunkLoaderBlockEntity(val block: Block, pos: BlockPos, state: BlockState)
                             }
                         }
 
-                        if (KibeMod.MOD_CONFIG.chunkLoaderModule.maxOfflineTime > -1 && ((System.currentTimeMillis() - entity.ownerLastSeen)/1000) > KibeMod.MOD_CONFIG.chunkLoaderModule.maxOfflineTime) {
+                        if (KibeMod.CONFIG.chunkLoaderModule.maxOfflineTime > -1 && ((System.currentTimeMillis() - entity.ownerLastSeen)/1000) > KibeMod.CONFIG.chunkLoaderModule.maxOfflineTime) {
                             serverWorld.setBlockState(pos, state.with(Properties.ENABLED, false))
                             entity.disabledReason = DisabledReason.OWNER_LONG_GONE
                             entity.markDirtyAndSync()

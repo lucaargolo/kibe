@@ -1,8 +1,6 @@
 package io.github.lucaargolo.kibe.screenhandlers
 
-import io.github.lucaargolo.kibe.items.COOLER
 import io.github.lucaargolo.kibe.items.CoolerBlockItem
-import io.github.lucaargolo.kibe.items.getContainerInfo
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
@@ -16,7 +14,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val hand: Hand, val world: World, val tag: NbtCompound): ScreenHandler(getContainerInfo(COOLER)?.handlerType, syncId)  {
+class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val hand: Hand, val world: World, val tag: NbtCompound): ScreenHandler(ScreenHandlerCompendium.COOLER_ITEM, syncId)  {
 
     val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
 

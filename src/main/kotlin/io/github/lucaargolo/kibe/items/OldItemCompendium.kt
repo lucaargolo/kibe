@@ -7,20 +7,11 @@ import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.client.items.EntangledBagBakedModel
 import io.github.lucaargolo.kibe.client.items.EntangledBucketBakedModel
 import io.github.lucaargolo.kibe.client.items.TankBlockItemBakedModel
-import io.github.lucaargolo.kibe.client.screens.CoolerBlockItemScreen
-import io.github.lucaargolo.kibe.client.screens.EntangledBagScreen
-import io.github.lucaargolo.kibe.client.screens.PocketTrashCanScreen
-import io.github.lucaargolo.kibe.screenhandlers.CoolerBlockItemScreenHandler
-import io.github.lucaargolo.kibe.screenhandlers.EntangledBagScreenHandler
-import io.github.lucaargolo.kibe.screenhandlers.PocketTrashCanScreenHandler
 import io.github.lucaargolo.kibe.utils.INFINITE_FIRE_RESISTENCE
 import io.github.lucaargolo.kibe.utils.INFINITE_WATER_BREATHING
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.gui.screen.ingame.HandledScreens
 import net.minecraft.client.item.ClampedModelPredicateProvider
 import net.minecraft.client.item.ModelPredicateProviderRegistry
 import net.minecraft.client.render.model.BakedModel
@@ -34,64 +25,24 @@ import net.minecraft.item.Item
 import net.minecraft.item.Item.Settings
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.ScreenHandlerType
-import net.minecraft.text.Text
 import net.minecraft.util.DyeColor
-import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.util.Rarity
 import java.util.function.Function
-import java.util.function.Supplier
-import kotlin.reflect.KClass
 
-class ContainerInfo<T: ScreenHandler>(
-    handlerClass: KClass<*>,
-    screenClass: Supplier<KClass<*>>,
-    val identifier: Identifier? = null
-){
-
-    val handlerClass = handlerClass as KClass<T>
-    val screenClass = screenClass as Supplier<KClass<HandledScreen<T>>>
-
-    var handlerType: ScreenHandlerType<T>? = null
-    var handler: T? = null
-
-    var title: Text = Text.literal("")
-
-    fun init(itemIdentifier: Identifier) {
-        val id = identifier ?: itemIdentifier
-        title = Text.translatable("screen.${KibeMod.MOD_ID}.${id.path}")
-        handlerType = ExtendedScreenHandlerType { i, playerInventory, packetByteBuf ->
-            val hand = packetByteBuf.readEnumConstant(Hand::class.java)
-            val tag = packetByteBuf.readNbt()!!
-            handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, hand, playerInventory.player.world, tag) as T
-            handler
-        }
-        Registry.register(Registries.SCREEN_HANDLER, id, handlerType)
-    }
-
-    fun initClient() {
-        HandledScreens.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T> }
-    }
-
-}
 
 class ItemInfo (
     val identifier: Identifier,
     val item: Item,
     private val bakedModel: (() -> BakedModel)?,
-    var containers: List<ContainerInfo<*>>,
     private val modelPredicateProviders: (() -> List<Pair<Identifier, ClampedModelPredicateProvider>>?)?
 ){
 
     fun init() {
         Registry.register(Registries.ITEM, identifier, item)
-        containers.forEach { it.init(identifier) }
     }
 
     fun initClient() {
-        containers.forEach { it.initClient() }
         modelPredicateProviders?.invoke()?.let { providers ->
             for (provider in providers) {
                 ModelPredicateProviderRegistry.register(item, provider.first, provider.second)
@@ -118,14 +69,6 @@ class ItemInfo (
 val itemRegistry = mutableMapOf<Item, ItemInfo>()
 
 fun getItemId(item: Item) = itemRegistry[item]?.identifier
-fun getContainerInfo(item: Item) = itemRegistry[item]?.containers?.get(0)
-fun getContainerInfo(item: Item, identifier: Identifier): ContainerInfo<*>? {
-    itemRegistry[item]?.containers?.forEach {
-        if(it.identifier == identifier)
-            return it
-    }
-    return null
-}
 
 val KIBE         = register(ModIdentifier("kibe"), Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().hunger(6).saturationModifier(0.8F).meat().build())))
 val GOLDEN_KIBE  = register(ModIdentifier("golden_kibe"), Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(8).saturationModifier(1.2F).meat().build())))
@@ -176,36 +119,33 @@ val WATER_WOODEN_BUCKET = register(ModIdentifier("water_wooden_bucket"), WoodenB
 val GLIDER_LEFT_WING = register(ModIdentifier("glider_left_wing"), Item(Settings()))
 val GLIDER_RIGHT_WING = register(ModIdentifier("glider_right_wing"), Item(Settings()))
 
-val WHITE_GLIDER = register(ModIdentifier("white_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val ORANGE_GLIDER = register(ModIdentifier("orange_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val MAGENTA_GLIDER = register(ModIdentifier("magenta_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val LIGHT_BLUE_GLIDER = register(ModIdentifier("light_blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val YELLOW_GLIDER = register(ModIdentifier("yellow_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val LIME_GLIDER = register(ModIdentifier("lime_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val PINK_GLIDER = register(ModIdentifier("pink_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val GRAY_GLIDER = register(ModIdentifier("gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val LIGHT_GRAY_GLIDER = register(ModIdentifier("light_gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val CYAN_GLIDER = register(ModIdentifier("cyan_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val BLUE_GLIDER = register(ModIdentifier("blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val PURPLE_GLIDER = register(ModIdentifier("purple_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val GREEN_GLIDER = register(ModIdentifier("green_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val BROWN_GLIDER = register(ModIdentifier("brown_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val RED_GLIDER = register(ModIdentifier("red_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
-val BLACK_GLIDER = register(ModIdentifier("black_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.MOD_CONFIG.miscellaneousModule.gliderDurability)))
+val WHITE_GLIDER = register(ModIdentifier("white_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val ORANGE_GLIDER = register(ModIdentifier("orange_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val MAGENTA_GLIDER = register(ModIdentifier("magenta_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val LIGHT_BLUE_GLIDER = register(ModIdentifier("light_blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val YELLOW_GLIDER = register(ModIdentifier("yellow_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val LIME_GLIDER = register(ModIdentifier("lime_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val PINK_GLIDER = register(ModIdentifier("pink_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val GRAY_GLIDER = register(ModIdentifier("gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val LIGHT_GRAY_GLIDER = register(ModIdentifier("light_gray_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val CYAN_GLIDER = register(ModIdentifier("cyan_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val BLUE_GLIDER = register(ModIdentifier("blue_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val PURPLE_GLIDER = register(ModIdentifier("purple_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val GREEN_GLIDER = register(ModIdentifier("green_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val BROWN_GLIDER = register(ModIdentifier("brown_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val RED_GLIDER = register(ModIdentifier("red_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+val BLACK_GLIDER = register(ModIdentifier("black_glider"), Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
 
 val VOID_BUCKET = register(ModIdentifier("void_bucket"), VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
 
 val POCKET_CRAFTING_TABLE = register(ModIdentifier("pocket_crafting_table"),  PocketCraftingTable(Settings().maxCount(1)))
-val POCKET_TRASH_CAN = register(ModIdentifier("pocket_trash_can"),  PocketTrashCan(Settings().maxCount(1)), containers = listOf(ContainerInfo<PocketTrashCanScreenHandler>(
-    PocketTrashCanScreenHandler::class, { PocketTrashCanScreen::class })))
+val POCKET_TRASH_CAN = register(ModIdentifier("pocket_trash_can"),  PocketTrashCan(Settings().maxCount(1)))
 
 val ENTANGLED_CHEST = register(ModIdentifier("entangled_chest"), EntangledChestBlockItem(Settings()))
 val ENTANGLED_TANK = register(ModIdentifier("entangled_tank"), EntangledTankBlockItem(Settings()))
-val ENTANGLED_BAG = register(ModIdentifier("entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), { EntangledBagBakedModel() }, listOf(ContainerInfo<EntangledBagScreenHandler>(
-    EntangledBagScreenHandler::class, { EntangledBagScreen::class })))
+val ENTANGLED_BAG = register(ModIdentifier("entangled_bag"),  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)), { EntangledBagBakedModel() })
 val ENTANGLED_BUCKET = register(ModIdentifier("entangled_bucket"),  EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)), { EntangledBucketBakedModel() })
-val COOLER = register(ModIdentifier("cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), containers = listOf(ContainerInfo<CoolerBlockItemScreenHandler>(
-    CoolerBlockItemScreenHandler::class, { CoolerBlockItemScreen::class }, identifier = ModIdentifier("cooler_item"))))
+val COOLER = register(ModIdentifier("cooler"), CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
 val TANK = register(ModIdentifier("tank"), TankBlockItem(Settings()), { TankBlockItemBakedModel() } )
 
 val WHITE_SLEEPING_BAG = register(ModIdentifier("white_sleeping_bag"), SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
@@ -227,8 +167,8 @@ val BLACK_SLEEPING_BAG = register(ModIdentifier("black_sleeping_bag"), SleepingB
 
 val MEASURING_TAPE = register(ModIdentifier("measuring_tape"), MeasuringTape(Settings().maxCount(1)), modelPredicateProviders = { listOf(Pair(ModIdentifier("extended"), MeasuringTape.PredicateProvider())) })
 
-fun register(identifier: Identifier, item: Item, bakedModel: (() -> BakedModel)? = null, containers: List<ContainerInfo<*>> = listOf(), modelPredicateProviders: (() -> List<Pair<Identifier, ClampedModelPredicateProvider>>?)? = null): Item {
-    val info = ItemInfo(identifier, item, bakedModel, containers, modelPredicateProviders)
+fun register(identifier: Identifier, item: Item, bakedModel: (() -> BakedModel)? = null, modelPredicateProviders: (() -> List<Pair<Identifier, ClampedModelPredicateProvider>>?)? = null): Item {
+    val info = ItemInfo(identifier, item, bakedModel, modelPredicateProviders)
     itemRegistry[item] = info
     return item
 }

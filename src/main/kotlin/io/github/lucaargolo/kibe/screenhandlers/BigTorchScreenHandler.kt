@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.screenhandlers
 
 import io.github.lucaargolo.kibe.blockentities.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blocks.BIG_TORCH
-import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -16,7 +15,7 @@ import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class BigTorchScreenHandler (syncId: Int, playerInventory: PlayerInventory, val entity: BigTorchBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(getContainerInfo(BIG_TORCH)?.handlerType, syncId)  {
+class BigTorchScreenHandler (syncId: Int, playerInventory: PlayerInventory, val entity: BigTorchBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.BIG_TORCH, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
 

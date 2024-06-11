@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.blockentities.VacuumHopperEntity
+import io.github.lucaargolo.kibe.screenhandlers.VacuumHopperScreenHandler
 import io.github.lucaargolo.kibe.utils.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -65,7 +66,7 @@ class VacuumHopper: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK
     }
 
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-        player.openHandledScreen(BlockScreenHandlerFactory(this, pos))
+        player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::VacuumHopperScreenHandler))
         return ActionResult.SUCCESS
     }
 

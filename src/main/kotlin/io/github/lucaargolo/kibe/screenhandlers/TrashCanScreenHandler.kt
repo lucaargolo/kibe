@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.screenhandlers
 
 import io.github.lucaargolo.kibe.blockentities.TrashCanEntity
 import io.github.lucaargolo.kibe.blocks.TRASH_CAN
-import io.github.lucaargolo.kibe.blocks.getContainerInfo
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -13,7 +12,7 @@ import net.minecraft.screen.slot.Slot
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class TrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, val entity: TrashCanEntity, private val blockContext: ScreenHandlerContext): ScreenHandler(getContainerInfo(TRASH_CAN)?.handlerType, syncId) {
+class TrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, val entity: TrashCanEntity, private val blockContext: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.TRASH_CAN, syncId) {
 
     var inventory: Inventory = object: Inventory {
         override fun size(): Int {

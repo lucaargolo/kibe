@@ -1,7 +1,5 @@
 package io.github.lucaargolo.kibe.screenhandlers
 
-import io.github.lucaargolo.kibe.items.ENTANGLED_BAG
-import io.github.lucaargolo.kibe.items.getContainerInfo
 import io.github.lucaargolo.kibe.utils.EntangledChestState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -16,7 +14,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @Suppress("UNUSED_PARAMETER") hand: Hand, val world: World, val tag: NbtCompound): ScreenHandler(getContainerInfo(ENTANGLED_BAG)?.handlerType, syncId) {
+class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @Suppress("UNUSED_PARAMETER") hand: Hand, val world: World, val tag: NbtCompound): ScreenHandler(ScreenHandlerCompendium.ENTANGLED_BAG, syncId) {
 
     private fun hasPersistentState(): Boolean = !world.isClient
 

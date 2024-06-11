@@ -3,7 +3,7 @@ package io.github.lucaargolo.kibe.blocks
 
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.blockentities.BigTorchBlockEntity
-import io.github.lucaargolo.kibe.effects.CURSED_EFFECT
+import io.github.lucaargolo.kibe.effects.EffectCompendium
 import io.github.lucaargolo.kibe.mixin.SpawnHelperInvoker
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
@@ -94,7 +94,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).tick
         //Chunk mob cap for avoiding L A G
         val chunkPos = world.getChunk(pos).pos
         val entityList = world.getOtherEntities(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
-        if (entityList.size > KibeMod.MOD_CONFIG.miscellaneousModule.cursedDirtMobCap) return
+        if (entityList.size > KibeMod.CONFIG.miscellaneousModule.cursedDirtMobCap) return
 
         val mob = getSpawnableMonster(world, pos.up(), random)
         if (mob != null) {
@@ -116,7 +116,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).tick
 
     private fun getSpawnTag(): NbtCompound {
         val activeEffect = NbtCompound()
-        activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(CURSED_EFFECT))
+        activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(EffectCompendium.CURSED))
         activeEffect.putInt("Amplifier", 1)
         activeEffect.putInt("Duration", 300)
         val activeEffects = NbtList()
@@ -143,7 +143,7 @@ class CursedDirt: GrassBlock(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).tick
     private fun getSpawnableMonster(world: ServerWorld, pos: BlockPos, random: Random): EntityType<*>? {
         val optionalEntry: Optional<SpawnSettings.SpawnEntry> = SpawnHelperInvoker.pickRandomSpawnEntry(world, world.structureAccessor, world.chunkManager.chunkGenerator, SpawnGroup.MONSTER, random, pos)
         val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
-        if(KibeMod.MOD_CONFIG.miscellaneousModule.cursedDirtDenyList.contains(Registries.ENTITY_TYPE.getId(entry.type).toString())) return null
+        if(KibeMod.CONFIG.miscellaneousModule.cursedDirtDenyList.contains(Registries.ENTITY_TYPE.getId(entry.type).toString())) return null
         BigTorchBlockEntity.setException(true)
         SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random).let {
             BigTorchBlockEntity.setException(false)

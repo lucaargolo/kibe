@@ -100,7 +100,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             if(isGliding) {
                 GliderHelper.INSTANCE.setPlayerGliding(player, true);
 
-                if(!KibeMod.INSTANCE.getMOD_CONFIG().getMiscellaneousModule().getGliderUnbreakable()) {
+                if(!KibeMod.INSTANCE.getCONFIG().getMiscellaneousModule().getGliderUnbreakable()) {
                     stack.damage(1, player, (e) -> e.sendEquipmentBreakStatus(slot));
                 }
 
@@ -195,7 +195,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             int ringQnt = ringMap.values().stream().mapToInt(List::size).sum();
             AbilityRing.Companion.getRINGS().forEach(ring -> {
                 if (ringMap.containsKey(ring)) {
-                    if (ringQnt == -1 || ringQnt <= KibeMod.INSTANCE.getMOD_CONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
+                    if (ringQnt == -1 || ringQnt <= KibeMod.INSTANCE.getCONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
                         RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
                         for (ItemStack ringStack : ringMap.get(ring)) {
                             if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {

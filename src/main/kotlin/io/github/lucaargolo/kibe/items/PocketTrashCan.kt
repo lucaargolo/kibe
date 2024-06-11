@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.items
 
+import io.github.lucaargolo.kibe.screenhandlers.PocketTrashCanScreenHandler
 import io.github.lucaargolo.kibe.utils.ItemScreenHandlerFactory
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -12,7 +13,7 @@ class PocketTrashCan(settings: Settings): Item(settings) {
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val tag = player.getStackInHand(hand).orCreateNbt
-        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag))
+        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag, ::PocketTrashCanScreenHandler))
         return TypedActionResult.success(player.getStackInHand(hand))
     }
 

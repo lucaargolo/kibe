@@ -1,6 +1,5 @@
-package io.github.lucaargolo.kibe.entities.miscellaneous
+package io.github.lucaargolo.kibe.entities
 
-import io.github.lucaargolo.kibe.entities.THROWN_TORCH
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -17,9 +16,9 @@ class ThrownTorchEntity: ThrownItemEntity {
 
     constructor(entityType: EntityType<ThrownTorchEntity>, world: World): super(entityType, world)
 
-    constructor(world: World, owner: LivingEntity): super(THROWN_TORCH, owner, world)
+    constructor(world: World, owner: LivingEntity): super(EntityCompendium.THROWN_TORCH, owner, world)
 
-    constructor(world: World, x: Double, y: Double, z: Double): super(THROWN_TORCH, x, y, z, world)
+    constructor(world: World, x: Double, y: Double, z: Double): super(EntityCompendium.THROWN_TORCH, x, y, z, world)
 
     override fun getDefaultItem(): Item = Items.TORCH
 

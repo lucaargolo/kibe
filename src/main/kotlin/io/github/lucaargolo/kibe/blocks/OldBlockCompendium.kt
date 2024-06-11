@@ -4,67 +4,25 @@ package io.github.lucaargolo.kibe.blocks
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.blockentities.*
 import io.github.lucaargolo.kibe.client.blockentities.*
-import io.github.lucaargolo.kibe.client.screens.*
-import io.github.lucaargolo.kibe.screenhandlers.*
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
-import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.gui.screen.ingame.HandledScreens
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.screen.ScreenHandlerContext
-import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.sound.BlockSoundGroup
-import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import java.util.function.Supplier
 import kotlin.reflect.KClass
 
-class ContainerInfo<T: ScreenHandler>(
-    handlerClass: KClass<*>,
-    screenClass: Supplier<KClass<*>>,
-    val identifier: Identifier? = null
-){
-
-    val handlerClass = handlerClass as KClass<T>
-    val screenClass = screenClass as Supplier<KClass<HandledScreen<T>>>
-
-    var handlerType: ScreenHandlerType<T>? = null
-    var handler: T? = null
-
-    var title: Text = Text.literal("")
-
-    fun init(blockIdentifier: Identifier) {
-        val id = identifier ?: blockIdentifier
-        title = Text.translatable("screen.${KibeMod.MOD_ID}.${id.path}")
-        handlerType = ExtendedScreenHandlerType { i, playerInventory, packetByteBuf ->
-            val pos = packetByteBuf.readBlockPos()
-            val player = playerInventory.player
-            val world = player.world
-            val be = world.getBlockEntity(pos)
-            handler = handlerClass.java.constructors[0].newInstance(i, playerInventory, be, ScreenHandlerContext.create(world, pos)) as T
-            handler
-        }
-        Registry.register(Registries.SCREEN_HANDLER, id, handlerType)
-    }
-
-    fun initClient() {
-        HandledScreens.register(handlerType) { handler, playerInventory, title -> screenClass.get().java.constructors[0].newInstance(handler, playerInventory, title) as HandledScreen<T>  }
-    }
-
-}
 
 class BlockInfo<T: BlockEntity> (
     val identifier: Identifier,
@@ -73,7 +31,6 @@ class BlockInfo<T: BlockEntity> (
     private val blockItem: KClass<BlockItem>?,
     var entity: BlockEntityType<T>?,
     var renderer: KClass<BlockEntityRenderer<T>>?,
-    var containers: List<ContainerInfo<*>>
 ){
 
     fun init() {
@@ -85,11 +42,9 @@ class BlockInfo<T: BlockEntity> (
                 Registry.register(Registries.ITEM, identifier, BlockItem(block, Item.Settings()))
         }
         if(entity != null) Registry.register(Registries.BLOCK_ENTITY_TYPE, identifier, entity)
-        containers.forEach { it.init(identifier) }
     }
 
     fun initClient() {
-        containers.forEach { it.initClient() }
         if(renderer != null) {
             BlockEntityRendererRegistry.register(entity) { it2 ->
                 renderer!!.java.constructors[0].newInstance(it2) as BlockEntityRenderer<T>
@@ -103,27 +58,19 @@ val blockRegistry = linkedMapOf<Block, BlockInfo<*>>()
 
 fun getBlockId(block: Block) = blockRegistry[block]?.identifier
 fun getEntityType(block: Block) = blockRegistry[block]?.entity as BlockEntityType<BlockEntity>
-fun getContainerInfo(block: Block) = blockRegistry[block]?.containers?.get(0)
-fun getContainerInfo(block: Block, identifier: Identifier): ContainerInfo<*>? {
-    blockRegistry[block]?.containers?.forEach {
-        if(it.identifier == identifier)
-            return it
-    }
-    return null
-}
 
 fun register(identifier: Identifier, block: Block, hasModBlock: Boolean = true): Block {
-    val info = BlockInfo<BlockEntity>(identifier, block, hasModBlock, null, null, null, listOf())
+    val info = BlockInfo<BlockEntity>(identifier, block, hasModBlock, null, null, null)
     blockRegistry[block] = info
     return block
 }
 
-fun <T : BlockEntity> registerWithEntity(identifier: Identifier, block: Block, hasBlockItem: Boolean = true, blockItem: KClass<*>? = null, renderer: Supplier<KClass<*>>? = null, containers: List<ContainerInfo<*>> = listOf(), apiRegistrations: (BlockEntityType<T>) -> Unit = {}): Block {
+fun <T : BlockEntity> registerWithEntity(identifier: Identifier, block: Block, hasBlockItem: Boolean = true, blockItem: KClass<*>? = null, renderer: Supplier<KClass<*>>? = null, apiRegistrations: (BlockEntityType<T>) -> Unit = {}): Block {
     val bli = blockItem as? KClass<BlockItem>
     val ent = (block as? BlockEntityProvider)?.let { BlockEntityType.Builder.create({ blockPos, blockState -> block.createBlockEntity(blockPos, blockState) } , block).build(null) as BlockEntityType<T> }
     ent?.let { apiRegistrations(it) }
     val rnd = if(KibeMod.CLIENT) renderer?.let { it.get() as KClass<BlockEntityRenderer<T>> } else null
-    val info = BlockInfo(identifier, block, hasBlockItem, bli, ent, rnd, containers)
+    val info = BlockInfo(identifier, block, hasBlockItem, bli, ent, rnd)
     blockRegistry[block] = info
     return block
 }
@@ -148,56 +95,37 @@ val EXPRESS_CONVEYOR_BELT = register(ModIdentifier("express_conveyor_belt"),
 
 val ENTANGLED_TANK = registerWithEntity<EntangledTankEntity>(ModIdentifier("entangled_tank"), EntangledTank(), renderer = { EntangledTankEntityRenderer::class }, hasBlockItem = false, apiRegistrations = { FluidStorage.SIDED.registerForBlockEntity(
     EntangledTankEntity.Companion::getFluidStorage, it) })
-val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(ModIdentifier("entangled_chest"), EntangledChest(), renderer = { EntangledChestEntityRenderer::class }, hasBlockItem = false, containers = listOf(ContainerInfo<EntangledChestScreenHandler>(
-    EntangledChestScreenHandler::class, { EntangledChestScreen::class })), apiRegistrations = { ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, it) })
-val TRASH_CAN = registerWithEntity<TrashCanEntity>(ModIdentifier("trash_can"), TrashCan(), containers = listOf(ContainerInfo<TrashCanScreenHandler>(
-    TrashCanScreenHandler::class, {  TrashCanScreen::class })))
-val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(ModIdentifier("vacuum_hopper"), VacuumHopper(), renderer = { VacuumHopperEntityRenderer::class }, containers = listOf(ContainerInfo<VacuumHopperScreenHandler>(
-    VacuumHopperScreenHandler::class, {  VacuumHopperScreen::class })), apiRegistrations = { FluidStorage.SIDED.registerForBlockEntity(
+val ENTANGLED_CHEST = registerWithEntity<EntangledChestEntity>(ModIdentifier("entangled_chest"), EntangledChest(), renderer = { EntangledChestEntityRenderer::class }, hasBlockItem = false, apiRegistrations = { ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, it) })
+val TRASH_CAN = registerWithEntity<TrashCanEntity>(ModIdentifier("trash_can"), TrashCan())
+val VACUUM_HOPPER = registerWithEntity<VacuumHopperEntity>(ModIdentifier("vacuum_hopper"), VacuumHopper(), renderer = { VacuumHopperEntityRenderer::class }, apiRegistrations = { FluidStorage.SIDED.registerForBlockEntity(
     VacuumHopperEntity.Companion::getFluidStorage, it) })
-val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(ModIdentifier("big_torch"), BigTorch(), containers = listOf(ContainerInfo<BigTorchScreenHandler>(
-    BigTorchScreenHandler::class, { BigTorchScreen::class })))
-val COOLER = registerWithEntity<CoolerBlockEntity>(ModIdentifier("cooler"), Cooler(), hasBlockItem = false, containers = listOf(ContainerInfo<CoolerScreenHandler>(
-    CoolerScreenHandler::class, { CoolerScreen::class })))
-val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(ModIdentifier("drawbridge"), Drawbridge(), containers = listOf(ContainerInfo<DrawbridgeScreenHandler>(
-    DrawbridgeScreenHandler::class, { DrawbridgeScreen::class })))
+val BIG_TORCH = registerWithEntity<BigTorchBlockEntity>(ModIdentifier("big_torch"), BigTorch())
+val COOLER = registerWithEntity<CoolerBlockEntity>(ModIdentifier("cooler"), Cooler(), hasBlockItem = false)
+val DRAWBRIDGE = registerWithEntity<DrawbridgeBlockEntity>(ModIdentifier("drawbridge"), Drawbridge())
 
 val OBSIDIAN_SAND = register(ModIdentifier("obsidian_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)))
 val WITHER_PROOF_BLOCK = register(ModIdentifier("wither_proof_block"), Block(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)))
 val WITHER_PROOF_SAND = register(ModIdentifier("wither_proof_sand"), FallingBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)))
 val WITHER_PROOF_GLASS = register(ModIdentifier("wither_proof_glass"), GlassBlock(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).nonOpaque()))
-val WITHER_BUILDER = registerWithEntity<WitherBuilderBlockEntity>(ModIdentifier("wither_builder"), WitherBuilder(), containers = listOf(ContainerInfo<WitherBuilderScreenHandler>(
-    WitherBuilderScreenHandler::class, { WitherBuilderScreen::class })))
+val WITHER_BUILDER = registerWithEntity<WitherBuilderBlockEntity>(ModIdentifier("wither_builder"), WitherBuilder())
 
-val PLACER = registerWithEntity<PlacerBlockEntity>(ModIdentifier("placer"), Placer(), containers = listOf(ContainerInfo<PlacerScreenHandler>(
-    PlacerScreenHandler::class, { PlacerScreen::class })))
-val BREAKER = registerWithEntity<BreakerBlockEntity>(ModIdentifier("breaker"), Breaker(), containers = listOf(ContainerInfo<BreakerScreenHandler>(
-    BreakerScreenHandler::class, { BreakerScreen::class })))
+val PLACER = registerWithEntity<PlacerBlockEntity>(ModIdentifier("placer"), Placer())
+val BREAKER = registerWithEntity<BreakerBlockEntity>(ModIdentifier("breaker"), Breaker())
 
 val HEATER = registerWithEntity<HeaterBlockEntity>(ModIdentifier("heater"), Heater())
 val DEHUMIDIFIER = registerWithEntity<DehumidifierBlockEntity>(ModIdentifier("dehumidifier"), Dehumidifier())
 
-val COBBLESTONE_GENERATOR_MK1 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk1"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.01f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val COBBLESTONE_GENERATOR_MK2 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk2"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.GOLD_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.04f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val COBBLESTONE_GENERATOR_MK3 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk3"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.DIAMOND_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.16f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val COBBLESTONE_GENERATOR_MK4 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk4"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.EMERALD_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.64f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val COBBLESTONE_GENERATOR_MK5 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk5"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.NETHERITE_BLOCK).luminance(4), Blocks.COBBLESTONE, 2.56f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
+val COBBLESTONE_GENERATOR_MK1 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk1"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.01f))
+val COBBLESTONE_GENERATOR_MK2 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk2"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.GOLD_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.04f))
+val COBBLESTONE_GENERATOR_MK3 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk3"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.DIAMOND_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.16f))
+val COBBLESTONE_GENERATOR_MK4 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk4"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.EMERALD_BLOCK).luminance(4), Blocks.COBBLESTONE, 0.64f))
+val COBBLESTONE_GENERATOR_MK5 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("cobblestone_generator_mk5"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.NETHERITE_BLOCK).luminance(4), Blocks.COBBLESTONE, 2.56f))
 
-val BASALT_GENERATOR_MK1 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk1"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).luminance(4), Blocks.BASALT, 0.01f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val BASALT_GENERATOR_MK2 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk2"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.GOLD_BLOCK).luminance(4), Blocks.BASALT, 0.04f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val BASALT_GENERATOR_MK3 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk3"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.DIAMOND_BLOCK).luminance(4), Blocks.BASALT, 0.16f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val BASALT_GENERATOR_MK4 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk4"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.EMERALD_BLOCK).luminance(4), Blocks.BASALT, 0.64f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
-val BASALT_GENERATOR_MK5 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk5"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.NETHERITE_BLOCK).luminance(4), Blocks.BASALT, 2.56f), containers = listOf(ContainerInfo<BlockGeneratorScreenHandler>(
-    BlockGeneratorScreenHandler::class, { BlockGeneratorScreen::class })))
+val BASALT_GENERATOR_MK1 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk1"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).luminance(4), Blocks.BASALT, 0.01f))
+val BASALT_GENERATOR_MK2 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk2"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.GOLD_BLOCK).luminance(4), Blocks.BASALT, 0.04f))
+val BASALT_GENERATOR_MK3 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk3"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.DIAMOND_BLOCK).luminance(4), Blocks.BASALT, 0.16f))
+val BASALT_GENERATOR_MK4 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk4"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.EMERALD_BLOCK).luminance(4), Blocks.BASALT, 0.64f))
+val BASALT_GENERATOR_MK5 = registerWithEntity<BlockGeneratorBlockEntity>(ModIdentifier("basalt_generator_mk5"), BlockGenerator(FabricBlockSettings.copyOf(Blocks.NETHERITE_BLOCK).luminance(4), Blocks.BASALT, 2.56f))
 
 val LIGHT_SOURCE = register(ModIdentifier("light_source"), LightSource(), false)
 val CHUNK_LOADER = registerWithEntity<ChunkLoaderBlockEntity>(ModIdentifier("chunk_loader"), ChunkLoader())
