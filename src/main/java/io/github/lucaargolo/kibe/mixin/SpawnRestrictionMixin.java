@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity;
+import io.github.lucaargolo.kibe.blockentities.BigTorchBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;

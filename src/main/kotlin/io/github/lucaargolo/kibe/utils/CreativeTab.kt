@@ -2,7 +2,6 @@
 
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.blocks.*
 import io.github.lucaargolo.kibe.blocks.COOLER
 import io.github.lucaargolo.kibe.blocks.ENTANGLED_CHEST
@@ -22,10 +21,9 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
 
 fun initCreativeTab() {
-    Registry.register(Registries.ITEM_GROUP, Identifier(MOD_ID, "creative_tab"), FabricItemGroup.builder()
+    Registry.register(Registries.ITEM_GROUP, ModIdentifier("creative_tab"), FabricItemGroup.builder()
         .icon { ItemStack(KIBE) }
         .displayName(Text.translatable("itemGroup.kibe.creative_tab"))
         .entries { _, entries -> entries.addAll(appendItems()) }

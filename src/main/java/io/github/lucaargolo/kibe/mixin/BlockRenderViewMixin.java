@@ -1,7 +1,7 @@
 
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.bigtorch.BigTorchBlockEntity;
+import io.github.lucaargolo.kibe.blockentities.BigTorchBlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.LightType;

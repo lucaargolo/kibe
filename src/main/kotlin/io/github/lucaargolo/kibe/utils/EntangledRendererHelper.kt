@@ -1,13 +1,11 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.MOD_ID
 import net.minecraft.client.model.ModelData
 import net.minecraft.client.model.ModelPartBuilder
 import net.minecraft.client.model.ModelTransform
 import net.minecraft.client.model.TexturedModelData
 import net.minecraft.client.render.entity.model.EntityModelLayer
 import net.minecraft.util.DyeColor
-import net.minecraft.util.Identifier
 
 class EntangledRendererHelper(val parent: String) {
 
@@ -21,14 +19,14 @@ class EntangledRendererHelper(val parent: String) {
     init {
         (1..8).forEach { runeId ->
             DyeColor.values().forEach { runeColor ->
-                runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayer(Identifier(MOD_ID, parent), "rune${runeId}_${runeColor.getName()}")
+                runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayer(ModIdentifier(parent), "rune${runeId}_${runeColor.getName()}")
             }
         }
 
-        bottomModelLayer = EntityModelLayer(Identifier(MOD_ID, parent), "bottom")
-        topModelLayer = EntityModelLayer(Identifier(MOD_ID, parent), "top")
-        coreModelLayerGold = EntityModelLayer(Identifier(MOD_ID, parent), "core_gold")
-        coreModelLayerDiamond = EntityModelLayer(Identifier(MOD_ID, parent), "core_diamond")
+        bottomModelLayer = EntityModelLayer(ModIdentifier(parent), "bottom")
+        topModelLayer = EntityModelLayer(ModIdentifier(parent), "top")
+        coreModelLayerGold = EntityModelLayer(ModIdentifier(parent), "core_gold")
+        coreModelLayerDiamond = EntityModelLayer(ModIdentifier(parent), "core_diamond")
     }
 
 

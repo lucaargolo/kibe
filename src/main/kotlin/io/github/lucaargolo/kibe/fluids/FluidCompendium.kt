@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.fluids
 
-import io.github.lucaargolo.kibe.MOD_ID
 import io.github.lucaargolo.kibe.fluids.miscellaneous.LiquidXpFluid
 import io.github.lucaargolo.kibe.fluids.miscellaneous.ModdedFluid
+import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
@@ -21,13 +21,13 @@ import net.minecraft.fluid.FluidState
 import net.minecraft.item.BucketItem
 import net.minecraft.item.Item
 import net.minecraft.item.Items
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceType
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.registry.Registry
-import net.minecraft.registry.Registries
 import net.minecraft.world.BlockRenderView
 import java.util.function.Function
 
@@ -35,8 +35,8 @@ val fluidRegistry = mutableMapOf<Identifier, ModdedFluid>()
 val fluidBlockMap = mutableMapOf<Fluid, Block>()
 val fluidBucketMap = mutableMapOf<Fluid, Item>()
 
-val LIQUID_XP = register(Identifier(MOD_ID, "liquid_xp"), LiquidXpFluid.Still())
-val LIQUID_XP_FLOWING = register(Identifier(MOD_ID, "flowing_liquid_xp"), LiquidXpFluid.Flowing())
+val LIQUID_XP = register(ModIdentifier("liquid_xp"), LiquidXpFluid.Still())
+val LIQUID_XP_FLOWING = register(ModIdentifier("flowing_liquid_xp"), LiquidXpFluid.Flowing())
 
 private fun register(identifier: Identifier, fluid: ModdedFluid): ModdedFluid {
     fluidRegistry[identifier] = fluid
@@ -53,7 +53,7 @@ fun initFluids() {
         val fluidStill = it.value
         if(!identifierStill.path.startsWith("flowing_")) {
             val registeredFluid = Registry.register(Registries.FLUID, identifierStill, fluidStill)
-            val identifierFlowing = Identifier(MOD_ID, "flowing_" + identifierStill.path)
+            val identifierFlowing = ModIdentifier("flowing_" + identifierStill.path)
             val fluidFlowing = fluidRegistry[identifierFlowing]!!
             Registry.register(Registries.FLUID, identifierFlowing, fluidFlowing)
             fluidBucketMap[fluidStill] = Registry.register(Registries.ITEM, Identifier(it.key.namespace, "${identifierStill.path}_bucket"), BucketItem(fluidStill, Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
@@ -70,7 +70,7 @@ fun initFluidsClient() {
         val identifierStill = it.key
         val fluidStill = it.value
         if(!identifierStill.path.startsWith("flowing_")) {
-            val identifierFlowing = Identifier(MOD_ID, "flowing_" + identifierStill.path)
+            val identifierFlowing = ModIdentifier("flowing_" + identifierStill.path)
             val fluidFlowing = fluidRegistry[identifierFlowing]
             setupFluidRendering(fluidStill, fluidFlowing, it.key, 0xFFFFFF)
             BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), fluidStill, fluidFlowing)

@@ -1,18 +1,18 @@
 package io.github.lucaargolo.kibe.recipes
 
-import io.github.lucaargolo.kibe.MOD_ID
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipeSerializer
 import net.minecraft.recipe.Recipe
 import net.minecraft.recipe.RecipeSerializer
-import net.minecraft.registry.Registry
 import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 
 lateinit var VACUUM_HOPPER_RECIPE_SERIALIZER: RecipeSerializer<VacuumHopperRecipe>
 
 @Suppress("SameParameterValue")
 private fun <S: RecipeSerializer<T>, T: Recipe<*>>register(id: String, serializer: S): S {
-    return Registry.register(Registries.RECIPE_SERIALIZER, "$MOD_ID:$id", serializer)
+    return Registry.register(Registries.RECIPE_SERIALIZER, "${KibeMod.MOD_ID}:$id", serializer)
 }
 
 fun initRecipeSerializers() {

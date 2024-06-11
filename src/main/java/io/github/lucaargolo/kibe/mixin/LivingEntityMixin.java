@@ -1,9 +1,9 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.miscellaneous.Elevator;
-import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
-import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
-import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
+import io.github.lucaargolo.kibe.blocks.Elevator;
+import io.github.lucaargolo.kibe.items.Glider;
+import io.github.lucaargolo.kibe.items.OldItemCompendiumKt;
+import io.github.lucaargolo.kibe.items.SleepingBag;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import io.github.lucaargolo.kibe.utils.SpikeHelper;
 import net.minecraft.block.Block;
@@ -78,7 +78,7 @@ public abstract class LivingEntityMixin extends Entity {
     private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if((Object) this instanceof PlayerEntity) {
             PlayerEntity player = ((PlayerEntity) ((Object) this));
-            if (player.getEquippedStack(EquipmentSlot.FEET).getItem() == ItemCompendiumKt.getSLIME_BOOTS()) {
+            if (player.getEquippedStack(EquipmentSlot.FEET).getItem() == OldItemCompendiumKt.getSLIME_BOOTS()) {
                 if(!isSneaking() && fallDistance > 2) {
                     this.fallDistance = 0;
 

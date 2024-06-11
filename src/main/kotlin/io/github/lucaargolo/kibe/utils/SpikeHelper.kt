@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.blocks.miscellaneous.Spikes
+import io.github.lucaargolo.kibe.blocks.Spikes
 import net.minecraft.entity.LivingEntity
 
 object SpikeHelper {

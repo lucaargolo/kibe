@@ -35,10 +35,16 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.lucaargolo.kibe.KibeModKt::init"
+      {
+        "value": "io.github.lucaargolo.kibe.KibeMod",
+        "adapter": "kotlin"
+      }
     ],
     "client": [
-      "io.github.lucaargolo.kibe.KibeModClientKt::initClient"
+      {
+        "value": "io.github.lucaargolo.kibe.client.KibeModClient",
+        "adapter": "kotlin"
+      }
     ]
   },
   "accessWidener": "kibe.accesswidener",

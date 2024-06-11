@@ -2,11 +2,11 @@ package io.github.lucaargolo.kibe.mixin;
 
 import io.github.ladysnake.pal.PlayerAbility;
 import io.github.ladysnake.pal.impl.PlayerAbilityView;
-import io.github.lucaargolo.kibe.KibeModKt;
-import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
-import io.github.lucaargolo.kibe.items.miscellaneous.AbilityRing;
-import io.github.lucaargolo.kibe.items.miscellaneous.Glider;
-import io.github.lucaargolo.kibe.items.miscellaneous.SleepingBag;
+import io.github.lucaargolo.kibe.KibeMod;
+import io.github.lucaargolo.kibe.items.AbilityRing;
+import io.github.lucaargolo.kibe.items.Glider;
+import io.github.lucaargolo.kibe.items.OldItemCompendiumKt;
+import io.github.lucaargolo.kibe.items.SleepingBag;
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed;
 import io.github.lucaargolo.kibe.utils.GliderHelper;
 import io.github.lucaargolo.kibe.utils.RingAbilitiesKt;
@@ -51,7 +51,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
 
     @Inject(at = @At("TAIL"), method = "eatFood")
     public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
-        if(stack.getItem().equals(ItemCompendiumKt.getCURSED_KIBE()) && !world.isClient) {
+        if(stack.getItem().equals(OldItemCompendiumKt.getCURSED_KIBE()) && !world.isClient) {
             int x = random.nextInt(64);
             if(x == 0) kill();
         }
@@ -100,7 +100,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             if(isGliding) {
                 GliderHelper.INSTANCE.setPlayerGliding(player, true);
 
-                if(!KibeModKt.getMOD_CONFIG().getMiscellaneousModule().getGliderUnbreakable()) {
+                if(!KibeMod.INSTANCE.getMOD_CONFIG().getMiscellaneousModule().getGliderUnbreakable()) {
                     stack.damage(1, player, (e) -> e.sendEquipmentBreakStatus(slot));
                 }
 
@@ -195,7 +195,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             int ringQnt = ringMap.values().stream().mapToInt(List::size).sum();
             AbilityRing.Companion.getRINGS().forEach(ring -> {
                 if (ringMap.containsKey(ring)) {
-                    if (ringQnt == -1 || ringQnt <= KibeModKt.getMOD_CONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
+                    if (ringQnt == -1 || ringQnt <= KibeMod.INSTANCE.getMOD_CONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
                         RingAbilitiesKt.getRingAbilitySource().grantTo(player, ring.getAbility());
                         for (ItemStack ringStack : ringMap.get(ring)) {
                             if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {

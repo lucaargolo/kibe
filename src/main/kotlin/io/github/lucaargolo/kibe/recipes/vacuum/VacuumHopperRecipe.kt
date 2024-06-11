@@ -2,7 +2,7 @@
 
 package io.github.lucaargolo.kibe.recipes.vacuum
 
-import io.github.lucaargolo.kibe.blocks.vacuum.VacuumHopperEntity
+import io.github.lucaargolo.kibe.blockentities.VacuumHopperEntity
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
 import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
 import net.minecraft.item.ItemStack

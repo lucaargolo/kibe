@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
+import io.github.lucaargolo.kibe.items.OldItemCompendiumKt;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -30,22 +30,22 @@ public interface CauldronBehaviorMixin {
 
     @Inject(at = @At("TAIL"), method = "registerBucketBehavior")
     private static void registerWoodenBucketBehavior(Map<Item, CauldronBehavior> behavior, CallbackInfo ci) {
-        behavior.put(ItemCompendiumKt.getWATER_WOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
+        behavior.put(OldItemCompendiumKt.getWATER_WOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
            fillCauldronWithWoodenBucket(world, pos, player, hand, stack, Blocks.WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY)
         );
     }
 
     @Inject(at = @At("TAIL"), method = "registerBehavior")
     private static void registerWoodenBucketBehavior(CallbackInfo ci) {
-        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.put(ItemCompendiumKt.getWOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
-            CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(ItemCompendiumKt.getWATER_WOODEN_BUCKET()), (statex) -> statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
+        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.put(OldItemCompendiumKt.getWOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
+            CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(OldItemCompendiumKt.getWATER_WOODEN_BUCKET()), (statex) -> statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
         );
     }
 
     private static ActionResult fillCauldronWithWoodenBucket(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
         if (!world.isClient) {
             Item item = stack.getItem();
-            player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(ItemCompendiumKt.getWOODEN_BUCKET())));
+            player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(OldItemCompendiumKt.getWOODEN_BUCKET())));
             player.incrementStat(Stats.FILL_CAULDRON);
             player.incrementStat(Stats.USED.getOrCreateStat(item));
             world.setBlockState(pos, state);

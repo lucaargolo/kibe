@@ -1,7 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.items.ItemCompendiumKt;
-import net.minecraft.inventory.CraftingInventory;
+import io.github.lucaargolo.kibe.items.OldItemCompendiumKt;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.ShapedRecipe;
@@ -19,7 +18,7 @@ public abstract class ShapedRecipeMixin {
 
     @Inject(at = @At("HEAD"), method = "matchesPattern", cancellable = true)
     private void matchesSmall(RecipeInputInventory inv, int offsetX, int offsetY, boolean flipped, CallbackInfoReturnable<Boolean> cir) {
-        if(output.getItem() == ItemCompendiumKt.getGLIDER_LEFT_WING() || output.getItem() == ItemCompendiumKt.getGLIDER_RIGHT_WING()) {
+        if(output.getItem() == OldItemCompendiumKt.getGLIDER_LEFT_WING() || output.getItem() == OldItemCompendiumKt.getGLIDER_RIGHT_WING()) {
             if(flipped) cir.setReturnValue(false);
         }
     }

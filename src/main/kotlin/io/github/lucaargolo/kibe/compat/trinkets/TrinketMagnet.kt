@@ -3,7 +3,7 @@ package io.github.lucaargolo.kibe.compat.trinkets
 import dev.emi.trinkets.api.SlotReference
 import dev.emi.trinkets.api.Trinket
 import dev.emi.trinkets.api.TrinketsApi
-import io.github.lucaargolo.kibe.items.miscellaneous.Magnet
+import io.github.lucaargolo.kibe.items.Magnet
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.ItemStack
 
