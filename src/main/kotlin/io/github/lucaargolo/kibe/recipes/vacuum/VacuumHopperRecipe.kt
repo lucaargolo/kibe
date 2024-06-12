@@ -2,9 +2,9 @@
 
 package io.github.lucaargolo.kibe.recipes.vacuum
 
-import io.github.lucaargolo.kibe.blockentities.VacuumHopperEntity
-import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_SERIALIZER
-import io.github.lucaargolo.kibe.recipes.VACUUM_HOPPER_RECIPE_TYPE
+import io.github.lucaargolo.kibe.blockentity.VacuumHopperEntity
+import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
+import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
@@ -38,11 +38,11 @@ class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput
         return output.copy()
     }
 
-    override fun getType() = VACUUM_HOPPER_RECIPE_TYPE
+    override fun getType() = RecipeTypeCompendium.VACUUM_HOPPER
 
     override fun fits(width: Int, height: Int) = true
 
-    override fun getSerializer() = VACUUM_HOPPER_RECIPE_SERIALIZER
+    override fun getSerializer() = RecipeSerializerCompendium.VACUUM_HOPPER
 
     override fun getOutput(registryManager: DynamicRegistryManager): ItemStack = output
 

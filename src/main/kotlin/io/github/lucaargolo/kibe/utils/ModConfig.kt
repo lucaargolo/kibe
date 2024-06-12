@@ -1,5 +1,7 @@
 package io.github.lucaargolo.kibe.utils
 
+import io.github.lucaargolo.kibe.KibeMod
+
 class ModConfig {
 
     var miscellaneousModule: MiscellaneousModule = MiscellaneousModule()
@@ -35,6 +37,17 @@ class ModConfig {
         var maxPerPlayer: Int = -1
         //How many seconds before the chunk loader disables itself after it's owner left the server. (Set to -1 to disable)
         var maxOfflineTime: Long = -1
+    }
+
+    fun init() {
+        KibeMod.LOGGER.info("ModConfig instantiated.")
+    }
+
+    companion object {
+
+        fun initialize() {
+            KibeMod.CONFIG.init()
+        }
     }
 
 }

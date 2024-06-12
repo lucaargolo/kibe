@@ -1,0 +1,18 @@
+package io.github.lucaargolo.kibe.recipes
+
+import io.github.lucaargolo.kibe.KibeMod
+import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
+import io.github.lucaargolo.kibe.utils.RegistryCompendium
+import net.minecraft.recipe.Recipe
+import net.minecraft.recipe.RecipeType
+import net.minecraft.registry.Registries
+
+object RecipeTypeCompendium: RegistryCompendium<RecipeType<*>>(Registries.RECIPE_TYPE) {
+
+    val VACUUM_HOPPER = register<VacuumHopperRecipe>("vacuum_hopper")
+
+    private fun <T : Recipe<*>> register(id: String): RecipeType<T> {
+        return register(id, object : RecipeType<T> { override fun toString() = "${KibeMod.MOD_ID}:$id" })
+    }
+
+}

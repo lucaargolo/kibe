@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.items.Glider;
-import io.github.lucaargolo.kibe.utils.GliderHelper;
+import io.github.lucaargolo.kibe.item.Glider;
+import io.github.lucaargolo.kibe.utils.helper.GliderHelper;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;

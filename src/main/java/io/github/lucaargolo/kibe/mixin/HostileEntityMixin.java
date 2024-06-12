@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.utils.SpikeHelper;
+import io.github.lucaargolo.kibe.utils.helper.SpikeHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.entities.EntityCompendium;
-import io.github.lucaargolo.kibe.entities.ThrownTorchEntity;
+import io.github.lucaargolo.kibe.entity.EntityCompendium;
+import io.github.lucaargolo.kibe.entity.ThrownTorchEntity;
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

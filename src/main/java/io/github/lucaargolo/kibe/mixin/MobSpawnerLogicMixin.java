@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.CursedDirt;
+import io.github.lucaargolo.kibe.block.CursedDirt;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;

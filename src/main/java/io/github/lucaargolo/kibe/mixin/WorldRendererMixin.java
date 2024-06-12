@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blockentities.DehumidifierBlockEntity;
+import io.github.lucaargolo.kibe.blockentity.DehumidifierBlockEntity;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;

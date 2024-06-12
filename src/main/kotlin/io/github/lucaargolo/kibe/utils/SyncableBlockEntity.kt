@@ -10,7 +10,7 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 
-abstract class SyncableBlockEntity(type: BlockEntityType<BlockEntity>, pos: BlockPos, state: BlockState): BlockEntity(type, pos, state) {
+abstract class SyncableBlockEntity(type: BlockEntityType<out BlockEntity>, pos: BlockPos, state: BlockState): BlockEntity(type, pos, state) {
 
     abstract fun writeClientNbt(tag: NbtCompound): NbtCompound
 

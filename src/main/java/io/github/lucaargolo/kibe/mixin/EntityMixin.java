@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.blocks.Elevator;
+import io.github.lucaargolo.kibe.block.Elevator;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.sound.SoundCategory;

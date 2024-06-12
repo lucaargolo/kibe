@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.effects.EffectCompendium;
-import io.github.lucaargolo.kibe.items.OldItemCompendiumKt;
+import io.github.lucaargolo.kibe.effect.EffectCompendium;
+import io.github.lucaargolo.kibe.item.ItemCompendium;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -31,7 +31,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 0), method = "interactWithItem", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     public void method_29506(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, ItemStack itemStack) {
-        if(itemStack.isOf(OldItemCompendiumKt.getGOLDEN_LASSO()) || itemStack.isOf(OldItemCompendiumKt.getCURSED_LASSO()) || itemStack.isOf(OldItemCompendiumKt.getDIAMOND_LASSO())) {
+        if(itemStack.isOf(ItemCompendium.INSTANCE.getGOLDEN_LASSO()) || itemStack.isOf(ItemCompendium.INSTANCE.getCURSED_LASSO()) || itemStack.isOf(ItemCompendium.INSTANCE.getDIAMOND_LASSO())) {
             ActionResult actionResult = itemStack.useOnEntity(player, this, hand);
             if (actionResult.isAccepted()) {
                 cir.setReturnValue(actionResult);

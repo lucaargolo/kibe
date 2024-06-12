@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.utils.TooltipHelperKt;
+import io.github.lucaargolo.kibe.utils.helper.TooltipHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
@@ -22,7 +22,7 @@ public class ItemMixin {
 
     @Inject(at = @At("HEAD"), method = "appendTooltip")
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context, CallbackInfo info) {
-        Map<ItemConvertible, List<Text>> map = TooltipHelperKt.getTooltipRegistry();
+        Map<ItemConvertible, List<Text>> map = TooltipHelper.INSTANCE.getTooltipRegistry();
         Item item = stack.getItem();
         if(item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
