@@ -24,7 +24,7 @@ import java.util.function.Supplier
 class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private val spriteIdList = mutableListOf(
-        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier("block/tank"))
+        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/tank"))
     )
     val spriteList = mutableListOf<Sprite>()
 
@@ -33,7 +33,7 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {
     }
 
-    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
+    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings): BakedModel {
         spriteIdList.forEach { spriteIdentifier ->
             spriteList.add(textureGetter.apply(spriteIdentifier))
         }

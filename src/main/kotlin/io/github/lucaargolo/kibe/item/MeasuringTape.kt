@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.item
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.ClampedModelPredicateProvider
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
@@ -43,7 +42,7 @@ class MeasuringTape(settings: Settings) : Item(settings) {
             val z = nbt.getInt(MEASURING_FROM_Z)
             val level = nbt.getString(MEASURING_LEVEL)
 
-            return Identifier(level) to BlockPos(x, y, z).toImmutable()
+            return Identifier.of(level) to BlockPos(x, y, z).toImmutable()
         }
 
         fun measuringTo(stack: ItemStack): Pair<Identifier, BlockPos>? {
@@ -56,7 +55,7 @@ class MeasuringTape(settings: Settings) : Item(settings) {
             val z = nbt.getInt(MEASURING_TO_Z)
             val level = nbt.getString(MEASURING_LEVEL)
 
-            return Identifier(level) to BlockPos(x, y, z).toImmutable()
+            return Identifier.of(level) to BlockPos(x, y, z).toImmutable()
         }
 
         fun startMeasuring(stack: ItemStack, world: World, pos: BlockPos) {

@@ -1,14 +1,13 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ExperienceOrbEntity
@@ -21,7 +20,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import kotlin.math.pow
 
-class XpDrain: Block(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class XpDrain(settings: Settings): Block(settings) {
 
     override fun onEntityCollision(state: BlockState, world: World, pos: BlockPos, entity: Entity) {
         if(!world.isClient && entity is PlayerEntity) {
@@ -78,7 +77,11 @@ class XpDrain: Block(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().str
 
     override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
+    override fun getCodec(): MapCodec<XpDrain> = CODEC
+
     companion object {
         private val SHAPE = createCuboidShape(0.5, 0.0, 0.5, 15.5, 1.0, 15.5)
+        private val CODEC: MapCodec<XpDrain> = createCodec(::XpDrain)
+
     }
 }

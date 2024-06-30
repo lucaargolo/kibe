@@ -12,7 +12,7 @@ object AbilityHelper {
 
     val ABILITY_TO_EFFECT = mutableMapOf<PlayerAbility, StatusEffect>()
 
-    val RING_SOURCE: AbilitySource = Pal.getAbilitySource(Identifier("kibe", "ring"))
+    val RING_SOURCE: AbilitySource = Pal.getAbilitySource(Identifier.of("kibe", "ring"))
 
     val INFINITE_FIRE_RESISTENCE = register("magma_ability", ::SimpleAbilityTracker, StatusEffects.FIRE_RESISTANCE)
     val INFINITE_WATER_BREATHING = register("water_ability", ::SimpleAbilityTracker, StatusEffects.WATER_BREATHING)
@@ -24,7 +24,7 @@ object AbilityHelper {
     }
 
     fun register(identifier: String, factory: BiFunction<PlayerAbility, PlayerEntity, AbilityTracker>): PlayerAbility {
-        return Pal.registerAbility(ModIdentifier(identifier), factory)
+        return Pal.registerAbility(ModIdentifier.of(identifier), factory)
     }
 
 }

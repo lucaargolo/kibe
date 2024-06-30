@@ -1,10 +1,11 @@
-import org.ajoberstar.grgit.Grgit
-import org.kohsuke.github.GitHub
-import org.kohsuke.github.GHReleaseBuilder
-import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseArtifact
+import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
+import org.ajoberstar.grgit.Grgit
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.kohsuke.github.GHReleaseBuilder
+import org.kohsuke.github.GitHub
 
 buildscript {
     dependencies {
@@ -31,8 +32,8 @@ configure<JavaPluginExtension> {
 }
 
 tasks.compileKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -107,8 +108,6 @@ dependencies {
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
     include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
 
-    modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
-
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
     modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 }
@@ -130,7 +129,7 @@ tasks.processResources {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
 }
 
 java {

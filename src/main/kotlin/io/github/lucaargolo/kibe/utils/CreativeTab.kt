@@ -20,7 +20,7 @@ import net.minecraft.text.Text
 object CreativeTab {
 
     fun initialize() {
-        Registry.register(Registries.ITEM_GROUP, ModIdentifier("creative_tab"), FabricItemGroup.builder()
+        Registry.register(Registries.ITEM_GROUP, ModIdentifier.of("creative_tab"), FabricItemGroup.builder()
             .icon { ItemStack(ItemCompendium.KIBE) }
             .displayName(Text.translatable("itemGroup.kibe.creative_tab"))
             .entries { _, entries -> entries.addAll(appendItems()) }

@@ -21,7 +21,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     @Inject(at = @At("HEAD"), method = "getRenderLayer", cancellable = true)
     private void getRenderLayer(T entity, boolean showBody, boolean translucent, boolean bl, CallbackInfoReturnable<RenderLayer> info) {
         if(entity.hasStatusEffect(EffectCompendium.INSTANCE.getCURSED())) {
-            Identifier texture = new Identifier("textures/block/coal_block.png");
+            Identifier texture = new Identifier.of("textures/block/coal_block.png");
             info.setReturnValue(this.getModel().getLayer(texture));
         }
     }

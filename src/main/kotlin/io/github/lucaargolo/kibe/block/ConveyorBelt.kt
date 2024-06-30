@@ -1,11 +1,12 @@
 package io.github.lucaargolo.kibe.block
 
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.block.*
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.BlockMirror
@@ -20,7 +21,7 @@ import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import kotlin.math.abs
 
-class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) {
+class ConveyorBelt(private val speed: Double, settings: Settings): Block(settings) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.HORIZONTAL_FACING, Direction.NORTH)
@@ -101,16 +102,20 @@ class ConveyorBelt(private val speed: Double): Block(FabricBlockSettings.copyOf(
     }
 
 
-    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape =
-        io.github.lucaargolo.kibe.block.ConveyorBelt.Companion.SHAPE
+    override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape =
-        io.github.lucaargolo.kibe.block.ConveyorBelt.Companion.SHAPE
+    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCullingShape(state: BlockState?, view: BlockView?, pos: BlockPos?): VoxelShape =
-        io.github.lucaargolo.kibe.block.ConveyorBelt.Companion.EMPTY
+    override fun getCullingShape(state: BlockState?, view: BlockView?, pos: BlockPos?): VoxelShape = EMPTY
+
+    override fun getCodec(): MapCodec<ConveyorBelt> = CODEC
 
     companion object {
+
+        private val CODEC: MapCodec<ConveyorBelt> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(Codec.DOUBLE.fieldOf("speed").forGetter(ConveyorBelt::speed), createSettingsCodec())
+                .apply(instance, ::ConveyorBelt)
+        }
         private val SHAPE = createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0)
         private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }

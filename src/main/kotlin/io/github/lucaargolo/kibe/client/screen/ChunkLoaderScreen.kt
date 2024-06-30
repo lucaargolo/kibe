@@ -73,7 +73,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
         y = (height-backgroundHeight)/2
     }
 
-    private val texture = Identifier("kibe:textures/gui/chunk_loader.png")
+    private val texture = Identifier.of("kibe:textures/gui/chunk_loader.png")
 
     @Suppress("UNUSED_PARAMETER")
     private fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {

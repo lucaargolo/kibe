@@ -1,21 +1,19 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.CoolerBlockEntity
 import io.github.lucaargolo.kibe.menu.CoolerScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.screen.ScreenHandler
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
 import net.minecraft.util.BlockMirror
 import net.minecraft.util.BlockRotation
-import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -23,7 +21,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class Cooler: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.SNOW_BLOCK).strength(0.2F).sounds(BlockSoundGroup.SNOW)) {
+class Cooler(settings: Settings): BlockWithEntity(settings) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return CoolerBlockEntity(blockPos, blockState)
@@ -45,7 +43,7 @@ class Cooler: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.SNOW_BLOCK).stre
         return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::CoolerScreenHandler))
         return ActionResult.SUCCESS
     }
@@ -72,12 +70,15 @@ class Cooler: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.SNOW_BLOCK).stre
 
     override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext) = getShape(state[Properties.HORIZONTAL_FACING])
 
+    override fun getCodec(): MapCodec<Cooler> = CODEC
+
     companion object {
         private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+        private val CODEC: MapCodec<Cooler> = createCodec(::Cooler)
 
         init {
-            Direction.values().forEach {
+            Direction.entries.forEach {
                 SHAPES[it] = when(it) {
                     Direction.EAST, Direction.WEST -> createCuboidShape(5.0, 0.0, 1.0, 11.0, 12.0, 15.0)
                     else -> createCuboidShape(1.0, 0.0, 5.0, 15.0, 12.0, 11.0)

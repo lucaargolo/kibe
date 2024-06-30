@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.PlacerBlockEntity
 import io.github.lucaargolo.kibe.menu.PlacerScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
-class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
+class Placer(settings: Settings): BlockWithEntity(settings) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.FACING, Direction.NORTH).with(Properties.TRIGGERED, false)
@@ -96,11 +96,17 @@ class Placer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         }
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::PlacerScreenHandler))
         return ActionResult.SUCCESS
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCodec(): MapCodec<Placer> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<Placer> = createCodec(::Placer)
+    }
 
 }

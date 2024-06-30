@@ -9,6 +9,7 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
@@ -65,8 +66,8 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         return comparatorOutput
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
@@ -77,7 +78,7 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
@@ -85,11 +86,11 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         key = tag.getString("key")
         owner = tag.getString("owner")
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
-        Inventories.readNbt(tag, this.inventory)
+        Inventories.readNbt(tag, this.inventory, registryLookup)
     }
 
-    override fun writeNbt(tag: NbtCompound) {
-        super.writeNbt(tag)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
@@ -105,16 +106,16 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
                 tag.put("Items", subTag.get("Items"))
             }
         }
-        else Inventories.writeNbt(tag, this.inventory)
+        else Inventories.writeNbt(tag, this.inventory, registryLookup)
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
-        Inventories.writeNbt(tag, this.inventory)
+        Inventories.writeNbt(tag, this.inventory, registryLookup)
         return tag
     }
 

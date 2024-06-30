@@ -1,9 +1,12 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.HeaterBlockEntity
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.block.*
+import net.minecraft.block.Block
+import net.minecraft.block.BlockRenderType
+import net.minecraft.block.BlockState
+import net.minecraft.block.BlockWithEntity
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
@@ -16,12 +19,12 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
-class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).luminance { if(it[Properties.ENABLED]) 15 else 0 }) {
+class Heater(settings: Settings): BlockWithEntity(settings) {
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = HeaterBlockEntity(pos, state)
 
     override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return if(!world.isClient) checkType(blockEntityType, BlockEntityCompendium.HEATER, HeaterBlockEntity::tick) else null
+        return if(!world.isClient) validateTicker(blockEntityType, BlockEntityCompendium.HEATER, HeaterBlockEntity::tick) else null
     }
 
     init {
@@ -77,5 +80,11 @@ class Heater: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE).lum
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCodec(): MapCodec<Heater> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<Heater> = createCodec(::Heater)
+    }
 
 }

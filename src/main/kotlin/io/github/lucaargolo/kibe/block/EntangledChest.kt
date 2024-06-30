@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
 import io.github.lucaargolo.kibe.item.ItemCompendium
@@ -7,7 +8,6 @@ import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.menu.EntangledChestScreenHandler
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -31,7 +31,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledChest: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F)) {
+class EntangledChest(settings: Settings): BlockWithEntity(settings) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.HORIZONTAL_FACING)
@@ -80,10 +80,11 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.ENTANGLED_CHEST, EntangledChestEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.ENTANGLED_CHEST, EntangledChestEntity::tick)
     }
 
-    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
+        val hand = Hand.MAIN_HAND
         val poss = player.raycast(4.5, 1.0F, false).pos
         if((poss.y-pos.y) > 0.9375) {
             if(player.getStackInHand(hand).item is Rune) {
@@ -186,11 +187,14 @@ class EntangledChest: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN
         }
     }
 
+    override fun getCodec(): MapCodec<EntangledChest> = CODEC
+
     companion object {
         const val DEFAULT_KEY = "entangledchest-global"
+        private val CODEC: MapCodec<EntangledChest> = createCodec(::EntangledChest)
 
         fun canOpen(world: World?, pos: BlockPos): Boolean {
-            val box = ShulkerEntity.calculateBoundingBox(Direction.UP, 0.0f, 0.25f).offset(pos).contract(1.0E-6)
+            val box = ShulkerEntity.calculateBoundingBox(1f, Direction.UP, 0.0f, 0.25f).offset(pos).contract(1.0E-6)
             return world?.isSpaceEmpty(box) ?: true
         }
         fun getRuneByPos(x: Double, z: Double, direction: Direction): Int? {

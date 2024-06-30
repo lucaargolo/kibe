@@ -1,11 +1,11 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
 import io.github.lucaargolo.kibe.item.ItemCompendium
 import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.utils.helper.FluidHelper
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -28,7 +28,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class EntangledTank: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F).luminance { state -> state[Properties.LEVEL_15] }) {
+class EntangledTank(settings: Settings): BlockWithEntity(settings) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_15)
@@ -56,7 +56,7 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.ENTANGLED_TANK, EntangledTankEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.ENTANGLED_TANK, EntangledTankEntity::tick)
     }
 
     override fun hasComparatorOutput(state: BlockState?) = true
@@ -115,7 +115,8 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         return createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0)
     }
 
-    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
+        val hand = Hand.MAIN_HAND
         val poss = player.raycast(4.5, 1.0F, false).pos
 
         return (world.getBlockEntity(pos) as? EntangledTankEntity)?.let { tank ->
@@ -178,8 +179,11 @@ class EntangledTank: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
 
     }
 
+    override fun getCodec(): MapCodec<EntangledTank> = CODEC
+
     companion object {
         const val DEFAULT_KEY = "entangledtank-global"
+        private val CODEC: MapCodec<EntangledTank> = createCodec(::EntangledTank)
     }
 
 

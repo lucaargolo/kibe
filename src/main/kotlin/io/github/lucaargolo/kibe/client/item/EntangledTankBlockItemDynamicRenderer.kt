@@ -19,6 +19,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.render.model.json.ModelTransformationMode
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.DyeColor
@@ -28,9 +29,10 @@ import net.minecraft.util.math.random.Random
 class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
     override fun render(stack: ItemStack, mode: ModelTransformationMode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
-        val tag = if(stack.hasNbt() && stack.nbt!!.contains("BlockEntityTag") ) {
-            stack.orCreateNbt.get("BlockEntityTag") as NbtCompound
-        }else{
+        val client = MinecraftClient.getInstance()
+        val world = client.world ?: return
+
+        val tag = stack.components.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: run{
             val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)
             (1..8).forEach {
@@ -39,6 +41,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
             newTag.putString("colorCode", "00000000")
             newTag
         }
+
 
         var colorCode = ""
         (1..8).forEach {
@@ -55,19 +58,19 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         }
         FluidHelper.writeTank(tag, fluidInv)
 
-        val dummyTank = EntangledTankEntity(MinecraftClient.getInstance().player?.blockPos ?: BlockPos.ORIGIN, BlockCompendium.ENTANGLED_TANK.defaultState)
-        dummyTank.readClientNbt(tag)
+        val dummyTank = EntangledTankEntity(client.player?.blockPos ?: BlockPos.ORIGIN, BlockCompendium.ENTANGLED_TANK.defaultState)
+        dummyTank.readClientNbt(tag, world.registryManager)
         dummyTank.lastRenderedFluid = dummyTank.getTank().amount / 81000f
 
         val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
-        dummyRenderer.render(dummyTank, MinecraftClient.getInstance().tickDelta, matrixStack, vertexConsumerProvider, lightmap, overlay)
+        dummyRenderer.render(dummyTank, client.renderTickCounter.getTickDelta(true), matrixStack, vertexConsumerProvider, lightmap, overlay)
 
-        val tankGlassIdentifier = ModelIdentifier(ModIdentifier("entangled_tank"), "facing=north,level=0")
-        val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
+        val tankGlassIdentifier = ModelIdentifier(ModIdentifier.of("entangled_tank"), "facing=north,level=0")
+        val tankGlassModel = client.bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumerProvider.getBuffer(RenderLayer.getCutout())
         tankGlassModel.getQuads(null, null, Random.create()).forEach { q ->
-            cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, lightmap, overlay)
+            cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, 1f, lightmap, overlay)
         }
 
     }

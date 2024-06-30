@@ -12,6 +12,7 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.Registries
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.util.Identifier
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
@@ -42,31 +43,31 @@ class BlockGeneratorBlockEntity: SyncableBlockEntity, SidedInventory {
     var renderProgress: Float = 0f
     var progress: Float = 0f
 
-    override fun writeNbt(tag: NbtCompound) {
-        Inventories.writeNbt(tag, inventory)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        Inventories.writeNbt(tag, inventory, registryLookup)
         tag.putString("generator", Registries.BLOCK.getId(generator).toString())
         tag.putString("block", Registries.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         tag.putFloat("progress", progress)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
-        Inventories.readNbt(tag, inventory)
-        generator = Registries.BLOCK.get(Identifier(tag.getString("generator"))) as BlockGenerator
-        block = Registries.BLOCK.get(Identifier(tag.getString("block")))
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
+        Inventories.readNbt(tag, inventory, registryLookup)
+        generator = Registries.BLOCK.get(Identifier.of(tag.getString("generator"))) as BlockGenerator
+        block = Registries.BLOCK.get(Identifier.of(tag.getString("block")))
         rate = tag.getFloat("rate")
         progress = tag.getFloat("progress")
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
         tag.putString("block", Registries.BLOCK.getId(block).toString())
         tag.putFloat("rate", rate)
         return tag
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
-        block = Registries.BLOCK.get(Identifier(tag.getString("block")))
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        block = Registries.BLOCK.get(Identifier.of(tag.getString("block")))
         rate = tag.getFloat("rate")
     }
 

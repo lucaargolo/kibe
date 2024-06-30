@@ -23,7 +23,7 @@ import net.minecraft.util.math.BlockPos
 
 class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<VacuumHopperScreenHandler>(screenHandler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/vacuum_hopper.png")
+    private val texture = Identifier.of("kibe:textures/gui/vacuum_hopper.png")
 
     private var startX = 0
     private var startY = 0

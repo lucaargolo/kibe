@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier
 
 class PlacerScreen(handler: PlacerScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<PlacerScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/placer.png")
+    private val texture = Identifier.of("kibe:textures/gui/placer.png")
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         this.renderBackground(context)

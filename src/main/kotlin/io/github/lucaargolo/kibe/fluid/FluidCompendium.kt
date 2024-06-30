@@ -48,9 +48,9 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
     }
 
     private fun setupFluidClient(still: ModdedFluid, flowing: ModdedFluid, name: String, color: Int) {
-        val stillSpriteId = ModIdentifier("block/" + name + "_still")
-        val flowingSpriteId = ModIdentifier("block/" + name + "_flow")
-        val listenerId = ModIdentifier(name + "_reload_listener")
+        val stillSpriteId = ModIdentifier.of("block/" + name + "_still")
+        val flowingSpriteId = ModIdentifier.of("block/" + name + "_flow")
+        val listenerId = ModIdentifier.of(name + "_reload_listener")
         val fluidSprites = arrayOf<Sprite?>(null, null)
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(object :

@@ -51,10 +51,10 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
-        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
+        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest"))
         val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
 
-        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
+        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest_runes"))
         val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light

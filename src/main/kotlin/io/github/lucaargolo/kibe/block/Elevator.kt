@@ -1,15 +1,17 @@
 package io.github.lucaargolo.kibe.block
 
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import com.mojang.serialization.MapCodec
 import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.block.MapColor
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class Elevator: Block(FabricBlockSettings.copyOf(Blocks.STONE).mapColor(MapColor.STONE_GRAY).requiresTool().strength(1.5F, 6.0F)) {
+class Elevator(settings: Settings): Block(settings) {
+
+    override fun getCodec(): MapCodec<Elevator> = CODEC
 
     companion object {
+        private val CODEC = createCodec(::Elevator)
+
         fun isElevatorValid(world: World, pos: BlockPos): Boolean {
             return (world.getBlockState(pos.up()).getCollisionShape(world, pos.up()).isEmpty && world.getBlockState(pos.up().up()).getCollisionShape(world, pos.up().up()).isEmpty)
         }

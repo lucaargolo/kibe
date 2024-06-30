@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier
 
 class DrawbridgeScreen(handler: DrawbridgeScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<DrawbridgeScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/drawbridge.png")
+    private val texture = Identifier.of("kibe:textures/gui/drawbridge.png")
 
     override fun init() {
         super.init()

@@ -9,6 +9,7 @@ import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
@@ -18,13 +19,13 @@ class WitherBuilderBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(Bl
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(7, ItemStack.EMPTY)
 
-    override fun writeNbt(tag: NbtCompound) {
-        Inventories.writeNbt(tag, inventory)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        Inventories.writeNbt(tag, inventory, registryLookup)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
-        Inventories.readNbt(tag, inventory)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
+        Inventories.readNbt(tag, inventory, registryLookup)
     }
 
     override fun size() = inventory.size

@@ -10,9 +10,9 @@ import net.minecraft.util.math.ChunkPos
 
 object PacketCompendium {
 
-    val CHUNK_PLAYER_CHECK = ModIdentifier("chunk_player_check")
-    val CHUNK_MAP_CLICK = ModIdentifier("chunk_map_click")
-    val REQUEST_DIRTY_TANK_STATES = ModIdentifier("request_dirty_tank_states")
+    val CHUNK_PLAYER_CHECK = ModIdentifier.of("chunk_player_check")
+    val CHUNK_MAP_CLICK = ModIdentifier.of("chunk_map_click")
+    val REQUEST_DIRTY_TANK_STATES = ModIdentifier.of("request_dirty_tank_states")
 
     fun initialize() {
         ServerPlayNetworking.registerGlobalReceiver(CHUNK_PLAYER_CHECK) { server, player, _, attachedData, _ ->
@@ -65,7 +65,7 @@ object PacketCompendium {
         }
     }
 
-    val SYNCHRONIZE_DIRTY_TANK_STATES = ModIdentifier("synchronize_dirty_tank_states")
+    val SYNCHRONIZE_DIRTY_TANK_STATES = ModIdentifier.of("synchronize_dirty_tank_states")
 
     fun initializeClient() {
         ClientPlayNetworking.registerGlobalReceiver(SYNCHRONIZE_DIRTY_TANK_STATES) { client, _, buf, _ ->

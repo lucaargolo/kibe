@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11
 
 class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<BlockGeneratorScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/block_generator.png")
+    private val texture = Identifier.of("kibe:textures/gui/block_generator.png")
 
     private val atlas = PlayerScreenHandler.BLOCK_ATLAS_TEXTURE
     private var atlasWidth = 0f

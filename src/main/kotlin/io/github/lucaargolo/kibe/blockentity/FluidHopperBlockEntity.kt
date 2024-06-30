@@ -16,6 +16,7 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.HopperBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -46,19 +47,19 @@ class FluidHopperBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnt
             sync()
     }
 
-    override fun writeNbt(tag: NbtCompound) {
-        super.writeNbt(tag)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         FluidHelper.writeTank(tag, tank)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         FluidHelper.readTank(tag, tank)
     }
 
-    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = tag.also { writeNbt(it, registryLookup) }
 
-    override fun readClientNbt(tag: NbtCompound) = readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = readNbt(tag, registryLookup)
 
     private fun tick(world: ServerWorld, pos: BlockPos, state: BlockState) {
         if (!state[HopperBlock.ENABLED]) return

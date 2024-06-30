@@ -99,11 +99,7 @@ object KibeMod : ModInitializer {
 
     fun initChunkLoaderData() {
         ServerLifecycleEvents.SERVER_STARTED.register { server ->
-            server.overworld.persistentStateManager.getOrCreate(
-                { ChunkLoaderState.createFromTag(it, server) },
-                { ChunkLoaderState(server) },
-                "kibe_chunk_loaders"
-            )
+            ChunkLoaderState.getPersistentState(server)
         }
     }
 

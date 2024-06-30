@@ -5,9 +5,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.RecipeSerializer
-import net.minecraft.util.Identifier
-import net.minecraft.registry.Registry
 import net.minecraft.registry.Registries
+import net.minecraft.util.Identifier
 
 class VacuumHopperRecipeSerializer : RecipeSerializer<VacuumHopperRecipe> {
 
@@ -23,7 +22,7 @@ class VacuumHopperRecipeSerializer : RecipeSerializer<VacuumHopperRecipe> {
         val xpInput = json.getAsJsonPrimitive("xp").asLong
         val input = Ingredient.fromJson(json.get("input"))
         val output: ItemStack = json.getAsJsonPrimitive("output").asString.let { itemId ->
-            val item = Registries.ITEM.getOrEmpty(Identifier(itemId))
+            val item = Registries.ITEM.getOrEmpty(Identifier.of(itemId))
             if(item.isPresent) {
                 ItemStack(item.get())
             } else null

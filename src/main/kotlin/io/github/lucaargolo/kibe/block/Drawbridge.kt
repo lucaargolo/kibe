@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.DrawbridgeBlockEntity
 import io.github.lucaargolo.kibe.menu.DrawbridgeScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -13,23 +13,25 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.util.*
+import net.minecraft.util.ActionResult
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
+import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 
-class Drawbridge: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
+class Drawbridge(settings: Settings): BlockWithEntity(settings) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return DrawbridgeBlockEntity(blockPos, blockState)
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, state: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.DRAWBRIDGE, DrawbridgeBlockEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.DRAWBRIDGE, DrawbridgeBlockEntity::tick)
     }
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
@@ -77,11 +79,17 @@ class Drawbridge: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).
         return defaultState.with(Properties.FACING, ctx.playerLookDirection.opposite)
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::DrawbridgeScreenHandler))
         return ActionResult.SUCCESS
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCodec(): MapCodec<Drawbridge> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<Drawbridge> = createCodec(::Drawbridge)
+    }
 
 }

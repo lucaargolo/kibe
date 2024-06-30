@@ -1,9 +1,12 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.DehumidifierBlockEntity
 import io.github.lucaargolo.kibe.particle.ParticleCompendium
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.block.*
+import net.minecraft.block.Block
+import net.minecraft.block.BlockRenderType
+import net.minecraft.block.BlockState
+import net.minecraft.block.BlockWithEntity
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
@@ -13,7 +16,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
-class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
+class Dehumidifier(settings: Settings): BlockWithEntity(settings) {
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState) = DehumidifierBlockEntity(pos, state)
 
@@ -67,5 +70,11 @@ class Dehumidifier: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.COBBLESTON
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCodec(): MapCodec<Dehumidifier> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<Dehumidifier> = createCodec(::Dehumidifier)
+    }
 
 }

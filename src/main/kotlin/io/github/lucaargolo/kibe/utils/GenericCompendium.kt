@@ -7,7 +7,7 @@ abstract class GenericCompendium<T: Any> {
     protected val map = mutableMapOf<Identifier, T>()
 
     protected open fun <E: T> register(string: String, entry: E): E {
-        return register(ModIdentifier(string), entry)
+        return register(ModIdentifier.of(string), entry)
     }
 
     protected open fun <E: T> register(identifier: Identifier, entry: E): E {

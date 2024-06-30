@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
@@ -88,8 +89,8 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         return StorageUtil.calculateComparatorOutput(getPersistentState().getOrCreateInventory(colorCode))
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
@@ -100,7 +101,7 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
@@ -110,8 +111,8 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         FluidHelper.readTank(tag, getTank())
     }
 
-    override fun writeNbt(tag: NbtCompound) {
-        super.writeNbt(tag)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
         }
@@ -122,7 +123,7 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         FluidHelper.writeTank(tag, getTank())
     }
 
-    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = tag.also { writeNbt(it, registryLookup) }
 
     companion object {
         fun getFluidStorage(be: EntangledTankEntity, dir: Direction?): Storage<FluidVariant> {

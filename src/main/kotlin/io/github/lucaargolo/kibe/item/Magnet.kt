@@ -34,7 +34,7 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
 
     companion object {
 
-        val MAGNET_INHIBITOR_TAG = TagKey.of(RegistryKeys.BLOCK, ModIdentifier("magnet_inhibitor"))
+        val MAGNET_INHIBITOR_TAG = TagKey.of(RegistryKeys.BLOCK, ModIdentifier.of("magnet_inhibitor"))
         fun create(settings: Settings): Magnet = if (KibeMod.TRINKET) TrinketMagnet(settings) else Magnet(settings)
     }
 }

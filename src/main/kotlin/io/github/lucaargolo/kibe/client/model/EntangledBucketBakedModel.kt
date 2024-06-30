@@ -44,13 +44,13 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
     override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {}
-    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?, modelId: Identifier?) = this
+    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?) = this
 
     override fun isVanillaAdapter(): Boolean = false
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        val background = ModelIdentifier(ModIdentifier("entangled_bucket_background"), "inventory")
+        val background = ModelIdentifier(ModIdentifier.of("entangled_bucket_background"), "inventory")
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         context.fallbackConsumer().accept(backgroundModel)
 
@@ -82,7 +82,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         if(fluid != Fluids.EMPTY) {
             val fluidRenderHandler: FluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid)
-            val fluidIdentifier = ModelIdentifier(ModIdentifier("entangled_bucket_fluid"), "inventory")
+            val fluidIdentifier = ModelIdentifier(ModIdentifier.of("entangled_bucket_fluid"), "inventory")
             val fluidModel = MinecraftClient.getInstance().bakedModelManager.getModel(fluidIdentifier)
 
             val fluidColor: Int = fluidRenderHandler.getFluidColor(MinecraftClient.getInstance().world, MinecraftClient.getInstance().player!!.blockPos, fluid.defaultState)
@@ -104,13 +104,13 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             context.popTransform()
         }
 
-        val foreground = ModelIdentifier(ModIdentifier("entangled_bucket_foreground"), "inventory")
+        val foreground = ModelIdentifier(ModIdentifier.of("entangled_bucket_foreground"), "inventory")
         val foregroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(foreground)
         context.fallbackConsumer().accept(foregroundModel)
 
         val core = if(stack.hasNbt() && stack.nbt!!.contains("key") && stack.nbt!!.getString("key") != EntangledTank.DEFAULT_KEY)
-            ModelIdentifier(ModIdentifier("entangled_bucket_diamond_core"), "inventory")
-        else ModelIdentifier(ModIdentifier("entangled_bucket_gold_core"), "inventory")
+            ModelIdentifier(ModIdentifier.of("entangled_bucket_diamond_core"), "inventory")
+        else ModelIdentifier(ModIdentifier.of("entangled_bucket_gold_core"), "inventory")
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
         context.fallbackConsumer().accept(coreModel)
 
@@ -133,7 +133,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             true
         }
         val emitter = context.emitter
-        val ring = ModelIdentifier(ModIdentifier("entangled_ring"), "inventory")
+        val ring = ModelIdentifier(ModIdentifier.of("entangled_ring"), "inventory")
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q.vertexData, 0, true)
@@ -160,7 +160,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun hasDepth(): Boolean = false
 
-    override fun getTransformation(): ModelTransformation? = loadTransformFromJson(Identifier("minecraft:models/item/generated"))
+    override fun getTransformation(): ModelTransformation? = loadTransformFromJson(Identifier.of("minecraft:models/item/generated"))
 
     override fun useAmbientOcclusion(): Boolean = true
 

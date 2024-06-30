@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.collection.DefaultedList
@@ -50,24 +51,24 @@ class BigTorchBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         updateValues()
     }
 
-    override fun writeNbt(tag: NbtCompound) {
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         //tag.putInt("suppressedSpawns", suppressedSpawns)
-        Inventories.writeNbt(tag, inventory)
+        Inventories.writeNbt(tag, inventory, registryLookup)
     }
 
-    override fun readNbt(tag: NbtCompound?) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         //suppressedSpawns = tag.getInt("suppressedSpawns")
-        Inventories.readNbt(tag, inventory)
+        Inventories.readNbt(tag, inventory, registryLookup)
         updateValues()
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
-        return tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
+        return tag.also { writeNbt(it, registryLookup) }
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
-        readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        readNbt(tag, registryLookup)
     }
 
     override fun size() = inventory.size

@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier
 
 class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<EntangledChestScreenHandler>(screenHandler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
+    private val texture = Identifier.of("kibe:textures/gui/entangled_chest.png")
 
     private var startX = 0
     private var startY = 0

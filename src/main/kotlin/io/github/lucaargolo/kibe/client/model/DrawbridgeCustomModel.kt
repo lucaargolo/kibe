@@ -27,14 +27,14 @@ import java.util.function.Supplier
 class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private val spriteIdList = mutableListOf(
-        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier("block/drawbridge_front")),
-        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier("block/drawbridge_side")),
-        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier("block/drawbridge_back"))
+        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/drawbridge_front")),
+        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/drawbridge_side")),
+        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/drawbridge_back"))
     )
     val spriteList = mutableListOf<Sprite>()
 
     private val modelIdList = mutableListOf(
-        ModIdentifier("block/drawbridge")
+        ModIdentifier.of("block/drawbridge")
     )
     val modelList = mutableListOf<BakedModel>()
 
@@ -44,15 +44,15 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     lateinit var modelTransformation: ModelTransformation
 
-    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
+    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings): BakedModel {
         val model = baker.getOrLoadModel(modelIdList[0])
 
-        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y0, modelId)!!) // NORTH
-        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y180, modelId)!!) // SOUTH
-        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y270, modelId)!!) // WEST
-        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y90, modelId)!!) // EAST
-        modelList.add(model.bake(baker, textureGetter, ModelRotation.X270_Y0, modelId)!!) // UP
-        modelList.add(model.bake(baker, textureGetter, ModelRotation.X90_Y0, modelId)!!) // DOWN
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y0)!!) // NORTH
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y180)!!) // SOUTH
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y270)!!) // WEST
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X0_Y90)!!) // EAST
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X270_Y0)!!) // UP
+        modelList.add(model.bake(baker, textureGetter, ModelRotation.X90_Y0)!!) // DOWN
 
         modelTransformation = modelList[0].transformation
 
@@ -90,24 +90,24 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         when(state[Properties.FACING]) {
-            Direction.NORTH -> context.bakedModelConsumer().accept(modelList[0])
-            Direction.SOUTH -> context.bakedModelConsumer().accept(modelList[1])
-            Direction.WEST -> context.bakedModelConsumer().accept(modelList[2])
-            Direction.EAST -> context.bakedModelConsumer().accept(modelList[3])
-            Direction.UP -> context.bakedModelConsumer().accept(modelList[4])
-            Direction.DOWN -> context.bakedModelConsumer().accept(modelList[5])
+            Direction.NORTH -> modelList[0].emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.SOUTH -> modelList[1].emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.WEST -> modelList[2].emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.EAST -> modelList[3].emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.UP -> modelList[4].emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.DOWN -> modelList[5].emitBlockQuads(world, state, pos, randomSupplier, context)
             else -> {}
         }
     }
 
     override fun emitItemQuads(stack: ItemStack, randomSupplier: Supplier<Random>, context: RenderContext) {
-        context.bakedModelConsumer().accept(modelList[4])
+        modelList[4].emitItemQuads(stack, randomSupplier, context)
     }
 
     @Suppress("DEPRECATION")
     private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {
         val emitter = context.emitter
-        Direction.values().forEach { dir ->
+        Direction.entries.forEach { dir ->
             getQuads(state, dir, randSupplier.get()).forEach { quad ->
                 if (shouldEmit(quad)) {
                     emitter.fromVanilla(quad.vertexData, 0, false)

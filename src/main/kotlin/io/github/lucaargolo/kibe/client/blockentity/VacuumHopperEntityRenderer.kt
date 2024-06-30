@@ -38,10 +38,10 @@ class VacuumHopperEntityRenderer(private val arg: BlockEntityRendererFactory.Con
     }
 
     private fun renderVertices(matrix4f: Matrix4f, vertexConsumer: VertexConsumer, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float, red: Float, green: Float, blue: Float) {
-        vertexConsumer.vertex(matrix4f, f, h, j).color(red, green, blue, 1.0f).next()
-        vertexConsumer.vertex(matrix4f, g, h, k).color(red, green, blue, 1.0f).next()
-        vertexConsumer.vertex(matrix4f, g, i, l).color(red, green, blue, 1.0f).next()
-        vertexConsumer.vertex(matrix4f, f, i, m).color(red, green, blue, 1.0f).next()
+        vertexConsumer.vertex(matrix4f, f, h, j).color(red, green, blue, 1.0f)
+        vertexConsumer.vertex(matrix4f, g, h, k).color(red, green, blue, 1.0f)
+        vertexConsumer.vertex(matrix4f, g, i, l).color(red, green, blue, 1.0f)
+        vertexConsumer.vertex(matrix4f, f, i, m).color(red, green, blue, 1.0f)
     }
 
 }

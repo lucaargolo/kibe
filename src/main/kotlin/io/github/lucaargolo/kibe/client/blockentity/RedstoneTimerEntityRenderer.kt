@@ -25,7 +25,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
         init {
             (0..15).forEach { level ->
-                selectorModelLayers.add(EntityModelLayer(ModIdentifier("redstone_timer"), "selector${level}"))
+                selectorModelLayers.add(EntityModelLayer(ModIdentifier.of("redstone_timer"), "selector${level}"))
             }
         }
 
@@ -57,7 +57,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
     override fun render(blockEntity: RedstoneTimerEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
-        val timerTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier("block/redstone_timer_"+blockEntity.current/4))
+        val timerTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/redstone_timer_"+blockEntity.current/4))
         val timerConsumer = timerTexture.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntitySolid(texture) })
 
         Direction.values().forEach { direction ->
@@ -107,33 +107,31 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
             matrices.translate(-0.5, -0.5, -0.5)
             val entry = matrices.peek()
-            val model = entry.positionMatrix
-            val normal = entry.normalMatrix
             val sprite = timerTexture.sprite
             val p = (sprite.maxU - sprite.minU)/16f
 
-            timerConsumer.vertex(model, 0.0625f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.maxV-p).overlay(overlay).light(light).normal(normal, vec.x, vec.y, vec.z).next()
-            timerConsumer.vertex(model, 0.9375f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.maxV-p).overlay(overlay).light(light).normal(normal, vec.x, vec.y, vec.z).next()
-            timerConsumer.vertex(model, 0.9375f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.minV+p).overlay(overlay).light(light).normal(normal, vec.x, vec.y, vec.z).next()
-            timerConsumer.vertex(model, 0.0625f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.minV+p).overlay(overlay).light(light).normal(normal, vec.x, vec.y, vec.z).next()
+            timerConsumer.vertex(entry, 0.0625f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.maxV-p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.9375f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.maxV-p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.9375f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.minV+p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.0625f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.minV+p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
 
             matrices.pop()
         }
 
-        val tankGlassIdentifier = ModelIdentifier(ModIdentifier("redstone_timer_structure"), "")
+        val tankGlassIdentifier = ModelIdentifier(ModIdentifier.of("redstone_timer_structure"), "")
         val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumers.getBuffer(RenderLayer.getCutout())
         tankGlassModel.getQuads(null, null, Random.create()).forEach { q ->
-            cutoutBuffer.quad(matrices.peek(), q, 1f, 1f, 1f, light, overlay)
+            cutoutBuffer.quad(matrices.peek(), q, 1f, 1f, 1f, 1f, light, overlay)
         }
 
     }
 
 
     private fun renderSelector(selector: ModelPart, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-        val ironTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("block/iron_block"))
-        val ironConsumer = ironTexture.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntitySolid(texture) })
+        val ironTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("block/iron_block"))
+        val ironConsumer = ironTexture.getVertexConsumer(vertexConsumers, RenderLayer::getEntitySolid)
 
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180f))
         matrices.translate(0.0, -1.0, -1.0)

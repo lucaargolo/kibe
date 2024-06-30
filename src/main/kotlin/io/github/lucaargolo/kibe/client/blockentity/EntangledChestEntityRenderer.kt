@@ -124,10 +124,10 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
-        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
+        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest"))
         val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, RenderLayer::getEntityCutout)
 
-        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
+        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest_runes"))
         val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers, RenderLayer::getEntityCutout)
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
@@ -215,10 +215,10 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
     }
 
     private fun renderVertices(matrix4f: Matrix4f, vertexConsumer: VertexConsumer, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float, red: Float, green: Float, blue: Float) {
-        vertexConsumer.vertex(matrix4f, f, h, j).color(red, green, blue, 1.0f).next()
-        vertexConsumer.vertex(matrix4f, g, h, k).color(red, green, blue, 1.0f).next()
-        vertexConsumer.vertex(matrix4f, g, i, l).color(red, green, blue, 1.0f).next()
-        vertexConsumer.vertex(matrix4f, f, i, m).color(red, green, blue, 1.0f).next()
+        vertexConsumer.vertex(matrix4f, f, h, j).color(red, green, blue, 1.0f)
+        vertexConsumer.vertex(matrix4f, g, h, k).color(red, green, blue, 1.0f)
+        vertexConsumer.vertex(matrix4f, g, i, l).color(red, green, blue, 1.0f)
+        vertexConsumer.vertex(matrix4f, f, i, m).color(red, green, blue, 1.0f)
     }
 
 

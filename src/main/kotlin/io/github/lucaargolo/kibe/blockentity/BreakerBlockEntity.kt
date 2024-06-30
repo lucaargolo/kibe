@@ -7,6 +7,7 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 
@@ -14,13 +15,13 @@ class BreakerBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(BlockEnt
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(9, ItemStack.EMPTY)
 
-    override fun writeNbt(nbt: NbtCompound) {
-        Inventories.writeNbt(nbt, inventory)
+    override fun writeNbt(nbt: NbtCompound, registryLookup: WrapperLookup) {
+        Inventories.writeNbt(nbt, inventory, registryLookup)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
-        Inventories.readNbt(tag, inventory)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
+        Inventories.readNbt(tag, inventory, registryLookup)
     }
 
     override fun size() = inventory.size

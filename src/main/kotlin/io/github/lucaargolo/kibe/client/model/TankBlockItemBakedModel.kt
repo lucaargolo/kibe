@@ -46,7 +46,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val client = MinecraftClient.getInstance()
-        val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(ModIdentifier("tank"), "level=0"))
+        val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(ModIdentifier.of("tank"), "level=0"))
 
         (tankBlockModel as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 
@@ -112,7 +112,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun hasDepth(): Boolean = false
 
     private val transform: ModelTransformation? by lazy {
-        loadTransformFromJson(Identifier("minecraft:models/block/block"))
+        loadTransformFromJson(Identifier.of("minecraft:models/block/block"))
     }
 
     override fun getTransformation(): ModelTransformation? = transform

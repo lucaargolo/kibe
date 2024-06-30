@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registries
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.state.property.Properties
@@ -42,7 +43,7 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
         EXTENDED
     }
 
-    override fun writeNbt(tag: NbtCompound) {
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registries.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
@@ -51,30 +52,30 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
             val itemStack = inventory[i]
             val nbtCompound = NbtCompound()
             nbtCompound.putByte("Slot", i.toByte())
-            itemStack.writeNbt(nbtCompound)
+            itemStack.encode(registryLookup, nbtCompound)
             nbtList.add(nbtCompound)
         }
         tag.put("Items", nbtList)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         this.state = try {
             State.valueOf(tag.getString("state"))
         }catch (e: IllegalArgumentException) {
             State.CONTRACTED
         }
-        extendedBlock = Registries.BLOCK.get(Identifier(tag.getString("extendedBlock")))
+        extendedBlock = Registries.BLOCK.get(Identifier.of(tag.getString("extendedBlock")))
         extendedBlocks = tag.getInt("extendedBlocks")
-        Inventories.readNbt(tag, inventory)
+        Inventories.readNbt(tag, inventory, registryLookup)
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
-        return tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
+        return tag.also { writeNbt(it, registryLookup) }
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
-        readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        readNbt(tag, registryLookup)
         MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }
 

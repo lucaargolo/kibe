@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.menu.BigTorchScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -14,11 +14,9 @@ import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.screen.ScreenHandler
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -29,7 +27,7 @@ import net.minecraft.world.World
 import kotlin.math.cos
 import kotlin.math.sin
 
-class BigTorch: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.TORCH).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)) {
+class BigTorch(settings: Settings): BlockWithEntity(settings) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_8)
@@ -40,7 +38,7 @@ class BigTorch: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.TORCH).strengt
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, state: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.BIG_TORCH, BigTorchBlockEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.BIG_TORCH, BigTorchBlockEntity::tick)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
@@ -58,7 +56,7 @@ class BigTorch: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.TORCH).strengt
         }
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::BigTorchScreenHandler))
         return ActionResult.SUCCESS
     }
@@ -86,7 +84,10 @@ class BigTorch: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.TORCH).strengt
 
     override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
 
+    override fun getCodec(): MapCodec<BigTorch> = CODEC
+
     companion object {
+        private val CODEC: MapCodec<BigTorch> = createCodec(::BigTorch)
         private val SHAPE = createCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0)
     }
 

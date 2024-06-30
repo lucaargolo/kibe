@@ -33,7 +33,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
     override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {}
-    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?, modelId: Identifier?) = this
+    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?) = this
 
     override fun isVanillaAdapter(): Boolean = false
 
@@ -48,7 +48,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             true
         }
 
-        val background = ModelIdentifier(ModIdentifier("entangled_bag_background"), "inventory")
+        val background = ModelIdentifier(ModIdentifier.of("entangled_bag_background"), "inventory")
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)
@@ -57,9 +57,9 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         val core =
             if(stack.hasNbt() && stack.nbt!!.contains("key") && stack.nbt!!.getString("key") != EntangledChest.DEFAULT_KEY)
-                ModelIdentifier(ModIdentifier("entangled_bag_diamond_core"), "inventory")
+                ModelIdentifier(ModIdentifier.of("entangled_bag_diamond_core"), "inventory")
             else
-                ModelIdentifier(ModIdentifier("entangled_bag_gold_core"), "inventory")
+                ModelIdentifier(ModIdentifier.of("entangled_bag_gold_core"), "inventory")
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
 
         coreModel.getQuads(null, null, randSupplier.get()).forEach { q ->
@@ -87,7 +87,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             quad.spriteColor(0, color, color, color, color)
             true
         }
-        val ring = ModelIdentifier(ModIdentifier("entangled_ring"), "inventory")
+        val ring = ModelIdentifier(ModIdentifier.of("entangled_ring"), "inventory")
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)
@@ -114,7 +114,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun hasDepth(): Boolean = false
 
-    override fun getTransformation(): ModelTransformation? = loadTransformFromJson(Identifier("minecraft:models/item/generated"))
+    override fun getTransformation(): ModelTransformation? = loadTransformFromJson(Identifier.of("minecraft:models/item/generated"))
 
     override fun useAmbientOcclusion(): Boolean = true
 

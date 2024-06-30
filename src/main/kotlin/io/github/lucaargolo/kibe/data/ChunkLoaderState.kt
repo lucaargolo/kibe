@@ -5,6 +5,7 @@ import io.github.lucaargolo.kibe.blockentity.ChunkLoaderBlockEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryKeys
+import net.minecraft.registry.RegistryWrapper
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
@@ -113,7 +114,7 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
         }
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound, registryLookup: RegistryWrapper.WrapperLookup?): NbtCompound {
         loadedChunkMap.keys.forEach { dim ->
             val longArray = LongArray(loadedChunkMap[dim]!!.size)
             loadedChunkMap[dim]!!.forEachIndexed { idx, pos ->
@@ -125,39 +126,52 @@ class ChunkLoaderState(val server: MinecraftServer): PersistentState(){
     }
 
     companion object {
-        fun createFromTag(tag: NbtCompound, server: MinecraftServer): ChunkLoaderState {
-            val state = ChunkLoaderState(server)
-            if(state.loadedChunkMap.keys.size > 0) {
-                state.loadedChunkMap.forEach { (key, pos) ->
-                    val world = server.getWorld(key)
-                    world?.let {
-                        pos.forEach {
-                            val blockEntity = world.getBlockEntity(it) as? ChunkLoaderBlockEntity
-                            blockEntity?.let { state.setChunksForced(world, blockEntity, false) }
-                        }
-                    }
 
-                }
-            }
-            state.loadedChunkMap = mutableMapOf()
-            tag.keys.forEach { key ->
-                val registryKey = RegistryKey.of(RegistryKeys.WORLD, Identifier(key))
-                val world = server.getWorld(registryKey)
-                world?.let { _ ->
-                    state.loadedChunkMap[registryKey] = mutableListOf()
-                    val NbtList = tag.getLongArray(key)
-                    NbtList.forEach {
-                        val blockPos = BlockPos.fromLong(it)
-                        val blockState = world.getBlockState(blockPos)
-                        if(blockState.block is ChunkLoader) {
-                            state.loadedChunkMap[registryKey]!!.add(blockPos)
-                            val blockEntity = world.getBlockEntity(blockPos) as? ChunkLoaderBlockEntity
-                            blockEntity?.let { state.setChunksForced(world, blockEntity, true) }
+        const val NAME = "kibe_chunk_loaders"
+
+        fun getPersistentState(server: MinecraftServer): ChunkLoaderState {
+            return server.overworld.persistentStateManager.getOrCreate(getPersistentStateType(server), NAME)
+        }
+
+        fun getPersistentStateType(server: MinecraftServer): Type<ChunkLoaderState> {
+
+            return Type(
+                { ChunkLoaderState(server) },
+                { tag, _ ->
+                    val state = ChunkLoaderState(server)
+                    if(state.loadedChunkMap.keys.size > 0) {
+                        state.loadedChunkMap.forEach { (key, pos) ->
+                            val world = server.getWorld(key)
+                            world?.let {
+                                pos.forEach {
+                                    val blockEntity = world.getBlockEntity(it) as? ChunkLoaderBlockEntity
+                                    blockEntity?.let { state.setChunksForced(world, blockEntity, false) }
+                                }
+                            }
                         }
                     }
-                }
-            }
-            return state
+                    state.loadedChunkMap = mutableMapOf()
+                    tag.keys.forEach { key ->
+                        val registryKey = RegistryKey.of(RegistryKeys.WORLD, Identifier.of(key))
+                        val world = server.getWorld(registryKey)
+                        world?.let { _ ->
+                            state.loadedChunkMap[registryKey] = mutableListOf()
+                            val NbtList = tag.getLongArray(key)
+                            NbtList.forEach {
+                                val blockPos = BlockPos.fromLong(it)
+                                val blockState = world.getBlockState(blockPos)
+                                if(blockState.block is ChunkLoader) {
+                                    state.loadedChunkMap[registryKey]!!.add(blockPos)
+                                    val blockEntity = world.getBlockEntity(blockPos) as? ChunkLoaderBlockEntity
+                                    blockEntity?.let { state.setChunksForced(world, blockEntity, true) }
+                                }
+                            }
+                        }
+                    }
+                    return@Type state
+                },
+                null
+            )
         }
     }
 

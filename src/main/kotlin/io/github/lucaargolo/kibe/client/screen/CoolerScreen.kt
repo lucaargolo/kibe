@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier
 
 class CoolerScreen(handler: CoolerScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<CoolerScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/cooler.png")
+    private val texture = Identifier.of("kibe:textures/gui/cooler.png")
 
     override fun init() {
         super.init()

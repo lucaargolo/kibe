@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier
 
 class TrashCanScreen(screenHandler: TrashCanScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<TrashCanScreenHandler>(screenHandler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/trash_can.png")
+    private val texture = Identifier.of("kibe:textures/gui/trash_can.png")
 
     private var startX = 0
     private var startY = 0

@@ -143,7 +143,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     }
 
     override fun initializeClient() {
-        ModelPredicateProviderRegistry.register(MEASURING_TAPE, ModIdentifier("extended"), MeasuringTape.PredicateProvider())
+        ModelPredicateProviderRegistry.register(MEASURING_TAPE, ModIdentifier.of("extended"), MeasuringTape.PredicateProvider())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_CHEST, EntangledChestBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_TANK, EntangledTankBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(WHITE_GLIDER, GliderDynamicRenderer())
