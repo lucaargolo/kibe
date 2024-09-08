@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(WorldChunk.class)
 public class WorldChunkMixin {
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;readNbt(Lnet/minecraft/nbt/NbtCompound;)V"), method = "method_31716", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;handleUpdateTag(Lnet/minecraft/nbt/NbtCompound;)V"), method = "method_31716", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     public void onBlockEntityUpdate(BlockPos pos, BlockEntityType<?> type, NbtCompound nbtCompound, CallbackInfo info, BlockEntity blockEntity) {
         if(blockEntity instanceof SyncableBlockEntity) {
             ((SyncableBlockEntity) blockEntity).readClientNbt(nbtCompound);

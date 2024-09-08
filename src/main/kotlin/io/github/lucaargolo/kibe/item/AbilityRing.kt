@@ -1,8 +1,5 @@
 package io.github.lucaargolo.kibe.item
 
-import io.github.ladysnake.pal.PlayerAbility
-import io.github.lucaargolo.kibe.KibeMod
-import io.github.lucaargolo.kibe.compat.TrinketAbilityRing
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
@@ -11,7 +8,7 @@ import net.minecraft.text.Text
 import net.minecraft.world.World
 
 @Suppress("LeakingThis")
-open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanItem(settings) {
+open class AbilityRing(settings: Settings/*, val ability: PlayerAbility*/): BooleanItem(settings) {
 
     init {
         RINGS.add(this)
@@ -58,7 +55,7 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
 
         val RINGS = mutableListOf<AbilityRing>()
 
-        fun create(settings: Settings, ability: PlayerAbility): AbilityRing =
-            if (KibeMod.TRINKET) TrinketAbilityRing(settings, ability) else AbilityRing(settings, ability)
+        fun create(settings: Settings/*, ability: PlayerAbility*/): AbilityRing =
+            /*if (KibeMod.TRINKET) TrinketAbilityRing(settings, ability) else */AbilityRing(settings/*, ability*/)
     }
 }

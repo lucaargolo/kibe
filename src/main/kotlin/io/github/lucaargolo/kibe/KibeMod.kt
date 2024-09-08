@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
+import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.data.ChunkLoaderState
 import io.github.lucaargolo.kibe.effect.EffectCompendium
 import io.github.lucaargolo.kibe.entity.EntityCompendium
@@ -26,21 +27,26 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.forge.runForDist
 import java.io.File
 import java.io.PrintWriter
 import java.nio.file.Files
 import java.util.*
 
-object KibeMod : ModInitializer {
+@Mod(KibeMod.MOD_ID)
+object KibeMod {
 
     const val MOD_ID = "kibe"
     const val MOD_NAME = "Kibe"
     val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 
     val CLIENT: Boolean by lazy { FabricLoader.getInstance().environmentType == EnvType.CLIENT }
-    val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
+    //val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
 
     val LOGGER: Logger = LogManager.getLogger("Kibe")
     val CONFIG: ModConfig by lazy {
@@ -75,7 +81,7 @@ object KibeMod : ModInitializer {
 
     fun Boolean.toInt() = if (this) 1 else 0
 
-    override fun onInitialize() {
+    init {
         ModConfig.initialize()
         CreativeTab.initialize()
         RecipeSerializerCompendium.initialize()
@@ -88,12 +94,20 @@ object KibeMod : ModInitializer {
         EntityCompendium.initialize()
         EffectCompendium.initialize()
         ParticleCompendium.initialize()
-        TransferHelper.initialize()
-        TooltipHelper.initialize()
         LootHelper.initialize()
         PacketCompendium.initialize()
         EntangledTankSync.initialize()
         initChunkLoaderData()
+        MOD_BUS.addListener(::onCommonSetup)
+    }
+
+    private fun onCommonSetup(event: FMLCommonSetupEvent) {
+        TransferHelper.initialize()
+        TooltipHelper.initialize()
+        runForDist(
+            clientTarget = { KibeModClient },
+            serverTarget = { }
+        )
     }
 
 

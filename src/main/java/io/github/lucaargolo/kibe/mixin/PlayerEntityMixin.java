@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.ladysnake.pal.PlayerAbility;
-import io.github.ladysnake.pal.impl.PlayerAbilityView;
+//import io.github.ladysnake.pal.PlayerAbility;
+//import io.github.ladysnake.pal.impl.PlayerAbilityView;
 import io.github.lucaargolo.kibe.KibeMod;
 import io.github.lucaargolo.kibe.item.AbilityRing;
 import io.github.lucaargolo.kibe.item.Glider;
@@ -174,51 +174,51 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             }
         }
         //Ring logic
-        if(!getWorld().isClient && this instanceof PlayerAbilityView) {
-            for(PlayerAbility pa : AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().keySet()) {
-                if(pa.isEnabledFor(player)) {
-                    StatusEffect se = AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().get(pa);
-                    StatusEffectInstance sei = new StatusEffectInstance(se, 100, 1, false, false, true);
-                    player.addStatusEffect(sei);
-                }
-            }
-
-            LinkedHashMap<AbilityRing, List<ItemStack>> ringMap = new LinkedHashMap<>();
-            for (Pair<ItemStack, Long> pair : kibe_activeRingsList) {
-                ItemStack ringStack = pair.getFirst();
-                Item ringItem = ringStack.getItem();
-                if (ringItem instanceof AbilityRing && ringStack.getOrCreateNbt().getBoolean("enabled")) {
-                    ringMap.computeIfAbsent((AbilityRing) ringItem, k -> new ArrayList<>());
-                    ringMap.get(ringItem).add(ringStack);
-                }
-            }
-            int ringQnt = ringMap.values().stream().mapToInt(List::size).sum();
-            AbilityRing.Companion.getRINGS().forEach(ring -> {
-                if (ringMap.containsKey(ring)) {
-                    if (ringQnt == -1 || ringQnt <= KibeMod.INSTANCE.getCONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
-                        AbilityHelper.INSTANCE.getRING_SOURCE().grantTo(player, ring.getAbility());
-                        for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
-                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
-                            }
-                        }
-                    } else {
-                        if (AbilityHelper.INSTANCE.getRING_SOURCE().grants(player, ring.getAbility())) {
-                            AbilityHelper.INSTANCE.getRING_SOURCE().revokeFrom(player, ring.getAbility());
-                        }
-                        for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
-                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, false);
-                            }
-                        }
-                    }
-                } else {
-                    if (AbilityHelper.INSTANCE.getRING_SOURCE().grants(player, ring.getAbility())) {
-                        AbilityHelper.INSTANCE.getRING_SOURCE().revokeFrom(player, ring.getAbility());
-                    }
-                }
-            });
-        }
+//        if(!getWorld().isClient && this instanceof PlayerAbilityView) {
+//            for(PlayerAbility pa : AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().keySet()) {
+//                if(pa.isEnabledFor(player)) {
+//                    StatusEffect se = AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().get(pa);
+//                    StatusEffectInstance sei = new StatusEffectInstance(se, 100, 1, false, false, true);
+//                    player.addStatusEffect(sei);
+//                }
+//            }
+//
+//            LinkedHashMap<AbilityRing, List<ItemStack>> ringMap = new LinkedHashMap<>();
+//            for (Pair<ItemStack, Long> pair : kibe_activeRingsList) {
+//                ItemStack ringStack = pair.getFirst();
+//                Item ringItem = ringStack.getItem();
+//                if (ringItem instanceof AbilityRing && ringStack.getOrCreateNbt().getBoolean("enabled")) {
+//                    ringMap.computeIfAbsent((AbilityRing) ringItem, k -> new ArrayList<>());
+//                    ringMap.get(ringItem).add(ringStack);
+//                }
+//            }
+//            int ringQnt = ringMap.values().stream().mapToInt(List::size).sum();
+//            AbilityRing.Companion.getRINGS().forEach(ring -> {
+//                if (ringMap.containsKey(ring)) {
+//                    if (ringQnt == -1 || ringQnt <= KibeMod.INSTANCE.getCONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
+//                        AbilityHelper.INSTANCE.getRING_SOURCE().grantTo(player, ring.getAbility());
+//                        for (ItemStack ringStack : ringMap.get(ring)) {
+//                            if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+//                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
+//                            }
+//                        }
+//                    } else {
+//                        if (AbilityHelper.INSTANCE.getRING_SOURCE().grants(player, ring.getAbility())) {
+//                            AbilityHelper.INSTANCE.getRING_SOURCE().revokeFrom(player, ring.getAbility());
+//                        }
+//                        for (ItemStack ringStack : ringMap.get(ring)) {
+//                            if (ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
+//                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, false);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    if (AbilityHelper.INSTANCE.getRING_SOURCE().grants(player, ring.getAbility())) {
+//                        AbilityHelper.INSTANCE.getRING_SOURCE().revokeFrom(player, ring.getAbility());
+//                    }
+//                }
+//            });
+//        }
 
     }
 

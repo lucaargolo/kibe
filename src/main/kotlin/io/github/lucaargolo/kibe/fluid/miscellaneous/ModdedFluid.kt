@@ -17,9 +17,6 @@ import net.minecraft.world.WorldView
 
 abstract class ModdedFluid: FlowableFluid() {
 
-    var fluidBlock: FluidBlock? = null
-    var fluidBucket: BucketItem? = null
-
     override fun matchesType(fluid: Fluid): Boolean {
         return fluid === still || fluid === flowing
     }
@@ -50,10 +47,6 @@ abstract class ModdedFluid: FlowableFluid() {
 
     override fun getBlastResistance(): Float {
         return 100.0f
-    }
-
-    override fun getBucketItem(): Item? {
-        return fluidBucket
     }
 
 }

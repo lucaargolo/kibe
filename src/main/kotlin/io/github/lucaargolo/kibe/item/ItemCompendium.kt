@@ -2,7 +2,6 @@
 
 package io.github.lucaargolo.kibe.item
 
-import io.github.ladysnake.pal.VanillaAbilities
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.client.item.EntangledChestBlockItemDynamicRenderer
@@ -25,121 +24,128 @@ import net.minecraft.item.Item.Settings
 import net.minecraft.registry.Registries
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Rarity
+import net.minecraftforge.registries.ForgeRegistries
+import thedarkcolour.kotlinforforge.forge.ObjectHolderDelegate
 
-object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
+object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
 
     val RUNES: Array<Rune>
-        get() = runes.toTypedArray()
-    private val runes = mutableListOf<Rune>()
+        get() = runes.map(ObjectHolderDelegate<Rune>::get).toTypedArray()
+    private val runes = mutableListOf<ObjectHolderDelegate<Rune>>()
 
+    val FLUID_BUCKETS: Map<Fluid, BucketItem>
+        get() = fluidBuckets.mapKeys { e -> e.key.get() }.mapValues { e -> e.value.get() }
+    private val fluidBuckets = mutableMapOf<ObjectHolderDelegate<out Fluid>, ObjectHolderDelegate<BucketItem>>()
 
-    val KIBE         = register("kibe", Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().hunger(6).saturationModifier(0.8F).meat().build())))
-    val GOLDEN_KIBE  = register("golden_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(8).saturationModifier(1.2F).meat().build())))
-    val CURSED_KIBE  = register("cursed_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(10).saturationModifier(1.2F).meat().build())))
-    val DIAMOND_KIBE = register("diamond_kibe", Item(Settings().rarity(Rarity.RARE).food(FoodComponent.Builder().hunger(16).saturationModifier(1F).meat().build())))
+    val KIBE         by register("kibe", { Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().hunger(6).saturationModifier(0.8F).meat().build())) })
+    val GOLDEN_KIBE  by register("golden_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(8).saturationModifier(1.2F).meat().build())) })
+    val CURSED_KIBE  by register("cursed_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(10).saturationModifier(1.2F).meat().build())) })
+    val DIAMOND_KIBE by register("diamond_kibe", { Item(Settings().rarity(Rarity.RARE).food(FoodComponent.Builder().hunger(16).saturationModifier(1F).meat().build())) })
     
-    val CURSED_DROPLETS = register("cursed_droplets", Item(Settings()))
-    val CURSED_SEEDS    = register("cursed_seeds", CursedSeeds(Settings()))
+    val CURSED_DROPLETS by register("cursed_droplets", { Item(Settings()) })
+    val CURSED_SEEDS    by register("cursed_seeds", { CursedSeeds(Settings()) })
     
-    val MAGNET = register("magnet", Magnet.create(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val MAGNET by register("magnet", { Magnet.create(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
-    val DIAMOND_RING = register("diamond_ring",  Item(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val ANGEL_RING = register("angel_ring", AbilityRing.create(Settings().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING))
-    val MAGMA_RING = register("magma_ring", AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE), AbilityHelper.INFINITE_FIRE_RESISTENCE))
-    val WATER_RING = register("water_ring", AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE), AbilityHelper.INFINITE_WATER_BREATHING))
-    val LIGHT_RING   = register("light_ring",  LightRing(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val DIAMOND_RING by register("diamond_ring", { Item(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val ANGEL_RING by register("angel_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.EPIC)/*, VanillaAbilities.ALLOW_FLYING*/) })
+    val MAGMA_RING by register("magma_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE)/*, AbilityHelper.INFINITE_FIRE_RESISTENCE*/) })
+    val WATER_RING by register("water_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE)/*, AbilityHelper.INFINITE_WATER_BREATHING*/) })
+    val LIGHT_RING   by register("light_ring", { LightRing(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
-    val GOLDEN_LASSO  = register("golden_lasso",  Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val CURSED_LASSO  = register("cursed_lasso",  Lasso.CursedLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val DIAMOND_LASSO = register("diamond_lasso",  Lasso.DiamondLasso(Settings().maxCount(1).rarity(Rarity.RARE)))
+    val GOLDEN_LASSO  by register("golden_lasso", { Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val CURSED_LASSO  by register("cursed_lasso", { Lasso.CursedLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val DIAMOND_LASSO by register("diamond_lasso", { Lasso.DiamondLasso(Settings().maxCount(1).rarity(Rarity.RARE)) })
     
-    val WHITE_RUNE      = registerRune("white_rune",  Rune(DyeColor.WHITE, Settings()))
-    val ORANGE_RUNE     = registerRune("orange_rune",  Rune(DyeColor.ORANGE, Settings()))
-    val MAGENTA_RUNE    = registerRune("magenta_rune",  Rune(DyeColor.MAGENTA, Settings()))
-    val LIGHT_BLUE_RUNE = registerRune("light_blue_rune",  Rune(DyeColor.LIGHT_BLUE, Settings()))
-    val YELLOW_RUNE     = registerRune("yellow_rune",  Rune(DyeColor.YELLOW, Settings()))
-    val LIME_RUNE       = registerRune("lime_rune",  Rune(DyeColor.LIME, Settings()))
-    val PINK_RUNE       = registerRune("pink_rune",  Rune(DyeColor.PINK, Settings()))
-    val GRAY_RUNE       = registerRune("gray_rune",  Rune(DyeColor.GRAY, Settings()))
-    val LIGHT_GRAY_RUNE = registerRune("light_gray_rune",  Rune(DyeColor.LIGHT_GRAY, Settings()))
-    val CYAN_RUNE       = registerRune("cyan_rune",  Rune(DyeColor.CYAN, Settings()))
-    val BLUE_RUNE       = registerRune("blue_rune",  Rune(DyeColor.BLUE, Settings()))
-    val PURPLE_RUNE     = registerRune("purple_rune",  Rune(DyeColor.PURPLE, Settings()))
-    val GREEN_RUNE      = registerRune("green_rune",  Rune(DyeColor.GREEN, Settings()))
-    val BROWN_RUNE      = registerRune("brown_rune",  Rune(DyeColor.BROWN, Settings()))
-    val RED_RUNE        = registerRune("red_rune",  Rune(DyeColor.RED, Settings()))
-    val BLACK_RUNE      = registerRune("black_rune",  Rune(DyeColor.BLACK, Settings()))
+    val WHITE_RUNE      by registerRune("white_rune", { Rune(DyeColor.WHITE, Settings()) })
+    val ORANGE_RUNE     by registerRune("orange_rune", { Rune(DyeColor.ORANGE, Settings()) })
+    val MAGENTA_RUNE    by registerRune("magenta_rune", { Rune(DyeColor.MAGENTA, Settings()) })
+    val LIGHT_BLUE_RUNE by registerRune("light_blue_rune", { Rune(DyeColor.LIGHT_BLUE, Settings()) })
+    val YELLOW_RUNE     by registerRune("yellow_rune", { Rune(DyeColor.YELLOW, Settings()) })
+    val LIME_RUNE       by registerRune("lime_rune", { Rune(DyeColor.LIME, Settings()) })
+    val PINK_RUNE       by registerRune("pink_rune", { Rune(DyeColor.PINK, Settings()) })
+    val GRAY_RUNE       by registerRune("gray_rune", { Rune(DyeColor.GRAY, Settings()) })
+    val LIGHT_GRAY_RUNE by registerRune("light_gray_rune", { Rune(DyeColor.LIGHT_GRAY, Settings()) })
+    val CYAN_RUNE       by registerRune("cyan_rune", { Rune(DyeColor.CYAN, Settings()) })
+    val BLUE_RUNE       by registerRune("blue_rune", { Rune(DyeColor.BLUE, Settings()) })
+    val PURPLE_RUNE     by registerRune("purple_rune", { Rune(DyeColor.PURPLE, Settings()) })
+    val GREEN_RUNE      by registerRune("green_rune", { Rune(DyeColor.GREEN, Settings()) })
+    val BROWN_RUNE      by registerRune("brown_rune", { Rune(DyeColor.BROWN, Settings()) })
+    val RED_RUNE        by registerRune("red_rune", { Rune(DyeColor.RED, Settings()) })
+    val BLACK_RUNE      by registerRune("black_rune", { Rune(DyeColor.BLACK, Settings()) })
     
-    val SLIME_BOOTS = register("slime_boots",  SlimeBoots(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val SLIME_SLING = register("slime_sling",  SlimeSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val SLIME_BOOTS by register("slime_boots", { SlimeBoots(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val SLIME_SLING by register("slime_sling", { SlimeSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
-    val TORCH_SLING = register("torch_sling",  TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val ESCAPE_ROPE = register("escape_rope",  EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val TORCH_SLING by register("torch_sling", { TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val ESCAPE_ROPE by register("escape_rope", { EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
-    val WOODEN_BUCKET = register("wooden_bucket", WoodenBucket.Empty(Settings().maxCount(16)))
-    val WATER_WOODEN_BUCKET = register("water_wooden_bucket", WoodenBucket.Water(Settings().maxCount(1)))
+    val WOODEN_BUCKET by register("wooden_bucket", { WoodenBucket.Empty(Settings().maxCount(16)) })
+    val WATER_WOODEN_BUCKET by register("water_wooden_bucket", { WoodenBucket.Water(Settings().maxCount(1)) })
     
-    val GLIDER_LEFT_WING = register("glider_left_wing", Item(Settings()))
-    val GLIDER_RIGHT_WING = register("glider_right_wing", Item(Settings()))
+    val GLIDER_LEFT_WING by register("glider_left_wing", { Item(Settings()) })
+    val GLIDER_RIGHT_WING by register("glider_right_wing", { Item(Settings()) })
     
-    val WHITE_GLIDER = register("white_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val ORANGE_GLIDER = register("orange_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val MAGENTA_GLIDER = register("magenta_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val LIGHT_BLUE_GLIDER = register("light_blue_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val YELLOW_GLIDER = register("yellow_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val LIME_GLIDER = register("lime_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val PINK_GLIDER = register("pink_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val GRAY_GLIDER = register("gray_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val LIGHT_GRAY_GLIDER = register("light_gray_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val CYAN_GLIDER = register("cyan_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val BLUE_GLIDER = register("blue_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val PURPLE_GLIDER = register("purple_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val GREEN_GLIDER = register("green_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val BROWN_GLIDER = register("brown_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val RED_GLIDER = register("red_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    val BLACK_GLIDER = register("black_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
+    val WHITE_GLIDER by register("white_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val ORANGE_GLIDER by register("orange_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val MAGENTA_GLIDER by register("magenta_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val LIGHT_BLUE_GLIDER by register("light_blue_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val YELLOW_GLIDER by register("yellow_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val LIME_GLIDER by register("lime_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val PINK_GLIDER by register("pink_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val GRAY_GLIDER by register("gray_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val LIGHT_GRAY_GLIDER by register("light_gray_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val CYAN_GLIDER by register("cyan_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val BLUE_GLIDER by register("blue_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val PURPLE_GLIDER by register("purple_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val GREEN_GLIDER by register("green_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val BROWN_GLIDER by register("brown_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val RED_GLIDER by register("red_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
+    val BLACK_GLIDER by register("black_glider", { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) })
     
-    val VOID_BUCKET = register("void_bucket", VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
+    val VOID_BUCKET by register("void_bucket", { VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE)) })
     
-    val POCKET_CRAFTING_TABLE = register("pocket_crafting_table",  PocketCraftingTable(Settings().maxCount(1)))
-    val POCKET_TRASH_CAN = register("pocket_trash_can",  PocketTrashCan(Settings().maxCount(1)))
+    val POCKET_CRAFTING_TABLE by register("pocket_crafting_table", { PocketCraftingTable(Settings().maxCount(1)) })
+    val POCKET_TRASH_CAN by register("pocket_trash_can", { PocketTrashCan(Settings().maxCount(1)) })
     
-    val ENTANGLED_CHEST = register("entangled_chest", EntangledChestBlockItem(Settings()))
-    val ENTANGLED_TANK = register("entangled_tank", EntangledTankBlockItem(Settings()))
-    val ENTANGLED_BAG = register("entangled_bag",  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val ENTANGLED_BUCKET = register("entangled_bucket",  EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val COOLER = register("cooler", CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val TANK = register("tank", TankBlockItem(Settings()))
+    val ENTANGLED_CHEST by register("entangled_chest", { EntangledChestBlockItem(Settings()) })
+    val ENTANGLED_TANK by register("entangled_tank", { EntangledTankBlockItem(Settings()) })
+    val ENTANGLED_BAG by register("entangled_bag", { EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val ENTANGLED_BUCKET by register("entangled_bucket", { EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val COOLER by register("cooler", { CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val TANK by register("tank", { TankBlockItem(Settings()) })
     
-    val WHITE_SLEEPING_BAG = register("white_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val ORANGE_SLEEPING_BAG = register("orange_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val MAGENTA_SLEEPING_BAG = register("magenta_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val LIGHT_BLUE_SLEEPING_BAG = register("light_blue_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val YELLOW_SLEEPING_BAG = register("yellow_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val LIME_SLEEPING_BAG = register("lime_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val PINK_SLEEPING_BAG = register("pink_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val GRAY_SLEEPING_BAG = register("gray_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val LIGHT_GRAY_SLEEPING_BAG = register("light_gray_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val CYAN_SLEEPING_BAG = register("cyan_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val BLUE_SLEEPING_BAG = register("sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val PURPLE_SLEEPING_BAG = register("purple_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val GREEN_SLEEPING_BAG = register("green_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val BROWN_SLEEPING_BAG = register("brown_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val RED_SLEEPING_BAG = register("red_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val BLACK_SLEEPING_BAG = register("black_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
+    val WHITE_SLEEPING_BAG by register("white_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val ORANGE_SLEEPING_BAG by register("orange_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val MAGENTA_SLEEPING_BAG by register("magenta_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val LIGHT_BLUE_SLEEPING_BAG by register("light_blue_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val YELLOW_SLEEPING_BAG by register("yellow_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val LIME_SLEEPING_BAG by register("lime_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val PINK_SLEEPING_BAG by register("pink_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val GRAY_SLEEPING_BAG by register("gray_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val LIGHT_GRAY_SLEEPING_BAG by register("light_gray_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val CYAN_SLEEPING_BAG by register("cyan_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val BLUE_SLEEPING_BAG by register("sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val PURPLE_SLEEPING_BAG by register("purple_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val GREEN_SLEEPING_BAG by register("green_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val BROWN_SLEEPING_BAG by register("brown_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val RED_SLEEPING_BAG by register("red_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
+    val BLACK_SLEEPING_BAG by register("black_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
     
-    val MEASURING_TAPE = register("measuring_tape", MeasuringTape(Settings().maxCount(1)))
+    val MEASURING_TAPE by register("measuring_tape", { MeasuringTape(Settings().maxCount(1)) })
 
-    fun registerRune(string: String, entry: Rune): Rune {
+    fun registerRune(string: String, entry: () -> Rune): ObjectHolderDelegate<Rune> {
         return register(string, entry).also(runes::add)
     }
 
-    fun <E : Fluid> registerBucketItem(string: String, entry: E): BucketItem {
-        return register(string+"_bucket", BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
+    fun <E : Fluid> registerBucketItem(string: String, entry: ObjectHolderDelegate<E>): ObjectHolderDelegate<BucketItem> {
+        val bucketDelegate = register(string+"_bucket", { BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)) })
+        fluidBuckets[entry] = bucketDelegate
+        return bucketDelegate
     }
 
-    fun <E : Block> registerBlockItem(string: String, entry: E): BlockItem {
-        return register(string, BlockItem(entry, Settings()))
+    fun <E : Block> registerBlockItem(string: String, entry: ObjectHolderDelegate<E>): ObjectHolderDelegate<BlockItem> {
+        return register(string, { BlockItem(entry.get(), Settings()) })
     }
 
     override fun initializeClient() {

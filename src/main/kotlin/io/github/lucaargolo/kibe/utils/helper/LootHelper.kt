@@ -35,7 +35,7 @@ object LootHelper {
                         )
                     )
                     .conditionally(RandomChanceLootCondition.builder(0.05F))
-                    .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
+                    .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)))
                 supplier.pool(poolBuilder)
             }
         }
@@ -46,7 +46,7 @@ object LootHelper {
                     .rolls(ConstantLootNumberProvider.create(1f))
                     .with(ItemEntry.builder(ItemCompendium.CURSED_DROPLETS))
                     .conditionally(RandomChanceLootCondition.builder(0.1F))
-                    .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
+                    .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)))
                 supplier.pool(poolBuilder)
             }
         }

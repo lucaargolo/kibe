@@ -1,0 +1,25 @@
+modLoader = "kotlinforforge" #mandatory
+loaderVersion = "[4.10,)" #mandatory
+license = "Mozilla Public License 2.0"
+
+[[mods]] #mandatory
+modId = "kibe" #mandatory
+version = "${version}" #mandatory
+displayName = "Kibe" #mandatory
+authors = "D4rkness_King" #optional
+logoFile="assets/kibe/icon.png"
+description = '''A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.'''
+
+[[dependencies.kibe]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.kibe]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"

@@ -111,12 +111,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         }
 
         val world = entity.world
-        val blockState =
-            if (world != null) entity.cachedState else (
-                BlockCompendium.ENTANGLED_CHEST.defaultState.with(
-                Properties.HORIZONTAL_FACING,
-                Direction.SOUTH
-            ))
+        val blockState = if (world != null) entity.cachedState else (BlockCompendium.ENTANGLED_CHEST.defaultState.with(Properties.HORIZONTAL_FACING, Direction.SOUTH))
 
         matrices.push()
         val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()

@@ -1,11 +1,16 @@
 package io.github.lucaargolo.kibe.fluid.miscellaneous
 
+import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
+import io.github.lucaargolo.kibe.item.ItemCompendium
 import net.minecraft.block.BlockState
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
+import net.minecraft.fluid.Fluids
+import net.minecraft.item.Item
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
+import net.minecraftforge.fluids.FluidType
 
 abstract class LiquidXpFluid: ModdedFluid() {
 
@@ -13,7 +18,15 @@ abstract class LiquidXpFluid: ModdedFluid() {
     override fun getFlowing() = FluidCompendium.LIQUID_XP_FLOWING
 
     override fun toBlockState(fluidState: FluidState): BlockState? {
-        return fluidBlock?.defaultState?.with(Properties.LEVEL_15, getBlockStateLevel(fluidState))
+        return BlockCompendium.FLUID_BLOCKS[still]?.defaultState?.with(Properties.LEVEL_15, getBlockStateLevel(fluidState))
+    }
+
+    override fun getFluidType(): FluidType {
+        return FluidCompendium.LIQUID_XP_TYPE
+    }
+
+    override fun getBucketItem(): Item? {
+        return ItemCompendium.FLUID_BUCKETS[still]
     }
 
     class Flowing : LiquidXpFluid() {

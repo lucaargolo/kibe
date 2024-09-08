@@ -14,7 +14,7 @@ buildscript {
 
 plugins {
     id("maven-publish")
-    id("fabric-loom")
+    id("dev.architectury.loom")
     id("org.ajoberstar.grgit")
     id("org.jetbrains.kotlin.jvm")
     id("com.matthewprenger.cursegradle")
@@ -63,6 +63,9 @@ fun getBranch(): String {
 }
 
 loom {
+    forge {
+        mixinConfig("kibe.mixins.json")
+    }
     accessWidenerPath.set(file("src/main/resources/kibe.accesswidener"))
 }
 
@@ -72,45 +75,69 @@ repositories {
         url = uri("https://maven.fabricmc.net/")
     }
     maven {
-        name = "Ladysnake Mods"
-        url = uri("https://maven.ladysnake.org/releases")
+        name = "NeoForge"
+        url = uri("https://maven.neoforged.net/releases/")
     }
     maven {
-        name = "JitPack"
-        url = uri("https://jitpack.io")
+        name = "Architectury"
+        url = uri("https://maven.architectury.dev/" )
     }
     maven {
-        name = "Dashloader"
-        url = uri("https://oskarstrom.net/maven")
+        name = "Kotlin for Forge"
+        setUrl("https://thedarkcolour.github.io/KotlinForForge/")
     }
     maven {
-        name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/releases")
+        name = "Forgified Fabric API"
+        url = uri("https://maven.su5ed.dev/releases")
     }
-    maven {
-        name = "Shedaniel"
-        url = uri("https://maven.shedaniel.me/")
-    }
+//    maven {
+//        name = "Ladysnake Mods"
+//        url = uri("https://maven.ladysnake.org/releases")
+//    }
+//    maven {
+//        name = "JitPack"
+//        url = uri("https://jitpack.io")
+//    }
+//    maven {
+//        name = "Dashloader"
+//        url = uri("https://oskarstrom.net/maven")
+//    }
+//    maven {
+//        name = "TerraformersMC"
+//        url = uri("https://maven.terraformersmc.com/releases")
+//    }
+//    maven {
+//        name = "Shedaniel"
+//        url = uri("https://maven.shedaniel.me/")
+//    }
     mavenLocal()
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${project["minecraft_version"]}")
     mappings("net.fabricmc:yarn:${project["yarn_mappings"]}:v2")
+    forge("net.neoforged:forge:${project["neoforge_version"]}")
 
-    modImplementation("net.fabricmc:fabric-loader:${project["loader_version"]}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project["fabric_version"]}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:${project["fabric_kotlin_version"]}")
+    modImplementation("dev.su5ed.sinytra.fabric-api:fabric-api:${project["fabric_version"]}")
+    implementation("thedarkcolour:kotlinforforge:4.10.0")
 
-    modImplementation("dev.emi:trinkets:${project["trinkets_version"]}")
+//    modImplementation("net.fabricmc:fabric-language-kotlin:${project["fabric_kotlin_version"]}")
+//
+//    modImplementation("dev.emi:trinkets:${project["trinkets_version"]}")
+//
+//    modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
+//    include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
+//
+//    modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
+//
+//    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
+//    modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 
-    modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
-    include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.3.6")
 
-    modCompileOnly ("net.oskarstrom:DashLoader:${project["dashloader_version"]}")
-
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
-    modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
+    implementation("io.github.llamalad7:mixinextras-forge:0.3.6")
+    include("io.github.llamalad7:mixinextras-forge:0.3.6")
 }
 
 tasks.processResources {
@@ -119,13 +146,17 @@ tasks.processResources {
     inputs.property("version", project.version)
 
     from(sourceSets["main"].resources.srcDirs) {
-        include("fabric.mod.json")
+        include("META-INF/mods.toml")
         expand(mutableMapOf("version" to project.version))
     }
-
-    from(sourceSets["main"].resources.srcDirs) {
-        exclude("fabric.mod.json")
-    }
+//    from(sourceSets["main"].resources.srcDirs) {
+//        include("fabric.mod.json")
+//        expand(mutableMapOf("version" to project.version))
+//    }
+//
+//    from(sourceSets["main"].resources.srcDirs) {
+//        exclude("fabric.mod.json")
+//    }
 }
 
 tasks.withType<JavaCompile> {
@@ -135,6 +166,9 @@ tasks.withType<JavaCompile> {
 
 java {
     withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.jar {

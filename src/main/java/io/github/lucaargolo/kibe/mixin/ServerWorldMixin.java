@@ -29,16 +29,16 @@ public class ServerWorldMixin {
         return cachedChunkLoaderState;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getForcedChunks()Lit/unimi/dsi/fastutil/longs/LongSet;"), method = "tick")
-    public LongSet redirectGetForcedChunksOnTick(ServerWorld serverWorld) {
-        ChunkLoaderState chunkLoaderState = getCachedChunkLoaderState();
-        LongSet longSet = serverWorld.getForcedChunks();
-        if(longSet.isEmpty() && chunkLoaderState.getLoadedChunkMap().get(((ServerWorld) ((Object) this)).getRegistryKey()) != null && !chunkLoaderState.getLoadedChunkMap().get(((ServerWorld) ((Object) this)).getRegistryKey()).isEmpty())
-            return new LongOpenHashSet(new long[]{0L});
-        else
-            return longSet;
-    }
+//    @SuppressWarnings("ConstantConditions")
+//    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getForcedChunks()Lit/unimi/dsi/fastutil/longs/LongSet;"), method = "tick")
+//    public LongSet redirectGetForcedChunksOnTick(ServerWorld serverWorld) {
+//        ChunkLoaderState chunkLoaderState = getCachedChunkLoaderState();
+//        LongSet longSet = serverWorld.getForcedChunks();
+//        if(longSet.isEmpty() && chunkLoaderState.getLoadedChunkMap().get(((ServerWorld) ((Object) this)).getRegistryKey()) != null && !chunkLoaderState.getLoadedChunkMap().get(((ServerWorld) ((Object) this)).getRegistryKey()).isEmpty())
+//            return new LongOpenHashSet(new long[]{0L});
+//        else
+//            return longSet;
+//    }
 
 
     @Inject(at = @At("HEAD"), method = "isChunkLoaded", cancellable = true)

@@ -2,6 +2,7 @@
 
 package io.github.lucaargolo.kibe.utils
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
 import io.github.lucaargolo.kibe.fluid.miscellaneous.ModdedFluid
@@ -11,21 +12,31 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
+import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKeys
 import net.minecraft.text.Text
+import net.minecraftforge.registries.DeferredRegister
+import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.forge.registerObject
 
 object CreativeTab {
 
     fun initialize() {
-        Registry.register(Registries.ITEM_GROUP, ModIdentifier("creative_tab"), FabricItemGroup.builder()
-            .icon { ItemStack(ItemCompendium.KIBE) }
-            .displayName(Text.translatable("itemGroup.kibe.creative_tab"))
-            .entries { _, entries -> entries.addAll(appendItems()) }
-            .build()
-        )
+        val itemGroups: DeferredRegister<ItemGroup> = DeferredRegister.create(RegistryKeys.ITEM_GROUP, KibeMod.MOD_ID)
+
+        itemGroups.registerObject("creative_tab") {
+            FabricItemGroup.builder()
+                .icon { ItemStack(ItemCompendium.KIBE) }
+                .displayName(Text.translatable("itemGroup.kibe.creative_tab"))
+                .entries { _, entries -> entries.addAll(appendItems()) }
+                .build()
+        }
+
+        itemGroups.register(MOD_BUS)
     }
 
     private fun appendItems(): List<ItemStack> {
@@ -52,14 +63,11 @@ object CreativeTab {
             BlockCompendium.LIGHT_GRAY_ELEVATOR, BlockCompendium.CYAN_ELEVATOR, BlockCompendium.BLUE_ELEVATOR, BlockCompendium.PURPLE_ELEVATOR, BlockCompendium.GREEN_ELEVATOR, BlockCompendium.BROWN_ELEVATOR, BlockCompendium.RED_ELEVATOR, BlockCompendium.BLACK_ELEVATOR
         )
         order.forEach { element ->
-            list.add(
-                when (element) {
-                    is Item -> ItemStack(element)
-                    is Block -> ItemStack(element.asItem())
-                    is ModdedFluid -> ItemStack(element.fluidBucket)
-                    else -> ItemStack.EMPTY
-                }
-            )
+            when (element) {
+                is Item -> list.add(ItemStack(element))
+                is Block -> list.add(ItemStack(element.asItem()))
+                is ModdedFluid -> list.add(ItemStack(ItemCompendium.FLUID_BUCKETS[element] ?: Items.BUCKET))
+            }
         }
         Registries.FLUID.indexedEntries.forEach { fluidEntry ->
             val fluid = fluidEntry.value()

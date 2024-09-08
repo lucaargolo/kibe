@@ -17,7 +17,6 @@ import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
 import io.github.lucaargolo.kibe.utils.EntangledTankSync
 import io.github.lucaargolo.kibe.utils.ModIdentifier
-import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
@@ -36,11 +35,11 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import java.util.function.Consumer
 
-object KibeModClient: ClientModInitializer {
+object KibeModClient {
 
     var immediate = VertexConsumerProvider.immediate(BufferBuilder(128))
 
-    override fun onInitializeClient() {
+    init {
         RecipeSerializerCompendium.initializeClient()
         RecipeTypeCompendium.initializeClient()
         FluidCompendium.initializeClient()

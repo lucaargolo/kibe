@@ -45,10 +45,10 @@ public class ClientPlayNetworkHandlerMixin {
         }
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;readNbt(Lnet/minecraft/nbt/NbtCompound;)V"), method = "method_38542", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, BlockEntity blockEntity, CallbackInfo info, NbtCompound nbtCompound) {
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;onDataPacket(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;)V"), method = "method_38542", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, BlockEntity blockEntity, CallbackInfo info) {
         if(blockEntity instanceof SyncableBlockEntity) {
-            ((SyncableBlockEntity) blockEntity).readClientNbt(nbtCompound);
+            ((SyncableBlockEntity) blockEntity).readClientNbt(packet.getNbt());
             info.cancel();
         }
     }
