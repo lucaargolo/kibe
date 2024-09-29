@@ -91,7 +91,7 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         drawBackground(context, delta, mouseX, mouseY)
         if(identifier == null) createImage()
         identifier?.let {

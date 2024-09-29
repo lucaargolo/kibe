@@ -24,7 +24,7 @@ class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: Pl
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         drawRunes(context)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)

@@ -6,7 +6,6 @@ import io.github.lucaargolo.kibe.utils.menu.ItemScreenHandlerFactory
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.tooltip.BundleTooltipComponent
-import net.minecraft.client.item.BundleTooltipData
 import net.minecraft.client.item.TooltipData
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
@@ -14,6 +13,7 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.tooltip.BundleTooltipData
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult

@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
@@ -62,7 +63,7 @@ class CoolerBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(B
 
     override fun getAvailableSlots(side: Direction?) = intArrayOf(0)
 
-    override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = stack.item.isFood
+    override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = stack.item.components.contains(DataComponentTypes.FOOD)
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = true
 

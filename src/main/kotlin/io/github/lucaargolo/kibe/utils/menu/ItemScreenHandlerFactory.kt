@@ -14,7 +14,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.world.World
 
-class ItemScreenHandlerFactory<T: ScreenHandler>(val item: Item, val hand: Hand, val tag: NbtCompound, val consumer: (Int, PlayerInventory, Hand, World, NbtCompound) -> T): ExtendedScreenHandlerFactory {
+class ItemScreenHandlerFactory<T: ScreenHandler>(val item: Item, val hand: Hand, val tag: NbtCompound, val consumer: (Int, PlayerInventory, Hand, World, NbtCompound) -> T): ExtendedScreenHandlerFactory<T> {
 
     private val displayName: Text = Text.translatable("screen.${KibeMod.MOD_ID}.${Registries.ITEM.getId(item).path}")
 

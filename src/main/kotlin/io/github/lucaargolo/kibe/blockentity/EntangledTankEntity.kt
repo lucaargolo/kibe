@@ -40,13 +40,7 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
     fun getPersistentState(): EntangledTankState {
         val serverWorld = world as? ServerWorld
         if (serverWorld != null) {
-            return serverWorld.server.overworld.persistentStateManager.getOrCreate( {
-                EntangledTankState.createFromTag(
-                    it,
-                    serverWorld,
-                    key
-                )
-            }, { EntangledTankState(serverWorld, key) }, key)
+            return EntangledTankState.getPersistentState(serverWorld, key)
         } else {
             return EntangledTankState.getOrCreateClientState(key)
         }

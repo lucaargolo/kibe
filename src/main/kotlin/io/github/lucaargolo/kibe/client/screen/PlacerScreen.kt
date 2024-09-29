@@ -12,7 +12,7 @@ class PlacerScreen(handler: PlacerScreenHandler, inventory: PlayerInventory, tit
     private val texture = Identifier.of("kibe:textures/gui/placer.png")
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }

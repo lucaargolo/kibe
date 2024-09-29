@@ -39,7 +39,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
     override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {}
-    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?, modelId: Identifier?) = this
+    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?) = this
 
     override fun isVanillaAdapter(): Boolean = false
 

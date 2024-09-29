@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.world.PersistentState
@@ -38,7 +39,7 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
         }
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound, registryLookup: RegistryWrapper.WrapperLookup): NbtCompound {
         fluidInvMap.forEach { (colorCode, tank) ->
             tag.put(colorCode, FluidHelper.writeTank(NbtCompound(), tank))
         }
@@ -66,12 +67,22 @@ class EntangledTankState(val world: ServerWorld?, val key: String): PersistentSt
             }
         }
 
-        fun createFromTag(tag: NbtCompound, world: ServerWorld, key: String): EntangledTankState {
-            val state = EntangledTankState(world, key)
-            tag.keys.forEach {
-                FluidHelper.readTank(tag.getCompound(it), state.getOrCreateInventory(it))
-            }
-            return state
+        fun getPersistentState(world: ServerWorld, key: String): EntangledTankState {
+            return world.server.overworld.persistentStateManager.getOrCreate(getPersistentStateType(world, key), key)
+        }
+
+        fun getPersistentStateType(world: ServerWorld?, key: String): Type<EntangledTankState> {
+            return Type(
+                { EntangledTankState(world, key) },
+                { tag, _ ->
+                    val state = EntangledTankState(world, key)
+                    tag.keys.forEach {
+                        FluidHelper.readTank(tag.getCompound(it), state.getOrCreateInventory(it))
+                    }
+                    return@Type state
+                },
+                null
+            )
         }
 
 

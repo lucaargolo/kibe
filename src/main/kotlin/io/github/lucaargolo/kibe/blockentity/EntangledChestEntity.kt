@@ -45,7 +45,7 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
 
     private fun getPersistentState(): EntangledChestState? {
         return (world as? ServerWorld)?.let { serverWorld ->
-            serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledChestState.createFromTag(it) }, { EntangledChestState() }, key)
+            EntangledChestState.getPersistentState(serverWorld.server, key)
         }
     }
 
@@ -100,7 +100,7 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         tag.putInt("lastComparatorOutput", lastComparatorOutput)
         if(hasPersistentState()) {
             var subTag = NbtCompound()
-            subTag = getPersistentState()!!.writeNbt(subTag)
+            subTag = getPersistentState()!!.writeNbt(subTag, registryLookup)
             if(subTag[colorCode] != null) {
                 subTag = subTag.get(colorCode) as NbtCompound
                 tag.put("Items", subTag.get("Items"))

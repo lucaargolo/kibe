@@ -18,27 +18,25 @@ import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
 import io.github.lucaargolo.kibe.utils.EntangledTankSync
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
-import net.minecraft.client.util.ModelIdentifier
+import net.minecraft.client.util.BufferAllocator
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.resource.ResourceManager
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
-import java.util.function.Consumer
 
 object KibeModClient: ClientModInitializer {
 
-    var immediate = VertexConsumerProvider.immediate(BufferBuilder(128))
+    var immediate = VertexConsumerProvider.immediate(BufferAllocator(128))
 
     override fun onInitializeClient() {
         RecipeSerializerCompendium.initializeClient()
@@ -66,51 +64,51 @@ object KibeModClient: ClientModInitializer {
     }
 
     fun initExtraModels() {
-        ModelLoadingRegistry.INSTANCE.registerModelProvider { _: ResourceManager, out: Consumer<Identifier> ->
-            out.accept(ModelIdentifier(ModIdentifier.of("redstone_timer_structure"), ""))
-            out.accept(ModelIdentifier(ModIdentifier.of("glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("glider_handle"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("white_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("white_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("orange_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("orange_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("magenta_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("magenta_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("light_blue_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("light_blue_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("yellow_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("yellow_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("lime_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("lime_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("pink_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("pink_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("gray_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("gray_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("light_gray_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("light_gray_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("cyan_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("cyan_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("blue_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("blue_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("purple_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("purple_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("green_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("green_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("brown_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("brown_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("red_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("red_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("black_glider_active"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("black_glider_inactive"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_ring"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bag_background"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bag_gold_core"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bag_diamond_core"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bucket_fluid"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bucket_background"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bucket_foreground"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bucket_gold_core"), "inventory"))
-            out.accept(ModelIdentifier(ModIdentifier.of("entangled_bucket_diamond_core"), "inventory"))
+        ModelLoadingPlugin.register { out ->
+            out.addModels(ModIdentifier.of("redstone_timer_structure")) // not inventory
+            out.addModels(ModIdentifier.of("glider_active"))
+            out.addModels(ModIdentifier.of("glider_handle"))
+            out.addModels(ModIdentifier.of("white_glider_active"))
+            out.addModels(ModIdentifier.of("white_glider_inactive"))
+            out.addModels(ModIdentifier.of("orange_glider_active"))
+            out.addModels(ModIdentifier.of("orange_glider_inactive"))
+            out.addModels(ModIdentifier.of("magenta_glider_active"))
+            out.addModels(ModIdentifier.of("magenta_glider_inactive"))
+            out.addModels(ModIdentifier.of("light_blue_glider_active"))
+            out.addModels(ModIdentifier.of("light_blue_glider_inactive"))
+            out.addModels(ModIdentifier.of("yellow_glider_active"))
+            out.addModels(ModIdentifier.of("yellow_glider_inactive"))
+            out.addModels(ModIdentifier.of("lime_glider_active"))
+            out.addModels(ModIdentifier.of("lime_glider_inactive"))
+            out.addModels(ModIdentifier.of("pink_glider_active"))
+            out.addModels(ModIdentifier.of("pink_glider_inactive"))
+            out.addModels(ModIdentifier.of("gray_glider_active"))
+            out.addModels(ModIdentifier.of("gray_glider_inactive"))
+            out.addModels(ModIdentifier.of("light_gray_glider_active"))
+            out.addModels(ModIdentifier.of("light_gray_glider_inactive"))
+            out.addModels(ModIdentifier.of("cyan_glider_active"))
+            out.addModels(ModIdentifier.of("cyan_glider_inactive"))
+            out.addModels(ModIdentifier.of("blue_glider_active"))
+            out.addModels(ModIdentifier.of("blue_glider_inactive"))
+            out.addModels(ModIdentifier.of("purple_glider_active"))
+            out.addModels(ModIdentifier.of("purple_glider_inactive"))
+            out.addModels(ModIdentifier.of("green_glider_active"))
+            out.addModels(ModIdentifier.of("green_glider_inactive"))
+            out.addModels(ModIdentifier.of("brown_glider_active"))
+            out.addModels(ModIdentifier.of("brown_glider_inactive"))
+            out.addModels(ModIdentifier.of("red_glider_active"))
+            out.addModels(ModIdentifier.of("red_glider_inactive"))
+            out.addModels(ModIdentifier.of("black_glider_active"))
+            out.addModels(ModIdentifier.of("black_glider_inactive"))
+            out.addModels(ModIdentifier.of("entangled_ring"))
+            out.addModels(ModIdentifier.of("entangled_bag_background"))
+            out.addModels(ModIdentifier.of("entangled_bag_gold_core"))
+            out.addModels(ModIdentifier.of("entangled_bag_diamond_core"))
+            out.addModels(ModIdentifier.of("entangled_bucket_fluid"))
+            out.addModels(ModIdentifier.of("entangled_bucket_background"))
+            out.addModels(ModIdentifier.of("entangled_bucket_foreground"))
+            out.addModels(ModIdentifier.of("entangled_bucket_gold_core"))
+            out.addModels(ModIdentifier.of("entangled_bucket_diamond_core"))
         }
     }
 
@@ -129,6 +127,7 @@ object KibeModClient: ClientModInitializer {
         val player = client.player
         val camera = client.gameRenderer.camera
         val target = client.crosshairTarget as? BlockHitResult
+        val matrixStack = context.matrixStack() ?: return
         if (camera.isReady && player != null) {
             val world = player.world
             listOf(player.mainHandStack, player.offHandStack).forEach { stack ->
@@ -139,11 +138,11 @@ object KibeModClient: ClientModInitializer {
                     val toPos = measuringTo?.second ?: target?.blockPos ?: return
                     val color = if(measuringTo?.second == null) 0x0000FF else 0xFFFF00
                     val box = getDrawBox(fromPos, toPos)
-                    context.matrixStack().push()
-                    context.matrixStack().translate(fromPos.x-camera.pos.x, fromPos.y-camera.pos.y, fromPos.z-camera.pos.z)
-                    WorldRenderer.drawBox(context.matrixStack(), immediate.getBuffer(RenderLayer.getLines()), box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, ((color shr 16) and 0xFF)/255f, ((color shr 8) and 0xFF)/255f, (color and 0xFF)/255f, 1f)
-                    drawBox(immediate.getBuffer(RenderLayer.getEntityTranslucent(Identifier.of("minecraft:textures/block/white_concrete.png"))), context.matrixStack(), box.minX.toFloat(), box.minY.toFloat(), box.minZ.toFloat(), box.maxX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat(), ((color shr 16) and 0xFF)/255f, ((color shr 8) and 0xFF)/255f, (color and 0xFF)/255f, 0.3f)
-                    context.matrixStack().pop()
+                    matrixStack.push()
+                    matrixStack.translate(fromPos.x-camera.pos.x, fromPos.y-camera.pos.y, fromPos.z-camera.pos.z)
+                    WorldRenderer.drawBox(matrixStack, immediate.getBuffer(RenderLayer.getLines()), box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, ((color shr 16) and 0xFF)/255f, ((color shr 8) and 0xFF)/255f, (color and 0xFF)/255f, 1f)
+                    drawBox(immediate.getBuffer(RenderLayer.getEntityTranslucent(Identifier.of("minecraft:textures/block/white_concrete.png"))), matrixStack, box.minX.toFloat(), box.minY.toFloat(), box.minZ.toFloat(), box.maxX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat(), ((color shr 16) and 0xFF)/255f, ((color shr 8) and 0xFF)/255f, (color and 0xFF)/255f, 0.3f)
+                    matrixStack.pop()
                 }
             }
         }
@@ -175,38 +174,38 @@ object KibeModClient: ClientModInitializer {
     fun drawBox(vertexConsumer: VertexConsumer?, matrixStack: MatrixStack, x1: Float, y1: Float, z1: Float, x2: Float, y2: Float, z2: Float, red: Float, green: Float, blue: Float, alpha: Float) {
         val entry = matrixStack.peek()
         val normal = Direction.NORTH.unitVector
-        val sprite = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/overlay")).sprite
+        val sprite = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/overlay")).sprite
 
         //Render cube
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
 
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
 
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
 
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
 
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y2, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
 
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
-        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry.normalMatrix, normal.x, normal.y, normal.z)?.next()
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x1, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.minU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z1)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.maxV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
+        vertexConsumer?.vertex(entry.positionMatrix, x2, y1, z2)?.color(red, green, blue, alpha)?.texture(sprite.maxU, sprite.minV)?.overlay(OverlayTexture.DEFAULT_UV)?.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)?.normal(entry, normal.x, normal.y, normal.z)
     }
 
 }

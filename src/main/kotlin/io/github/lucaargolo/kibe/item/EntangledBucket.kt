@@ -20,7 +20,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.FluidDrainable
 import net.minecraft.block.FluidFillable
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
@@ -114,7 +113,7 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                     world.playSound(user, pos, soundEvent, SoundCategory.BLOCKS, 1.0f, 1.0f)
                     if (!world.isClient) {
                         val serverWorld = world as ServerWorld
-                        val state = serverWorld.server.overworld.persistentStateManager.getOrCreate({ EntangledTankState.createFromTag(it, serverWorld, key)}, { EntangledTankState(serverWorld, key) }, key)
+                        val state = EntangledTankState.getPersistentState(serverWorld, key)
                         val stateInv = state.getOrCreateInventory(colorCode)
                         Transaction.openOuter().also {
                             stateInv.extract(FluidVariant.of(fluid), FluidConstants.BUCKET, it)

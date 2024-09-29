@@ -8,7 +8,7 @@ import net.minecraft.loot.condition.EntityPropertiesLootCondition
 import net.minecraft.loot.condition.RandomChanceLootCondition
 import net.minecraft.loot.context.LootContext
 import net.minecraft.loot.entry.ItemEntry
-import net.minecraft.loot.function.LootingEnchantLootFunction
+import net.minecraft.loot.function.EnchantedCountIncreaseLootFunction
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider
 import net.minecraft.loot.provider.number.UniformLootNumberProvider
 import net.minecraft.predicate.entity.EntityEffectPredicate
@@ -22,8 +22,9 @@ object LootHelper {
 
     fun addCursedDroplets() {
         //Add cursed droplets drop to mobs with the cursed effect
-        LootTableEvents.MODIFY.register { _, _, id, supplier, _ ->
-            if (id.toString().startsWith("minecraft:entities")) {
+        LootTableEvents.MODIFY.register { key, builder, source ->
+            if (key.value.toString().startsWith("minecraft:entities")) {
+
                 val poolBuilder = LootPool.Builder()
                     .rolls(ConstantLootNumberProvider.create(1f))
                     .with(ItemEntry.builder(ItemCompendium.CURSED_DROPLETS))
@@ -31,23 +32,23 @@ object LootHelper {
                         EntityPropertiesLootCondition.builder(
                             LootContext.EntityTarget.THIS,
                             EntityPredicate.Builder.create()
-                                .effects(EntityEffectPredicate.create().withEffect(EffectCompendium.CURSED))
+                                .effects(EntityEffectPredicate.Builder.create().addEffect(EffectCompendium.CURSED))
                         )
                     )
                     .conditionally(RandomChanceLootCondition.builder(0.05F))
-                    .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
-                supplier.pool(poolBuilder)
+                    .apply(EnchantedCountIncreaseLootFunction.builder(null, UniformLootNumberProvider.create(0f, 1.5f)).build())
+                builder.pool(poolBuilder)
             }
         }
         //Add cursed droplets to wither skeletons
-        LootTableEvents.MODIFY.register { _, _, id, supplier, _ ->
-            if (id.toString() == "minecraft:entities/wither_skeleton") {
+        LootTableEvents.MODIFY.register { key, builder, _ ->
+            if (key.value.toString() == "minecraft:entities/wither_skeleton") {
                 val poolBuilder = LootPool.Builder()
                     .rolls(ConstantLootNumberProvider.create(1f))
                     .with(ItemEntry.builder(ItemCompendium.CURSED_DROPLETS))
                     .conditionally(RandomChanceLootCondition.builder(0.1F))
-                    .apply(LootingEnchantLootFunction.builder(UniformLootNumberProvider.create(0f, 1.5f)).build())
-                supplier.pool(poolBuilder)
+                    .apply(EnchantedCountIncreaseLootFunction.builder(null, UniformLootNumberProvider.create(0f, 1.5f)).build())
+                builder.pool(poolBuilder)
             }
         }
     }

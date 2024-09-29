@@ -10,6 +10,8 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper
+import net.minecraft.server.MinecraftServer
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.PersistentState
 
@@ -50,10 +52,10 @@ class EntangledChestState : PersistentState() {
         )
     }
 
-    override fun writeNbt(tag: NbtCompound): NbtCompound {
+    override fun writeNbt(tag: NbtCompound, registryLookup: RegistryWrapper.WrapperLookup): NbtCompound {
         inventoryMap.forEach { (colorCode, inventory) ->
             val subTag = NbtCompound()
-            Inventories.writeNbt(subTag, inventory)
+            Inventories.writeNbt(subTag, inventory, registryLookup)
             tag.put(colorCode, subTag)
         }
         return tag
@@ -100,15 +102,27 @@ class EntangledChestState : PersistentState() {
     }
 
     companion object {
-        fun createFromTag(tag: NbtCompound): EntangledChestState {
-            val state = EntangledChestState()
-            tag.keys.forEach {
-                val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
-                Inventories.readNbt(tag.get(it) as NbtCompound, tempInventory)
-                state.inventoryMap[it] = tempInventory
-            }
-            return state
+
+        fun getPersistentState(server: MinecraftServer, key: String): EntangledChestState {
+            return server.overworld.persistentStateManager.getOrCreate(getPersistentStateType(), key)
         }
+
+        fun getPersistentStateType(): Type<EntangledChestState> {
+            return Type(
+                ::EntangledChestState,
+                { tag, lookup ->
+                    val state = EntangledChestState()
+                    tag.keys.forEach {
+                        val tempInventory = DefaultedList.ofSize(27, ItemStack.EMPTY)
+                        Inventories.readNbt(tag.get(it) as NbtCompound, tempInventory, lookup)
+                        state.inventoryMap[it] = tempInventory
+                    }
+                    return@Type state
+                },
+                null
+            )
+        }
+
     }
 
 }

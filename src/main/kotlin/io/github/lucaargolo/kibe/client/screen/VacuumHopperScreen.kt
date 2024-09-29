@@ -35,7 +35,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         val p = ((handler.processingTicks/handler.totalProcessingTicks.toFloat())*14).toInt()
         context.drawTexture(texture, startX+120, startY+37, 184, 0, 8, p)
