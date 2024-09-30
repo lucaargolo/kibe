@@ -8,18 +8,27 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtOps
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 
 object FluidHelper {
 
     fun readTank(tag: NbtCompound, tank: SingleVariantStorage<FluidVariant>) {
-        tank.variant = FluidVariant.fromNbt(tag.getCompound("variant"))
+        val optional = FluidVariant.CODEC.decode(NbtOps.INSTANCE, tag.getCompound("variant")).result()
+        if(optional.isPresent) {
+            tank.variant = optional.get().first
+        }else{
+            tank.variant = FluidVariant.blank()
+        }
         tank.amount = tag.getLong("amount")
     }
 
     fun writeTank(tag: NbtCompound, tank: SingleVariantStorage<FluidVariant>): NbtCompound {
-        tag.put("variant", tank.variant.toNbt())
+        val optional = FluidVariant.CODEC.encode(tank.variant, NbtOps.INSTANCE, NbtCompound()).result()
+        if(optional.isPresent) {
+            tag.put("variant", optional.get())
+        }
         tag.putLong("amount", tank.amount)
         return tag
     }

@@ -6,7 +6,7 @@ import net.minecraft.registry.Registries
 
 object EffectCompendium : RegistryCompendium<StatusEffect>(Registries.STATUS_EFFECT) {
 
-    val CURSED = register("cursed_effect", CursedEffect())
+    val CURSED = registerReference("cursed_effect", CursedEffect())
 
 }
 

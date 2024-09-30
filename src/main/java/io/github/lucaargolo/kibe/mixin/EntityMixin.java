@@ -19,12 +19,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class EntityMixin {
 
     @Shadow public abstract BlockPos getBlockPos();
-    @Shadow public World world;
-    @Shadow public abstract void teleport(double destX, double destY, double destZ);
+    @Shadow private World world;
 
     @Shadow private Vec3d pos;
 
     @Shadow public abstract boolean isSpectator();
+
+    @Shadow public abstract void requestTeleport(double destX, double destY, double destZ);
 
     @Inject(at = @At("HEAD"), method = "setSneaking")
     private void setSneaking(boolean sneaking, CallbackInfo info) {
@@ -36,7 +37,7 @@ public abstract class EntityMixin {
                 while(pos.getY() > world.getBottomY()) {
                     if(world.getBlockState(pos.down()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.down())) {
                         world.playSound(null, pos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
-                        teleport(this.pos.x, pos.down().getY()+1.15, this.pos.z);
+                        requestTeleport(this.pos.x, pos.down().getY()+1.15, this.pos.z);
                         break;
                     }else{
                         pos = pos.down();

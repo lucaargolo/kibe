@@ -40,10 +40,19 @@ tasks.compileKotlin {
 version = project["mod_version"]
 group = project["maven_group"]
 
+fun String.capitalize(): String {
+    return replaceFirstChar {
+        if (it.isLowerCase())
+            it.titlecase()
+        else
+            it.toString()
+    }
+}
+
 val environment: Map<String, String> = System.getenv()
 val releaseName = "${name.split("-").joinToString(" ") { it.capitalize() }} ${(version as String).split("+")[0]}"
 val releaseType = (version as String).split("+")[0].split("-").let { if(it.size > 1) if(it[1] == "BETA" || it[1] == "ALPHA") it[1] else "ALPHA" else "RELEASE" }
-val releaseFile = "${buildDir}/libs/${base.archivesName.get()}-${version}.jar"
+val releaseFile = "${layout.buildDirectory}/libs/${base.archivesName.get()}-${version}.jar"
 val cfGameVersion = (version as String).split("+")[1].let{ if(!project["minecraft_version"].contains("-") && project["minecraft_version"].startsWith(it)) project["minecraft_version"] else "$it-Snapshot"}
 
 fun getChangeLog(): String {
@@ -107,9 +116,6 @@ dependencies {
 
     modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
     include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
-
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project["rei_version"]}")
-    modImplementation("com.terraformersmc:modmenu:${project["modmenu_version"]}")
 }
 
 tasks.processResources {
@@ -168,7 +174,7 @@ curseforge {
     project(closureOf<CurseProject> {
         id = project["curseforge_id"]
         changelog = getChangeLog()
-        releaseType = this@Build_gradle.releaseType.toLowerCase()
+        releaseType = this@Build_gradle.releaseType.lowercase()
         addGameVersion(cfGameVersion)
         addGameVersion("Fabric")
 
@@ -202,7 +208,7 @@ modrinth {
 
     versionNumber.set(version as String)
     versionName.set(releaseName)
-    versionType.set(releaseType.toLowerCase())
+    versionType.set(releaseType.lowercase())
 
     uploadFile.set(tasks.remapJar.get())
 

@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.recipes.vacuum
 
 import io.github.lucaargolo.kibe.blockentity.VacuumHopperEntity
@@ -9,32 +7,31 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.Recipe
-import net.minecraft.registry.DynamicRegistryManager
-import net.minecraft.util.Identifier
+import net.minecraft.registry.RegistryWrapper
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput: Long, val input: Ingredient, val output: ItemStack) : Recipe<VacuumHopperEntity> {
+class VacuumHopperRecipe(val ticks: Int, val xpInput: Long, val input: Ingredient, val output: ItemStack) : Recipe<VacuumHopperEntity.Input> {
 
-    override fun getId() = id
-
-    override fun matches(inv: VacuumHopperEntity, world: World): Boolean {
-        val inputStack = inv.getStack(9)
-        val hasSpace = inv.getStack(10).let {
-            it.isEmpty || (ItemStack.canCombine(it, output) && it.count < it.maxCount)
+    override fun matches(input: VacuumHopperEntity.Input, world: World): Boolean {
+        val parent = input.getParent()
+        val inputStack = parent.getStack(9)
+        val hasSpace = parent.getStack(10).let {
+            it.isEmpty || (ItemStack.areItemsAndComponentsEqual(it, output) && it.count < it.maxCount)
         }
-        return input.test(inputStack) && inv.tank.amount >= xpInput * 81 && hasSpace
+        return this.input.test(inputStack) && parent.tank.amount >= xpInput * 81 && hasSpace
     }
 
-    override fun craft(inv: VacuumHopperEntity, registryManager: DynamicRegistryManager): ItemStack {
-        inv.getStack(9).decrement(1)
-        inv.tank.amount -= xpInput * 81
-        if(inv.getStack(10).isEmpty) {
-            inv.setStack(10, output.copy())
+    override fun craft(input: VacuumHopperEntity.Input, lookup: RegistryWrapper.WrapperLookup): ItemStack {
+        val parent = input.getParent()
+        parent.getStack(9).decrement(1)
+        parent.tank.amount -= xpInput * 81
+        if(parent.getStack(10).isEmpty) {
+            parent.setStack(10, output.copy())
         }else{
-            inv.getStack(10).increment(1)
+            parent.getStack(10).increment(1)
         }
-        inv.markDirty()
+        parent.markDirty()
         return output.copy()
     }
 
@@ -42,9 +39,9 @@ class VacuumHopperRecipe(private val id: Identifier, val ticks: Int, val xpInput
 
     override fun fits(width: Int, height: Int) = true
 
-    override fun getSerializer() = RecipeSerializerCompendium.VACUUM_HOPPER
+    override fun getResult(registriesLookup: RegistryWrapper.WrapperLookup): ItemStack = output
 
-    override fun getOutput(registryManager: DynamicRegistryManager): ItemStack = output
+    override fun getSerializer() = RecipeSerializerCompendium.VACUUM_HOPPER
 
     override fun createIcon(): ItemStack = Items.EXPERIENCE_BOTTLE.defaultStack
 

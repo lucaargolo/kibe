@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.client.model
 
 import io.github.lucaargolo.kibe.block.EntangledChest
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
@@ -12,10 +13,8 @@ import net.minecraft.client.render.model.json.JsonUnbakedModel
 import net.minecraft.client.render.model.json.ModelOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
-import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.item.ItemStack
-import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -44,11 +43,11 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         val emitter = context.emitter
 
         context.pushTransform { quad ->
-            quad.spriteColor(0, color, color, color, color)
+            quad.color(color, color, color, color)
             true
         }
 
-        val background = ModelIdentifier(ModIdentifier.of("entangled_bag_background"), "inventory")
+        val background = ModIdentifier.of("item/entangled_bag_background")
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)
@@ -56,10 +55,10 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         val core =
-            if(stack.hasNbt() && stack.nbt!!.contains("key") && stack.nbt!!.getString("key") != EntangledChest.DEFAULT_KEY)
-                ModelIdentifier(ModIdentifier.of("entangled_bag_diamond_core"), "inventory")
+            if(stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledChest.DEFAULT_KEY)
+                ModIdentifier.of("item/entangled_bag_diamond_core")
             else
-                ModelIdentifier(ModIdentifier.of("entangled_bag_gold_core"), "inventory")
+                ModIdentifier.of("item/entangled_bag_gold_core")
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
 
         coreModel.getQuads(null, null, randSupplier.get()).forEach { q ->
@@ -70,12 +69,11 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         context.popTransform()
 
-        if(stack.hasNbt() && stack.nbt!!.contains("rune1")) {
+        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
             var sumr = 0
             var sumg = 0
             var sumb = 0
-            (1..8).forEach {
-                val dye = DyeColor.byName(stack.nbt!!.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dye ->
                 val dyeColor = Color(dye.mapColor.color)
                 sumr += dyeColor.red
                 sumg += dyeColor.green
@@ -84,10 +82,10 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             color = Color(sumr/8, sumg/8, sumb/8, 255).rgb
         }
         context.pushTransform { quad ->
-            quad.spriteColor(0, color, color, color, color)
+            quad.color(color, color, color, color)
             true
         }
-        val ring = ModelIdentifier(ModIdentifier.of("entangled_ring"), "inventory")
+        val ring = ModIdentifier.of("item/entangled_ring")
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)
@@ -101,7 +99,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     @Throws(IOException::class, NoSuchElementException::class)
     private fun getReaderForResource(location: Identifier): Reader {
-        val file = Identifier(location.namespace, location.path + ".json")
+        val file = Identifier.of(location.namespace, location.path + ".json")
         val resource = MinecraftClient.getInstance().resourceManager.getResource(file).get()
         return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
     }

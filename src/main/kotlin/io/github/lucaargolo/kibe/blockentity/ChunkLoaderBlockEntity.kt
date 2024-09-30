@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.KibeMod
-import io.github.lucaargolo.kibe.data.ChunkLoaderState
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
 import net.minecraft.nbt.NbtCompound

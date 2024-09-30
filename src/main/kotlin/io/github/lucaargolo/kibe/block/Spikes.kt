@@ -34,8 +34,7 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
         override fun asString() = name.lowercase()
 
         companion object {
-            @JvmStatic
-            val CODEC = StringIdentifiable.createCodec(Type::values);
+            val CODEC: StringIdentifiable.BasicCodec<Type> = StringIdentifiable.createCodec(Type::values);
         }
     }
 

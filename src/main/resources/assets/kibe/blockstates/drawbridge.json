@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "kibe:block/drawbridge"
+    }
+  }
+}

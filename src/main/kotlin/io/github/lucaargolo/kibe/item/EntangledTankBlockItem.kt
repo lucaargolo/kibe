@@ -1,32 +1,28 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.item
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledTank
-import io.github.lucaargolo.kibe.data.EntangledTankState
+import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.utils.helper.FluidHelper
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
-import net.minecraft.client.item.TooltipContext
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
+import net.minecraft.item.tooltip.TooltipType
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Rarity
-import net.minecraft.world.World
 
 class EntangledTankBlockItem(settings: Settings): BlockItem(BlockCompendium.ENTANGLED_TANK, settings.rarity(Rarity.RARE)) {
 
-    override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        super.appendTooltip(stack, world, tooltip, context)
-        val tag = if(stack.hasNbt() && stack.nbt!!.contains("BlockEntityTag") ) {
-            stack.orCreateNbt.get("BlockEntityTag") as NbtCompound
-        }else{
+    override fun appendTooltip(stack: ItemStack, context: TooltipContext?, tooltip: MutableList<Text>, type: TooltipType?) {
+        super.appendTooltip(stack, context, tooltip, type)
+        val tag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: let{
             val newTag = NbtCompound()
             newTag.putString("key", EntangledTank.DEFAULT_KEY)
             (1..8).forEach {

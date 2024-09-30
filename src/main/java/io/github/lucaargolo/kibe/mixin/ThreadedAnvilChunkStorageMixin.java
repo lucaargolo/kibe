@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.data.ChunkLoaderState;
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState;
+import net.minecraft.server.world.ServerChunkLoadingManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.math.ChunkPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,14 +11,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ThreadedAnvilChunkStorage.class)
+@Mixin(ServerChunkLoadingManager.class)
 public class ThreadedAnvilChunkStorageMixin {
 
     @Shadow @Final ServerWorld world;
 
     @Inject(at = @At("HEAD"), method = "shouldTick", cancellable = true)
     public void shouldTick(ChunkPos pos, CallbackInfoReturnable<Boolean> info) {
-        ChunkLoaderState state = world.getServer().getOverworld().getPersistentStateManager().getOrCreate( tag -> ChunkLoaderState.Companion.createFromTag(tag, world.getServer()), () -> new ChunkLoaderState(world.getServer()) , "kibe_chunk_loaders");
+        ChunkLoaderState state = ChunkLoaderState.Companion.getPersistentState(world.getServer());
         boolean bl = state.isItBeingChunkLoaded(world, pos);
         if(bl) info.setReturnValue(true);
     }

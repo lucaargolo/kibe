@@ -1,42 +1,42 @@
 package io.github.lucaargolo.kibe.effect
 
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.attribute.AttributeContainer
 import net.minecraft.entity.attribute.EntityAttributeModifier
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.entity.effect.StatusEffectCategory
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.util.Identifier
 
 class CursedEffect: StatusEffect(StatusEffectCategory.HARMFUL, 3484199) {
 
     init {
         addAttributeModifier(
             EntityAttributes.GENERIC_MOVEMENT_SPEED,
-            "91AEAA56-376B-4498-935B-2F7F68070635",
+            Identifier.ofVanilla("effect.speed"),
             1.0,
-            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
+            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         )
         addAttributeModifier(
             EntityAttributes.GENERIC_ATTACK_SPEED,
-            "AF8B6E3F-3328-4C0A-AA36-5BA2BB9DBEF3",
+            Identifier.ofVanilla("effect.haste"),
             1.0,
-            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
+            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         )
         addAttributeModifier(
             EntityAttributes.GENERIC_ATTACK_DAMAGE,
-            "648D7064-6A60-4F59-8ABE-C2C23A6DD7A9",
+            Identifier.ofVanilla("effect.strength"),
             1.0,
-            EntityAttributeModifier.Operation.MULTIPLY_TOTAL)
+            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+        )
     }
 
-
-    override fun onApplied(entity: LivingEntity, attributes: AttributeContainer?, amplifier: Int) {
+    override fun onApplied(entity: LivingEntity, amplifier: Int) {
         if(entity is PlayerEntity) {
-            entity.removeStatusEffect(this)
+            entity.removeStatusEffect(EffectCompendium.CURSED)
         }else{
-            entity.absorptionAmount = entity.absorptionAmount + entity.health
-            super.onApplied(entity, attributes, amplifier)
+            entity.absorptionAmount += entity.health
+            super.onApplied(entity, amplifier)
         }
     }
 

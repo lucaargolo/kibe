@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.World
 
-@Suppress("UnstableApiUsage", "DEPRECATION")
+
 class TankBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(BlockEntityCompendium.TANK, pos, state) {
 
     var lastRenderedFluid = 0f

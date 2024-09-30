@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.client.blockentity
 
 import io.github.lucaargolo.kibe.blockentity.TankBlockEntity

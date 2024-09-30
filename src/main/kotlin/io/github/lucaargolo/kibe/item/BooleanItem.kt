@@ -1,9 +1,10 @@
 package io.github.lucaargolo.kibe.item
 
-import net.minecraft.client.item.TooltipContext
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.item.tooltip.TooltipType
 import net.minecraft.text.Text
 
 import net.minecraft.util.Hand
@@ -14,8 +15,8 @@ open class BooleanItem(settings: Settings): Item(settings) {
 
     override fun hasGlint(stack: ItemStack): Boolean = isEnabled(stack)
 
-    override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        super.appendTooltip(stack, world, tooltip, context)
+    override fun appendTooltip(stack: ItemStack, context: TooltipContext?, tooltip: MutableList<Text>, type: TooltipType?) {
+        super.appendTooltip(stack, context, tooltip, type)
         if (isEnabled(stack)) {
             appendEnabledTooltip(stack, tooltip)
         } else {
@@ -42,15 +43,15 @@ open class BooleanItem(settings: Settings): Item(settings) {
     }
 
     open fun isEnabled(stack: ItemStack): Boolean {
-        return stack.nbt?.getBoolean(ENABLED) ?: false
+        return stack.get(ComponentTypeCompendium.ENABLED) ?: false
     }
 
     open fun enable(stack: ItemStack) {
-        stack.orCreateNbt.putBoolean(ENABLED, true)
+        stack.set(ComponentTypeCompendium.ENABLED, true)
     }
 
     open fun disable(stack: ItemStack) {
-        stack.orCreateNbt.putBoolean(ENABLED, false)
+        stack.set(ComponentTypeCompendium.ENABLED, false)
     }
 
     open fun toggle(stack: ItemStack) {
@@ -59,10 +60,6 @@ open class BooleanItem(settings: Settings): Item(settings) {
         }else{
             enable(stack)
         }
-    }
-
-    companion object {
-        const val ENABLED = "enabled"
     }
 
 }

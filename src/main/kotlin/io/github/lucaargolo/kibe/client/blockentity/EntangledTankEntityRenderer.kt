@@ -1,12 +1,10 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.client.blockentity
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
-import io.github.lucaargolo.kibe.data.EntangledTankState
+import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.item.Rune
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient

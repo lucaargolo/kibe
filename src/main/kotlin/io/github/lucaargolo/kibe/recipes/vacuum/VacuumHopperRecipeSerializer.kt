@@ -1,42 +1,41 @@
 package io.github.lucaargolo.kibe.recipes.vacuum
 
-import com.google.gson.JsonObject
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import io.github.lucaargolo.kibe.KibeMod
 import net.minecraft.item.ItemStack
-import net.minecraft.network.PacketByteBuf
+import net.minecraft.network.RegistryByteBuf
+import net.minecraft.network.codec.PacketCodec
+import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.RecipeSerializer
-import net.minecraft.registry.Registries
-import net.minecraft.util.Identifier
 
 class VacuumHopperRecipeSerializer : RecipeSerializer<VacuumHopperRecipe> {
 
-    override fun write(buf: PacketByteBuf, recipe: VacuumHopperRecipe) {
-        buf.writeInt(recipe.ticks)
-        buf.writeLong(recipe.xpInput)
-        recipe.input.write(buf)
-        buf.writeItemStack(recipe.output)
+    override fun codec(): MapCodec<VacuumHopperRecipe> = CODEC
+
+    override fun packetCodec(): PacketCodec<RegistryByteBuf, VacuumHopperRecipe> = PACKET_CODEC
+
+    companion object {
+        private val CODEC = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.INT.fieldOf("ticks").forGetter(VacuumHopperRecipe::ticks),
+                Codec.LONG.fieldOf("xpInput").forGetter(VacuumHopperRecipe::xpInput),
+                Ingredient.DISALLOW_EMPTY_CODEC.fieldOf("input").forGetter(VacuumHopperRecipe::input),
+                ItemStack.VALIDATED_CODEC.fieldOf("output").forGetter(VacuumHopperRecipe::output),
+            ).apply(instance, ::VacuumHopperRecipe)
+        }
+
+        private val PACKET_CODEC = PacketCodec.tuple(
+            PacketCodecs.INTEGER, VacuumHopperRecipe::ticks,
+            KibeMod.LONG_CODEC, VacuumHopperRecipe::xpInput,
+            Ingredient.PACKET_CODEC, VacuumHopperRecipe::input,
+            ItemStack.PACKET_CODEC, VacuumHopperRecipe::output,
+            ::VacuumHopperRecipe
+        )
     }
 
-    override fun read(id: Identifier, json: JsonObject): VacuumHopperRecipe {
-        val ticks = json.getAsJsonPrimitive("ticks").asInt
-        val xpInput = json.getAsJsonPrimitive("xp").asLong
-        val input = Ingredient.fromJson(json.get("input"))
-        val output: ItemStack = json.getAsJsonPrimitive("output").asString.let { itemId ->
-            val item = Registries.ITEM.getOrEmpty(Identifier.of(itemId))
-            if(item.isPresent) {
-                ItemStack(item.get())
-            } else null
-        } ?: ItemStack.EMPTY
-        return VacuumHopperRecipe(id, ticks, xpInput, input, output)
-    }
 
-    override fun read(id: Identifier, buf: PacketByteBuf): VacuumHopperRecipe {
-        val ticks = buf.readInt()
-        val xpInput = buf.readLong()
-        val input = Ingredient.fromPacket(buf)
-        val output = buf.readItemStack()
-
-        return VacuumHopperRecipe(id, ticks, xpInput, input, output)
-    }
 
 }

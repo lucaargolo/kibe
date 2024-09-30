@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.client.screen.ChunkLoaderScreen
-import io.github.lucaargolo.kibe.data.ChunkLoaderState
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker

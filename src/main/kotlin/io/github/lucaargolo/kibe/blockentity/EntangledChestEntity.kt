@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.block.EntangledChest
-import io.github.lucaargolo.kibe.data.EntangledChestState
+import io.github.lucaargolo.kibe.data.state.EntangledChestState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity

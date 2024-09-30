@@ -31,6 +31,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public abstract ItemStack getStackInHand(Hand hand);
 
+    @Shadow public abstract boolean teleport(double x, double y, double z, boolean particleEffects);
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -59,7 +61,7 @@ public abstract class LivingEntityMixin extends Entity {
             while(pos.getY() < getWorld().getTopY()) {
                 if(getWorld().getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(getWorld(), pos.up())) {
                     getWorld().playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, getWorld().random.nextFloat() * 0.25F + 0.6F);
-                    this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z);
+                    this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z, false);
                     break;
                 }else{
                     pos = pos.up();

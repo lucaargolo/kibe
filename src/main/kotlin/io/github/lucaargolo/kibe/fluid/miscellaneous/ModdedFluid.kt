@@ -36,7 +36,7 @@ abstract class ModdedFluid: FlowableFluid() {
         return false
     }
 
-    override fun getFlowSpeed(world: WorldView?): Int {
+    override fun getMaxFlowDistance(world: WorldView?): Int {
         return 2
     }
 

@@ -4,6 +4,7 @@ package io.github.lucaargolo.kibe.client
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.effect.EffectCompendium
 import io.github.lucaargolo.kibe.entity.EntityCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
@@ -44,6 +45,7 @@ object KibeModClient: ClientModInitializer {
         FluidCompendium.initializeClient()
         BlockCompendium.initializeClient()
         ItemCompendium.initializeClient()
+        ComponentTypeCompendium.initializeClient()
         BlockEntityCompendium.initializeClient()
         ScreenHandlerCompendium.initializeClient()
         EntityCompendium.initializeClient()
@@ -65,57 +67,57 @@ object KibeModClient: ClientModInitializer {
 
     fun initExtraModels() {
         ModelLoadingPlugin.register { out ->
-            out.addModels(ModIdentifier.of("redstone_timer_structure")) // not inventory
-            out.addModels(ModIdentifier.of("glider_active"))
-            out.addModels(ModIdentifier.of("glider_handle"))
-            out.addModels(ModIdentifier.of("white_glider_active"))
-            out.addModels(ModIdentifier.of("white_glider_inactive"))
-            out.addModels(ModIdentifier.of("orange_glider_active"))
-            out.addModels(ModIdentifier.of("orange_glider_inactive"))
-            out.addModels(ModIdentifier.of("magenta_glider_active"))
-            out.addModels(ModIdentifier.of("magenta_glider_inactive"))
-            out.addModels(ModIdentifier.of("light_blue_glider_active"))
-            out.addModels(ModIdentifier.of("light_blue_glider_inactive"))
-            out.addModels(ModIdentifier.of("yellow_glider_active"))
-            out.addModels(ModIdentifier.of("yellow_glider_inactive"))
-            out.addModels(ModIdentifier.of("lime_glider_active"))
-            out.addModels(ModIdentifier.of("lime_glider_inactive"))
-            out.addModels(ModIdentifier.of("pink_glider_active"))
-            out.addModels(ModIdentifier.of("pink_glider_inactive"))
-            out.addModels(ModIdentifier.of("gray_glider_active"))
-            out.addModels(ModIdentifier.of("gray_glider_inactive"))
-            out.addModels(ModIdentifier.of("light_gray_glider_active"))
-            out.addModels(ModIdentifier.of("light_gray_glider_inactive"))
-            out.addModels(ModIdentifier.of("cyan_glider_active"))
-            out.addModels(ModIdentifier.of("cyan_glider_inactive"))
-            out.addModels(ModIdentifier.of("blue_glider_active"))
-            out.addModels(ModIdentifier.of("blue_glider_inactive"))
-            out.addModels(ModIdentifier.of("purple_glider_active"))
-            out.addModels(ModIdentifier.of("purple_glider_inactive"))
-            out.addModels(ModIdentifier.of("green_glider_active"))
-            out.addModels(ModIdentifier.of("green_glider_inactive"))
-            out.addModels(ModIdentifier.of("brown_glider_active"))
-            out.addModels(ModIdentifier.of("brown_glider_inactive"))
-            out.addModels(ModIdentifier.of("red_glider_active"))
-            out.addModels(ModIdentifier.of("red_glider_inactive"))
-            out.addModels(ModIdentifier.of("black_glider_active"))
-            out.addModels(ModIdentifier.of("black_glider_inactive"))
-            out.addModels(ModIdentifier.of("entangled_ring"))
-            out.addModels(ModIdentifier.of("entangled_bag_background"))
-            out.addModels(ModIdentifier.of("entangled_bag_gold_core"))
-            out.addModels(ModIdentifier.of("entangled_bag_diamond_core"))
-            out.addModels(ModIdentifier.of("entangled_bucket_fluid"))
-            out.addModels(ModIdentifier.of("entangled_bucket_background"))
-            out.addModels(ModIdentifier.of("entangled_bucket_foreground"))
-            out.addModels(ModIdentifier.of("entangled_bucket_gold_core"))
-            out.addModels(ModIdentifier.of("entangled_bucket_diamond_core"))
+            out.addModels(ModIdentifier.of("block/redstone_timer_structure")) // not inventory
+            out.addModels(ModIdentifier.of("item/glider_active"))
+            out.addModels(ModIdentifier.of("item/glider_handle"))
+            out.addModels(ModIdentifier.of("item/white_glider_active"))
+            out.addModels(ModIdentifier.of("item/white_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/orange_glider_active"))
+            out.addModels(ModIdentifier.of("item/orange_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/magenta_glider_active"))
+            out.addModels(ModIdentifier.of("item/magenta_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/light_blue_glider_active"))
+            out.addModels(ModIdentifier.of("item/light_blue_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/yellow_glider_active"))
+            out.addModels(ModIdentifier.of("item/yellow_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/lime_glider_active"))
+            out.addModels(ModIdentifier.of("item/lime_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/pink_glider_active"))
+            out.addModels(ModIdentifier.of("item/pink_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/gray_glider_active"))
+            out.addModels(ModIdentifier.of("item/gray_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/light_gray_glider_active"))
+            out.addModels(ModIdentifier.of("item/light_gray_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/cyan_glider_active"))
+            out.addModels(ModIdentifier.of("item/cyan_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/blue_glider_active"))
+            out.addModels(ModIdentifier.of("item/blue_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/purple_glider_active"))
+            out.addModels(ModIdentifier.of("item/purple_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/green_glider_active"))
+            out.addModels(ModIdentifier.of("item/green_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/brown_glider_active"))
+            out.addModels(ModIdentifier.of("item/brown_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/red_glider_active"))
+            out.addModels(ModIdentifier.of("item/red_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/black_glider_active"))
+            out.addModels(ModIdentifier.of("item/black_glider_inactive"))
+            out.addModels(ModIdentifier.of("item/entangled_ring"))
+            out.addModels(ModIdentifier.of("item/entangled_bag_background"))
+            out.addModels(ModIdentifier.of("item/entangled_bag_gold_core"))
+            out.addModels(ModIdentifier.of("item/entangled_bag_diamond_core"))
+            out.addModels(ModIdentifier.of("item/entangled_bucket_fluid"))
+            out.addModels(ModIdentifier.of("item/entangled_bucket_background"))
+            out.addModels(ModIdentifier.of("item/entangled_bucket_foreground"))
+            out.addModels(ModIdentifier.of("item/entangled_bucket_gold_core"))
+            out.addModels(ModIdentifier.of("item/entangled_bucket_diamond_core"))
         }
     }
 
     fun initTooltipComponents() {
         TooltipComponentCallback.EVENT.register { data ->
             if(data is CoolerBlockItem.CoolerTooltipData) {
-                return@register CoolerBlockItem.CoolerTooltipComponent(data)
+                return@register CoolerBlockItem.CoolerTooltipComponent(data.contents)
             }else{
                 return@register null
             }

@@ -15,9 +15,11 @@ import net.minecraft.screen.slot.Slot
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
+@Suppress("DEPRECATION")
 class WitherBuilderScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val entity: WitherBuilderBlockEntity, private val context: ScreenHandlerContext): ScreenHandler(ScreenHandlerCompendium.WITHER_BUILDER, syncId)  {
 
     val inventory = BlockEntityInventory(this, entity)
+
 
     init {
         checkSize(inventory, 7)

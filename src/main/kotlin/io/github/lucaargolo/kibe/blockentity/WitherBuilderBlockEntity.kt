@@ -59,6 +59,7 @@ class WitherBuilderBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(Bl
         return c.toIntArray()
     }
 
+    @Suppress("DEPRECATION")
     override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?): Boolean {
         return if((0..3).contains(slot)) {
             (stack.item as? BlockItem)?.block?.registryEntry?.isIn(BlockTags.WITHER_SUMMON_BASE_BLOCKS) ?: false

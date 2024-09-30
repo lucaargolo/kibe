@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.item
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
@@ -13,20 +11,20 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext
-import net.minecraft.client.item.TooltipContext
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
+import net.minecraft.item.tooltip.TooltipType
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import net.minecraft.world.World
 
 class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, settings) {
 
-    override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        super.appendTooltip(stack, world, tooltip, context)
-        val stackTag = stack.nbt ?: return
-        val blockEntityTag = stackTag.getCompound("BlockEntityTag")
+    override fun appendTooltip(stack: ItemStack, context: TooltipContext?, tooltip: MutableList<Text>, type: TooltipType?) {
+        super.appendTooltip(stack, context, tooltip, type)
+        val blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
         val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
             override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
             override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
@@ -55,9 +53,9 @@ class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, setting
                     var newStack: ItemStack? = null
                     if(context.amount > 1) {
                         newStack = stack.copy()
-                        newStack.orCreateNbt.put("BlockEntityTag", FluidHelper.writeTank(NbtCompound(), this))
+                        newStack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(FluidHelper.writeTank(NbtCompound(), this)))
                     }else{
-                        stack.orCreateNbt.put("BlockEntityTag", FluidHelper.writeTank(NbtCompound(), this))
+                        stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(FluidHelper.writeTank(NbtCompound(), this)))
                     }
                     Transaction.openNested(transaction).also {
                         context.exchange(ItemVariant.of(stack), Long.MAX_VALUE, it)
@@ -68,8 +66,8 @@ class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, setting
                     }.commit()
                 }
             }
-            if(stack.hasNbt() && stack.orCreateNbt.contains("BlockEntityTag")) {
-                FluidHelper.readTank(stack.orCreateNbt.getCompound("BlockEntityTag"), tank)
+            if(stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) {
+                FluidHelper.readTank(stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)!!.copyNbt(), tank)
             }
             return tank
         }

@@ -1,6 +1,4 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
-package io.github.lucaargolo.kibe.data
+package io.github.lucaargolo.kibe.data.state
 
 import io.github.lucaargolo.kibe.utils.helper.FluidHelper
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants

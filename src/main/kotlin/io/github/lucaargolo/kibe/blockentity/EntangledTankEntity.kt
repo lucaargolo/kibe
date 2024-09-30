@@ -1,10 +1,10 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage", "UNUSED_PARAMETER")
+@file:Suppress("DEPRECATION", "UNUSED_PARAMETER")
 
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledTank
-import io.github.lucaargolo.kibe.data.EntangledTankState
+import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.helper.FluidHelper
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant

@@ -23,6 +23,7 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
         val target = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
         val areaOfEffect = Box.from(target).expand(KibeMod.CONFIG.miscellaneousModule.magnetRange)
 
+        @Suppress("DEPRECATION")
         if (world.getStatesInBox(areaOfEffect).anyMatch { it.block.registryEntry.isIn(MAGNET_INHIBITOR_TAG) }) return
 
         world.getOtherEntities(player, areaOfEffect) { ((it is ItemEntity && !it.cannotPickup()) || it is ExperienceOrbEntity) }

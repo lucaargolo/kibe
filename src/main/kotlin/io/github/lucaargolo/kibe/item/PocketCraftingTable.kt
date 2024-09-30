@@ -21,7 +21,7 @@ class PocketCraftingTable(settings: Settings): Item(settings) {
             user.openHandledScreen(SimpleNamedScreenHandlerFactory({ i, playerInventory, _ ->
                 object: CraftingScreenHandler(i, playerInventory)  {
                     override fun onContentChanged(inventory: Inventory?) {
-                        updateResult(this, world, (this as CraftingTableContainerMixin).player, (this as CraftingTableContainerMixin).input, (this as CraftingTableContainerMixin).result)
+                        updateResult(this, world, (this as CraftingTableContainerMixin).player, (this as CraftingTableContainerMixin).input, (this as CraftingTableContainerMixin).result, null)
                     }
 
                     override fun onClosed(player: PlayerEntity?) {

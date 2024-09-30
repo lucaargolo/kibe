@@ -60,7 +60,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val timerTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/redstone_timer_"+blockEntity.current/4))
         val timerConsumer = timerTexture.getVertexConsumer(vertexConsumers, { texture: Identifier? -> RenderLayer.getEntitySolid(texture) })
 
-        Direction.values().forEach { direction ->
+        Direction.entries.forEach { direction ->
             //Render selector
             matrices.push()
             matrices.translate(0.5, 0.5, 0.5)

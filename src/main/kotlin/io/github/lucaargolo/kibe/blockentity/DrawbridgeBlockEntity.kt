@@ -13,6 +13,7 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registries
 import net.minecraft.registry.RegistryWrapper.WrapperLookup
@@ -52,7 +53,8 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
             val itemStack = inventory[i]
             val nbtCompound = NbtCompound()
             nbtCompound.putByte("Slot", i.toByte())
-            itemStack.encode(registryLookup, nbtCompound)
+            if(!itemStack.isEmpty)
+                itemStack.encode(registryLookup, nbtCompound)
             nbtList.add(nbtCompound)
         }
         tag.put("Items", nbtList)
@@ -67,7 +69,19 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
         }
         extendedBlock = Registries.BLOCK.get(Identifier.of(tag.getString("extendedBlock")))
         extendedBlocks = tag.getInt("extendedBlocks")
-        Inventories.readNbt(tag, inventory, registryLookup)
+        val nbtList: NbtList = tag.getList("Items", NbtElement.COMPOUND_TYPE.toInt())
+
+        for (i in nbtList.indices) {
+            val nbtCompound = nbtList.getCompound(i)
+            val j = nbtCompound.getByte("Slot").toInt() and 255
+            if (j < inventory.size) {
+                if(nbtCompound.contains("id")) {
+                    inventory[j] = ItemStack.fromNbt(registryLookup, nbtCompound).orElse(ItemStack.EMPTY)
+                }else{
+                    inventory[j] = ItemStack.EMPTY
+                }
+            }
+        }
     }
 
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {

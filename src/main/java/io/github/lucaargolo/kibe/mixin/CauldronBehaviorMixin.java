@@ -13,12 +13,13 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -37,12 +38,13 @@ public interface CauldronBehaviorMixin {
 
     @Inject(at = @At("TAIL"), method = "registerBehavior")
     private static void registerWoodenBucketBehavior(CallbackInfo ci) {
-        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.put(ItemCompendium.INSTANCE.getWOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
+        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map().put(ItemCompendium.INSTANCE.getWOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
             CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(ItemCompendium.INSTANCE.getWATER_WOODEN_BUCKET()), (statex) -> statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
         );
     }
 
-    private static ActionResult fillCauldronWithWoodenBucket(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
+    @Unique
+    private static ItemActionResult fillCauldronWithWoodenBucket(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
         if (!world.isClient) {
             Item item = stack.getItem();
             player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(ItemCompendium.INSTANCE.getWOODEN_BUCKET())));
@@ -53,7 +55,7 @@ public interface CauldronBehaviorMixin {
             world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         }
 
-        return ActionResult.success(world.isClient);
+        return ItemActionResult.success(world.isClient);
     }
 
 }

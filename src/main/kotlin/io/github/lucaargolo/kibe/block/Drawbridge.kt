@@ -63,8 +63,6 @@ class Drawbridge(settings: Settings): BlockWithEntity(settings) {
         return output
     }
 
-
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {

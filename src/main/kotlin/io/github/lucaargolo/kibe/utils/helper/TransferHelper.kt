@@ -17,13 +17,14 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.DyeColor
 
-@Suppress("UnstableApiUsage")
 object TransferHelper {
 
     fun initialize() {
@@ -58,28 +59,26 @@ object TransferHelper {
         }
         FluidStorage.ITEM.registerForItems({ stack, context -> TankBlockItem.getFluidStorage(stack, context) }, ItemCompendium.TANK)
         FluidStorage.ITEM.registerForItems({ stack, _ ->
-            var tag = EntangledBucket.getTag(stack)
-            if (tag.contains("BlockEntityTag")) {
-                tag = tag.getCompound("BlockEntityTag")
-            }
+            val tag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
+            val key = tag.getString("key")
             var colorCode = ""
             (1..8).forEach {
                 val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
                 colorCode += dc.id.let { int -> Integer.toHexString(int) }
             }
-            tag.putString("colorCode", colorCode)
 
+            @Suppress("DEPRECATION")
             FabricLoader.getInstance().gameInstance.let {
                 if (KibeMod.CLIENT && it is MinecraftClient) {
                     if (it.isOnThread) {
-                        EntangledBucket.getFluidInv(null, tag)
+                        EntangledBucket.getFluidInv(null, key, colorCode)
                     } else if (it.isIntegratedServerRunning && it.server?.isOnThread == true) {
-                        EntangledBucket.getFluidInv(it.server?.overworld, tag)
+                        EntangledBucket.getFluidInv(it.server?.overworld, key, colorCode)
                     } else {
                         null
                     }
                 } else if (it is MinecraftServer) {
-                    EntangledBucket.getFluidInv(it.overworld, tag)
+                    EntangledBucket.getFluidInv(it.overworld, key, colorCode)
                 } else {
                     null
                 }

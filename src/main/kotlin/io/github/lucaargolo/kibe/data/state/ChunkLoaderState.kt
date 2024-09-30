@@ -1,4 +1,4 @@
-package io.github.lucaargolo.kibe.data
+package io.github.lucaargolo.kibe.data.state
 
 import io.github.lucaargolo.kibe.block.ChunkLoader
 import io.github.lucaargolo.kibe.blockentity.ChunkLoaderBlockEntity

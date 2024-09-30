@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.data.ChunkLoaderState;
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.server.MinecraftServer;
@@ -10,6 +10,7 @@ import net.minecraft.util.math.ChunkPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -20,11 +21,13 @@ public class ServerWorldMixin {
 
     @Shadow @Final private MinecraftServer server;
 
+    @Unique
     private ChunkLoaderState cachedChunkLoaderState = null;
 
+    @Unique
     private ChunkLoaderState getCachedChunkLoaderState() {
         if(cachedChunkLoaderState == null) {
-            cachedChunkLoaderState = this.server.getOverworld().getPersistentStateManager().getOrCreate(tag -> ChunkLoaderState.Companion.createFromTag(tag, this.server), () -> new ChunkLoaderState(this.server),"kibe_chunk_loaders");
+            cachedChunkLoaderState = ChunkLoaderState.Companion.getPersistentState(server);
         }
         return cachedChunkLoaderState;
     }

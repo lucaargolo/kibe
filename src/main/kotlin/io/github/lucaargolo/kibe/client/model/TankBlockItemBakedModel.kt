@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.client.model
 
 import io.github.lucaargolo.kibe.utils.ModIdentifier
@@ -21,7 +19,9 @@ import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -50,8 +50,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         (tankBlockModel as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 
-        val stackTag = stack.orCreateNbt
-        val blockEntityTag = stackTag.getCompound("BlockEntityTag")
+        val blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
 
         val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
             override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
@@ -70,7 +69,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255)).rgb
 
         context.pushTransform { quad ->
-            quad.spriteColor(0, color, color, color, color)
+            quad.color(color, color, color, color)
             true
         }
 
@@ -89,8 +88,8 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun QuadEmitter.draw(side: Direction, sprite: Sprite, left: Float, bottom: Float, right: Float, top: Float, depth: Float) {
         square(side, left, bottom, right, top, depth)
-        spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV)
-        spriteColor(0, -1, -1, -1, -1)
+        spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+        color(-1, -1, -1, -1)
         emit()
     }
 
@@ -98,7 +97,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     @Throws(IOException::class, NoSuchElementException::class)
     private fun getReaderForResource(location: Identifier): Reader {
-        val file = Identifier(location.namespace, location.path + ".json")
+        val file = Identifier.of(location.namespace, location.path + ".json")
         val resource = MinecraftClient.getInstance().resourceManager.getResource(file).get()
         return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
     }

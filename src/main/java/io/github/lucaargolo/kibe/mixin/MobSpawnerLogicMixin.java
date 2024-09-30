@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.block.CursedDirt;
+import net.minecraft.block.spawner.MobSpawnerLogic;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.ladysnake.pal.PlayerAbility;
-import io.github.ladysnake.pal.impl.PlayerAbilityView;
 import io.github.lucaargolo.kibe.KibeMod;
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium;
 import io.github.lucaargolo.kibe.item.AbilityRing;
 import io.github.lucaargolo.kibe.item.Glider;
 import io.github.lucaargolo.kibe.item.ItemCompendium;
@@ -12,6 +12,7 @@ import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import io.github.lucaargolo.kibe.utils.helper.AbilityHelper;
 import io.github.lucaargolo.kibe.utils.helper.GliderHelper;
 import kotlin.Pair;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -21,9 +22,11 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,7 +37,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@SuppressWarnings({"SuspiciousMethodCalls", "UnstableApiUsage"})
+@SuppressWarnings({"SuspiciousMethodCalls"})
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEntityMixed {
 
@@ -42,6 +45,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
         super(type, world);
     }
 
+    @Unique
     private final List<Pair<ItemStack, Long>> kibe_activeRingsList = new ArrayList<>();
 
     @Override
@@ -50,7 +54,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
     }
 
     @Inject(at = @At("TAIL"), method = "eatFood")
-    public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
+    public void eatFood(World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> cir) {
         if(stack.getItem().equals(ItemCompendium.INSTANCE.getCURSED_KIBE()) && !world.isClient) {
             int x = random.nextInt(64);
             if(x == 0) kill();
@@ -79,7 +83,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
          */
         ItemStack cursorStack = player.playerScreenHandler.getCursorStack();
         if(cursorStack.getItem() instanceof Glider && Glider.Companion.isEnabled(cursorStack)) {
-            cursorStack.getOrCreateNbt().putBoolean("enabled", false);
+            cursorStack.set(ComponentTypeCompendium.INSTANCE.getENABLED(), false);
         }
         if(!isOnGround() && !isTouchingWater() && !isFallFlying() && getVelocity().y < 0.0) {
             ItemStack mainHandStack = player.getMainHandStack();
@@ -101,15 +105,15 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                 GliderHelper.INSTANCE.setPlayerGliding(player, true);
 
                 if(!KibeMod.INSTANCE.getCONFIG().getMiscellaneousModule().getGliderUnbreakable()) {
-                    stack.damage(1, player, (e) -> e.sendEquipmentBreakStatus(slot));
+                    stack.damage(1, player, slot);
                 }
 
                 float hSpeed = 0.05f;
                 float vSpeed = 0.5f;
 
                 if(isSneaking()) {
-                    hSpeed *= 2.5;
-                    vSpeed *= 1.5;
+                    hSpeed *= 2.5F;
+                    vSpeed *= 1.5F;
                 }
 
                 Vec3d v = getVelocity();
@@ -174,10 +178,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             }
         }
         //Ring logic
-        if(!getWorld().isClient && this instanceof PlayerAbilityView) {
+        if(!getWorld().isClient) {
             for(PlayerAbility pa : AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().keySet()) {
                 if(pa.isEnabledFor(player)) {
-                    StatusEffect se = AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().get(pa);
+                    RegistryEntry<StatusEffect> se = AbilityHelper.INSTANCE.getABILITY_TO_EFFECT().get(pa);
                     StatusEffectInstance sei = new StatusEffectInstance(se, 100, 1, false, false, true);
                     player.addStatusEffect(sei);
                 }
@@ -187,7 +191,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
             for (Pair<ItemStack, Long> pair : kibe_activeRingsList) {
                 ItemStack ringStack = pair.getFirst();
                 Item ringItem = ringStack.getItem();
-                if (ringItem instanceof AbilityRing && ringStack.getOrCreateNbt().getBoolean("enabled")) {
+                if (ringItem instanceof AbilityRing && Boolean.TRUE.equals(ringStack.get(ComponentTypeCompendium.INSTANCE.getENABLED()))) {
                     ringMap.computeIfAbsent((AbilityRing) ringItem, k -> new ArrayList<>());
                     ringMap.get(ringItem).add(ringStack);
                 }
@@ -198,8 +202,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                     if (ringQnt == -1 || ringQnt <= KibeMod.INSTANCE.getCONFIG().getMiscellaneousModule().getMaxRingsPerPlayer()) {
                         AbilityHelper.INSTANCE.getRING_SOURCE().grantTo(player, ring.getAbility());
                         for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (!ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
-                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, true);
+                            if (!Boolean.TRUE.equals(ringStack.get(ComponentTypeCompendium.INSTANCE.getUNIQUE()))) {
+                                ringStack.set(ComponentTypeCompendium.INSTANCE.getUNIQUE(), true);
                             }
                         }
                     } else {
@@ -207,8 +211,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
                             AbilityHelper.INSTANCE.getRING_SOURCE().revokeFrom(player, ring.getAbility());
                         }
                         for (ItemStack ringStack : ringMap.get(ring)) {
-                            if (ringStack.getOrCreateNbt().getBoolean(AbilityRing.UNIQUE)) {
-                                ringStack.getOrCreateNbt().putBoolean(AbilityRing.UNIQUE, false);
+                            if (Boolean.TRUE.equals(ringStack.get(ComponentTypeCompendium.INSTANCE.getUNIQUE()))) {
+                                ringStack.set(ComponentTypeCompendium.INSTANCE.getUNIQUE(), false);
                             }
                         }
                     }

@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package io.github.lucaargolo.kibe.data
+package io.github.lucaargolo.kibe.data.state
 
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant

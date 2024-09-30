@@ -31,7 +31,7 @@ class SlimeSling(settings: Settings): Item(settings) {
         return UseAction.BOW
     }
 
-    override fun getMaxUseTime(stack: ItemStack): Int {
+    override fun getMaxUseTime(stack: ItemStack, livingEntity: LivingEntity): Int {
         return 72000
     }
 
@@ -42,7 +42,7 @@ class SlimeSling(settings: Settings): Item(settings) {
             return
         }
 
-        val i: Int = this.getMaxUseTime(stack) - remainingUseTicks
+        val i: Int = this.getMaxUseTime(stack, entity) - remainingUseTicks
         var f = i / 20.0f
         f = (f * f + f * 2.0f) / 3.0f
         f *= 4f

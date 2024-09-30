@@ -117,7 +117,7 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
 
     private fun getSpawnTag(): NbtCompound {
         val activeEffect = NbtCompound()
-        activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(EffectCompendium.CURSED))
+        activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(EffectCompendium.CURSED.value()))
         activeEffect.putInt("Amplifier", 1)
         activeEffect.putInt("Duration", 300)
         val activeEffects = NbtList()

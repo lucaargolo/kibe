@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
@@ -9,6 +7,8 @@ import io.github.lucaargolo.kibe.item.ItemCompendium
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.Block
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -68,11 +68,11 @@ object CreativeTab {
             if (fluid == Fluids.EMPTY) {
                 list.add(itemStack)
             } else if (fluid.isStill(fluid.defaultState)) {
-                val tag = itemStack.orCreateNbt
-                val blockEntityTag = NbtCompound()
+                val blockEntityTag = itemStack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
+                blockEntityTag.putString("id", "kibe:tank")
                 blockEntityTag.put("variant", NbtCompound().also { it.putString("fluid", fluidKey.value.toString()) })
                 blockEntityTag.putLong("amount", 16 * FluidConstants.BUCKET)
-                tag.put("BlockEntityTag", blockEntityTag)
+                itemStack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityTag))
                 list.add(itemStack)
             }
         }

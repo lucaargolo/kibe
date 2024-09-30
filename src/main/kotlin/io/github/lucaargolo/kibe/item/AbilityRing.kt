@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.item
 import io.github.ladysnake.pal.PlayerAbility
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.compat.TrinketAbilityRing
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
@@ -29,8 +30,7 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
     }
 
     override fun appendDisabledTooltip(stack: ItemStack, tooltip: MutableList<Text>) {
-        val tag = stack.orCreateNbt
-        if(tag.contains("enabled") && tag.getBoolean("enabled") && tag.contains("unique") && !tag.getBoolean("unique")) {
+        if(stack.get(ComponentTypeCompendium.ENABLED) == true && stack.get(ComponentTypeCompendium.UNIQUE) != true) {
             tooltip.add(Text.translatable("tooltip.kibe.overflow"))
             tooltip.add(Text.translatable("tooltip.kibe.overflowed"))
             tooltip.add(Text.translatable("tooltip.kibe.shift2disable"))
@@ -41,8 +41,7 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
     }
 
     override fun isEnabled(stack: ItemStack): Boolean {
-        val tag = stack.orCreateNbt
-        return ENABLED in tag && tag.getBoolean(ENABLED) && UNIQUE in tag && tag.getBoolean(UNIQUE)
+        return stack.get(ComponentTypeCompendium.ENABLED) == true && stack.get(ComponentTypeCompendium.UNIQUE) == true
     }
 
     override fun toggle(stack: ItemStack) {
@@ -54,8 +53,6 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
     }
 
     companion object {
-        const val UNIQUE = "unique"
-
         val RINGS = mutableListOf<AbilityRing>()
 
         fun create(settings: Settings, ability: PlayerAbility): AbilityRing =
