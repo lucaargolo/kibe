@@ -1,8 +1,11 @@
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
+import io.github.lucaargolo.kibe.utils.helper.FluidHelper
 import net.minecraft.block.BlockState
+import net.minecraft.component.ComponentMap
 import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
@@ -18,6 +21,7 @@ class CoolerBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(B
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         Inventories.writeNbt(tag, inventory, registryLookup)
     }
 
@@ -32,6 +36,11 @@ class CoolerBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(B
 
     override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         readNbt(tag, registryLookup)
+    }
+
+    //TODO: Properly fix this here and in Entangled Chest/Tank
+    override fun addComponents(builder: ComponentMap.Builder) {
+        builder.add(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(NbtCompound().also { FluidHelper.writeTank(it, tank) }))
     }
 
     override fun size() = inventory.size

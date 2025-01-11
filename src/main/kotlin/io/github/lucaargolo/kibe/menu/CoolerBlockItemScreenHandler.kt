@@ -66,10 +66,9 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
 
     override fun onContentChanged(inventory: Inventory?) {
         super.onContentChanged(inventory)
-        stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.apply {
+        val component = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.apply {
             Inventories.writeNbt(it, rawInventory, world.registryManager)
         }
-        val component = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)
         val coolerStack = playerInventory.player.getStackInHand(hand)
         if (coolerStack.item is CoolerBlockItem) {
             coolerStack.set(DataComponentTypes.BLOCK_ENTITY_DATA, component)

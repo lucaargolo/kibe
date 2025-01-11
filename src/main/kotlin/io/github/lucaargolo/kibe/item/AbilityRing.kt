@@ -22,9 +22,9 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
         if(!world.isClient) {
             (entity as? PlayerEntityMixed)?.let {
                 try {
-                    it.kibe_activeRingsList.removeAll { pair -> pair.second != world.time }
+                    it.`kibe$getActiveRingsList`().removeAll { pair -> pair.second != world.time }
                 } catch (_: Exception) { }
-                it.kibe_activeRingsList.add(Pair(stack, world.time))
+                it.`kibe$getActiveRingsList`().add(Pair(stack, world.time))
             }
         }
     }

@@ -86,11 +86,11 @@ class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, set
     class CoolerTooltipComponent(contents: BundleContentsComponent) : BundleTooltipComponent(contents) {
 
         override fun getWidth(textRenderer: TextRenderer?): Int {
-            return 1
+            return 20
         }
 
         override fun getHeight(): Int {
-            return 1
+            return 26
         }
 
     }

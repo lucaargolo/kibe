@@ -21,9 +21,9 @@ class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRi
         if(!entity.world.isClient) {
             (entity as? PlayerEntityMixed)?.let {
                 try {
-                    it.kibe_activeRingsList.removeAll { pair -> pair.second != entity.world.time }
+                    it.`kibe$getActiveRingsList`().removeAll { pair -> pair.second != entity.world.time }
                 } catch (_: Exception) { }
-                it.kibe_activeRingsList.add(Pair(stack, entity.world.time))
+                it.`kibe$getActiveRingsList`().add(Pair(stack, entity.world.time))
             }
         }
     }

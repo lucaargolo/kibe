@@ -4,7 +4,7 @@ import net.minecraft.util.Identifier
 
 abstract class GenericCompendium<T: Any> {
 
-    protected val map = mutableMapOf<Identifier, T>()
+    val map = mutableMapOf<Identifier, T>()
 
     protected open fun <E: T> register(string: String, entry: E): E {
         return register(ModIdentifier.of(string), entry)
@@ -18,5 +18,6 @@ abstract class GenericCompendium<T: Any> {
     abstract fun initialize()
 
     abstract fun initializeClient()
+
 
 }

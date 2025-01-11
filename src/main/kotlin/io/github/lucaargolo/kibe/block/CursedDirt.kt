@@ -7,16 +7,15 @@ import io.github.lucaargolo.kibe.blockentity.BigTorchBlockEntity
 import io.github.lucaargolo.kibe.effect.EffectCompendium
 import io.github.lucaargolo.kibe.mixin.SpawnHelperInvoker
 import net.minecraft.block.*
-import net.minecraft.entity.EntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.entity.SpawnReason
 import net.minecraft.entity.SpawnRestriction
+import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.EmptyFluid
 import net.minecraft.fluid.Fluids
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registries
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
@@ -101,30 +100,19 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
         if (entry != null) {
             val mob = entry.type
             if(SpawnHelperInvoker.invokeCanSpawn(world, mob.spawnGroup, world.structureAccessor, world.chunkManager.chunkGenerator, entry, pos.up().mutableCopy(), 0.0)) {
-                val tag = getSpawnTag()
-                tag.putString("id", Registries.ENTITY_TYPE.getId(mob).toString())
-                val entity = EntityType.loadEntityWithPassengers(tag, world) {
+                val entity = mob.create(world)?.let {
                     it.refreshPositionAndAngles(pos.x+.5, pos.y+1.0, pos.z+.5, it.yaw, it.pitch)
                     if(it.isInsideWall) null else
                     if (!world.tryLoadEntity(it)) null else it
+                }
+                if(entity is LivingEntity) {
+                    entity.addStatusEffect(StatusEffectInstance(EffectCompendium.CURSED, 300))
                 }
                 if(entity is MobEntity) {
                     entity.initialize(world, world.getLocalDifficulty(BlockPos.ofFloored(entity.pos)), SpawnReason.NATURAL, null)
                 }
             }
         }
-    }
-
-    private fun getSpawnTag(): NbtCompound {
-        val activeEffect = NbtCompound()
-        activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(EffectCompendium.CURSED.value()))
-        activeEffect.putInt("Amplifier", 1)
-        activeEffect.putInt("Duration", 300)
-        val activeEffects = NbtList()
-        activeEffects.add(activeEffect)
-        val tag = NbtCompound()
-        tag.put("ActiveEffects", activeEffects)
-        return tag
     }
 
     private fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {

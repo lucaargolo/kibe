@@ -8,6 +8,9 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
+import net.minecraft.component.ComponentMap
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.fluid.Fluids
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.RegistryWrapper.WrapperLookup
@@ -51,6 +54,10 @@ class TankBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(Blo
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = tag.also { writeNbt(it, registryLookup) }
 
     override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = readNbt(tag, registryLookup)
+
+    override fun addComponents(builder: ComponentMap.Builder) {
+        builder.add(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(NbtCompound().also { FluidHelper.writeTank(it, tank) }))
+    }
 
     companion object {
         fun getFluidStorage(be: TankBlockEntity, dir: Direction?): Storage<FluidVariant> {

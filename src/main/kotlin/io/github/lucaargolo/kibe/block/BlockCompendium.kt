@@ -41,7 +41,7 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     val TRASH_CAN = register("trash_can", TrashCan(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)))
     val VACUUM_HOPPER = register("vacuum_hopper", VacuumHopper(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()))
     val BIG_TORCH = register("big_torch", BigTorch(Settings.copy(Blocks.TORCH).strength(0.5f).luminance{15}.sounds(BlockSoundGroup.WOOD)))
-    val COOLER = register("cooler", Cooler(Settings.copy(Blocks.SNOW_BLOCK).strength(0.2F).sounds(BlockSoundGroup.SNOW)), false)
+    val COOLER = register("cooler", Cooler(Settings.create().strength(0.2F).sounds(BlockSoundGroup.SNOW)), false)
     val DRAWBRIDGE = register("drawbridge", Drawbridge(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()))
 
     val OBSIDIAN_SAND = register("obsidian_sand", ColoredFallingBlock(ColorCode(0x171623), Settings.copy(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)))

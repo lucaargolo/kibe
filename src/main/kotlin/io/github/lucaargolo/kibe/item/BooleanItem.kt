@@ -38,7 +38,7 @@ open class BooleanItem(settings: Settings): Item(settings) {
     }
 
     open fun appendDisabledTooltip(stack: ItemStack, tooltip: MutableList<Text>) {
-        tooltip.add(Text.translatable("tooltip.kibe.enabled"))
+        tooltip.add(Text.translatable("tooltip.kibe.disabled"))
         tooltip.add(Text.translatable("tooltip.kibe.shift2disable"))
     }
 

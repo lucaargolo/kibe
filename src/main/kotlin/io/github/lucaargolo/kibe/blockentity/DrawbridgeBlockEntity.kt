@@ -45,6 +45,7 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
     }
 
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registries.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
@@ -53,9 +54,11 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
             val itemStack = inventory[i]
             val nbtCompound = NbtCompound()
             nbtCompound.putByte("Slot", i.toByte())
-            if(!itemStack.isEmpty)
-                itemStack.encode(registryLookup, nbtCompound)
-            nbtList.add(nbtCompound)
+            if(!itemStack.isEmpty) {
+                nbtList.add(itemStack.encode(registryLookup, nbtCompound))
+            }else{
+                nbtList.add(nbtCompound)
+            }
         }
         tag.put("Items", nbtList)
     }

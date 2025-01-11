@@ -38,6 +38,12 @@
         "value": "io.github.lucaargolo.kibe.client.KibeModClient",
         "adapter": "kotlin"
       }
+    ],
+    "fabric-datagen": [
+      {
+        "value": "io.github.lucaargolo.kibe.datagen.KibeDatagen",
+        "adapter": "kotlin"
+      }
     ]
   },
   "accessWidener": "kibe.accesswidener",

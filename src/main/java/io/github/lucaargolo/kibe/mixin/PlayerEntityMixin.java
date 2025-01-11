@@ -49,7 +49,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerEn
     private final List<Pair<ItemStack, Long>> kibe_activeRingsList = new ArrayList<>();
 
     @Override
-    public List<Pair<ItemStack, Long>> getKibe_activeRingsList() {
+    public List<Pair<ItemStack, Long>> kibe$getActiveRingsList() {
         return kibe_activeRingsList;
     }
 
