@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-11T07:02:56.143777	Kibe/Block Loot Tables
+// 1.21.1	2025-01-12T02:40:48.344185	Kibe/Block Loot Tables
 00da3269b202ce6ff043adcaeb7a043658394cfa data/kibe/loot_table/blocks/light_gray_elevator.json
 206667674caf8bba9c9f0119c698ed3ac09db1b0 data/kibe/loot_table/blocks/green_elevator.json
 fe36fe9859dba61fc2d70601e0eeb75f5f2e7393 data/kibe/loot_table/blocks/tank.json
@@ -8,7 +8,7 @@ fe36fe9859dba61fc2d70601e0eeb75f5f2e7393 data/kibe/loot_table/blocks/tank.json
 c6d79317ae328e6b9333d111ec4ac498a363624d data/kibe/loot_table/blocks/xp_shower.json
 9ec7fe7895732cb7ad7ee9c779ca0a9f4e37e639 data/kibe/loot_table/blocks/cobblestone_generator_mk1.json
 761183fcb9d392758d28bea4dfc16bcc4665e3df data/kibe/loot_table/blocks/cyan_elevator.json
-90fd07d5f854b2f2cd9c58c113bb427929e1a7a7 data/kibe/loot_table/blocks/cooler.json
+b2fa45a09df52ce2b97adb8e945f07b35f6c932d data/kibe/loot_table/blocks/cooler.json
 82292f2a0663cbcbe9c227f487d61dd53de4da2c data/kibe/loot_table/blocks/redstone_timer.json
 04d2334154f91aa873b5fbce28d6dbe8e2fc6c8a data/kibe/loot_table/blocks/red_elevator.json
 8d45bafed3128146a5da1593afbfe035c429d75c data/kibe/loot_table/blocks/basalt_generator_mk4.json
@@ -39,7 +39,7 @@ fbaafcea4c466fdae8de051f5e52fd2064baf9d9 data/kibe/loot_table/blocks/basalt_gene
 be370d681a994caf5a36296c19b780a4a67ab391 data/kibe/loot_table/blocks/magenta_elevator.json
 d541e3c07e931c44b9a70480a7de084ba10fe630 data/kibe/loot_table/blocks/brown_elevator.json
 f24de7f2a1ffe6689dec1cc284bb1c63dda8a0a1 data/kibe/loot_table/blocks/cobblestone_generator_mk5.json
-82acd8e19b81070431e243d65927ac1a29a4d53d data/kibe/loot_table/blocks/entangled_chest.json
+009f2910534071c3459534a46b7b47abfbe0fa35 data/kibe/loot_table/blocks/entangled_chest.json
 c4a36e530f2cb86176d5bb89d73ab7a21b0eb45e data/kibe/loot_table/blocks/gray_elevator.json
 d207a49a37fe83ae6e09f12e73920947284f97c5 data/kibe/loot_table/blocks/regular_conveyor_belt.json
 1564ccc747a99bbb198a9be11512bd33c30df4de data/kibe/loot_table/blocks/cobblestone_generator_mk2.json
@@ -53,7 +53,7 @@ a5d815f16eaee2b4596abef2077476da12ca1c73 data/kibe/loot_table/blocks/fluid_hoppe
 b3a63fd135f4848636812ef39da7ed7851a152a7 data/kibe/loot_table/blocks/purple_elevator.json
 d728797ae8da8a2e699f711edf5552d2f3ea8fcf data/kibe/loot_table/blocks/placer.json
 3d9a45a86aec0f1bc02dd4bc951b5f2069d797a2 data/kibe/loot_table/blocks/vacuum_hopper.json
-2b5f63d061fcd0d0c4806b2656728131a37ebe5e data/kibe/loot_table/blocks/entangled_tank.json
+95fd051c38d0c9caf09572694166f6bf41b6ff68 data/kibe/loot_table/blocks/entangled_tank.json
 2349e235ce70e66f24b761f1cbf8128ff52df197 data/kibe/loot_table/blocks/express_conveyor_belt.json
 4ff4ff68f3afee01a6359bf35bd27af48a59cdb3 data/kibe/loot_table/blocks/drawbridge.json
 def5a85cbce7171918c4e5e9e95c91c14b01fab3 data/kibe/loot_table/blocks/basalt_generator_mk3.json

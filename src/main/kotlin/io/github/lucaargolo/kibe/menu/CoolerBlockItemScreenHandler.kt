@@ -2,12 +2,12 @@ package io.github.lucaargolo.kibe.menu
 
 import io.github.lucaargolo.kibe.item.CoolerBlockItem
 import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.ContainerComponent
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
@@ -37,8 +37,7 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
     }
 
     init {
-        val tag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
-        Inventories.readNbt(tag, rawInventory, world.registryManager)
+        stack.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(rawInventory)
         checkSize(inventory, 1)
         inventory.onOpen(playerInventory.player)
 
@@ -66,12 +65,9 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
 
     override fun onContentChanged(inventory: Inventory?) {
         super.onContentChanged(inventory)
-        val component = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.apply {
-            Inventories.writeNbt(it, rawInventory, world.registryManager)
-        }
         val coolerStack = playerInventory.player.getStackInHand(hand)
         if (coolerStack.item is CoolerBlockItem) {
-            coolerStack.set(DataComponentTypes.BLOCK_ENTITY_DATA, component)
+            coolerStack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(this.rawInventory))
         }
     }
 

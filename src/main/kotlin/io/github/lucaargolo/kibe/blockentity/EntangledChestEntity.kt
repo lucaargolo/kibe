@@ -1,9 +1,11 @@
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.block.EntangledChest
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.data.state.EntangledChestState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
+import net.minecraft.component.ComponentMap
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
@@ -85,8 +87,6 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
-        Inventories.readNbt(tag, this.inventory, registryLookup)
     }
 
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
@@ -106,7 +106,6 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
                 tag.put("Items", subTag.get("Items"))
             }
         }
-        else Inventories.writeNbt(tag, this.inventory, registryLookup)
     }
 
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
@@ -115,8 +114,31 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
-        Inventories.writeNbt(tag, this.inventory, registryLookup)
         return tag
+    }
+
+    override fun addComponents(builder: ComponentMap.Builder) {
+        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.values.toList())
+        builder.add(ComponentTypeCompendium.ENTANGLED_KEY, key)
+        builder.add(ComponentTypeCompendium.OWNER, owner)
+    }
+
+    override fun readComponents(components: ComponentsAccess) {
+        components.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { index, component ->
+            this.runeColors[index+1] = component
+        }
+        updateColorCode()
+        components.get(ComponentTypeCompendium.ENTANGLED_KEY)?.let { this.key = it }
+        components.get(ComponentTypeCompendium.OWNER)?.let { this.owner = it }
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("nbt.remove(\"Items\")"))
+    override fun removeFromCopiedStackNbt(nbt: NbtCompound) {
+        (1..8).forEach {
+            nbt.remove("rune$it")
+        }
+        nbt.remove("key")
+        nbt.remove("owner")
     }
 
     override fun size(): Int {

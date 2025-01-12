@@ -18,7 +18,7 @@
         {
           "function": "minecraft:copy_components",
           "include": [
-            "minecraft:block_entity_data"
+            "minecraft:container"
           ],
           "source": "block_entity"
         }
