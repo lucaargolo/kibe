@@ -54,7 +54,6 @@ class Cooler(settings: Settings): BlockWithEntity(settings) {
         return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos))
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? CoolerBlockEntity)?.let {

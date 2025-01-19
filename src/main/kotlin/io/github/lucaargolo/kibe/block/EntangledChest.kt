@@ -8,6 +8,7 @@ import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.menu.EntangledChestScreenHandler
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
+import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.BlockMirror
 import net.minecraft.util.BlockRotation
@@ -86,13 +88,20 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
     override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
         val hand = Hand.MAIN_HAND
         val poss = player.raycast(4.5, 1.0F, false).pos
+        val stack = player.getStackInHand(hand)
         if((poss.y-pos.y) > 0.9375) {
-            if(player.getStackInHand(hand).item is Rune) {
+            if(stack.isIn(ConventionalItemTags.DYES)) {
+                if(!world.isClient) {
+                    player.sendMessage(Text.translatable("chat.kibe.tried_dye_on_entangled"), true)
+                }
+                return ActionResult.FAIL
+            }
+            if(stack.item is Rune) {
                 val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
                 if(int != null) {
                     if(!world.isClient) {
                         val oldColor = (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int]
-                        val newColor = (player.getStackInHand(hand).item as Rune).color
+                        val newColor = (stack.item as Rune).color
                         if(oldColor != newColor) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = newColor
                             (world.getBlockEntity(pos) as EntangledChestEntity).updateColorCode()
@@ -100,7 +109,7 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
                                 oldColor?.let(Rune::getRuneByColor)?.let {
                                     Block.dropStack(world, pos.up(), ItemStack(it))
                                 }
-                                player.getStackInHand(hand).decrement(1)
+                                stack.decrement(1)
                             }
                         }
                         (world.getBlockEntity(pos) as EntangledChestEntity).markDirty()
@@ -109,11 +118,11 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
                     return ActionResult.CONSUME
                 }
             }
-            if(player.getStackInHand(hand).item == Items.DIAMOND || player.getStackInHand(hand).item == Items.GOLD_INGOT) {
+            if(stack.item == Items.DIAMOND || stack.item == Items.GOLD_INGOT) {
                 val x = poss.x-pos.x
                 val z = poss.z-pos.z
                 if((x in 0.375..0.4375 && z in 0.4375..0.5625) || (x in 0.4375..0.5625 && z in 0.375..0.625) || (x in 0.5625..0.625 && z in 0.4375..0.5625)) {
-                    if(player.getStackInHand(hand).item == Items.DIAMOND && (world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
+                    if(stack.item == Items.DIAMOND && (world.getBlockEntity(pos) as EntangledChestEntity).key == DEFAULT_KEY) {
                         if(!world.isClient) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).owner = player.name.string
                             (world.getBlockEntity(pos) as EntangledChestEntity).key = "entangledchest-${player.uuid}"
@@ -122,10 +131,10 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
                         }
                         if(!player.isCreative) {
                             Block.dropStack(world, pos.up(), ItemStack(Items.GOLD_INGOT))
-                            player.getStackInHand(hand).decrement(1)
+                            stack.decrement(1)
                         }
                         return ActionResult.CONSUME
-                    }else if(player.getStackInHand(hand).item == Items.GOLD_INGOT && (world.getBlockEntity(pos) as EntangledChestEntity).key != DEFAULT_KEY) {
+                    }else if(stack.item == Items.GOLD_INGOT && (world.getBlockEntity(pos) as EntangledChestEntity).key != DEFAULT_KEY) {
                         if(!world.isClient) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).owner = ""
                             (world.getBlockEntity(pos) as EntangledChestEntity).key = DEFAULT_KEY
@@ -134,7 +143,7 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
                         }
                         if(!player.isCreative) {
                             Block.dropStack(world, pos.up(), ItemStack(Items.DIAMOND))
-                            player.getStackInHand(hand).decrement(1)
+                            stack.decrement(1)
                         }
                         return ActionResult.CONSUME
                     }
@@ -155,7 +164,6 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
         return (world.getBlockEntity(pos) as? EntangledChestEntity)?.getComparatorOutput() ?: 0
     }
 
-    @Suppress("DEPRECATION")
     override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, fromPos: BlockPos, notify: Boolean) {
         (world.getBlockEntity(pos) as? EntangledChestEntity)?.let comparatorCheck@{
             if(it.isBeingCompared) {
@@ -177,7 +185,6 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
         super.neighborUpdate(state, world, pos, block, fromPos, notify)
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? EntangledChestEntity)?.let {

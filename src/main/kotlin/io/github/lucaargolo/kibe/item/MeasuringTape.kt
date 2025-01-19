@@ -53,16 +53,13 @@ class MeasuringTape(settings: Settings) : Item(settings) {
         if (measuringFrom == null) {
             tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.start").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
         } else {
-            tooltip += if(measuringTo != null) {
-                Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_to", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z, measuringTo.second.x, measuringTo.second.y, measuringTo.second.z).formatted(Formatting.YELLOW, Formatting.ITALIC)
+            if(measuringTo != null) {
+                tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_to", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z, measuringTo.second.x, measuringTo.second.y, measuringTo.second.z).formatted(Formatting.YELLOW, Formatting.ITALIC)
             }else{
-                Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_from", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z).formatted(Formatting.BLUE, Formatting.ITALIC)
+                tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_from", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z).formatted(Formatting.BLUE, Formatting.ITALIC)
+                tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_2").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
             }
-            tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_2").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
             tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_3").formatted(Formatting.RED, Formatting.ITALIC)
-        }
-        if (type == TooltipType.ADVANCED && measuringFrom != null) {
-            tooltip += Text.of(" ${measuringFrom.first}")
         }
     }
 

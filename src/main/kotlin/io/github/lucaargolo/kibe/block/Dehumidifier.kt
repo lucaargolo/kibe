@@ -32,7 +32,6 @@ class Dehumidifier(settings: Settings): BlockWithEntity(settings) {
         return defaultState.with(Properties.ENABLED, ctx.world.isReceivingRedstonePower(ctx.blockPos))
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if(newState.isOf(this)) {
             (world.getBlockEntity(pos) as? DehumidifierBlockEntity)?.markDirty()

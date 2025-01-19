@@ -17,9 +17,12 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
@@ -42,6 +45,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     @Shadow public abstract boolean teleport(double x, double y, double z, boolean particleEffects);
 
+    @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -61,6 +66,12 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     private void removeStatusEffect(StatusEffectInstance effect, CallbackInfo ci) {
         if(effect.getEffectType().equals(EffectCompendium.INSTANCE.getCURSED()))
             dataTracker.set(CURSED, false);
+    }
+
+    @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
+    private void afterReadNbt(NbtCompound nbt, CallbackInfo ci) {
+        if(hasStatusEffect(EffectCompendium.INSTANCE.getCURSED()))
+            dataTracker.set(CURSED, true);
     }
 
     @Inject(at = @At("HEAD"), method = "swingHand(Lnet/minecraft/util/Hand;)V", cancellable = true)

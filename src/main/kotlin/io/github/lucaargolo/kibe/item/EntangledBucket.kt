@@ -70,7 +70,6 @@ class EntangledBucket(settings: Settings): Item(settings)  {
 
     }
 
-    @Suppress("DEPRECATION")
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {
         val stack = user.getStackInHand(hand)
 

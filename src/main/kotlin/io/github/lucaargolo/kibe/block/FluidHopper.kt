@@ -87,7 +87,6 @@ class FluidHopper(settings: Settings): HopperBlock(settings) {
         }?.let { world.playSound(null, pos, it, SoundCategory.BLOCKS, 1.0F, 1.0F) }
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.let {

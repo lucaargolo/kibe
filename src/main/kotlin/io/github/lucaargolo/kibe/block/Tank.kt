@@ -48,7 +48,6 @@ class Tank(settings: Settings): BlockWithEntity(settings) {
         return StorageUtil.calculateComparatorOutput((world.getBlockEntity(pos) as? TankBlockEntity)?.tank)
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? TankBlockEntity)?.let {

@@ -66,7 +66,6 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
         return ActionResult.FAIL
     }
 
-    @Suppress("DEPRECATION")
     override fun randomTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
         if (!world.isChunkLoaded(pos)) return
 
@@ -106,11 +105,11 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
                     if(it.isInsideWall) null else
                     if (!world.tryLoadEntity(it)) null else it
                 }
-                if(entity is LivingEntity) {
-                    entity.addStatusEffect(StatusEffectInstance(EffectCompendium.CURSED, 300))
-                }
                 if(entity is MobEntity) {
                     entity.initialize(world, world.getLocalDifficulty(BlockPos.ofFloored(entity.pos)), SpawnReason.NATURAL, null)
+                }
+                if(entity is LivingEntity) {
+                    entity.addStatusEffect(StatusEffectInstance(EffectCompendium.CURSED, 999999))
                 }
             }
         }

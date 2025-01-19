@@ -33,13 +33,11 @@ class LightSource(settings: Settings): Block(settings), Waterloggable {
         return super.getPlacementState(ctx)!!.with(SeaPickleBlock.WATERLOGGED, bl)
     }
 
-    @Suppress("DEPRECATION")
     override fun getFluidState(state: BlockState): FluidState? {
         return if (state.get(SeaPickleBlock.WATERLOGGED) as Boolean) Fluids.WATER.getStill(false)
         else super.getFluidState(state)
     }
 
-    @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: WorldAccess, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
         if (state.get(HorizontalConnectingBlock.WATERLOGGED) as Boolean) {
             world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))

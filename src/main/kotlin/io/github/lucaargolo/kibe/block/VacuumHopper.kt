@@ -72,7 +72,6 @@ class VacuumHopper(settings: Settings): BlockWithEntity(settings) {
         return ActionResult.SUCCESS
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             val blockEntity = world.getBlockEntity(pos)

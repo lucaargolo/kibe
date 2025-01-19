@@ -104,7 +104,6 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         modelList[4].emitItemQuads(stack, randomSupplier, context)
     }
 
-    @Suppress("DEPRECATION")
     private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {
         val emitter = context.emitter
         Direction.entries.forEach { dir ->

@@ -48,7 +48,6 @@ class ChunkLoader(settings: Settings): BlockWithEntity(settings) {
         return defaultState.with(Properties.ENABLED, true)
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, notify: Boolean) {
         if ((!state.isOf(newState.block) || !newState[Properties.ENABLED]) && !world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
