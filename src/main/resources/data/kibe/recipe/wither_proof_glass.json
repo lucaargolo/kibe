@@ -3,7 +3,10 @@
   "ingredient": {
     "item": "kibe:wither_proof_sand"
   },
-  "result": "kibe:wither_proof_glass",
+  "result": {
+    "id": "kibe:wither_proof_glass",
+    "count": 1
+  },
   "experience": 0,
   "cookingtime": 200
 }

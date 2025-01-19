@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "kibe:entangled_chest",
+    "id": "kibe:entangled_chest",
     "count": 1
   }
 }

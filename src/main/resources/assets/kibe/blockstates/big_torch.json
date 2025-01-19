@@ -1,5 +1,6 @@
 {
   "variants": {
-    "": { "model": "kibe:block/big_torch" }
+    "enabled=true": { "model": "kibe:block/big_torch" },
+    "enabled=false": { "model": "kibe:block/big_torch_disabled" }
   }
 }

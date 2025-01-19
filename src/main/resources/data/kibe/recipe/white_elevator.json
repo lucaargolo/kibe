@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "kibe:white_elevator",
+    "id": "kibe:white_elevator",
     "count": 1
   }
 }

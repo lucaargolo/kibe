@@ -31,36 +31,29 @@ class BigTorchBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
     var count = 0
 
     fun updateValues() {
+        val state = world?.getBlockState(pos)
+        if(state == null || state.block != BlockCompendium.BIG_TORCH) return
         var torchQuantity = 0.0
         inventory.forEach { torchQuantity += it.count }
         torchPercentage = (torchQuantity/(inventory.size*64.0))
-        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks()) }
+        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks(cachedState)) }
         chunkRadius = min(sqrt(torchQuantity / 9).toInt(), 8)
-        (world as? ServerWorld)?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks()) }
-        if(world?.getBlockState(pos)?.block == BlockCompendium.BIG_TORCH)
-            world?.setBlockState(pos, cachedState.with(Properties.LEVEL_8, chunkRadius))
+        (world as? ServerWorld)?.let { addSuppressedChunks(it.registryKey, this.getSuppressedChunks(state)) }
+        world?.setBlockState(pos, state.with(Properties.LEVEL_8, chunkRadius))
     }
 
     override fun markRemoved() {
-        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks()) }
+        (world as? ServerWorld)?.let { removeSuppressedChunks(it.registryKey, this.getSuppressedChunks(cachedState)) }
         super.markRemoved()
     }
 
-    override fun markDirty() {
-        super.markDirty()
-        updateValues()
-    }
-
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
-        //tag.putInt("suppressedSpawns", suppressedSpawns)
         Inventories.writeNbt(tag, inventory, registryLookup)
     }
 
     override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.readNbt(tag, registryLookup)
-        //suppressedSpawns = tag.getInt("suppressedSpawns")
         Inventories.readNbt(tag, inventory, registryLookup)
-        updateValues()
     }
 
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
@@ -104,15 +97,19 @@ class BigTorchBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = true
 
-    private fun getSuppressedChunks(): LinkedHashSet<ChunkPos> {
-        val chunks = linkedSetOf<ChunkPos>()
-        val centerChunk = ChunkPos(pos)
-        for (x in (centerChunk.x - chunkRadius) until (centerChunk.x + chunkRadius)) {
-            for (z in (centerChunk.z - chunkRadius) until (centerChunk.z + chunkRadius)) {
-                chunks.add(ChunkPos(x, z))
+    private fun getSuppressedChunks(state: BlockState): LinkedHashSet<ChunkPos> {
+        if(state[Properties.ENABLED]) {
+            val chunks = linkedSetOf<ChunkPos>()
+            val centerChunk = ChunkPos(pos)
+            for (x in (centerChunk.x - chunkRadius) until (centerChunk.x + chunkRadius)) {
+                for (z in (centerChunk.z - chunkRadius) until (centerChunk.z + chunkRadius)) {
+                    chunks.add(ChunkPos(x, z))
+                }
             }
+            return chunks
+        }else{
+            return linkedSetOf()
         }
-        return chunks
     }
 
     companion object {
@@ -124,7 +121,7 @@ class BigTorchBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: BigTorchBlockEntity) {
             if(blockEntity.count-- == 0) {
                 blockEntity.count = 40
-                (world as? ServerWorld)?.let { addSuppressedChunks(world.registryKey, blockEntity.getSuppressedChunks()) }
+                blockEntity.updateValues()
             }
         }
 
@@ -143,10 +140,7 @@ class BigTorchBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         }
 
         fun isChunkSuppressed(registryKey: RegistryKey<World>, chunkPos: ChunkPos): Boolean {
-            if(isException) {
-                isException = false
-                return false
-            }
+            if(isException) return false
             val set = suppressedChunkMap[registryKey] ?: linkedSetOf()
             return set.contains(chunkPos)
         }

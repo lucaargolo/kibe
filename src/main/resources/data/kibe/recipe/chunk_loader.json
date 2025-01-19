@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "kibe:chunk_loader",
+    "id": "kibe:chunk_loader",
     "count": 1
   }
 }

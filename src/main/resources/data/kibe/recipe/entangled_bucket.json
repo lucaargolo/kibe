@@ -13,7 +13,7 @@
     }
   },
   "result": {
-    "item": "kibe:entangled_bucket",
+    "id": "kibe:entangled_bucket",
     "count": 1
   }
 }

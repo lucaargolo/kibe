@@ -9,7 +9,7 @@
     }
   ],
   "result": {
-    "item": "kibe:red_elevator",
+    "id": "kibe:red_elevator",
     "count": 1
   }
 }

@@ -1,0 +1,7 @@
+{
+	"parent": "kibe:block/big_torch",
+	"textures": {
+		"0": "kibe:block/big_torch_disabled",
+		"particle": "kibe:block/big_torch_disabled"
+	}
+}

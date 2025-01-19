@@ -76,20 +76,19 @@ class ConveyorBelt(private val speed: Double, settings: Settings): Block(setting
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return defaultState
-            .with(HorizontalConnectingBlock.NORTH, ctx.world.getBlockState(ctx.blockPos.south()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
-            .with(HorizontalConnectingBlock.SOUTH, ctx.world.getBlockState(ctx.blockPos.north()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
-            .with(HorizontalConnectingBlock.EAST, ctx.world.getBlockState(ctx.blockPos.west()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
-            .with(HorizontalConnectingBlock.WEST, ctx.world.getBlockState(ctx.blockPos.east()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
+            .with(HorizontalConnectingBlock.NORTH, ctx.world.getBlockState(ctx.blockPos.south()).block is ConveyorBelt)
+            .with(HorizontalConnectingBlock.SOUTH, ctx.world.getBlockState(ctx.blockPos.north()).block is ConveyorBelt)
+            .with(HorizontalConnectingBlock.EAST, ctx.world.getBlockState(ctx.blockPos.west()).block is ConveyorBelt)
+            .with(HorizontalConnectingBlock.WEST, ctx.world.getBlockState(ctx.blockPos.east()).block is ConveyorBelt)
             .with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
     }
 
-    @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, facing: Direction, neighborState: BlockState, world: WorldAccess, pos: BlockPos, neighborPos: BlockPos): BlockState {
         return if (facing.axis.type == Direction.Type.HORIZONTAL)
-            state.with(HorizontalConnectingBlock.NORTH, world.getBlockState(pos.south()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
-                 .with(HorizontalConnectingBlock.SOUTH, world.getBlockState(pos.north()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
-                 .with(HorizontalConnectingBlock.EAST, world.getBlockState(pos.west()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
-                 .with(HorizontalConnectingBlock.WEST, world.getBlockState(pos.east()).block is io.github.lucaargolo.kibe.block.ConveyorBelt)
+            state.with(HorizontalConnectingBlock.NORTH, world.getBlockState(pos.south()).block is ConveyorBelt)
+                 .with(HorizontalConnectingBlock.SOUTH, world.getBlockState(pos.north()).block is ConveyorBelt)
+                 .with(HorizontalConnectingBlock.EAST, world.getBlockState(pos.west()).block is ConveyorBelt)
+                 .with(HorizontalConnectingBlock.WEST, world.getBlockState(pos.east()).block is ConveyorBelt)
         else super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos)
     }
 
@@ -101,10 +100,12 @@ class ConveyorBelt(private val speed: Double, settings: Settings): Block(setting
         return true
     }
 
-
     override fun getOutlineShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
 
-    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape = SHAPE
+    //Allows entities to spawn inside the conveyor.
+    override fun getCollisionShape(state: BlockState?, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?): VoxelShape {
+        return if(ePos == ShapeContext.absent()) EMPTY else SHAPE
+    }
 
     override fun getCullingShape(state: BlockState?, view: BlockView?, pos: BlockPos?): VoxelShape = EMPTY
 

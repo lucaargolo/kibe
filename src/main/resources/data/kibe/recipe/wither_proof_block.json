@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "kibe:wither_proof_block",
+    "id": "kibe:wither_proof_block",
     "count": 4
   }
 }

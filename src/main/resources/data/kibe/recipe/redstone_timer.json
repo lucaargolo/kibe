@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "kibe:redstone_timer",
+    "id": "kibe:redstone_timer",
     "count": 1
   }
 }

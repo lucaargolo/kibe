@@ -11,7 +11,7 @@ import net.minecraft.registry.RegistryWrapper
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class VacuumHopperRecipe(val ticks: Int, val xpInput: Long, val input: Ingredient, val output: ItemStack) : Recipe<VacuumHopperEntity.Input> {
+class VacuumHopperRecipe(val ticks: Int, val xp: Long, val input: Ingredient, val output: ItemStack) : Recipe<VacuumHopperEntity.Input> {
 
     override fun matches(input: VacuumHopperEntity.Input, world: World): Boolean {
         val parent = input.getParent()
@@ -19,13 +19,13 @@ class VacuumHopperRecipe(val ticks: Int, val xpInput: Long, val input: Ingredien
         val hasSpace = parent.getStack(10).let {
             it.isEmpty || (ItemStack.areItemsAndComponentsEqual(it, output) && it.count < it.maxCount)
         }
-        return this.input.test(inputStack) && parent.tank.amount >= xpInput * 81 && hasSpace
+        return this.input.test(inputStack) && parent.tank.amount >= xp * 81 && hasSpace
     }
 
     override fun craft(input: VacuumHopperEntity.Input, lookup: RegistryWrapper.WrapperLookup): ItemStack {
         val parent = input.getParent()
         parent.getStack(9).decrement(1)
-        parent.tank.amount -= xpInput * 81
+        parent.tank.amount -= xp * 81
         if(parent.getStack(10).isEmpty) {
             parent.setStack(10, output.copy())
         }else{

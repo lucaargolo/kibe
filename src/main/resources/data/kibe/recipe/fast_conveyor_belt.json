@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "kibe:fast_conveyor_belt",
+    "id": "kibe:fast_conveyor_belt",
     "count": 8
   }
 }

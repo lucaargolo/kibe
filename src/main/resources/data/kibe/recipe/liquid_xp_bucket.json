@@ -5,5 +5,8 @@
   "input": {
     "item": "minecraft:bucket"
   },
-  "output": "kibe:liquid_xp_bucket"
+  "output": {
+    "id": "kibe:liquid_xp_bucket",
+    "count": 1
+  }
 }

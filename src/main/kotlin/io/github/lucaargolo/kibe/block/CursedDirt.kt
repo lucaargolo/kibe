@@ -96,6 +96,7 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
         val entityList = world.getOtherEntities(null, Box(chunkPos.startX.toDouble(), 0.0, chunkPos.startZ.toDouble(), chunkPos.endX.toDouble(), 256.0, chunkPos.endZ.toDouble())) {it is MobEntity}
         if (entityList.size > KibeMod.CONFIG.miscellaneousModule.cursedDirtMobCap) return
 
+        BigTorchBlockEntity.setException(true)
         val entry = getSpawnableMonster(world, pos.up(), random)
         if (entry != null) {
             val mob = entry.type
@@ -113,6 +114,7 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
                 }
             }
         }
+        BigTorchBlockEntity.setException(false)
     }
 
     private fun canSpread(state: BlockState, world: ServerWorld, pos: BlockPos): Boolean {
@@ -133,9 +135,7 @@ class CursedDirt(settings: Settings): GrassBlock(settings) {
         val optionalEntry: Optional<SpawnEntry> = SpawnHelperInvoker.invokePickRandomSpawnEntry(world, world.structureAccessor, world.chunkManager.chunkGenerator, SpawnGroup.MONSTER, random, pos)
         val entry = if(optionalEntry.isPresent) optionalEntry.get() else null ?: return null
         if(KibeMod.CONFIG.miscellaneousModule.cursedDirtDenyList.contains(Registries.ENTITY_TYPE.getId(entry.type).toString())) return null
-        BigTorchBlockEntity.setException(true)
         SpawnRestriction.canSpawn(entry.type, world, SpawnReason.NATURAL, pos, world.random).let {
-            BigTorchBlockEntity.setException(false)
             return if(it) entry else null
         }
     }

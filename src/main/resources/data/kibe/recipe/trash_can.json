@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "kibe:trash_can",
+    "id": "kibe:trash_can",
     "count": 1
   }
 }

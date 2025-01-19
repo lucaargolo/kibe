@@ -172,7 +172,7 @@ class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(
     inner class Input : RecipeInput {
         fun getParent() = this@VacuumHopperEntity
 
-        override fun getStackInSlot(slot: Int) = inventory[10]
+        override fun getStackInSlot(slot: Int) = inventory[9]
 
         override fun getSize() = 1
     }

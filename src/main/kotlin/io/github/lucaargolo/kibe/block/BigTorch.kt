@@ -14,6 +14,7 @@ import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.screen.ScreenHandler
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
@@ -30,7 +31,7 @@ import kotlin.math.sin
 class BigTorch(settings: Settings): BlockWithEntity(settings) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
-        stateManager.add(Properties.LEVEL_8)
+        stateManager.add(Properties.ENABLED, Properties.LEVEL_8)
     }
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
@@ -42,16 +43,18 @@ class BigTorch(settings: Settings): BlockWithEntity(settings) {
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.LEVEL_8, 0)
+        return defaultState.with(Properties.ENABLED, !ctx.world.isReceivingRedstonePower(ctx.blockPos)).with(Properties.LEVEL_8, 0)
     }
 
     override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: Random) {
-        (0..state[Properties.LEVEL_8]).forEach { radius ->
-            (1..radius*9).forEach {
-                val x = (cos(it * 180/(radius*9) * Math.PI / 90))
-                val z = (sin(it * 180/(radius*9) * Math.PI / 90))
-                val i = (radius/4.0)
-                world.addParticle(ParticleTypes.FLAME, pos.x+(x*i)+0.5, pos.y.toDouble(), pos.z+(z*i)+0.5, 0.0, 0.0, 0.0)
+        if(state[Properties.ENABLED]) {
+            (0..state[Properties.LEVEL_8]).forEach { radius ->
+                (1..radius * 9).forEach {
+                    val x = (cos(it * 180 / (radius * 9) * Math.PI / 90))
+                    val z = (sin(it * 180 / (radius * 9) * Math.PI / 90))
+                    val i = (radius / 4.0)
+                    world.addParticle(ParticleTypes.FLAME, pos.x + (x * i) + 0.5, pos.y.toDouble(), pos.z + (z * i) + 0.5, 0.0, 0.0, 0.0)
+                }
             }
         }
     }
@@ -61,14 +64,31 @@ class BigTorch(settings: Settings): BlockWithEntity(settings) {
         return ActionResult.SUCCESS
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {
                 ItemScatterer.spawn(world, pos, it)
                 world.updateComparators(pos, this)
             }
-            super.onStateReplaced(state, world, pos, newState, notify)
+        }else{
+            (world.getBlockEntity(pos) as? BigTorchBlockEntity)?.updateValues()
+        }
+        super.onStateReplaced(state, world, pos, newState, notify)
+    }
+
+    override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos?, block: Block?, fromPos: BlockPos?, notify: Boolean) {
+        if (!world.isClient) {
+            val isEnabled = state[Properties.ENABLED]
+            if (isEnabled == world.isReceivingRedstonePower(pos)) {
+                if (isEnabled) world.scheduleBlockTick(pos, this, 4)
+                else world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
+            }
+        }
+    }
+
+    override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos?, random: Random?) {
+        if (state[Properties.ENABLED] && world.isReceivingRedstonePower(pos)) {
+            world.setBlockState(pos, state.cycle(Properties.ENABLED), 2)
         }
     }
 

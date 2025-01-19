@@ -8,10 +8,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.render.*
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.text.Text
@@ -78,7 +75,7 @@ class VacuumHopperScreen(screenHandler: VacuumHopperScreenHandler, inventory: Pl
                 val atlasHeight = sprite.contents.height/(sprite.maxV - sprite.minV)
                 bb.vertex(matrix, startX+112f, startY+70f-p-(index*16f), 0f).texture(sprite.minU, (sprite.maxV-((sprite.contents.height-p)/atlasHeight))).color(r, g, b, 1f)
                 bb.vertex(matrix, startX+100f, startY+70f-p-(index*16f), 0f).texture(sprite.maxU, (sprite.maxV-((sprite.contents.height-p)/atlasHeight))).color(r, g, b, 1f)
-                bb.end()
+                BufferRenderer.drawWithGlobalProgram(bb.end())
                 percentage -= p
             }
         }

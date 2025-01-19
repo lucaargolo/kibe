@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "kibe:green_elevator",
+    "id": "kibe:green_elevator",
     "count": 1
   }
 }

@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "kibe:dehumidifier",
+    "id": "kibe:dehumidifier",
     "count": 1
   }
 }

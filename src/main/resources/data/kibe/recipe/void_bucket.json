@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "kibe:void_bucket",
+    "id": "kibe:void_bucket",
     "count": 1
   }
 }

@@ -21,7 +21,7 @@ class VacuumHopperRecipeSerializer : RecipeSerializer<VacuumHopperRecipe> {
         private val CODEC = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Codec.INT.fieldOf("ticks").forGetter(VacuumHopperRecipe::ticks),
-                Codec.LONG.fieldOf("xpInput").forGetter(VacuumHopperRecipe::xpInput),
+                Codec.LONG.fieldOf("xp").forGetter(VacuumHopperRecipe::xp),
                 Ingredient.DISALLOW_EMPTY_CODEC.fieldOf("input").forGetter(VacuumHopperRecipe::input),
                 ItemStack.VALIDATED_CODEC.fieldOf("output").forGetter(VacuumHopperRecipe::output),
             ).apply(instance, ::VacuumHopperRecipe)
@@ -29,7 +29,7 @@ class VacuumHopperRecipeSerializer : RecipeSerializer<VacuumHopperRecipe> {
 
         private val PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.INTEGER, VacuumHopperRecipe::ticks,
-            KibeMod.LONG_CODEC, VacuumHopperRecipe::xpInput,
+            KibeMod.LONG_CODEC, VacuumHopperRecipe::xp,
             Ingredient.PACKET_CODEC, VacuumHopperRecipe::input,
             ItemStack.PACKET_CODEC, VacuumHopperRecipe::output,
             ::VacuumHopperRecipe

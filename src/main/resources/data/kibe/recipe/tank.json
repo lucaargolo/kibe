@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "kibe:tank",
+    "id": "kibe:tank",
     "count": 1
   }
 }

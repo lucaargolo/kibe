@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "kibe:vacuum_hopper",
+    "id": "kibe:vacuum_hopper",
     "count": 1
   }
 }

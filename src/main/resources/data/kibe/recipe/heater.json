@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "kibe:heater",
+    "id": "kibe:heater",
     "count": 1
   }
 }

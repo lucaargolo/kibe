@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "kibe:drawbridge",
+    "id": "kibe:drawbridge",
     "count": 1
   }
 }
