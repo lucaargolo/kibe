@@ -24,7 +24,7 @@ class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, setting
 
     override fun appendTooltip(stack: ItemStack, context: TooltipContext?, tooltip: MutableList<Text>, type: TooltipType?) {
         super.appendTooltip(stack, context, tooltip, type)
-        val blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
+        val blockEntityTag = stack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
         val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
             override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
             override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
@@ -53,9 +53,9 @@ class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, setting
                     var newStack: ItemStack? = null
                     if(context.amount > 1) {
                         newStack = stack.copy()
-                        newStack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(FluidHelper.writeTank(NbtCompound(), this)))
+                        newStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(FluidHelper.writeTank(NbtCompound(), this)))
                     }else{
-                        stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(FluidHelper.writeTank(NbtCompound(), this)))
+                        stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(FluidHelper.writeTank(NbtCompound(), this)))
                     }
                     Transaction.openNested(transaction).also {
                         context.exchange(ItemVariant.of(stack), Long.MAX_VALUE, it)
@@ -66,8 +66,8 @@ class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, setting
                     }.commit()
                 }
             }
-            if(stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) {
-                FluidHelper.readTank(stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)!!.copyNbt(), tank)
+            if(stack.contains(DataComponentTypes.CUSTOM_DATA)) {
+                FluidHelper.readTank(stack.get(DataComponentTypes.CUSTOM_DATA)!!.copyNbt(), tank)
             }
             return tank
         }

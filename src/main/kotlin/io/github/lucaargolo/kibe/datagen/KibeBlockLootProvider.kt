@@ -23,7 +23,7 @@ class KibeBlockLootProvider(dataOutput: FabricDataOutput, registryLookup: Comple
         list.addAll(BlockCompendium.map.values)
         addBlockEntity(list, BlockCompendium.ENTANGLED_CHEST, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)
         addBlockEntity(list, BlockCompendium.ENTANGLED_TANK, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)
-        addBlockEntity(list, BlockCompendium.TANK, DataComponentTypes.BLOCK_ENTITY_DATA)
+        addBlockEntity(list, BlockCompendium.TANK, DataComponentTypes.CUSTOM_DATA)
         addBlockEntity(list, BlockCompendium.COOLER, DataComponentTypes.CONTAINER)
         list.forEach(this::addDrop)
     }

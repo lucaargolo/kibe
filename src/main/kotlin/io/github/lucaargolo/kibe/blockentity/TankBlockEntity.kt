@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.blockentity
 
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.helper.FluidHelper
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
@@ -56,7 +57,19 @@ class TankBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(Blo
     override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = readNbt(tag, registryLookup)
 
     override fun addComponents(builder: ComponentMap.Builder) {
-        builder.add(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(NbtCompound().also { FluidHelper.writeTank(it, tank) }))
+        builder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(NbtCompound().also { FluidHelper.writeTank(it, tank) }))
+    }
+
+    override fun readComponents(components: ComponentsAccess) {
+        components.get(DataComponentTypes.CUSTOM_DATA)?.let {
+            FluidHelper.readTank(it.copyNbt(), tank)
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun removeFromCopiedStackNbt(nbt: NbtCompound) {
+        nbt.remove("variant")
+        nbt.remove("amount")
     }
 
     companion object {
@@ -71,7 +84,7 @@ class TankBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(Blo
                 world.setBlockState(pos, state.with(Properties.LEVEL_15, luminance))
             }
             if(entity.tickDelay++ < 10) return else entity.tickDelay = 0
-            Direction.values().forEach {
+            Direction.entries.forEach {
                 if(it == Direction.UP) return@forEach
                 val otherTank = (world.getBlockEntity(pos.add(it.vector)) as? TankBlockEntity) ?: return@forEach
 

@@ -10,10 +10,9 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.tooltip.BundleTooltipComponent
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.component.type.BundleContentsComponent
-import net.minecraft.component.type.NbtComponent
+import net.minecraft.component.type.ContainerComponent
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.Inventories
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
@@ -31,13 +30,11 @@ class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, set
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && entity.canConsume(false)) {
             val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
-            val tag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
-            Inventories.readNbt(tag, rawInventory, world.registryManager)
+            stack.get(DataComponentTypes.CONTAINER)?.copyTo(rawInventory)
             val foodStack = rawInventory[0]
             if(!foodStack.isEmpty && foodStack.contains(DataComponentTypes.FOOD)) {
                 entity.eatFood(world, foodStack, foodStack.get(DataComponentTypes.FOOD))
-                Inventories.writeNbt(tag, rawInventory, world.registryManager)
-                stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(tag))
+                stack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(rawInventory))
             }
         }
         super.inventoryTick(stack, world, entity, slot, selected)
@@ -64,11 +61,10 @@ class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, set
             val client = MinecraftClient.getInstance()
             val world = client.world
             if(world != null) {
-                val inventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
-                val tag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
-                Inventories.readNbt(tag, inventory, world.registryManager)
-                val contents = BundleContentsComponent(inventory)
-                if(!inventory[0].isEmpty) {
+                val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
+                stack.get(DataComponentTypes.CONTAINER)?.copyTo(rawInventory)
+                val contents = BundleContentsComponent(rawInventory)
+                if(!rawInventory[0].isEmpty) {
                     Optional.of(CoolerTooltipData(contents))
                 }else{
                     Optional.empty()

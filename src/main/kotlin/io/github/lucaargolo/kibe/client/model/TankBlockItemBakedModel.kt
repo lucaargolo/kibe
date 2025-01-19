@@ -50,7 +50,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         (tankBlockModel as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 
-        val blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
+        val blockEntityTag = stack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
 
         val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
             override fun getBlankVariant(): FluidVariant = FluidVariant.blank()

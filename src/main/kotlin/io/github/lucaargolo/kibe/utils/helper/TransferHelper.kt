@@ -1,7 +1,9 @@
 package io.github.lucaargolo.kibe.utils.helper
 
 import io.github.lucaargolo.kibe.KibeMod
+import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.*
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
 import io.github.lucaargolo.kibe.item.EntangledBucket
 import io.github.lucaargolo.kibe.item.ItemCompendium
@@ -17,13 +19,10 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
-import net.minecraft.component.DataComponentTypes
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.DyeColor
 
 object TransferHelper {
 
@@ -59,12 +58,14 @@ object TransferHelper {
         }
         FluidStorage.ITEM.registerForItems({ stack, context -> TankBlockItem.getFluidStorage(stack, context) }, ItemCompendium.TANK)
         FluidStorage.ITEM.registerForItems({ stack, _ ->
-            val tag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA)?.copyNbt() ?: NbtCompound()
-            val key = tag.getString("key")
+            val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
             var colorCode = ""
-            (1..8).forEach {
-                val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
+            if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
+                stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
+                    colorCode += dc.id.let { int -> Integer.toHexString(int) }
+                }
+            }else{
+                colorCode = "00000000"
             }
 
             @Suppress("DEPRECATION")
