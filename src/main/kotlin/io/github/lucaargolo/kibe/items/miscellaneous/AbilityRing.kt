@@ -4,12 +4,11 @@ import io.github.ladysnake.pal.PlayerAbility
 import io.github.lucaargolo.kibe.TRINKET
 import io.github.lucaargolo.kibe.compat.trinkets.TrinketAbilityRing
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
-
 import net.minecraft.world.World
+import org.spongepowered.asm.mixin.Shadow
 
 @Suppress("LeakingThis")
 open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanItem(settings) {
@@ -18,6 +17,11 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
         RINGS.add(this)
     }
 
+    @Shadow
+    var lastworld: World? = null
+
+    var togglenexttick = 0
+
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         if(!world.isClient) {
             (entity as? PlayerEntityMixed)?.let {
@@ -25,6 +29,16 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
                     it.kibe_activeRingsList.removeAll { pair -> pair.second != world.time }
                 } catch (_: Exception) { }
                 it.kibe_activeRingsList.add(Pair(stack, world.time))
+                if ((entity.entityWorld != lastworld) && (lastworld != null)) { //if the entity changed worlds since the ring was initialized and this is NOT on first join
+                    lastworld = entity.entityWorld //sets the new most recent world
+                    togglenexttick = 1
+                    toggle(stack) //toggle to either direction to maintain status
+                } else if (togglenexttick == 1){ //if the value was set signalling a change last tick
+                    togglenexttick = 0 //back to off
+                    toggle(stack) //toggle back to original status
+                } else if (lastworld == null) { //if the world is null, most likely on first join or weird cases
+                    lastworld = entity.entityWorld
+                }
             }
         }
     }
