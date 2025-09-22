@@ -68,7 +68,7 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     val BASALT_GENERATOR_MK4 = registerBlockGenerator("basalt_generator_mk4", BlockGenerator(Settings.copy(Blocks.EMERALD_BLOCK).luminance { 4 }, Blocks.BASALT, 0.64f))
     val BASALT_GENERATOR_MK5 = registerBlockGenerator("basalt_generator_mk5", BlockGenerator(Settings.copy(Blocks.NETHERITE_BLOCK).luminance { 4 }, Blocks.BASALT, 2.56f))
 
-    val LIGHT_SOURCE = register("light_source", LightSource(Settings.copy(Blocks.GLASS).luminance{ 15 }.ticksRandomly().noCollision()), false)
+    val LIGHT_SOURCE = register("light_source", LightSource(Settings.copy(Blocks.GLASS).luminance{ 15 }.ticksRandomly().noCollision().breakInstantly().dropsNothing()), false)
     val CHUNK_LOADER = register("chunk_loader", ChunkLoader(Settings.copy(Blocks.ENCHANTING_TABLE).requiresTool().strength(22.0F, 600.0F)))
     val TANK = register("tank", Tank(Settings.copy(Blocks.GLASS).strength(0.5F).nonOpaque().luminance { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)), false)
     val XP_SHOWER = register("xp_shower", XpShower(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)))

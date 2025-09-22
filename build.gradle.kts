@@ -3,6 +3,8 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
 import org.ajoberstar.grgit.Grgit
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
@@ -130,6 +132,11 @@ tasks.withType<JavaCompile> {
     options.release.set(21)
 }
 
+tasks.withType<KotlinCompile> {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+}
+
+
 java {
     withSourcesJar()
 }
@@ -166,7 +173,7 @@ curseforge {
     project(closureOf<CurseProject> {
         id = project["curseforge_id"]
         changelog = getChangeLog()
-        releaseType = this@Build_gradle.releaseType.lowercase()
+        releaseType = "beta"//this@Build_gradle.releaseType.lowercase()
         addGameVersion(cfGameVersion)
         addGameVersion("Fabric")
 
