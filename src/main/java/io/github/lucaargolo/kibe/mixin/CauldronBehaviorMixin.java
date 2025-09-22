@@ -31,7 +31,7 @@ public interface CauldronBehaviorMixin {
 
     @Inject(at = @At("TAIL"), method = "registerBucketBehavior")
     private static void registerWoodenBucketBehavior(Map<Item, CauldronBehavior> behavior, CallbackInfo ci) {
-        behavior.put(ItemCompendium.INSTANCE.getWATER_WOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
+        behavior.put(ItemCompendium.INSTANCE.getWOODEN_WATER_BUCKET(), (state, world, pos, player, hand, stack) ->
            fillCauldronWithWoodenBucket(world, pos, player, hand, stack, Blocks.WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY)
         );
     }
@@ -39,7 +39,7 @@ public interface CauldronBehaviorMixin {
     @Inject(at = @At("TAIL"), method = "registerBehavior")
     private static void registerWoodenBucketBehavior(CallbackInfo ci) {
         CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map().put(ItemCompendium.INSTANCE.getWOODEN_BUCKET(), (state, world, pos, player, hand, stack) ->
-            CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(ItemCompendium.INSTANCE.getWATER_WOODEN_BUCKET()), (statex) -> statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
+            CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(ItemCompendium.INSTANCE.getWOODEN_WATER_BUCKET()), (statex) -> statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
         );
     }
 

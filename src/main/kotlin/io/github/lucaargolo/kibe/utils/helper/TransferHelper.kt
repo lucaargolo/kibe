@@ -33,12 +33,12 @@ object TransferHelper {
         FluidStorage.SIDED.registerForBlockEntity(VacuumHopperEntity.Companion::getFluidStorage, BlockEntityCompendium.VACUUM_HOPPER)
         FluidStorage.SIDED.registerForBlockEntity(TankBlockEntity.Companion::getFluidStorage, BlockEntityCompendium.TANK)
         FluidStorage.combinedItemApiProvider(ItemCompendium.WOODEN_BUCKET).register {
-            EmptyItemFluidStorage(it, ItemCompendium.WATER_WOODEN_BUCKET, Fluids.WATER, FluidConstants.BUCKET)
+            EmptyItemFluidStorage(it, ItemCompendium.WOODEN_WATER_BUCKET, Fluids.WATER, FluidConstants.BUCKET)
         }
         FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
             (context.itemVariant.item as? WoodenBucket)?.let { bucketItem ->
                 val bucketFluid = Fluids.WATER
-                if (bucketItem == ItemCompendium.WATER_WOODEN_BUCKET) {
+                if (bucketItem == ItemCompendium.WOODEN_WATER_BUCKET) {
                     return@register FullItemFluidStorage(context, ItemCompendium.WOODEN_BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET)
                 }
             }

@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-19T16:42:00.0987518	Kibe/Block Loot Tables
+// 1.21.1	2025-09-22T16:34:22.7537661	Kibe/Block Loot Tables
 00da3269b202ce6ff043adcaeb7a043658394cfa data\kibe\loot_table\blocks\light_gray_elevator.json
 e95ff314a0c2be8d2c0682f10ed18d556a592d51 data\kibe\loot_table\blocks\xp_drain.json
 1564ccc747a99bbb198a9be11512bd33c30df4de data\kibe\loot_table\blocks\cobblestone_generator_mk2.json
@@ -8,8 +8,8 @@ f53ce521d723ce8f3f38cbfef13b2ab75bf48d1e data\kibe\loot_table\blocks\igniter.jso
 3fbe59cca5038994e279e0af2f092c09e14e9d8e data\kibe\loot_table\blocks\chunk_loader.json
 a5d815f16eaee2b4596abef2077476da12ca1c73 data\kibe\loot_table\blocks\fluid_hopper.json
 d541e3c07e931c44b9a70480a7de084ba10fe630 data\kibe\loot_table\blocks\brown_elevator.json
-bb9b6e2536efdf2faed8ee2c2522c96b6f6d68c8 data\kibe\loot_table\blocks\fast_conveyor_belt.json
 206667674caf8bba9c9f0119c698ed3ac09db1b0 data\kibe\loot_table\blocks\green_elevator.json
+bb9b6e2536efdf2faed8ee2c2522c96b6f6d68c8 data\kibe\loot_table\blocks\fast_conveyor_belt.json
 ddc1c4e1d040de71182c2ace88ac940deba5949f data\kibe\loot_table\blocks\dehumidifier.json
 4ad924df09736b2c074bfa7704fff83de7d35cdf data\kibe\loot_table\blocks\lime_elevator.json
 b3a63fd135f4848636812ef39da7ed7851a152a7 data\kibe\loot_table\blocks\purple_elevator.json
@@ -24,15 +24,14 @@ c4a36e530f2cb86176d5bb89d73ab7a21b0eb45e data\kibe\loot_table\blocks\gray_elevat
 a7b12d676b813a97776589264df8b4a8c421312f data\kibe\loot_table\blocks\pink_elevator.json
 2349e235ce70e66f24b761f1cbf8128ff52df197 data\kibe\loot_table\blocks\express_conveyor_belt.json
 f24de7f2a1ffe6689dec1cc284bb1c63dda8a0a1 data\kibe\loot_table\blocks\cobblestone_generator_mk5.json
-be370d681a994caf5a36296c19b780a4a67ab391 data\kibe\loot_table\blocks\magenta_elevator.json
 4ff4ff68f3afee01a6359bf35bd27af48a59cdb3 data\kibe\loot_table\blocks\drawbridge.json
+be370d681a994caf5a36296c19b780a4a67ab391 data\kibe\loot_table\blocks\magenta_elevator.json
 18723e9012ea2f9118515c07f9a35ffafc7f8716 data\kibe\loot_table\blocks\white_elevator.json
 c779e9f7c40ede6ab7d26d0cb97f69b947a0e8e6 data\kibe\loot_table\blocks\tank.json
 5e45e37a0e54648e465c928471a45ada3c3e4a2d data\kibe\loot_table\blocks\wither_builder.json
 b2fa45a09df52ce2b97adb8e945f07b35f6c932d data\kibe\loot_table\blocks\cooler.json
-9403ea12abe1a24702b61fc26c7d8707e7ea23b2 data\kibe\loot_table\blocks\light_blue_elevator.json
 572c64443eea0370a8ab19660fee51182af27cfb data\kibe\loot_table\blocks\wither_proof_sand.json
-ca7499d2dd9adefed9a09fe74fec50bbb824f879 data\kibe\loot_table\blocks\light_source.json
+9403ea12abe1a24702b61fc26c7d8707e7ea23b2 data\kibe\loot_table\blocks\light_blue_elevator.json
 d207a49a37fe83ae6e09f12e73920947284f97c5 data\kibe\loot_table\blocks\regular_conveyor_belt.json
 cf71628e43ca85b4c1069694d0746a57f5dbbd09 data\kibe\loot_table\blocks\basalt_generator_mk1.json
 3a1d659f067ef84dad5a664fbd96da6c79b579b6 data\kibe\loot_table\blocks\cobblestone_generator_mk4.json
@@ -47,8 +46,8 @@ d0a739480489f36ddd09af077cf9f07579511cba data\kibe\loot_table\blocks\diamond_spi
 0c9fa5b7c1d69f4ea9693a6fbdc091998fee321d data\kibe\loot_table\blocks\breaker.json
 cc82124547ada545fc03d068fc6385aa43ae5735 data\kibe\loot_table\blocks\cobblestone_generator_mk3.json
 ae88c0d7c22365a9ba828bba4d38b17f28e5c170 data\kibe\loot_table\blocks\stone_spikes.json
-c6d79317ae328e6b9333d111ec4ac498a363624d data\kibe\loot_table\blocks\xp_shower.json
 5ccdfce02e3ffa357b425df50600b829007ed790 data\kibe\loot_table\blocks\wither_proof_glass.json
+c6d79317ae328e6b9333d111ec4ac498a363624d data\kibe\loot_table\blocks\xp_shower.json
 c07b3c749f9af8896ae6655f864dce7d889041c7 data\kibe\loot_table\blocks\gold_spikes.json
 def5a85cbce7171918c4e5e9e95c91c14b01fab3 data\kibe\loot_table\blocks\basalt_generator_mk3.json
 9ec7fe7895732cb7ad7ee9c779ca0a9f4e37e639 data\kibe\loot_table\blocks\cobblestone_generator_mk1.json

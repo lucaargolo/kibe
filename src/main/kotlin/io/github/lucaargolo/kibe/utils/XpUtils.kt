@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.MOD_CONFIG
-import io.github.lucaargolo.kibe.fluids.LIQUID_XP
-import io.github.lucaargolo.kibe.fluids.miscellaneous.LiquidXpFluid
+import io.github.lucaargolo.kibe.KibeMod
+import io.github.lucaargolo.kibe.fluid.FluidCompendium
+import io.github.lucaargolo.kibe.fluid.miscellaneous.LiquidXpFluid
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
@@ -44,7 +44,7 @@ object XpUtils {
 
         Transaction.openOuter().also { transaction ->
             var extractedAmount = -1L
-            tank.extract(FluidVariant.of(LIQUID_XP), liquidXpToExtract, transaction).let { extractedAmount = it }
+            tank.extract(FluidVariant.of(FluidCompendium.LIQUID_XP), liquidXpToExtract, transaction).let { extractedAmount = it }
             transaction.addCloseCallback { _, result ->
                 if(result.wasAborted()) {
                     return@addCloseCallback
@@ -67,7 +67,7 @@ object XpUtils {
     }
 
     fun canPlayerDrinkXp(tank: Storage<FluidVariant>, player: PlayerEntity, hand: Hand): Boolean {
-        return MOD_CONFIG.miscellaneousModule.xpTankDrinkOnRightClick &&
+        return KibeMod.CONFIG.miscellaneousModule.xpTankDrinkOnRightClick &&
                 player.mainHandStack.isEmpty &&
                 hand == Hand.MAIN_HAND &&
                 isTankValidXpDonor(tank)

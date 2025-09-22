@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "kibe:item/water_wooden_bucket"
+    "layer0": "kibe:item/wooden_water_bucket"
   }
 }

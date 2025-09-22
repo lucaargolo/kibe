@@ -80,7 +80,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val ESCAPE_ROPE = register("escape_rope",  EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
     
     val WOODEN_BUCKET = register("wooden_bucket", WoodenBucket.Empty(Settings().maxCount(16)))
-    val WATER_WOODEN_BUCKET = register("water_wooden_bucket", WoodenBucket.Water(Settings().maxCount(1)))
+    val WOODEN_WATER_BUCKET = register("wooden_water_bucket", WoodenBucket.Water(Settings().maxCount(1)))
     
     val GLIDER_LEFT_WING = register("glider_left_wing", Item(Settings()))
     val GLIDER_RIGHT_WING = register("glider_right_wing", Item(Settings()))
