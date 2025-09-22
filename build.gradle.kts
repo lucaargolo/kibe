@@ -39,23 +39,23 @@ fun String.capitalize(): String {
     }
 }
 
-val environment: Map<String, String> = System.getenv()
-val releaseName = "${name.split("-").joinToString(" ") { it.capitalize() }} ${(version as String).split("+")[0]}"
-val releaseType = (version as String).split("+")[0].split("-").let { if(it.size > 1) if(it[1] == "BETA" || it[1] == "ALPHA") it[1] else "ALPHA" else "RELEASE" }
-val releaseFile = "${layout.buildDirectory}/libs/${base.archivesName.get()}-${version}.jar"
-val cfGameVersion = (version as String).split("+")[1].let{ if(!project["minecraft_version"].contains("-") && project["minecraft_version"].startsWith(it)) project["minecraft_version"] else "$it-Snapshot"}
+val systemEnvironment: Map<String, String> = System.getenv()
+val buildReleaseName = "${name.split("-").joinToString(" ") { it.capitalize() }} ${(version as String).split("+")[0]}"
+val buildReleaseType = (version as String).split("+")[0].split("-").let { if(it.size > 1) if(it[1] == "BETA" || it[1] == "ALPHA") it[1] else "ALPHA" else "RELEASE" }
+val buildReleaseFile = "${layout.buildDirectory}/libs/${base.archivesName.get()}-${version}.jar"
+val buildGameVersion = (version as String).split("+")[1].let{ if(!project["minecraft_version"].contains("-") && project["minecraft_version"].startsWith(it)) project["minecraft_version"] else "$it-Snapshot"}
 
 fun getChangeLog(): String {
     return "A changelog can be found at https://github.com/lucaargolo/$name/commits/"
 }
 
 fun getBranch(): String {
-    environment["GITHUB_REF"]?.let { branch ->
+    systemEnvironment["GITHUB_REF"]?.let { branch ->
         return branch.substring(branch.lastIndexOf("/") + 1)
     }
     val grgit = try {
         extensions.getByName("grgit") as Grgit
-    }catch (ignored: Exception) {
+    }catch (_: Exception) {
         return "unknown"
     }
     val branch = grgit.branch.current().name
@@ -146,39 +146,39 @@ tasks.jar {
 }
 
 //Github publishing
-task("github") {
+tasks.register("github") {
     dependsOn(tasks.remapJar)
     group = "upload"
 
-    onlyIf { environment.containsKey("GITHUB_TOKEN") }
+    onlyIf { systemEnvironment.containsKey("GITHUB_TOKEN") }
 
     doLast {
-        val github = GitHub.connectUsingOAuth(environment["GITHUB_TOKEN"])
-        val repository = github.getRepository(environment["GITHUB_REPOSITORY"])
+        val github = GitHub.connectUsingOAuth(systemEnvironment["GITHUB_TOKEN"])
+        val repository = github.getRepository(systemEnvironment["GITHUB_REPOSITORY"])
 
         val releaseBuilder = GHReleaseBuilder(repository, version as String)
-        releaseBuilder.name(releaseName)
+        releaseBuilder.name(buildReleaseName)
         releaseBuilder.body(getChangeLog())
         releaseBuilder.commitish(getBranch())
 
         val ghRelease = releaseBuilder.create()
-        ghRelease.uploadAsset(file(releaseFile), "application/java-archive")
+        ghRelease.uploadAsset(file(buildReleaseFile), "application/java-archive")
     }
 }
 
 //Curseforge publishing
 curseforge {
-    environment["CURSEFORGE_API_KEY"]?.let { apiKey = it }
+    systemEnvironment["CURSEFORGE_API_KEY"]?.let { apiKey = it }
 
     project(closureOf<CurseProject> {
         id = project["curseforge_id"]
         changelog = getChangeLog()
-        releaseType = "beta"//this@Build_gradle.releaseType.lowercase()
-        addGameVersion(cfGameVersion)
+        releaseType = buildReleaseType.lowercase()
+        addGameVersion(buildGameVersion)
         addGameVersion("Fabric")
 
-        mainArtifact(file(releaseFile), closureOf<CurseArtifact> {
-            displayName = releaseName
+        mainArtifact(file(buildReleaseFile), closureOf<CurseArtifact> {
+            displayName = buildReleaseName
             relations(closureOf<CurseRelation> {
                 embeddedLibrary("pal")
                 optionalDependency("roughly-enough-items")
@@ -200,14 +200,14 @@ curseforge {
 
 //Modrinth publishing
 modrinth {
-    environment["MODRINTH_TOKEN"]?.let { token.set(it) }
+    systemEnvironment["MODRINTH_TOKEN"]?.let { token.set(it) }
 
     projectId.set(project["modrinth_id"])
     changelog.set(getChangeLog())
 
     versionNumber.set(version as String)
-    versionName.set(releaseName)
-    versionType.set(releaseType.lowercase())
+    versionName.set(buildReleaseName)
+    versionType.set(buildReleaseType.lowercase())
 
     uploadFile.set(tasks.remapJar.get())
 
