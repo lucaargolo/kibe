@@ -24,6 +24,16 @@ class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRi
                     it.`kibe$getActiveRingsList`().removeAll { pair -> pair.second != entity.world.time }
                 } catch (_: Exception) { }
                 it.`kibe$getActiveRingsList`().add(Pair(stack, entity.world.time))
+                if ((entity.entityWorld != lastworld) && (lastworld != null) && (super.isEnabled(stack))) { //if the entity changed worlds since the ring was initialized and this is NOT on first join, if the ring is not enabled don't bother
+                    lastworld = entity.entityWorld //sets the new most recent world
+                    togglenexttick = 1
+                    disable(stack) //toggle to disabled because on hard transfers the ring fails to work
+                } else if (togglenexttick == 1){ //if the value was set signalling a change last tick
+                    togglenexttick = 0
+                    enable(stack) //toggle back to enabled
+                } else if (lastworld == null) { //if the world is null, most likely on first join or weird cases
+                    lastworld = entity.entityWorld
+                }
             }
         }
     }
