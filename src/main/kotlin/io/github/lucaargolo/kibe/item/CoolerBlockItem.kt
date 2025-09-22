@@ -28,7 +28,7 @@ import java.util.*
 class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
-        if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && entity.canConsume(false)) {
+        if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && !entity.isInvulnerable && !entity.abilities.invulnerable && entity.canConsume(false)) {
             val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
             stack.get(DataComponentTypes.CONTAINER)?.copyTo(rawInventory)
             val foodStack = rawInventory[0]
