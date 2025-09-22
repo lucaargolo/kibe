@@ -42,7 +42,7 @@ fun String.capitalize(): String {
 val systemEnvironment: Map<String, String> = System.getenv()
 val buildReleaseName = "${name.split("-").joinToString(" ") { it.capitalize() }} ${(version as String).split("+")[0]}"
 val buildReleaseType = (version as String).split("+")[0].split("-").let { if(it.size > 1) if(it[1] == "BETA" || it[1] == "ALPHA") it[1] else "ALPHA" else "RELEASE" }
-val buildReleaseFile = "${layout.buildDirectory}/libs/${base.archivesName.get()}-${version}.jar"
+val buildReleaseFile = layout.buildDirectory.file("libs/${base.archivesName.get()}-${version}.jar").get()
 val buildGameVersion = (version as String).split("+")[1].let{ if(!project["minecraft_version"].contains("-") && project["minecraft_version"].startsWith(it)) project["minecraft_version"] else "$it-Snapshot"}
 
 fun getChangeLog(): String {
@@ -135,7 +135,6 @@ tasks.withType<JavaCompile> {
 tasks.withType<KotlinCompile> {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
 }
-
 
 java {
     withSourcesJar()
