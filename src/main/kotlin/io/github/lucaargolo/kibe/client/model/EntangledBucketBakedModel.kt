@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.*
@@ -21,7 +22,6 @@ import net.minecraft.client.render.model.json.ModelOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.MissingSprite
 import net.minecraft.client.texture.Sprite
-import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
@@ -50,7 +50,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        val background = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_bucket_background"))
+        val background = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bucket_background"))
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         (backgroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
@@ -73,7 +73,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         if(fluid != Fluids.EMPTY) {
             val fluidRenderHandler: FluidRenderHandler? = FluidRenderHandlerRegistry.INSTANCE.get(fluid)
-            val fluidIdentifier = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_bucket_fluid"))
+            val fluidIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bucket_fluid"))
             val fluidModel = MinecraftClient.getInstance().bakedModelManager.getModel(fluidIdentifier)
 
             val fluidColor: Int = fluidRenderHandler?.getFluidColor(MinecraftClient.getInstance().world, MinecraftClient.getInstance().player!!.blockPos, fluid.defaultState) ?: 0xffffff
@@ -96,14 +96,14 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             context.popTransform()
         }
 
-        val foreground = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_bucket_foreground"))
+        val foreground = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bucket_foreground"))
         val foregroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(foreground)
         (foregroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
         val core = if(stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledTank.DEFAULT_KEY)
             ModIdentifier.of("item/entangled_bucket_diamond_core")
         else ModIdentifier.of("item/entangled_bucket_gold_core")
-        val coreIdentifier = ModelIdentifier.ofInventoryVariant(core)
+        val coreIdentifier = ModelLoadingConstants.toResourceModelId(core)
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(coreIdentifier)
         (coreModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
@@ -125,7 +125,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             true
         }
         val emitter = context.emitter
-        val ring = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_ring"))
+        val ring = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_ring"))
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q.vertexData, 0)

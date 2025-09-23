@@ -6,6 +6,7 @@ import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.*
@@ -13,7 +14,6 @@ import net.minecraft.client.render.model.json.JsonUnbakedModel
 import net.minecraft.client.render.model.json.ModelOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
-import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
@@ -48,7 +48,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             true
         }
 
-        val background = ModelIdentifier.ofInventoryVariant(Identifier.of("item/entangled_bag_background"))
+        val background = ModelLoadingConstants.toResourceModelId(Identifier.of("item/entangled_bag_background"))
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)
@@ -60,7 +60,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
                 ModIdentifier.of("item/entangled_bag_diamond_core")
             else
                 ModIdentifier.of("item/entangled_bag_gold_core")
-        val codeIdentifier = ModelIdentifier.ofInventoryVariant(core)
+        val codeIdentifier = ModelLoadingConstants.toResourceModelId(core)
         val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(codeIdentifier)
 
         coreModel.getQuads(null, null, randSupplier.get()).forEach { q ->
@@ -87,7 +87,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             quad.color(color, color, color, color)
             true
         }
-        val ring = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_ring"))
+        val ring = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_ring"))
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)

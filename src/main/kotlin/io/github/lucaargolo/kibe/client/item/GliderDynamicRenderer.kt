@@ -3,13 +3,13 @@ package io.github.lucaargolo.kibe.client.item
 import io.github.lucaargolo.kibe.item.Glider
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.model.json.JsonUnbakedModel
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.render.model.json.ModelTransformationMode
-import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
@@ -69,14 +69,14 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
         val itemId = Registries.ITEM.getId(stack.item)
 
         if(force3d || (isEnabled && !isGui)) {
-            val handleIdentifier = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/glider_handle"))
+            val handleIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/glider_handle"))
             val handleModel = MinecraftClient.getInstance().bakedModelManager.getModel(handleIdentifier)
 
             handleModel.getQuads(null, null, Random.create()).forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, 1f, lightmap, overlay)
             }
 
-            val gliderIdentifier = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/"+itemId.path + "_active"))
+            val gliderIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/"+itemId.path + "_active"))
             val gliderModel = MinecraftClient.getInstance().bakedModelManager.getModel(gliderIdentifier)
 
             gliderModel.getQuads(null, null, Random.create()).forEach { q ->
@@ -84,7 +84,7 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
             }
         }else {
             val statusId = if(isEnabled) ModIdentifier.of("item/glider_active") else ModIdentifier.of("item/"+itemId.path + "_inactive")
-            val statusIdentifier = ModelIdentifier.ofInventoryVariant(statusId)
+            val statusIdentifier = ModelLoadingConstants.toResourceModelId(statusId)
             val invModel = MinecraftClient.getInstance().bakedModelManager.getModel(statusIdentifier)
 
             invModel.getQuads(null, null, Random.create()).forEach { q ->
