@@ -9,10 +9,10 @@ import net.minecraft.util.Identifier
 
 class WitherBuilderScreen(handler: WitherBuilderScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<WitherBuilderScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/wither_builder.png")
+    private val texture = Identifier.of("kibe:textures/gui/wither_builder.png")
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }

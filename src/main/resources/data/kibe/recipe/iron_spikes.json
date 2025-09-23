@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#_#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_sword"
+    },
+    "_": {
+      "item": "kibe:stone_spikes"
+    }
+  },
+  "result": {
+    "id": "kibe:iron_spikes",
+    "count": 4
+  }
+}

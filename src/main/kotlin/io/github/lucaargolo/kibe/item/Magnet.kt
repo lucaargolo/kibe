@@ -22,6 +22,7 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
         val target = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
         val areaOfEffect = Box.from(target).expand(KibeMod.CONFIG.miscellaneousModule.magnetRange)
 
+        @Suppress("DEPRECATION")
         if (world.getStatesInBox(areaOfEffect).anyMatch { it.block.registryEntry.isIn(MAGNET_INHIBITOR_TAG) }) return
 
         world.getOtherEntities(player, areaOfEffect) { ((it is ItemEntity && !it.cannotPickup()) || it is ExperienceOrbEntity) }
@@ -33,7 +34,7 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
 
     companion object {
 
-        val MAGNET_INHIBITOR_TAG = TagKey.of(RegistryKeys.BLOCK, ModIdentifier("magnet_inhibitor"))
-        fun create(settings: Settings): Magnet = /*if (KibeMod.TRINKET) TrinketMagnet(settings) else*/ Magnet(settings)
+        val MAGNET_INHIBITOR_TAG = TagKey.of(RegistryKeys.BLOCK, ModIdentifier.of("magnet_inhibitor"))
+        fun create(settings: Settings): Magnet = if (KibeMod.TRINKET) TrinketMagnet(settings) else Magnet(settings)
     }
 }

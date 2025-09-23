@@ -39,7 +39,7 @@ class VoidBucket(settings: Settings): Item(settings) {
             if (world.canPlayerModifyAt(user, pos) && user.canPlaceOn(offsetPos, dir, itemStack)) {
                 val blockState = world.getBlockState(pos)
                 if (blockState.block is FluidDrainable) {
-                    val fluid = (blockState.block as FluidDrainable).tryDrainFluid(world, pos, blockState)
+                    val fluid = (blockState.block as FluidDrainable).tryDrainFluid(user, world, pos, blockState)
                     if(fluid.item != Fluids.EMPTY.bucketItem) {
                         user.incrementStat(Stats.USED.getOrCreateStat(this))
                         user.playSound(SoundEvents.ITEM_BUCKET_FILL, 1.0f, 1.0f)
@@ -56,13 +56,11 @@ class VoidBucket(settings: Settings): Item(settings) {
         } ?: TypedActionResult.pass(itemStack)
     }
 
-    @Suppress("DEPRECATION")
     private fun fakeInteraction(world: World, pos: BlockPos, blockHitResult: BlockHitResult): Boolean {
         val fakePlayer = if(world is ServerWorld) FakePlayer.get(world) else FakeClientPlayerEntity(world)
         fakePlayer.setStackInHand(Hand.MAIN_HAND, ItemStack(Items.BUCKET))
         val blockState = world.getBlockState(pos)
-        val block = blockState.block
-        block.onUse(blockState, world, pos, fakePlayer, Hand.MAIN_HAND, blockHitResult)
+        blockState.onUse(world, fakePlayer, blockHitResult)
         val resultStack = fakePlayer.getStackInHand(Hand.MAIN_HAND)
         val resultItem = resultStack.item
         return resultItem != Items.BUCKET

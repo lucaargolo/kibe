@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.client.screen.ChunkLoaderScreen
-import io.github.lucaargolo.kibe.data.ChunkLoaderState
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -18,9 +18,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.text.Text
-
 import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.shape.VoxelShape
@@ -28,7 +26,7 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class ChunkLoader: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.ENCHANTING_TABLE).requiresTool().strength(22.0F, 600.0F)) {
+class ChunkLoader(settings: Settings): BlockWithEntity(settings) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.ENABLED, false)
@@ -39,7 +37,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.ENCHANTING_
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.CHUNK_LOADER, ChunkLoaderBlockEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.CHUNK_LOADER, ChunkLoaderBlockEntity::tick)
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
@@ -50,12 +48,11 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.ENCHANTING_
         return defaultState.with(Properties.ENABLED, true)
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, notify: Boolean) {
         if ((!state.isOf(newState.block) || !newState[Properties.ENABLED]) && !world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
             if (blockEntity is ChunkLoaderBlockEntity) {
-                val chunkLoaderState = (world as ServerWorld).server.overworld.persistentStateManager.getOrCreate({ ChunkLoaderState.createFromTag(it, world.server) }, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
+                val chunkLoaderState = ChunkLoaderState.getPersistentState((world as ServerWorld).server)
                 chunkLoaderState.removePos(pos, world)
             }
         }
@@ -70,7 +67,7 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.ENCHANTING_
         }
     }
 
-    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
         if(world.isClient) {
             val be = world.getBlockEntity(pos) as? ChunkLoaderBlockEntity
             be?.let {
@@ -88,7 +85,10 @@ class ChunkLoader: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.ENCHANTING_
 
     override fun getOutlineShape(state: BlockState?, world: BlockView?, pos: BlockPos?, context: ShapeContext?): VoxelShape = SHAPE
 
+    override fun getCodec(): MapCodec<ChunkLoader> = CODEC
+
     companion object {
+        private val CODEC: MapCodec<ChunkLoader> = createCodec(::ChunkLoader)
         private val SHAPE = VoxelShapes.union(
             createCuboidShape(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
             createCuboidShape(3.0, 12.0, 3.0, 13.0, 13.0, 13.0)

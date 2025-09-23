@@ -9,10 +9,10 @@ import net.minecraft.util.Identifier
 
 class BreakerScreen(handler: BreakerScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<BreakerScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/breaker.png")
+    private val texture = Identifier.of("kibe:textures/gui/breaker.png")
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }

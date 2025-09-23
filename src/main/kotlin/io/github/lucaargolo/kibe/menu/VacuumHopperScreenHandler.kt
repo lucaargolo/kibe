@@ -119,7 +119,7 @@ class VacuumHopperScreenHandler (syncId: Int, playerInventory: PlayerInventory, 
             itemStack = itemStack2.copy()
             if (invSlot == 0) {
                 context.run { world: World?, _: BlockPos? ->
-                    itemStack2.item.onCraft(itemStack2, world, player)
+                    itemStack2.item.onCraft(itemStack2, world)
                 }
                 if (!insertItem(itemStack2, 11, 47, true)) {
                     return ItemStack.EMPTY

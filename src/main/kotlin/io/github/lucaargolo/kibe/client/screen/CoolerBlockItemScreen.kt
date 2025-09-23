@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier
 
 class CoolerBlockItemScreen(handler: CoolerBlockItemScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<CoolerBlockItemScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/cooler.png")
+    private val texture = Identifier.of("kibe:textures/gui/cooler.png")
 
     override fun init() {
         super.init()
@@ -19,7 +19,7 @@ class CoolerBlockItemScreen(handler: CoolerBlockItemScreenHandler, inventory: Pl
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }

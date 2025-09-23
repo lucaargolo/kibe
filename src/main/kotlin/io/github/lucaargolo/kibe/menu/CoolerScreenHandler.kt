@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.menu
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.blockentity.CoolerBlockEntity
 import io.github.lucaargolo.kibe.utils.BlockEntityInventory
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -21,7 +22,7 @@ class CoolerScreenHandler(syncId: Int, playerInventory: PlayerInventory, val ent
         inventory.onOpen(playerInventory.player)
 
         addSlot(object: Slot(inventory, 0, 8+18*4, 18) {
-            override fun canInsert(stack: ItemStack) = stack.item.isFood
+            override fun canInsert(stack: ItemStack) = stack.contains(DataComponentTypes.FOOD)
         })
 
         (0..2).forEach { n ->

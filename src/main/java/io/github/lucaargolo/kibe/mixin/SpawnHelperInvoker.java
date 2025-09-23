@@ -16,8 +16,21 @@ import java.util.Optional;
 @Mixin(SpawnHelper.class)
 public interface SpawnHelperInvoker {
 
-    @Invoker("pickRandomSpawnEntry")
-    static Optional<SpawnSettings.SpawnEntry> pickRandomSpawnEntry(ServerWorld world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, SpawnGroup spawnGroup, Random random, BlockPos pos) {
+    @Invoker
+    static boolean invokeCanSpawn(
+            ServerWorld world,
+            SpawnGroup group,
+            StructureAccessor structureAccessor,
+            ChunkGenerator chunkGenerator,
+            SpawnSettings.SpawnEntry spawnEntry,
+            BlockPos.Mutable pos,
+            double squaredDistance
+    ) {
+        throw new AssertionError();
+    }
+
+    @Invoker
+    static Optional<SpawnSettings.SpawnEntry> invokePickRandomSpawnEntry(ServerWorld world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, SpawnGroup spawnGroup, Random random, BlockPos pos) {
         throw new AssertionError();
     }
 

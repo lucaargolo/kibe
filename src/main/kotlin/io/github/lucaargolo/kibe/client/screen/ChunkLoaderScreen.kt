@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.client.screen
 
 import io.github.lucaargolo.kibe.blockentity.ChunkLoaderBlockEntity
-import io.github.lucaargolo.kibe.network.PacketCompendium
-import io.netty.buffer.Unpooled
+import io.github.lucaargolo.kibe.network.ChunkMapClickPacket
+import io.github.lucaargolo.kibe.network.ChunkPlayerCheckPacket
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.block.MapColor
 import net.minecraft.client.MinecraftClient
@@ -10,7 +10,6 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -73,26 +72,15 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
         y = (height-backgroundHeight)/2
     }
 
-    private val texture = Identifier("kibe:textures/gui/chunk_loader.png")
+    private val texture = Identifier.of("kibe:textures/gui/chunk_loader.png")
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun drawForeground(context: DrawContext, mouseX: Int, mouseY: Int) {
-        context.drawText(textRenderer, title, x+47 - textRenderer.getWidth(title) / 2, y+6, 4210752, false)
-        val toggle = Text.translatable("tooltip.kibe.check_for_owner")
-        context.matrices.push()
-        context.matrices.scale(0.5f, 0.5f, 0.5f)
-        context.drawText(textRenderer, toggle, (x+16)*2, (y+20)*2, 4210752, false)
-        context.matrices.pop()
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun drawBackground(context: DrawContext, delta: Float, mouseX: Int, mouseY: Int) {
+    override fun renderBackground(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        this.renderInGameBackground(context)
         context.drawTexture(texture, x, y, 0, 0, backgroundWidth, backgroundHeight)
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
-        drawBackground(context, delta, mouseX, mouseY)
+        super.render(context, mouseX, mouseY, delta)
         if(identifier == null) createImage()
         identifier?.let {
             context.drawTexture(it, x+7, y+28, 0, 0, 80, 80)
@@ -124,28 +112,26 @@ class ChunkLoaderScreen(be: ChunkLoaderBlockEntity): Screen(Text.translatable("s
         }else{
             notOwner = false
         }
-        super.render(context, mouseX, mouseY, delta)
-        drawForeground(context, mouseX, mouseY)
+        context.drawText(textRenderer, title, x+47 - textRenderer.getWidth(title) / 2, y+6, 4210752, false)
+        val toggle = Text.translatable("tooltip.kibe.check_for_owner")
+        context.matrices.push()
+        context.matrices.scale(0.5f, 0.5f, 0.5f)
+        context.drawText(textRenderer, toggle, (x+16)*2, (y+20)*2, 4210752, false)
+        context.matrices.pop()
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if(mouseX.toInt() in (x+7 until x+87) && mouseY.toInt() in (y+28 until y+109)) {
             val x = ((mouseX.toInt()-(x+7))/16) - 2
             val z = ((mouseY.toInt()-(y+28))/16) - 2
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeInt(x)
-            passedData.writeInt(z)
-            passedData.writeBlockPos(entity.pos)
-            ClientPlayNetworking.send(PacketCompendium.CHUNK_MAP_CLICK, passedData)
+            ClientPlayNetworking.send(ChunkMapClickPacket(x, z, entity.pos))
             return true
         }
         if(mouseX.toInt() in (x+7 until x+14) && mouseY.toInt() in (y+18 until y+25)) {
-            val passedData = PacketByteBuf(Unpooled.buffer())
-            passedData.writeBlockPos(entity.pos)
             if(client?.player?.uuidAsString != entity.ownerUUID) {
                 notOwner = true
             }else{
-                ClientPlayNetworking.send(PacketCompendium.CHUNK_PLAYER_CHECK, passedData)
+                ClientPlayNetworking.send(ChunkPlayerCheckPacket(entity.pos))
             }
             return true
         }

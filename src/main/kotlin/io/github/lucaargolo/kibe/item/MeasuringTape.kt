@@ -1,14 +1,18 @@
 package io.github.lucaargolo.kibe.item
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.ClampedModelPredicateProvider
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.item.tooltip.TooltipType
+import net.minecraft.network.codec.PacketCodec
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
@@ -22,52 +26,75 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class MeasuringTape(settings: Settings) : Item(settings) {
+
+    override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
+        val stack = user.getStackInHand(hand)
+        if(user.mainHandStack == stack || user.mainHandStack.isEmpty) {
+            val reach = if (user.isCreative) 5.0 else 4.5
+            val pos = (user.raycast(reach, 1f, true) as? BlockHitResult)?.blockPos ?: return TypedActionResult.pass(stack)
+            if(!world.isClient) {
+                val measuringFrom = measuringFrom(stack)
+                val measuringTo = measuringTo(stack)
+                if (measuringFrom == null) {
+                    startMeasuring(stack, world, pos)
+                } else {
+                    finishMeasuring(measuringFrom, measuringTo, user, pos, stack)
+                }
+                return TypedActionResult.success(stack)
+            }
+        }
+        return TypedActionResult.pass(stack)
+    }
+
+    override fun appendTooltip(stack: ItemStack, context: TooltipContext, tooltip: MutableList<Text>, type: TooltipType) {
+        super.appendTooltip(stack, context, tooltip, type)
+        val measuringFrom = measuringFrom(stack)
+        val measuringTo = measuringTo(stack)
+        if (measuringFrom == null) {
+            tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.start").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
+        } else {
+            if(measuringTo != null) {
+                tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_to", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z, measuringTo.second.x, measuringTo.second.y, measuringTo.second.z).formatted(Formatting.YELLOW, Formatting.ITALIC)
+            }else{
+                tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_from", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z).formatted(Formatting.BLUE, Formatting.ITALIC)
+                tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_2").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
+            }
+            tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_3").formatted(Formatting.RED, Formatting.ITALIC)
+        }
+    }
+
+    override fun hasGlint(stack: ItemStack): Boolean {
+        return measuringTo(stack) != null
+    }
+
+    override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
+        if(world.isClient && selected) {
+            val client = MinecraftClient.getInstance()
+            val player = client.player ?: return
+            val pos = (client.crosshairTarget as? BlockHitResult)?.blockPos ?: return
+            val measuringFrom = measuringFrom(stack)
+            val measuringTo = measuringTo(stack)
+            if(measuringFrom != null) {
+                finishMeasuring(measuringFrom, measuringTo, player, pos, null)
+            }
+        }
+    }
+
     companion object {
-        const val MEASURING_LEVEL = "MeasuringLevel"
-
-        const val MEASURING_FROM_X = "MeasuringFromX"
-        const val MEASURING_FROM_Y = "MeasuringFromY"
-        const val MEASURING_FROM_Z = "MeasuringFromZ"
-
-        const val MEASURING_TO_X = "MeasuringToX"
-        const val MEASURING_TO_Y = "MeasuringToY"
-        const val MEASURING_TO_Z = "MeasuringToZ"
 
         fun measuringFrom(stack: ItemStack): Pair<Identifier, BlockPos>? {
-            val nbt = stack.nbt ?: return null
-            if (MEASURING_LEVEL !in nbt || MEASURING_FROM_X !in nbt || MEASURING_FROM_Y !in nbt || MEASURING_FROM_Z !in nbt) {
-                return null
-            }
-            val x = nbt.getInt(MEASURING_FROM_X)
-            val y = nbt.getInt(MEASURING_FROM_Y)
-            val z = nbt.getInt(MEASURING_FROM_Z)
-            val level = nbt.getString(MEASURING_LEVEL)
-
-            return Identifier(level) to BlockPos(x, y, z).toImmutable()
+            val data = stack.get(ComponentTypeCompendium.MEASURING_FROM) ?: return null
+            return data.measuringLevel to data.measuring.toImmutable()
         }
 
         fun measuringTo(stack: ItemStack): Pair<Identifier, BlockPos>? {
-            val nbt = stack.nbt ?: return null
-            if (MEASURING_LEVEL !in nbt || MEASURING_TO_X !in nbt || MEASURING_TO_Y !in nbt || MEASURING_TO_Z !in nbt) {
-                return null
-            }
-            val x = nbt.getInt(MEASURING_TO_X)
-            val y = nbt.getInt(MEASURING_TO_Y)
-            val z = nbt.getInt(MEASURING_TO_Z)
-            val level = nbt.getString(MEASURING_LEVEL)
-
-            return Identifier(level) to BlockPos(x, y, z).toImmutable()
+            val data = stack.get(ComponentTypeCompendium.MEASURING_TO) ?: return null
+            return data.measuringLevel to data.measuring.toImmutable()
         }
 
         fun startMeasuring(stack: ItemStack, world: World, pos: BlockPos) {
-            val nbt = stack.orCreateNbt
-            nbt.remove(MEASURING_TO_X)
-            nbt.remove(MEASURING_TO_Y)
-            nbt.remove(MEASURING_TO_Z)
-            nbt.putInt(MEASURING_FROM_X, pos.x)
-            nbt.putInt(MEASURING_FROM_Y, pos.y)
-            nbt.putInt(MEASURING_FROM_Z, pos.z)
-            nbt.putString(MEASURING_LEVEL, world.dimensionKey.value.toString())
+            stack.remove(ComponentTypeCompendium.MEASURING_TO)
+            stack.set(ComponentTypeCompendium.MEASURING_FROM, MeasuringData(world.registryKey.value, pos))
         }
 
         fun finishMeasuring(
@@ -80,7 +107,7 @@ class MeasuringTape(settings: Settings) : Item(settings) {
             val (fromLevel, fromPos) = measuringFrom
             val toPos = measuringTo?.second
             if(!player.isSneaking) {
-                if (fromLevel != player.world.dimensionKey.value) {
+                if (fromLevel != player.world.registryKey.value) {
                     player.sendMessage(Text.translatable("chat.kibe.measuring_tape.measuring_between_dimensions").formatted(Formatting.RED), true)
                 } else {
                     if (toPos != null) {
@@ -93,22 +120,13 @@ class MeasuringTape(settings: Settings) : Item(settings) {
             if (!player.world.isClient) {
                 if (player.isSneaking) {
                     player.sendMessage(Text.translatable("chat.kibe.measuring_tape.clear").formatted(Formatting.RED, Formatting.ITALIC), true)
-                    stack?.nbt?.remove(MEASURING_LEVEL)
-                    stack?.nbt?.remove(MEASURING_FROM_X)
-                    stack?.nbt?.remove(MEASURING_FROM_Y)
-                    stack?.nbt?.remove(MEASURING_FROM_Z)
-                    stack?.nbt?.remove(MEASURING_TO_X)
-                    stack?.nbt?.remove(MEASURING_TO_Y)
-                    stack?.nbt?.remove(MEASURING_TO_Z)
+                    stack?.remove(ComponentTypeCompendium.MEASURING_FROM)
+                    stack?.remove(ComponentTypeCompendium.MEASURING_TO)
                 } else {
                     if (toPos != null) {
-                        stack?.nbt?.remove(MEASURING_TO_X)
-                        stack?.nbt?.remove(MEASURING_TO_Y)
-                        stack?.nbt?.remove(MEASURING_TO_Z)
+                        stack?.remove(ComponentTypeCompendium.MEASURING_TO)
                     } else {
-                        stack?.nbt?.putInt(MEASURING_TO_X, lookPos.x)
-                        stack?.nbt?.putInt(MEASURING_TO_Y, lookPos.y)
-                        stack?.nbt?.putInt(MEASURING_TO_Z, lookPos.z)
+                        stack?.set(ComponentTypeCompendium.MEASURING_TO, MeasuringData(fromLevel, lookPos))
                     }
                 }
             }
@@ -134,71 +152,33 @@ class MeasuringTape(settings: Settings) : Item(settings) {
         }
     }
 
-    override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
-        val stack = user.getStackInHand(hand)
-        if(user.mainHandStack == stack || user.mainHandStack.isEmpty) {
-            val reach = if (user.isCreative) 5.0 else 4.5
-            val pos = (user.raycast(reach, 1f, true) as? BlockHitResult)?.blockPos ?: return TypedActionResult.pass(stack)
-            if(!world.isClient) {
-                val measuringFrom = measuringFrom(stack)
-                val measuringTo = measuringTo(stack)
-                if (measuringFrom == null) {
-                    startMeasuring(stack, world, pos)
-                } else {
-                    finishMeasuring(measuringFrom, measuringTo, user, pos, stack)
-                }
-                return TypedActionResult.success(stack)
-            }
-        }
-        return TypedActionResult.pass(stack)
-    }
+    data class MeasuringData(val measuringLevel: Identifier, val measuring: BlockPos) {
 
-    override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        val measuringFrom = measuringFrom(stack)
-        val measuringTo = measuringTo(stack)
-        if (measuringFrom == null) {
-            tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.start").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
-        } else {
-            tooltip += if(measuringTo != null) {
-                Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_to", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z, measuringTo.second.x, measuringTo.second.y, measuringTo.second.z).formatted(Formatting.YELLOW, Formatting.ITALIC)
-            }else{
-                Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_from", measuringFrom.second.x, measuringFrom.second.y, measuringFrom.second.z).formatted(Formatting.BLUE, Formatting.ITALIC)
-            }
-            tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_2").formatted(Formatting.DARK_PURPLE, Formatting.ITALIC)
-            tooltip += Text.translatable("tooltip.kibe.lore.measuring_tape.measuring_3").formatted(Formatting.RED, Formatting.ITALIC)
-        }
-        if (context.isAdvanced && measuringFrom != null) {
-            tooltip += Text.of(" ${measuringFrom.first}")
-        }
-    }
+        companion object {
 
-    override fun hasGlint(stack: ItemStack): Boolean {
-        return measuringTo(stack) != null
-    }
-
-    override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
-        if(world.isClient && selected) {
-            val client = MinecraftClient.getInstance()
-            val player = client.player ?: return
-            val pos = (client.crosshairTarget as? BlockHitResult)?.blockPos ?: return
-            val measuringFrom = measuringFrom(stack)
-            val measuringTo = measuringTo(stack)
-            if(measuringFrom != null) {
-                finishMeasuring(measuringFrom, measuringTo, player, pos, null)
+            val CODEC: Codec<MeasuringData> = RecordCodecBuilder.create { instance ->
+                instance.group(
+                    Identifier.CODEC.fieldOf("measuringLevel").forGetter(MeasuringData::measuringLevel),
+                    BlockPos.CODEC.fieldOf("measuring").forGetter(MeasuringData::measuring),
+                ).apply(instance, ::MeasuringData)
             }
+
+            val PACKET_CODEC = PacketCodec.tuple(
+                Identifier.PACKET_CODEC, MeasuringData::measuringLevel,
+                BlockPos.PACKET_CODEC, MeasuringData::measuring,
+            ::MeasuringData)
         }
+
     }
 
     class PredicateProvider: ClampedModelPredicateProvider {
 
         override fun unclampedCall(stack: ItemStack, world: ClientWorld?, entity: LivingEntity?, seed: Int): Float {
-            val nbt = stack.nbt ?: return 0f
-            if (MeasuringTape.MEASURING_LEVEL in nbt) {
+            if (stack.contains(ComponentTypeCompendium.MEASURING_FROM)) {
                 return 1f
             }
             return 0f
         }
-
 
     }
 

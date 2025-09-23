@@ -1,10 +1,10 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.WitherBuilderBlockEntity
 import io.github.lucaargolo.kibe.menu.WitherBuilderScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
@@ -25,7 +25,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
-class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)) {
+class WitherBuilder(settings: Settings): BlockWithEntity(settings) {
 
     init {
         defaultState = stateManager.defaultState
@@ -118,7 +118,6 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos))
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {
@@ -129,14 +128,18 @@ class WitherBuilder: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.OBSIDIAN)
         }
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::WitherBuilderScreenHandler))
         return ActionResult.SUCCESS
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
 
+    override fun getCodec(): MapCodec<WitherBuilder> = CODEC
+
     companion object {
+        private val CODEC: MapCodec<WitherBuilder> = createCodec(::WitherBuilder)
+
         val VERTICAL = BooleanProperty.of("vertical")
         val VERTICAL_FACING = DirectionProperty.of("vertical_facing", Direction.Type.VERTICAL)
     }

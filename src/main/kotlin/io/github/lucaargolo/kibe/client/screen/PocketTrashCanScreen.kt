@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier
 
 class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<PocketTrashCanScreenHandler>(screenHandler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/trash_can.png")
+    private val texture = Identifier.of("kibe:textures/gui/trash_can.png")
 
     private var startX = 0
     private var startY = 0
@@ -23,7 +23,7 @@ class PocketTrashCanScreen(screenHandler: PocketTrashCanScreenHandler, inventory
 
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }

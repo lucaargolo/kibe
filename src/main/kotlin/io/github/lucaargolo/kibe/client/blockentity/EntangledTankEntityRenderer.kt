@@ -1,12 +1,10 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.client.blockentity
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
-import io.github.lucaargolo.kibe.data.EntangledTankState
+import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.item.Rune
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
@@ -51,10 +49,10 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f))
         matrices.translate(-0.5, -0.5, -0.5)
 
-        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest"))
+        val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest"))
         val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
 
-        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier("kibe:block/entangled_chest_runes"))
+        val runesIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest_runes"))
         val runesConsumer = runesIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
 
         val lightAbove = entity.world?.let { WorldRenderer.getLightmapCoordinates(it, entity.pos) } ?: light
@@ -126,10 +124,10 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
     }
 
     private fun renderVertices(bb: VertexConsumer, entry: MatrixStack.Entry, normal: Vector3f, color: Color, overlay: Int, light: Int, uv: TankBlockEntityRenderer.UV, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float) {
-        bb.vertex(entry.positionMatrix, f, h, j).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.maxU, uv.minV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
-        bb.vertex(entry.positionMatrix, g, h, k).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.minV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
-        bb.vertex(entry.positionMatrix, g, i, l).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.maxV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
-        bb.vertex(entry.positionMatrix, f, i, m).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.maxU, uv.maxV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
+        bb.vertex(entry.positionMatrix, f, h, j).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.maxU, uv.minV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
+        bb.vertex(entry.positionMatrix, g, h, k).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.minV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
+        bb.vertex(entry.positionMatrix, g, i, l).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.minU, uv.maxV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
+        bb.vertex(entry.positionMatrix, f, i, m).color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f).texture(uv.maxU, uv.maxV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
     }
 
 

@@ -1,9 +1,9 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BreakerBlockEntity
 import io.github.lucaargolo.kibe.menu.BreakerScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
@@ -13,14 +13,17 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.util.*
+import net.minecraft.util.ActionResult
+import net.minecraft.util.BlockMirror
+import net.minecraft.util.BlockRotation
+import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
-class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
+class Breaker(settings: Settings): BlockWithEntity(settings) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.FACING, Direction.NORTH).with(Properties.TRIGGERED, false)
@@ -69,7 +72,7 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
                             if (stk.isEmpty) {
                                 it.setStack(slot, stack.copy())
                                 stack.decrement(stack.count)
-                            } else if (ItemStack.canCombine(stack, stk)) {
+                            } else if (ItemStack.areItemsAndComponentsEqual(stack, stk)) {
                                 if (stk.count + stack.count < stk.maxCount) {
                                     stk.increment(stack.count)
                                     stack.decrement(stack.count)
@@ -99,7 +102,6 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos))
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {
@@ -110,11 +112,17 @@ class Breaker: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)) {
         }
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::BreakerScreenHandler))
         return ActionResult.SUCCESS
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCodec(): MapCodec<Breaker> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<Breaker> = createCodec(::Breaker)
+    }
 
 }

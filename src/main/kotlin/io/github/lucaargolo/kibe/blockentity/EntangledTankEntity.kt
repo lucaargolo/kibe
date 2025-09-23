@@ -1,18 +1,20 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage", "UNUSED_PARAMETER")
+@file:Suppress("DEPRECATION", "UNUSED_PARAMETER")
 
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledTank
-import io.github.lucaargolo.kibe.data.EntangledTankState
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
+import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
-import io.github.lucaargolo.kibe.utils.helper.FluidHelper
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.minecraft.block.BlockState
+import net.minecraft.component.ComponentMap
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.DyeColor
@@ -39,13 +41,7 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
     fun getPersistentState(): EntangledTankState {
         val serverWorld = world as? ServerWorld
         if (serverWorld != null) {
-            return serverWorld.server.overworld.persistentStateManager.getOrCreate( {
-                EntangledTankState.createFromTag(
-                    it,
-                    serverWorld,
-                    key
-                )
-            }, { EntangledTankState(serverWorld, key) }, key)
+            return EntangledTankState.getPersistentState(serverWorld, key)
         } else {
             return EntangledTankState.getOrCreateClientState(key)
         }
@@ -88,8 +84,8 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         return StorageUtil.calculateComparatorOutput(getPersistentState().getOrCreateInventory(colorCode))
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
@@ -100,18 +96,17 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
         updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
-        FluidHelper.readTank(tag, getTank())
     }
 
-    override fun writeNbt(tag: NbtCompound) {
-        super.writeNbt(tag)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
         }
@@ -119,10 +114,33 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
         tag.putString("owner", owner)
         tag.putBoolean("isBeingCompared", isBeingCompared)
         tag.putInt("lastComparatorOutput", lastComparatorOutput)
-        FluidHelper.writeTank(tag, getTank())
     }
 
-    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = tag.also { writeNbt(it, registryLookup) }
+
+    override fun addComponents(builder: ComponentMap.Builder) {
+        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.values.toList())
+        builder.add(ComponentTypeCompendium.ENTANGLED_KEY, key)
+        builder.add(ComponentTypeCompendium.OWNER, owner)
+    }
+
+    override fun readComponents(components: ComponentsAccess) {
+        components.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { index, component ->
+            this.runeColors[index+1] = component
+        }
+        updateColorCode()
+        components.get(ComponentTypeCompendium.ENTANGLED_KEY)?.let { this.key = it }
+        components.get(ComponentTypeCompendium.OWNER)?.let { this.owner = it }
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("nbt.remove(\"Items\")"))
+    override fun removeFromCopiedStackNbt(nbt: NbtCompound) {
+        (1..8).forEach {
+            nbt.remove("rune$it")
+        }
+        nbt.remove("key")
+        nbt.remove("owner")
+    }
 
     companion object {
         fun getFluidStorage(be: EntangledTankEntity, dir: Direction?): Storage<FluidVariant> {

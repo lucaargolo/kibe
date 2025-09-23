@@ -2,41 +2,42 @@ package io.github.lucaargolo.kibe.item
 
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.effect.EffectCompendium
-import net.minecraft.client.item.TooltipContext
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.SpawnGroup
+import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.tooltip.TooltipType
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registries
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.math.Direction
-import net.minecraft.world.World
 
 abstract class Lasso(settings: Settings): Item(settings) {
 
     override fun hasGlint(stack: ItemStack): Boolean {
-        return stack.orCreateNbt.contains("Entity")
+        return stack.contains(DataComponentTypes.ENTITY_DATA)
     }
 
     override fun useOnEntity(stack: ItemStack, user: PlayerEntity, entity: LivingEntity, hand: Hand): ActionResult {
-        if (stack.nbt == null || !stack.orCreateNbt.contains("Entity")) {
+        if (!stack.contains(DataComponentTypes.ENTITY_DATA)) {
             if (entity is MobEntity && canStoreEntity(entity.type) && !KibeMod.CONFIG.miscellaneousModule.lassoDenyList.contains(Registries.ENTITY_TYPE.getId(entity.type).toString())) {
                 if(!user.world.isClient) {
                     if (entity.isLeashed) entity.detachLeash(true, true)
                     entity.fallDistance = 0f
                     val tag = NbtCompound()
                     entity.saveSelfNbt(tag)
-                    stack.orCreateNbt.put("Entity", tag)
+                    stack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(tag))
                     entity.remove(Entity.RemovalReason.DISCARDED)
                 }
                 return ActionResult.SUCCESS
@@ -46,8 +47,8 @@ abstract class Lasso(settings: Settings): Item(settings) {
     }
 
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
-        val stackTag = context.stack.orCreateNbt
-        if(stackTag.contains("Entity")) {
+        (context.stack.get(DataComponentTypes.ENTITY_DATA))?.let { tagComponent ->
+            val tag = tagComponent.copyNbt()
             if(context.world is ServerWorld) {
                 val pos = context.blockPos
 
@@ -61,13 +62,12 @@ abstract class Lasso(settings: Settings): Item(settings) {
                     else -> pos
                 }
 
-                val newTag = this.addToTag(stackTag["Entity"] as NbtCompound)
-                if(newTag.contains("APX")) {
-                    newTag.putInt("APX", targetPos.x)
-                    newTag.putInt("APY", targetPos.y)
-                    newTag.putInt("APZ", targetPos.z)
+                if(tag.contains("APX")) {
+                    tag.putInt("APX", targetPos.x)
+                    tag.putInt("APY", targetPos.y)
+                    tag.putInt("APZ", targetPos.z)
                 }
-                val newEntity = EntityType.loadEntityWithPassengers(newTag, context.world) {
+                val newEntity = EntityType.loadEntityWithPassengers(tag, context.world) {
                     it.refreshPositionAndAngles(targetPos.x+.5, targetPos.y+.0, targetPos.z+.5, it.yaw, it.pitch)
                     if (!(context.world as ServerWorld).tryLoadEntity(it)) {
                         context.player?.sendMessage(Text.translatable("chat.kibe.lasso.cannot_spawn"), true)
@@ -77,8 +77,8 @@ abstract class Lasso(settings: Settings): Item(settings) {
                 }
 
                 if(newEntity != null) {
-                    stackTag.remove("Entity")
-                    context.stack.nbt = stackTag
+                    addToEntity(newEntity)
+                    context.stack.remove(DataComponentTypes.ENTITY_DATA)
                 }
             }
             return ActionResult.SUCCESS
@@ -86,36 +86,27 @@ abstract class Lasso(settings: Settings): Item(settings) {
         return super.useOnBlock(context)
     }
 
-    override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        if(stack.orCreateNbt.contains("Entity"))
-            tooltip.add(Text.translatable("tooltip.kibe.stored").append(Text.translatable("entity."+stack.nbt!!.getCompound("Entity").getString("id").replace(":", "."))))
-        super.appendTooltip(stack, world, tooltip, context)
+    override fun appendTooltip(stack: ItemStack, context: TooltipContext?, tooltip: MutableList<Text>, type: TooltipType?) {
+        super.appendTooltip(stack, context, tooltip, type)
+        val entity = stack.get(DataComponentTypes.ENTITY_DATA)?.copyNbt()?.getString("id")?.replace(":", ".") ?: return
+        tooltip.add(Text.translatable("tooltip.kibe.stored").append(Text.translatable("entity.$entity")))
     }
 
-    abstract fun addToTag(tag: NbtCompound): NbtCompound
+    open fun addToEntity(entity: Entity) = Unit
     abstract fun canStoreEntity(entityType: EntityType<*>): Boolean
 
     class GoldenLasso(settings: Settings): Lasso(settings) {
-        override fun addToTag(tag: NbtCompound): NbtCompound = tag
         override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup != SpawnGroup.MONSTER && entityType.spawnGroup != SpawnGroup.MISC
     }
 
     class CursedLasso(settings: Settings): Lasso(settings) {
-        override fun addToTag(tag: NbtCompound): NbtCompound {
-            val activeEffect = NbtCompound()
-            activeEffect.putInt("Id", Registries.STATUS_EFFECT.getRawId(EffectCompendium.CURSED))
-            activeEffect.putInt("Amplifier", 1)
-            activeEffect.putInt("Duration", 999999)
-            val activeEffects = if(tag.contains("ActiveEffects")) tag.get("ActiveEffects") as NbtList else NbtList()
-            activeEffects.add(activeEffect)
-            tag.put("ActiveEffects", activeEffects)
-            return tag
+        override fun addToEntity(entity: Entity) {
+            (entity as? LivingEntity)?.addStatusEffect(StatusEffectInstance(EffectCompendium.CURSED, 999999, 0))
         }
         override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType.spawnGroup == SpawnGroup.MONSTER && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER
     }
 
     class DiamondLasso(settings: Settings): Lasso(settings) {
-        override fun addToTag(tag: NbtCompound): NbtCompound = tag
         override fun canStoreEntity(entityType: EntityType<*>): Boolean = entityType == EntityType.VILLAGER || (entityType.spawnGroup != SpawnGroup.MISC && entityType != EntityType.ENDER_DRAGON && entityType != EntityType.WITHER)
     }
 

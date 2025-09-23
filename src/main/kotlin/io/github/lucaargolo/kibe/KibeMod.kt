@@ -1,5 +1,3 @@
-@file:Suppress("unused", "UnstableApiUsage", "DEPRECATION")
-
 package io.github.lucaargolo.kibe
 
 import com.google.gson.GsonBuilder
@@ -7,7 +5,8 @@ import com.google.gson.JsonParser
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.client.KibeModClient
-import io.github.lucaargolo.kibe.data.ChunkLoaderState
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
 import io.github.lucaargolo.kibe.effect.EffectCompendium
 import io.github.lucaargolo.kibe.entity.EntityCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
@@ -23,10 +22,12 @@ import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.helper.LootHelper
 import io.github.lucaargolo.kibe.utils.helper.TooltipHelper
 import io.github.lucaargolo.kibe.utils.helper.TransferHelper
+import io.netty.buffer.ByteBuf
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.network.codec.PacketCodec
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import org.apache.logging.log4j.LogManager
@@ -45,12 +46,22 @@ object KibeMod {
     const val MOD_NAME = "Kibe"
     val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
 
+    val LONG_CODEC: PacketCodec<ByteBuf, Long> = object : PacketCodec<ByteBuf, Long> {
+        override fun decode(byteBuf: ByteBuf): Long {
+            return byteBuf.readLong()
+        }
+
+        override fun encode(byteBuf: ByteBuf, long: Long) {
+            byteBuf.writeLong(long)
+        }
+    }
+
     val CLIENT: Boolean by lazy { FabricLoader.getInstance().environmentType == EnvType.CLIENT }
-    //val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
+    val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
 
     val LOGGER: Logger = LogManager.getLogger("Kibe")
+
     val CONFIG: ModConfig by lazy {
-        val parser = JsonParser()
         val gson = GsonBuilder().setPrettyPrinting().create()
         val configFile = File("${FabricLoader.getInstance().configDir}${File.separator}$MOD_ID.json")
         var finalConfig: ModConfig
@@ -58,7 +69,7 @@ object KibeMod {
         try {
             if (configFile.createNewFile()) {
                 LOGGER.info("[$MOD_NAME] No config file found, creating a new one...")
-                val json: String = gson.toJson(parser.parse(gson.toJson(ModConfig())))
+                val json: String = gson.toJson(JsonParser.parseString(gson.toJson(ModConfig())))
                 PrintWriter(configFile).use { out -> out.println(json) }
                 finalConfig = ModConfig()
                 LOGGER.info("[$MOD_NAME] Successfully created default config file.")
@@ -89,11 +100,14 @@ object KibeMod {
         FluidCompendium.initialize()
         BlockCompendium.initialize()
         ItemCompendium.initialize()
+        ComponentTypeCompendium.initialize()
         BlockEntityCompendium.initialize()
         ScreenHandlerCompendium.initialize()
         EntityCompendium.initialize()
         EffectCompendium.initialize()
         ParticleCompendium.initialize()
+        TransferHelper.initialize()
+        TooltipHelper.initialize()
         LootHelper.initialize()
         PacketCompendium.initialize()
         EntangledTankSync.initialize()
@@ -113,11 +127,7 @@ object KibeMod {
 
     fun initChunkLoaderData() {
         ServerLifecycleEvents.SERVER_STARTED.register { server ->
-            server.overworld.persistentStateManager.getOrCreate(
-                { ChunkLoaderState.createFromTag(it, server) },
-                { ChunkLoaderState(server) },
-                "kibe_chunk_loaders"
-            )
+            ChunkLoaderState.getPersistentState(server)
         }
     }
 

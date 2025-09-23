@@ -1,11 +1,12 @@
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.KibeMod
-import io.github.lucaargolo.kibe.data.ChunkLoaderState
+import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
@@ -35,7 +36,7 @@ class ChunkLoaderBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnt
         Pair(-1, 1), Pair(0, 1), Pair(1, 1)
     )
 
-    override fun writeNbt(tag: NbtCompound) {
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         tag.putBoolean("checkForOwner", checkForOwner)
         tag.putString("ownerUUID", ownerUUID)
         tag.putLong("ownerLastSeen", ownerLastSeen)
@@ -50,8 +51,8 @@ class ChunkLoaderBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnt
         tag.put("enabledChunks", list)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         checkForOwner = tag.getBoolean("checkForOwner")
         ownerUUID = tag.getString("ownerUUID")
         ownerLastSeen = tag.getLong("ownerLastSeen")
@@ -67,12 +68,12 @@ class ChunkLoaderBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnt
         }
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
-        return tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
+        return tag.also { writeNbt(it, registryLookup) }
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
-        readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        readNbt(tag, registryLookup)
     }
 
     override fun markDirty() {
@@ -109,12 +110,7 @@ class ChunkLoaderBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnt
                         DisabledReason.TOO_MANY_LOADERS -> {
                             playerUUID?.let { validUUID ->
                                 (world as? ServerWorld)?.let { world ->
-                                    val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({
-                                        ChunkLoaderState.createFromTag(
-                                            it,
-                                            world.server
-                                        )
-                                    }, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
+                                    val chunkLoaderState = ChunkLoaderState.getPersistentState(world.server)
                                     if(chunkLoaderState.getLoaded(validUUID) < KibeMod.CONFIG.chunkLoaderModule.maxPerPlayer || KibeMod.CONFIG.chunkLoaderModule.maxPerPlayer < 0) {
                                         world.setBlockState(pos, state.with(Properties.ENABLED, true))
                                         entity.disabledReason = DisabledReason.NONE
@@ -132,13 +128,7 @@ class ChunkLoaderBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnt
                     }
 
                     (world as? ServerWorld)?.let { serverWorld ->
-                        val chunkLoaderState = world.server.overworld.persistentStateManager.getOrCreate({
-                            ChunkLoaderState.createFromTag(
-                                it,
-                                world.server
-                            )
-                        }, { ChunkLoaderState(world.server) }, "kibe_chunk_loaders")
-
+                        val chunkLoaderState = ChunkLoaderState.getPersistentState(world.server)
                         playerUUID?.let { validUUID ->
                             val player = serverWorld.server.playerManager.getPlayer(validUUID)
                             if(player != null) {

@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.client.screen
 
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.menu.EntangledBagScreenHandler
 import net.minecraft.client.gui.DrawContext
@@ -12,7 +13,7 @@ import net.minecraft.util.Identifier
 
 class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<EntangledBagScreenHandler>(screenHandler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
+    private val texture = Identifier.of("kibe:textures/gui/entangled_chest.png")
 
     private var startX = 0
     private var startY = 0
@@ -24,16 +25,15 @@ class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: Pl
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         drawRunes(context)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
     private fun drawRunes(context: DrawContext) {
-        (1..8).forEach {
-            val color = DyeColor.byName(handler.tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
-            context.drawItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(it-1)*10, startY+2)
+        handler.stack.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { it, color ->
+            context.drawItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(it)*10, startY+2)
         }
     }
 
@@ -47,8 +47,9 @@ class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: Pl
     }
 
     fun hasSameColors(map: MutableMap<Int, DyeColor>): Boolean {
+        val runeSet = handler.stack.get(ComponentTypeCompendium.RUNE_SET) ?: listOf()
         map.forEach { (key, value) ->
-            if(value != DyeColor.byName(handler.tag.getString("rune$key"), DyeColor.WHITE)) return false
+            if(value != runeSet.getOrElse(key-1) { DyeColor.WHITE }) return false
         }
         return true
     }

@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos
 
 class TrashCanEntity(pos: BlockPos, state: BlockState): LockableContainerBlockEntity(BlockEntityCompendium.TRASH_CAN, pos, state) {
 
-    val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
+    var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
     override fun createScreenHandler(i: Int, playerInventory: PlayerInventory?): ScreenHandler? {
         return null
@@ -44,6 +44,14 @@ class TrashCanEntity(pos: BlockPos, state: BlockState): LockableContainerBlockEn
     }
 
     override fun getContainerName(): Text = Text.translatable("screen.kibe.trash_can")
+
+    override fun getHeldStacks(): DefaultedList<ItemStack> {
+        return inventory
+    }
+
+    override fun setHeldStacks(inventory: DefaultedList<ItemStack>) {
+        this.inventory = inventory
+    }
 
     override fun canPlayerUse(player: PlayerEntity?): Boolean {
         return if (world!!.getBlockEntity(pos) != this) {

@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.item
 
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -12,13 +13,11 @@ class Glider(settings: Settings): Item(settings) {
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = player.getStackInHand(hand)
-        val tag = stack.orCreateNbt
-        if(tag.contains("enabled") && tag.getBoolean("enabled")) {
-            tag.putBoolean("enabled", false)
+        if(isEnabled(stack)) {
+            stack.set(ComponentTypeCompendium.ENABLED, false)
         }else{
-            tag.putBoolean("enabled", true)
+            stack.set(ComponentTypeCompendium.ENABLED, true)
         }
-        stack.nbt = tag
         return TypedActionResult.success(stack)
     }
 
@@ -27,17 +26,15 @@ class Glider(settings: Settings): Item(settings) {
         if(!realSelected) {
             realSelected = (entity as? PlayerEntity)?.inventory?.offHand?.get(0)?.equals(stack) ?: false
         }
-        val tag = stack.orCreateNbt
-        if(!realSelected && tag.contains("enabled") && tag.getBoolean("enabled")) {
-            tag.putBoolean("enabled", false)
+        if(!realSelected && isEnabled(stack)) {
+            stack.set(ComponentTypeCompendium.ENABLED, false)
         }
     }
 
     companion object {
 
         fun isEnabled(stack: ItemStack): Boolean {
-            val tag = stack.orCreateNbt
-            return tag.contains("enabled") && tag.getBoolean("enabled")
+            return stack.get(ComponentTypeCompendium.ENABLED) == true
         }
 
     }

@@ -20,14 +20,14 @@ class EntangledRenderer(val parent: String) {
     init {
         (1..8).forEach { runeId ->
             DyeColor.values().forEach { runeColor ->
-                runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayer(ModIdentifier(parent), "rune${runeId}_${runeColor.getName()}")
+                runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayer(ModIdentifier.of(parent), "rune${runeId}_${runeColor.getName()}")
             }
         }
 
-        bottomModelLayer = EntityModelLayer(ModIdentifier(parent), "bottom")
-        topModelLayer = EntityModelLayer(ModIdentifier(parent), "top")
-        coreModelLayerGold = EntityModelLayer(ModIdentifier(parent), "core_gold")
-        coreModelLayerDiamond = EntityModelLayer(ModIdentifier(parent), "core_diamond")
+        bottomModelLayer = EntityModelLayer(ModIdentifier.of(parent), "bottom")
+        topModelLayer = EntityModelLayer(ModIdentifier.of(parent), "top")
+        coreModelLayerGold = EntityModelLayer(ModIdentifier.of(parent), "core_gold")
+        coreModelLayerDiamond = EntityModelLayer(ModIdentifier.of(parent), "core_diamond")
     }
 
 

@@ -1,12 +1,13 @@
 package io.github.lucaargolo.kibe.menu
 
 import io.github.lucaargolo.kibe.item.CoolerBlockItem
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.ContainerComponent
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.screen.slot.SlotActionType
@@ -14,7 +15,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
-class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val hand: Hand, val world: World, val tag: NbtCompound): ScreenHandler(ScreenHandlerCompendium.COOLER_ITEM, syncId)  {
+class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInventory, val hand: Hand, val world: World, val stack: ItemStack): ScreenHandler(ScreenHandlerCompendium.COOLER_ITEM, syncId)  {
 
     val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
@@ -36,12 +37,12 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
     }
 
     init {
-        Inventories.readNbt(tag, rawInventory)
+        stack.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(rawInventory)
         checkSize(inventory, 1)
         inventory.onOpen(playerInventory.player)
 
         addSlot(object: Slot(inventory, 0, 8+18*4, 18) {
-            override fun canInsert(stack: ItemStack) = stack.item.isFood
+            override fun canInsert(stack: ItemStack) = stack.contains(DataComponentTypes.FOOD)
         })
 
         (0..2).forEach { n ->
@@ -64,10 +65,9 @@ class CoolerBlockItemScreenHandler(syncId: Int, val playerInventory: PlayerInven
 
     override fun onContentChanged(inventory: Inventory?) {
         super.onContentChanged(inventory)
-        Inventories.writeNbt(tag, rawInventory)
         val coolerStack = playerInventory.player.getStackInHand(hand)
         if (coolerStack.item is CoolerBlockItem) {
-            coolerStack.orCreateNbt.put("BlockEntityTag", tag.copy())
+            coolerStack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(this.rawInventory))
         }
     }
 

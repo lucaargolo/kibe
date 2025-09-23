@@ -11,6 +11,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.registry.DynamicRegistryManager;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,6 +25,8 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Shadow private ClientWorld world;
 
+    @Shadow @Final private DynamicRegistryManager.Immutable combinedDynamicRegistries;
+
     @Inject(at = @At("TAIL"), method = "onEntitySpawn")
     public void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
         double x = packet.getX(), y = packet.getY(), z = packet.getZ();
@@ -34,22 +38,22 @@ public class ClientPlayNetworkHandlerMixin {
         }
 
         if (entity != null) {
-            int i = packet.getId();
+            int i = packet.getEntityId();
             entity.updateTrackedPosition(x, y, z);
             entity.refreshPositionAfterTeleport(x, y, z);
             entity.setPitch((packet.getPitch() * 360) / 256.0F);
             entity.setYaw((packet.getYaw() * 360) / 256.0F);
             entity.setId(i);
             entity.setUuid(packet.getUuid());
-            this.world.addEntity(i, entity);
+            this.world.addEntity(entity);
         }
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;onDataPacket(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;)V"), method = "method_38542", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, BlockEntity blockEntity, CallbackInfo info) {
+    public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, BlockEntity blockEntity, CallbackInfo ci, NbtCompound nbtCompound) {
         if(blockEntity instanceof SyncableBlockEntity) {
-            ((SyncableBlockEntity) blockEntity).readClientNbt(packet.getNbt());
-            info.cancel();
+            ((SyncableBlockEntity) blockEntity).readClientNbt(nbtCompound, combinedDynamicRegistries);
+            ci.cancel();
         }
     }
 

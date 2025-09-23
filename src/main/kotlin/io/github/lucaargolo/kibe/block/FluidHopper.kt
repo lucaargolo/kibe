@@ -1,24 +1,19 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.FluidHopperBlockEntity
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.block.HopperBlock
-import net.minecraft.block.MapColor
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.ActionResult
@@ -27,14 +22,14 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class FluidHopper: HopperBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).mapColor(MapColor.STONE_GRAY).requiresTool().strength(3.0F, 4.8F).sounds(BlockSoundGroup.METAL).nonOpaque()) {
+class FluidHopper(settings: Settings): HopperBlock(settings) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return FluidHopperBlockEntity(blockPos, blockState)
     }
 
     override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return if (!world.isClient) checkType(
+        return if (!world.isClient) validateTicker(
             blockEntityType,
             BlockEntityCompendium.FLUID_HOPPER,
             FluidHopperBlockEntity::serverTick
@@ -52,10 +47,10 @@ class FluidHopper: HopperBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).map
         world: World?,
         pos: BlockPos?,
         player: PlayerEntity?,
-        hand: Hand?,
         hit: BlockHitResult?
     ): ActionResult {
-        if (pos == null || hand == null) return ActionResult.PASS
+        val hand = Hand.MAIN_HAND
+        if (pos == null) return ActionResult.PASS
         val stack = player?.getStackInHand(hand) ?: return ActionResult.PASS
         val context = ContainerItemContext.ofPlayerHand(player, hand)
         val itemTank = FluidStorage.ITEM.find(stack, context) ?: return ActionResult.PASS
@@ -92,7 +87,6 @@ class FluidHopper: HopperBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).map
         }?.let { world.playSound(null, pos, it, SoundCategory.BLOCKS, 1.0F, 1.0F) }
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? FluidHopperBlockEntity)?.let {
@@ -100,6 +94,13 @@ class FluidHopper: HopperBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).map
             }
             super.onStateReplaced(state, world, pos, newState, moved)
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun getCodec() = CODEC as MapCodec<HopperBlock>
+
+    companion object {
+        private val CODEC: MapCodec<FluidHopper> = createCodec(::FluidHopper)
     }
 
 }

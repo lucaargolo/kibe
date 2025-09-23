@@ -1,10 +1,13 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.RedstoneTimerEntity
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.block.*
+import net.minecraft.block.Block
+import net.minecraft.block.BlockRenderType
+import net.minecraft.block.BlockState
+import net.minecraft.block.BlockWithEntity
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
@@ -12,21 +15,20 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class RedstoneTimer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().strength(1.5F, 6.0F).nonOpaque()) {
+class RedstoneTimer(settings: Settings): BlockWithEntity(settings) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return RedstoneTimerEntity(blockPos, blockState)
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.REDSTONE_TIMER, RedstoneTimerEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.REDSTONE_TIMER, RedstoneTimerEntity::tick)
     }
 
     override fun emitsRedstonePower(state: BlockState) = true
@@ -43,7 +45,7 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.STONE).re
         return if(state[Properties.ENABLED]) 15 else 0
     }
 
-    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
         if(!world.isClient) {
             val blockEntity = world.getBlockEntity(pos)
             if(blockEntity is RedstoneTimerEntity) {
@@ -64,6 +66,12 @@ class RedstoneTimer: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.STONE).re
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
         return BlockRenderType.MODEL
+    }
+
+    override fun getCodec() = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<RedstoneTimer> = createCodec(::RedstoneTimer)
     }
 
 }

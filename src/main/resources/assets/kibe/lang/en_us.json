@@ -149,7 +149,7 @@
   "item.kibe.black_glider": "Black Glider",
 
   "item.kibe.wooden_bucket": "Wooden Bucket",
-  "item.kibe.water_wooden_bucket": "Water Wooden Bucket",
+  "item.kibe.wooden_water_bucket": "Wooden Water Bucket",
   "item.kibe.void_bucket": "Void Bucket",
 
   "block.kibe.liquid_xp": "Liquid Xp",
@@ -164,6 +164,7 @@
 
   "effect.kibe.cursed_effect": "Cursed Effect",
 
+  "chat.kibe.tried_dye_on_entangled": "§cYou need to use runes to change the entanglement code.",
   "chat.kibe.entangled_bucket.success": "§6Successfully linked bucket!",
   "chat.kibe.entangled_bag.success": "§6Successfully linked bag!",
   "chat.kibe.cursed_dirt.nothing": "§cNo mobs are able to spawn",

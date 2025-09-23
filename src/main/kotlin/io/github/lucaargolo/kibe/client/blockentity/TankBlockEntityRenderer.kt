@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.client.blockentity
 
 import io.github.lucaargolo.kibe.blockentity.TankBlockEntity
@@ -68,10 +66,10 @@ class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Contex
     }
 
     private fun renderVertices(bb: VertexConsumer, entry: MatrixStack.Entry, normal: Vector3f, color: Color, overlay: Int, light: Int, uv: UV, f: Float, g: Float, h: Float, i: Float, j: Float, k: Float, l: Float, m: Float) {
-        bb.vertex(entry.positionMatrix, f, h, j).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.maxU, uv.minV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
-        bb.vertex(entry.positionMatrix, g, h, k).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.minU, uv.minV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
-        bb.vertex(entry.positionMatrix, g, i, l).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.minU, uv.maxV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
-        bb.vertex(entry.positionMatrix, f, i, m).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.maxU, uv.maxV).overlay(overlay).light(light).normal(entry.normalMatrix, normal.x, normal.y, normal.z).next()
+        bb.vertex(entry, f, h, j).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.maxU, uv.minV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
+        bb.vertex(entry, g, h, k).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.minU, uv.minV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
+        bb.vertex(entry, g, i, l).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.minU, uv.maxV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
+        bb.vertex(entry, f, i, m).color(color.red/255f, color.green/255f, color.blue/255f, 1f).texture(uv.maxU, uv.maxV).overlay(overlay).light(light).normal(entry, normal.x, normal.y, normal.z)
     }
 
 

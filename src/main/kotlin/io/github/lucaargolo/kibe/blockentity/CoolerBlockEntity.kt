@@ -2,11 +2,15 @@ package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
+import net.minecraft.component.ComponentMap
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.ContainerComponent
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -15,21 +19,35 @@ class CoolerBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(B
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 
-    override fun writeNbt(tag: NbtCompound) {
-        Inventories.writeNbt(tag, inventory)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
+        Inventories.writeNbt(tag, inventory, registryLookup)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
-        Inventories.readNbt(tag, inventory)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
+        Inventories.readNbt(tag, inventory, registryLookup)
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
-        return tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
+        return tag.also { writeNbt(it, registryLookup) }
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
-        readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        readNbt(tag, registryLookup)
+    }
+
+    override fun addComponents(builder: ComponentMap.Builder) {
+        builder.add(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(inventory))
+    }
+
+    override fun readComponents(components: ComponentsAccess) {
+        components.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(inventory)
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("nbt.remove(\"Items\")"))
+    override fun removeFromCopiedStackNbt(nbt: NbtCompound) {
+        nbt.remove("Items")
     }
 
     override fun size() = inventory.size
@@ -61,7 +79,7 @@ class CoolerBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(B
 
     override fun getAvailableSlots(side: Direction?) = intArrayOf(0)
 
-    override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = stack.item.isFood
+    override fun canInsert(slot: Int, stack: ItemStack, dir: Direction?) = stack.contains(DataComponentTypes.FOOD)
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = true
 

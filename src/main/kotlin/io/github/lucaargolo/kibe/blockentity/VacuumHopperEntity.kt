@@ -20,6 +20,9 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.recipe.RecipeEntry
+import net.minecraft.recipe.input.RecipeInput
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.screen.PropertyDelegate
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.property.Properties
@@ -31,7 +34,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
-@Suppress("UnstableApiUsage", "DEPRECATION")
+
 class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(BlockEntityCompendium.VACUUM_HOPPER, pos, state), SidedInventory {
 
     private var processingRecipe: Identifier? = null
@@ -66,6 +69,7 @@ class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(
             markDirty()
         }
     }
+    val input = Input()
 
     /**
      * @param qnt Quantity to add in millibuckets
@@ -83,20 +87,20 @@ class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(
         if(world?.isClient == false) sync()
     }
 
-    override fun writeNbt(tag: NbtCompound) {
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         FluidHelper.writeTank(tag, tank)
-        Inventories.writeNbt(tag, inventory)
+        Inventories.writeNbt(tag, inventory, registryLookup)
     }
 
-    override fun writeClientNbt(tag: NbtCompound) = tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = tag.also { writeNbt(it, registryLookup) }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         FluidHelper.readTank(tag, tank)
-        Inventories.readNbt(tag, inventory)
+        Inventories.readNbt(tag, inventory, registryLookup)
     }
 
-    override fun readClientNbt(tag: NbtCompound) = readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = readNbt(tag, registryLookup)
 
     fun addStack(stack: ItemStack): ItemStack {
         var modifiableStack = stack
@@ -106,7 +110,7 @@ class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(
                 inventory[id] = modifiableStack
                 modifiableStack = ItemStack.EMPTY
             }else{
-                if(ItemStack.canCombine(stk, modifiableStack)) {
+                if(ItemStack.areItemsAndComponentsEqual(stk, modifiableStack)) {
                     when {
                         stk.count+modifiableStack.count > stk.maxCount -> {
                             val aux = stk.maxCount-stk.count
@@ -165,29 +169,40 @@ class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(
 
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = slot != 9
 
+    inner class Input : RecipeInput {
+        fun getParent() = this@VacuumHopperEntity
+
+        override fun getStackInSlot(slot: Int) = inventory[9]
+
+        override fun getSize() = 1
+    }
+
     companion object {
         fun getFluidStorage(be: VacuumHopperEntity, dir: Direction?): Storage<FluidVariant> {
             return be.tank
         }
 
         fun tick(world: World, pos: BlockPos, state: BlockState, entity: VacuumHopperEntity) {
-            var actualProcessingRecipe: VacuumHopperRecipe? = null
+            var actualProcessingRecipe: RecipeEntry<*>? = null
             (world as? ServerWorld)?.let { serverWorld ->
                 if(entity.processingRecipe == null) {
                     if (!entity.getStack(9).isEmpty) {
-                        actualProcessingRecipe = serverWorld.server.recipeManager.getFirstMatch(RecipeTypeCompendium.VACUUM_HOPPER, entity, world).orElseGet { null }
+                        actualProcessingRecipe = serverWorld.server.recipeManager.getFirstMatch(RecipeTypeCompendium.VACUUM_HOPPER, entity.input, world).orElseGet { null }
                     }
                 }else{
                     serverWorld.server.recipeManager.get(entity.processingRecipe).ifPresent {
-                        (it as? VacuumHopperRecipe)?.let { vacuumHopperRecipe -> actualProcessingRecipe = vacuumHopperRecipe }
+                        if(it.value is VacuumHopperRecipe) {
+                            actualProcessingRecipe = it
+                        }
                     }
                 }
                 entity.processingRecipe = actualProcessingRecipe?.id
-                actualProcessingRecipe?.let { recipe ->
-                    if(recipe.matches(entity, serverWorld)) {
+                actualProcessingRecipe?.let { entry ->
+                    val recipe = entry.value as VacuumHopperRecipe
+                    if(recipe.matches(entity.input, serverWorld)) {
                         entity.totalProcessingTicks = recipe.ticks
                         if(entity.processingTicks++ >= recipe.ticks) {
-                            recipe.craft(entity, world.registryManager)
+                            recipe.craft(entity.input, world.registryManager)
                             entity.processingRecipe = null
                             entity.processingTicks = 0
                             entity.totalProcessingTicks = 0
@@ -209,7 +224,7 @@ class VacuumHopperEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(
             val pos1 = BlockPos(pos.x - 8, pos.y - 8, pos.z - 8)
             val pos2 = BlockPos(pos.x + 8, pos.y + 8, pos.z + 8)
             val vecPos = Vec3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
-            val validEntities = world.getOtherEntities(null, Box(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
+            val validEntities = world.getOtherEntities(null, Box.enclosing(pos1, pos2)) { it is ItemEntity || it is ExperienceOrbEntity }
             validEntities?.forEach {
                 val distance: Double = it.pos.distanceTo(vecPos)
                 if (distance < 1.0) {

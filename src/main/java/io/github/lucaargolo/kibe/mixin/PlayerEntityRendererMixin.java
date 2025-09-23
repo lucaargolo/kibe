@@ -20,10 +20,10 @@ public class PlayerEntityRendererMixin {
         Available at: https://github.com/gr8pefish/OpenGlider/blob/002ec43e3b22e9a6c2cc94c0a5fb3d49bcce7594/src/main/java/gr8pefish/openglider/client/event/ClientEventHandler.java#L37
         Licensed under the MIT license available at: https://github.com/gr8pefish/OpenGlider/blob/1.12/LICENSE
      */
-    @Inject(at = @At("HEAD"), method = "render")
+    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V")
     private void renderPre(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
         if(GliderHelper.INSTANCE.isPlayerGliding(abstractClientPlayerEntity)) {
-            float partialTicks = MinecraftClient.getInstance().getTickDelta();
+            float partialTicks = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true);
             float interpolatedYaw = abstractClientPlayerEntity.prevHeadYaw + (abstractClientPlayerEntity.headYaw - abstractClientPlayerEntity.prevHeadYaw) * partialTicks;
 
             matrixStack.push();
@@ -42,7 +42,7 @@ public class PlayerEntityRendererMixin {
         Available at: https://github.com/gr8pefish/OpenGlider/blob/002ec43e3b22e9a6c2cc94c0a5fb3d49bcce7594/src/main/java/gr8pefish/openglider/client/event/ClientEventHandler.java#L81
         Licensed under the MIT license available at: https://github.com/gr8pefish/OpenGlider/blob/1.12/LICENSE
      */
-    @Inject(at = @At("TAIL"), method = "render")
+    @Inject(at = @At("TAIL"), method = "render(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V")
     private void renderPost(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info) {
         if(GliderHelper.INSTANCE.needsPlayerRenderPopping(abstractClientPlayerEntity)) {
             matrixStack.pop();

@@ -12,4 +12,5 @@ abstract class GenericCompendium<T: Any> {
 
     abstract fun initializeClient()
 
+
 }

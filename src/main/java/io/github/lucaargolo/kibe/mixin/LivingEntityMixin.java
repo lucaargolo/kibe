@@ -1,9 +1,11 @@
 package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.block.Elevator;
+import io.github.lucaargolo.kibe.effect.EffectCompendium;
 import io.github.lucaargolo.kibe.item.Glider;
 import io.github.lucaargolo.kibe.item.ItemCompendium;
 import io.github.lucaargolo.kibe.item.SleepingBag;
+import io.github.lucaargolo.kibe.mixed.LivingEntityMixed;
 import io.github.lucaargolo.kibe.utils.SlimeBounceHandler;
 import io.github.lucaargolo.kibe.utils.helper.SpikeHelper;
 import net.minecraft.block.Block;
@@ -12,8 +14,15 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
@@ -27,12 +36,42 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin extends Entity implements LivingEntityMixed {
+
+    @SuppressWarnings("WrongEntityDataParameterClass")
+    private static final TrackedData<Boolean> CURSED = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     @Shadow public abstract ItemStack getStackInHand(Hand hand);
 
+    @Shadow public abstract boolean teleport(double x, double y, double z, boolean particleEffects);
+
+    @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(at = @At("TAIL"), method = "initDataTracker")
+    private void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
+        builder.add(CURSED, false);
+    }
+
+    @Inject(at = @At("HEAD"), method = "onStatusEffectApplied")
+    private void addStatusEffect(StatusEffectInstance effect, Entity source, CallbackInfo ci) {
+        if(effect.getEffectType().equals(EffectCompendium.INSTANCE.getCURSED()))
+            dataTracker.set(CURSED, true);
+    }
+
+    @Inject(at = @At("HEAD"), method = "onStatusEffectRemoved")
+    private void removeStatusEffect(StatusEffectInstance effect, CallbackInfo ci) {
+        if(effect.getEffectType().equals(EffectCompendium.INSTANCE.getCURSED()))
+            dataTracker.set(CURSED, false);
+    }
+
+    @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
+    private void afterReadNbt(NbtCompound nbt, CallbackInfo ci) {
+        if(hasStatusEffect(EffectCompendium.INSTANCE.getCURSED()))
+            dataTracker.set(CURSED, true);
     }
 
     @Inject(at = @At("HEAD"), method = "swingHand(Lnet/minecraft/util/Hand;)V", cancellable = true)
@@ -59,7 +98,7 @@ public abstract class LivingEntityMixin extends Entity {
             while(pos.getY() < getWorld().getTopY()) {
                 if(getWorld().getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(getWorld(), pos.up())) {
                     getWorld().playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, getWorld().random.nextFloat() * 0.25F + 0.6F);
-                    this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z);
+                    this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z, false);
                     break;
                 }else{
                     pos = pos.up();
@@ -111,4 +150,8 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @Override
+    public boolean kibe$isCursed() {
+        return dataTracker.get(CURSED);
+    }
 }

@@ -1,9 +1,0 @@
-{
-  "type": "kibe:vacuum_hopper",
-  "ticks": 60,
-  "xp": 1000,
-  "input": {
-    "item": "minecraft:bucket"
-  },
-  "output": "kibe:liquid_xp_bucket"
-}

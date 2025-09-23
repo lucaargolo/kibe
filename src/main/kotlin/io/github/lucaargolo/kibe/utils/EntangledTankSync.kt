@@ -1,9 +1,9 @@
 package io.github.lucaargolo.kibe.utils
 
-import io.github.lucaargolo.kibe.data.EntangledTankState
+import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.mixin.PersistentStateManagerAccessor
-import io.github.lucaargolo.kibe.network.PacketCompendium
-import io.netty.buffer.Unpooled
+import io.github.lucaargolo.kibe.network.RequestDirtyTankStatesPacket
+import io.github.lucaargolo.kibe.network.SynchronizeDirtyTankStatesPacket
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
-import net.minecraft.network.PacketByteBuf
 
 object EntangledTankSync {
 
@@ -29,9 +28,8 @@ object EntangledTankSync {
                     val key = pair.first
                     val colorCode = pair.second
 
-                    val state = server.overworld.persistentStateManager.getOrCreate({
-                        EntangledTankState.createFromTag(it, server.overworld, key)
-                    }, { EntangledTankState(server.overworld, key) }, key)
+                    val state = EntangledTankState.getPersistentState(server.overworld, key)
+
                     val allTimeRequests = EntangledTankState.ALL_TIME_PLAYER_REQUESTS.getOrPut(player) { linkedSetOf() }
                     if (!allTimeRequests.contains(pair) || state.dirtyColors.contains(colorCode)) {
                         allTimeRequests.add(pair)
@@ -43,18 +41,7 @@ object EntangledTankSync {
                     }
                 }
                 if (finalMap.isNotEmpty()) {
-                    val passedData = PacketByteBuf(Unpooled.buffer())
-                    passedData.writeInt(finalMap.size)
-                    finalMap.forEach { (key, secondMap) ->
-                        passedData.writeString(key, 32767)
-                        passedData.writeInt(secondMap.size)
-                        secondMap.forEach { (colorCode, fluidVolume) ->
-                            passedData.writeString(colorCode, 32767)
-                            fluidVolume.first.toPacket(passedData)
-                            passedData.writeLong(fluidVolume.second)
-                        }
-                    }
-                    ServerPlayNetworking.send(player, PacketCompendium.SYNCHRONIZE_DIRTY_TANK_STATES, passedData)
+                    ServerPlayNetworking.send(player, SynchronizeDirtyTankStatesPacket(finalMap))
                 }
             }
             (server.overworld.persistentStateManager as? PersistentStateManagerAccessor)?.loadedStates?.forEach { (_, state) ->
@@ -72,13 +59,7 @@ object EntangledTankSync {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             client.world?.let { _ ->
                 if (EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS != EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS) {
-                    val passedData = PacketByteBuf(Unpooled.buffer())
-                    passedData.writeInt(EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.size)
-                    EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.forEach {
-                        passedData.writeString(it.first)
-                        passedData.writeString(it.second)
-                    }
-                    ClientPlayNetworking.send(PacketCompendium.REQUEST_DIRTY_TANK_STATES, passedData)
+                    ClientPlayNetworking.send(RequestDirtyTankStatesPacket(EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS))
                 }
                 EntangledTankState.PAST_CLIENT_PLAYER_REQUESTS = EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS
                 EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS = linkedSetOf()

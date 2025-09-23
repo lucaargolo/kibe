@@ -1,7 +1,9 @@
 package io.github.lucaargolo.kibe.utils.helper
 
 import io.github.lucaargolo.kibe.KibeMod
+import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.*
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
 import io.github.lucaargolo.kibe.item.EntangledBucket
 import io.github.lucaargolo.kibe.item.ItemCompendium
@@ -21,9 +23,7 @@ import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.DyeColor
 
-@Suppress("UnstableApiUsage")
 object TransferHelper {
 
     fun initialize() {
@@ -33,12 +33,12 @@ object TransferHelper {
         FluidStorage.SIDED.registerForBlockEntity(VacuumHopperEntity.Companion::getFluidStorage, BlockEntityCompendium.VACUUM_HOPPER)
         FluidStorage.SIDED.registerForBlockEntity(TankBlockEntity.Companion::getFluidStorage, BlockEntityCompendium.TANK)
         FluidStorage.combinedItemApiProvider(ItemCompendium.WOODEN_BUCKET).register {
-            EmptyItemFluidStorage(it, ItemCompendium.WATER_WOODEN_BUCKET, Fluids.WATER, FluidConstants.BUCKET)
+            EmptyItemFluidStorage(it, ItemCompendium.WOODEN_WATER_BUCKET, Fluids.WATER, FluidConstants.BUCKET)
         }
         FluidStorage.GENERAL_COMBINED_PROVIDER.register { context ->
             (context.itemVariant.item as? WoodenBucket)?.let { bucketItem ->
                 val bucketFluid = Fluids.WATER
-                if (bucketItem == ItemCompendium.WATER_WOODEN_BUCKET) {
+                if (bucketItem == ItemCompendium.WOODEN_WATER_BUCKET) {
                     return@register FullItemFluidStorage(context, ItemCompendium.WOODEN_BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET)
                 }
             }
@@ -58,28 +58,28 @@ object TransferHelper {
         }
         FluidStorage.ITEM.registerForItems({ stack, context -> TankBlockItem.getFluidStorage(stack, context) }, ItemCompendium.TANK)
         FluidStorage.ITEM.registerForItems({ stack, _ ->
-            var tag = EntangledBucket.getTag(stack)
-            if (tag.contains("BlockEntityTag")) {
-                tag = tag.getCompound("BlockEntityTag")
-            }
+            val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
             var colorCode = ""
-            (1..8).forEach {
-                val dc = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
+            if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
+                stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
+                    colorCode += dc.id.let { int -> Integer.toHexString(int) }
+                }
+            }else{
+                colorCode = "00000000"
             }
-            tag.putString("colorCode", colorCode)
 
+            @Suppress("DEPRECATION")
             FabricLoader.getInstance().gameInstance.let {
                 if (KibeMod.CLIENT && it is MinecraftClient) {
                     if (it.isOnThread) {
-                        EntangledBucket.getFluidInv(null, tag)
+                        EntangledBucket.getFluidInv(null, key, colorCode)
                     } else if (it.isIntegratedServerRunning && it.server?.isOnThread == true) {
-                        EntangledBucket.getFluidInv(it.server?.overworld, tag)
+                        EntangledBucket.getFluidInv(it.server?.overworld, key, colorCode)
                     } else {
                         null
                     }
                 } else if (it is MinecraftServer) {
-                    EntangledBucket.getFluidInv(it.overworld, tag)
+                    EntangledBucket.getFluidInv(it.overworld, key, colorCode)
                 } else {
                     null
                 }

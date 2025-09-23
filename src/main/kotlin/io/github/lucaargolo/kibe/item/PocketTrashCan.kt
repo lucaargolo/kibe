@@ -12,8 +12,7 @@ import net.minecraft.world.World
 class PocketTrashCan(settings: Settings): Item(settings) {
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
-        val tag = player.getStackInHand(hand).orCreateNbt
-        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag, ::PocketTrashCanScreenHandler))
+        player.openHandledScreen(ItemScreenHandlerFactory(this, hand, player.getStackInHand(hand), ::PocketTrashCanScreenHandler))
         return TypedActionResult.success(player.getStackInHand(hand))
     }
 

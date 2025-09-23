@@ -2,6 +2,7 @@
 
 package io.github.lucaargolo.kibe.item
 
+import io.github.ladysnake.pal.VanillaAbilities
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.client.item.EntangledChestBlockItemDynamicRenderer
@@ -13,14 +14,17 @@ import io.github.lucaargolo.kibe.client.model.TankBlockItemBakedModel
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import io.github.lucaargolo.kibe.utils.helper.AbilityHelper
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
-import net.fabricmc.fabric.api.client.model.ModelVariantProvider
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.minecraft.block.Block
 import net.minecraft.client.item.ModelPredicateProviderRegistry
+import net.minecraft.component.type.FoodComponent
 import net.minecraft.fluid.Fluid
-import net.minecraft.item.*
+import net.minecraft.item.BlockItem
+import net.minecraft.item.BucketItem
+import net.minecraft.item.Item
 import net.minecraft.item.Item.Settings
+import net.minecraft.item.Items
 import net.minecraft.registry.Registries
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Rarity
@@ -37,10 +41,10 @@ object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
         get() = fluidBuckets.mapKeys { e -> e.key.get() }.mapValues { e -> e.value.get() }
     private val fluidBuckets = mutableMapOf<ObjectHolderDelegate<out Fluid>, ObjectHolderDelegate<BucketItem>>()
 
-    val KIBE         by register("kibe", { Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().hunger(6).saturationModifier(0.8F).meat().build())) })
-    val GOLDEN_KIBE  by register("golden_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(8).saturationModifier(1.2F).meat().build())) })
-    val CURSED_KIBE  by register("cursed_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().hunger(10).saturationModifier(1.2F).meat().build())) })
-    val DIAMOND_KIBE by register("diamond_kibe", { Item(Settings().rarity(Rarity.RARE).food(FoodComponent.Builder().hunger(16).saturationModifier(1F).meat().build())) })
+    val KIBE         by register("kibe", { Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().nutrition(6).saturationModifier(0.8F).build())) })
+    val GOLDEN_KIBE  by register("golden_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())) })
+    val CURSED_KIBE  by register("cursed_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(10).saturationModifier(1.2F).build())) })
+    val DIAMOND_KIBE by register("diamond_kibe", { Item(Settings().rarity(Rarity.RARE).food(FoodComponent.Builder().nutrition(16).saturationModifier(1F).build())) })
     
     val CURSED_DROPLETS by register("cursed_droplets", { Item(Settings()) })
     val CURSED_SEEDS    by register("cursed_seeds", { CursedSeeds(Settings()) })
@@ -74,14 +78,14 @@ object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
     val RED_RUNE        by registerRune("red_rune", { Rune(DyeColor.RED, Settings()) })
     val BLACK_RUNE      by registerRune("black_rune", { Rune(DyeColor.BLACK, Settings()) })
     
-    val SLIME_BOOTS by register("slime_boots", { SlimeBoots(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
-    val SLIME_SLING by register("slime_sling", { SlimeSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val SLIME_BOOTS by register("slime_boots", { SlimeBoots(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val SLIME_SLING by register("slime_sling", { SlimeSling(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)) })
     
     val TORCH_SLING by register("torch_sling", { TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     val ESCAPE_ROPE by register("escape_rope", { EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
     val WOODEN_BUCKET by register("wooden_bucket", { WoodenBucket.Empty(Settings().maxCount(16)) })
-    val WATER_WOODEN_BUCKET by register("water_wooden_bucket", { WoodenBucket.Water(Settings().maxCount(1)) })
+    val WOODEN_WATER_BUCKET by register("wooden_water_bucket", { WoodenBucket.Water(Settings().maxCount(1)) })
     
     val GLIDER_LEFT_WING by register("glider_left_wing", { Item(Settings()) })
     val GLIDER_RIGHT_WING by register("glider_right_wing", { Item(Settings()) })
@@ -149,7 +153,7 @@ object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
     }
 
     override fun initializeClient() {
-        ModelPredicateProviderRegistry.register(MEASURING_TAPE, ModIdentifier("extended"), MeasuringTape.PredicateProvider())
+        ModelPredicateProviderRegistry.register(MEASURING_TAPE, ModIdentifier.of("extended"), MeasuringTape.PredicateProvider())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_CHEST, EntangledChestBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_TANK, EntangledTankBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(WHITE_GLIDER, GliderDynamicRenderer())
@@ -168,16 +172,18 @@ object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
         BuiltinItemRendererRegistry.INSTANCE.register(BROWN_GLIDER, GliderDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(RED_GLIDER, GliderDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(BLACK_GLIDER, GliderDynamicRenderer())
-        ModelLoadingRegistry.INSTANCE.registerVariantProvider {
-            ModelVariantProvider { modelIdentifier, _ ->
-                if(modelIdentifier.namespace == KibeMod.MOD_ID && modelIdentifier.variant == "inventory") {
-                    when (modelIdentifier.path) {
-                        "entangled_bag" -> return@ModelVariantProvider EntangledBagBakedModel()
-                        "entangled_bucket" -> return@ModelVariantProvider EntangledBucketBakedModel()
-                        "tank" -> return@ModelVariantProvider TankBlockItemBakedModel()
+
+        ModelLoadingPlugin.register { plugin ->
+            plugin.modifyModelOnLoad().register { model, context ->
+                val modelIdentifier = context.topLevelId()
+                if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID && modelIdentifier.variant == "inventory") {
+                    when (modelIdentifier.id.path) {
+                        "entangled_bag" -> EntangledBagBakedModel()
+                        "entangled_bucket" -> EntangledBucketBakedModel()
+                        "tank" -> TankBlockItemBakedModel()
+                        else -> model
                     }
-                }
-                return@ModelVariantProvider null
+                } else model
             }
         }
     }

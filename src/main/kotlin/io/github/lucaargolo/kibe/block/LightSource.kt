@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.block
 
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import com.mojang.serialization.MapCodec
 import net.minecraft.block.*
 import net.minecraft.fluid.FluidState
 import net.minecraft.fluid.Fluids
@@ -17,7 +17,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 
-class LightSource: Block(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(15).ticksRandomly().collidable(false)), Waterloggable {
+class LightSource(settings: Settings): Block(settings), Waterloggable {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.WATERLOGGED, false)
@@ -33,13 +33,11 @@ class LightSource: Block(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(15).
         return super.getPlacementState(ctx)!!.with(SeaPickleBlock.WATERLOGGED, bl)
     }
 
-    @Suppress("DEPRECATION")
     override fun getFluidState(state: BlockState): FluidState? {
         return if (state.get(SeaPickleBlock.WATERLOGGED) as Boolean) Fluids.WATER.getStill(false)
         else super.getFluidState(state)
     }
 
-    @Suppress("DEPRECATION")
     override fun getStateForNeighborUpdate(state: BlockState, direction: Direction, newState: BlockState, world: WorldAccess, pos: BlockPos?, posFrom: BlockPos?): BlockState? {
         if (state.get(HorizontalConnectingBlock.WATERLOGGED) as Boolean) {
             world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world))
@@ -63,7 +61,10 @@ class LightSource: Block(FabricBlockSettings.copyOf(Blocks.GLASS).luminance(15).
 
     override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape = SHAPE
 
+    override fun getCodec(): MapCodec<LightSource> = CODEC
+
     companion object {
+        private val CODEC: MapCodec<LightSource> = createCodec(::LightSource)
         private val SHAPE = createCuboidShape(6.0, 6.0, 6.0, 10.0, 10.0, 10.0)
     }
 

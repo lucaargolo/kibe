@@ -1,14 +1,17 @@
 package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.block.EntangledChest
-import io.github.lucaargolo.kibe.data.EntangledChestState
+import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
+import io.github.lucaargolo.kibe.data.state.EntangledChestState
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import net.minecraft.block.BlockState
+import net.minecraft.component.ComponentMap
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
@@ -44,7 +47,7 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
 
     private fun getPersistentState(): EntangledChestState? {
         return (world as? ServerWorld)?.let { serverWorld ->
-            serverWorld.server.overworld.persistentStateManager.getOrCreate( { EntangledChestState.createFromTag(it) }, { EntangledChestState() }, key)
+            EntangledChestState.getPersistentState(serverWorld.server, key)
         }
     }
 
@@ -65,8 +68,8 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         return comparatorOutput
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
@@ -77,19 +80,17 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         lastComparatorOutput = tag.getInt("lastComparatorOutput")
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         (1..8).forEach {
             runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
         updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY)
-        Inventories.readNbt(tag, this.inventory)
     }
 
-    override fun writeNbt(tag: NbtCompound) {
-        super.writeNbt(tag)
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
@@ -99,23 +100,45 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
         tag.putInt("lastComparatorOutput", lastComparatorOutput)
         if(hasPersistentState()) {
             var subTag = NbtCompound()
-            subTag = getPersistentState()!!.writeNbt(subTag)
+            subTag = getPersistentState()!!.writeNbt(subTag, registryLookup)
             if(subTag[colorCode] != null) {
                 subTag = subTag.get(colorCode) as NbtCompound
                 tag.put("Items", subTag.get("Items"))
             }
         }
-        else Inventories.writeNbt(tag, this.inventory)
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
         (1..8).forEach {
             tag.putString("rune$it", runeColors[it]!!.getName())
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
-        Inventories.writeNbt(tag, this.inventory)
         return tag
+    }
+
+    override fun addComponents(builder: ComponentMap.Builder) {
+        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.values.toList())
+        builder.add(ComponentTypeCompendium.ENTANGLED_KEY, key)
+        builder.add(ComponentTypeCompendium.OWNER, owner)
+    }
+
+    override fun readComponents(components: ComponentsAccess) {
+        components.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { index, component ->
+            this.runeColors[index+1] = component
+        }
+        updateColorCode()
+        components.get(ComponentTypeCompendium.ENTANGLED_KEY)?.let { this.key = it }
+        components.get(ComponentTypeCompendium.OWNER)?.let { this.owner = it }
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("nbt.remove(\"Items\")"))
+    override fun removeFromCopiedStackNbt(nbt: NbtCompound) {
+        (1..8).forEach {
+            nbt.remove("rune$it")
+        }
+        nbt.remove("key")
+        nbt.remove("owner")
     }
 
     override fun size(): Int {

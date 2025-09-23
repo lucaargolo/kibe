@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.XpShowerBlockEntity
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
@@ -21,14 +21,14 @@ import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class XpShower: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)) {
+class XpShower(settings: Settings): BlockWithEntity(settings) {
 
     override fun createBlockEntity(blockPos: BlockPos, blockState: BlockState): BlockEntity {
         return XpShowerBlockEntity(blockPos, blockState)
     }
 
     override fun <T : BlockEntity?> getTicker(world: World, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return if(!world.isClient) checkType(blockEntityType, BlockEntityCompendium.XP_SHOWER, XpShowerBlockEntity::tick) else null
+        return if(!world.isClient) validateTicker(blockEntityType, BlockEntityCompendium.XP_SHOWER, XpShowerBlockEntity::tick) else null
     }
 
     init {
@@ -76,9 +76,12 @@ class XpShower: BlockWithEntity(FabricBlockSettings.copyOf(Blocks.STONE).require
 
     override fun getCollisionShape(state: BlockState, view: BlockView?, pos: BlockPos?, ePos: ShapeContext?) = getShape(state[Properties.FACING])
 
+    override fun getCodec(): MapCodec<XpShower> = CODEC
+
     companion object {
         private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+        private val CODEC: MapCodec<XpShower> = createCodec(::XpShower)
 
         init {
             Direction.values().forEach {

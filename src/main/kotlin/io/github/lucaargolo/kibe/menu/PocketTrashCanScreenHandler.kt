@@ -4,7 +4,6 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.util.Hand
@@ -12,7 +11,7 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 
 @Suppress("UNUSED_PARAMETER")
-class PocketTrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, hand: Hand, val world: World, tag: NbtCompound?): ScreenHandler(ScreenHandlerCompendium.POCKET_TRASH_CAN, syncId) {
+class PocketTrashCanScreenHandler(syncId: Int, playerInventory: PlayerInventory, hand: Hand, val world: World, stack: ItemStack): ScreenHandler(ScreenHandlerCompendium.POCKET_TRASH_CAN, syncId) {
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(1, ItemStack.EMPTY)
 

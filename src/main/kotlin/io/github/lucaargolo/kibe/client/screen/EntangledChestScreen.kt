@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier
 
 class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<EntangledChestScreenHandler>(screenHandler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/entangled_chest.png")
+    private val texture = Identifier.of("kibe:textures/gui/entangled_chest.png")
 
     private var startX = 0
     private var startY = 0
@@ -23,7 +23,7 @@ class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         drawRunes(context)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)

@@ -1,6 +1,6 @@
 package io.github.lucaargolo.kibe.mixin;
 
-import io.github.lucaargolo.kibe.effect.EffectCompendium;
+import io.github.lucaargolo.kibe.mixed.LivingEntityMixed;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -20,8 +20,8 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
     @Inject(at = @At("HEAD"), method = "getRenderLayer", cancellable = true)
     private void getRenderLayer(T entity, boolean showBody, boolean translucent, boolean bl, CallbackInfoReturnable<RenderLayer> info) {
-        if(entity.hasStatusEffect(EffectCompendium.INSTANCE.getCURSED())) {
-            Identifier texture = new Identifier("textures/block/coal_block.png");
+        if(entity instanceof LivingEntityMixed mixed && mixed.kibe$isCursed()) {
+            Identifier texture = Identifier.of("textures/block/coal_block.png");
             info.setReturnValue(this.getModel().getLayer(texture));
         }
     }

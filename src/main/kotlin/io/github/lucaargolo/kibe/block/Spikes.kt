@@ -1,5 +1,7 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import io.github.lucaargolo.kibe.utils.helper.SpikeHelper
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.block.Block
@@ -14,6 +16,7 @@ import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.BlockMirror
 import net.minecraft.util.BlockRotation
+import net.minecraft.util.StringIdentifiable
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
@@ -22,11 +25,17 @@ import net.minecraft.world.World
 
 class Spikes(private val type: Type, settings: Settings): Block(settings) {
 
-    enum class Type(val damage: Float) {
+    enum class Type(val damage: Float): StringIdentifiable {
         STONE(4F),
         IRON(6F),
         GOLD(6F),
-        DIAMOND(8F),
+        DIAMOND(8F);
+
+        override fun asString() = name.lowercase()
+
+        companion object {
+            val CODEC: StringIdentifiable.BasicCodec<Type> = StringIdentifiable.createCodec(Type::values);
+        }
     }
 
     init {
@@ -74,12 +83,20 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
 
     override fun getCullingShape(state: BlockState?, world: BlockView?, pos: BlockPos?): VoxelShape = EMPTY
 
+    override fun getCodec(): MapCodec<Spikes> = CODEC
+
     companion object {
+
         private val EMPTY = createCuboidShape(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         private val SHAPES = mutableMapOf<Direction, VoxelShape>()
+        private val CODEC: MapCodec<Spikes> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(Type.CODEC.fieldOf("type").forGetter(Spikes::type), createSettingsCodec())
+                .apply(instance, ::Spikes)
+        }
+
 
         init {
-            Direction.values().forEach {
+            Direction.entries.forEach {
                 SHAPES[it] = when(it) {
                     Direction.UP -> createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0)
                     Direction.DOWN -> createCuboidShape(0.0, 8.0, 0.0, 16.0, 16.0, 16.0)
@@ -92,6 +109,7 @@ class Spikes(private val type: Type, settings: Settings): Block(settings) {
         }
 
         private fun getShape(facing: Direction) = SHAPES[facing] ?: EMPTY
+
     }
 
 }

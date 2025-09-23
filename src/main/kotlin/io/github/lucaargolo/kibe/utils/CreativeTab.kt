@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.KibeMod
@@ -10,6 +8,8 @@ import io.github.lucaargolo.kibe.item.ItemCompendium
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.Block
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.NbtComponent
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -52,7 +52,7 @@ object CreativeTab {
             ItemCompendium.LIGHT_GRAY_GLIDER, ItemCompendium.CYAN_GLIDER, ItemCompendium.BLUE_GLIDER, ItemCompendium.PURPLE_GLIDER, ItemCompendium.GREEN_GLIDER, ItemCompendium.BROWN_GLIDER, ItemCompendium.RED_GLIDER, ItemCompendium.BLACK_GLIDER,
             ItemCompendium.WHITE_RUNE, ItemCompendium.ORANGE_RUNE, ItemCompendium.MAGENTA_RUNE, ItemCompendium.LIGHT_BLUE_RUNE, ItemCompendium.YELLOW_RUNE, ItemCompendium.LIME_RUNE, ItemCompendium.PINK_RUNE, ItemCompendium.GRAY_RUNE,
             ItemCompendium.LIGHT_GRAY_RUNE, ItemCompendium.CYAN_RUNE, ItemCompendium.BLUE_RUNE, ItemCompendium.PURPLE_RUNE, ItemCompendium.GREEN_RUNE, ItemCompendium.BROWN_RUNE, ItemCompendium.RED_RUNE, ItemCompendium.BLACK_RUNE,
-            ItemCompendium.VOID_BUCKET, ItemCompendium.WOODEN_BUCKET, ItemCompendium.WATER_WOODEN_BUCKET, ItemCompendium.SLIME_BOOTS, ItemCompendium.SLIME_SLING, ItemCompendium.TORCH_SLING, ItemCompendium.ESCAPE_ROPE, ItemCompendium.COOLER,
+            ItemCompendium.VOID_BUCKET, ItemCompendium.WOODEN_BUCKET, ItemCompendium.WOODEN_WATER_BUCKET, ItemCompendium.SLIME_BOOTS, ItemCompendium.SLIME_SLING, ItemCompendium.TORCH_SLING, ItemCompendium.ESCAPE_ROPE, ItemCompendium.COOLER,
             BlockCompendium.BIG_TORCH, BlockCompendium.HEATER, BlockCompendium.DEHUMIDIFIER, BlockCompendium.CHUNK_LOADER, BlockCompendium.STONE_SPIKES, BlockCompendium.IRON_SPIKES, BlockCompendium.GOLD_SPIKES, BlockCompendium.DIAMOND_SPIKES,
             ItemCompendium.MEASURING_TAPE, BlockCompendium.COBBLESTONE_GENERATOR_MK1, BlockCompendium.COBBLESTONE_GENERATOR_MK2, BlockCompendium.COBBLESTONE_GENERATOR_MK3, BlockCompendium.COBBLESTONE_GENERATOR_MK4, BlockCompendium.COBBLESTONE_GENERATOR_MK5,
             BlockCompendium.BASALT_GENERATOR_MK1, BlockCompendium.BASALT_GENERATOR_MK2, BlockCompendium.BASALT_GENERATOR_MK3, BlockCompendium.BASALT_GENERATOR_MK4, BlockCompendium.BASALT_GENERATOR_MK5,
@@ -76,11 +76,11 @@ object CreativeTab {
             if (fluid == Fluids.EMPTY) {
                 list.add(itemStack)
             } else if (fluid.isStill(fluid.defaultState)) {
-                val tag = itemStack.orCreateNbt
-                val blockEntityTag = NbtCompound()
+                val blockEntityTag = itemStack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
+                blockEntityTag.putString("id", "kibe:tank")
                 blockEntityTag.put("variant", NbtCompound().also { it.putString("fluid", fluidKey.value.toString()) })
                 blockEntityTag.putLong("amount", 16 * FluidConstants.BUCKET)
-                tag.put("BlockEntityTag", blockEntityTag)
+                itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(blockEntityTag))
                 list.add(itemStack)
             }
         }

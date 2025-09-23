@@ -1,10 +1,9 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.MapCodec
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.block.DispenserBlock
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemUsageContext
@@ -22,7 +21,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 
-class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
+class Igniter(settings: Settings): Block(settings) {
 
     init {
         defaultState = stateManager.defaultState.with(Properties.FACING, Direction.NORTH).with(Properties.TRIGGERED, false)
@@ -70,6 +69,12 @@ class Igniter: Block(FabricBlockSettings.copyOf(Blocks.COBBLESTONE)) {
             val fakeHitPos = Vec3d(facingPos.x + 0.5, facingPos.y + 0.5, facingPos.z + 0.5)
             Items.FLINT_AND_STEEL.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, facingPos, false)))
         }
+    }
+
+    override fun getCodec(): MapCodec<Igniter> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<Igniter> = createCodec(::Igniter)
     }
 
 }

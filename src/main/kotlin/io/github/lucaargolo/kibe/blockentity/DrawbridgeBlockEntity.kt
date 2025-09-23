@@ -13,8 +13,10 @@ import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.registry.Registries
+import net.minecraft.registry.RegistryWrapper.WrapperLookup
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.state.property.Properties
@@ -42,7 +44,8 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
         EXTENDED
     }
 
-    override fun writeNbt(tag: NbtCompound) {
+    override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.writeNbt(tag, registryLookup)
         tag.putString("state", state.name)
         tag.putString("extendedBlock", extendedBlock?.let { Registries.BLOCK.getId(it).toString() } ?: "yeet")
         tag.putInt("extendedBlocks", extendedBlocks)
@@ -51,30 +54,45 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
             val itemStack = inventory[i]
             val nbtCompound = NbtCompound()
             nbtCompound.putByte("Slot", i.toByte())
-            itemStack.writeNbt(nbtCompound)
-            nbtList.add(nbtCompound)
+            if(!itemStack.isEmpty) {
+                nbtList.add(itemStack.encode(registryLookup, nbtCompound))
+            }else{
+                nbtList.add(nbtCompound)
+            }
         }
         tag.put("Items", nbtList)
     }
 
-    override fun readNbt(tag: NbtCompound) {
-        super.readNbt(tag)
+    override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        super.readNbt(tag, registryLookup)
         this.state = try {
             State.valueOf(tag.getString("state"))
         }catch (e: IllegalArgumentException) {
             State.CONTRACTED
         }
-        extendedBlock = Registries.BLOCK.get(Identifier(tag.getString("extendedBlock")))
+        extendedBlock = Registries.BLOCK.get(Identifier.of(tag.getString("extendedBlock")))
         extendedBlocks = tag.getInt("extendedBlocks")
-        Inventories.readNbt(tag, inventory)
+        val nbtList: NbtList = tag.getList("Items", NbtElement.COMPOUND_TYPE.toInt())
+
+        for (i in nbtList.indices) {
+            val nbtCompound = nbtList.getCompound(i)
+            val j = nbtCompound.getByte("Slot").toInt() and 255
+            if (j < inventory.size) {
+                if(nbtCompound.contains("id")) {
+                    inventory[j] = ItemStack.fromNbt(registryLookup, nbtCompound).orElse(ItemStack.EMPTY)
+                }else{
+                    inventory[j] = ItemStack.EMPTY
+                }
+            }
+        }
     }
 
-    override fun writeClientNbt(tag: NbtCompound): NbtCompound {
-        return tag.also { writeNbt(it) }
+    override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
+        return tag.also { writeNbt(it, registryLookup) }
     }
 
-    override fun readClientNbt(tag: NbtCompound) {
-        readNbt(tag)
+    override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
+        readNbt(tag, registryLookup)
         MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, cachedState, cachedState, 0)
     }
 

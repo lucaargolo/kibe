@@ -24,7 +24,7 @@ import java.util.function.Supplier
 class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private val spriteIdList = mutableListOf(
-        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier("block/tank"))
+        SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, ModIdentifier.of("block/tank"))
     )
     val spriteList = mutableListOf<Sprite>()
 
@@ -33,7 +33,7 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {
     }
 
-    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings, modelId: Identifier): BakedModel {
+    override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings): BakedModel {
         spriteIdList.forEach { spriteIdentifier ->
             spriteList.add(textureGetter.apply(spriteIdentifier))
         }
@@ -48,13 +48,13 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         val color = Color(255, 255, 255, 255).rgb
 
         context.pushTransform { quad ->
-            quad.spriteColor(0, color, color, color, color)
+            quad.color(color, color, color, color)
             true
         }
 
         val emitter = context.emitter
 
-        Direction.values().forEach {
+        Direction.entries.forEach {
             if(world?.getBlockState(pos.add(it.vector))?.block != BlockCompendium.TANK) emitter.drawSide(it, world, pos)
         }
 
@@ -123,8 +123,8 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun QuadEmitter.draw(side: Direction, left: Float, bottom: Float, right: Float, top: Float, depth: Float) {
         square(side, left, bottom, right, top, depth)
-        spriteBake(0, particleSprite, MutableQuadView.BAKE_LOCK_UV)
-        spriteColor(0, -1, -1, -1, -1)
+        spriteBake(particleSprite, MutableQuadView.BAKE_LOCK_UV)
+        color(-1, -1, -1, -1)
         emit()
     }
 

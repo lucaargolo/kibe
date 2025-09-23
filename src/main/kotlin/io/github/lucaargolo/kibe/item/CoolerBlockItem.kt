@@ -3,17 +3,21 @@ package io.github.lucaargolo.kibe.item
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.menu.CoolerBlockItemScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.ItemScreenHandlerFactory
+import net.fabricmc.api.EnvType
+import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.tooltip.BundleTooltipComponent
-import net.minecraft.client.item.BundleTooltipData
-import net.minecraft.client.item.TooltipData
+import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.BundleContentsComponent
+import net.minecraft.component.type.ContainerComponent
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.inventory.Inventories
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.tooltip.TooltipData
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
@@ -24,15 +28,13 @@ import java.util.*
 class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
-        if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && entity.canConsume(false)) {
+        if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && !entity.isInvulnerable && !entity.abilities.invulnerable && entity.canConsume(false)) {
             val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
-            val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
-            Inventories.readNbt(tag, rawInventory)
+            stack.get(DataComponentTypes.CONTAINER)?.copyTo(rawInventory)
             val foodStack = rawInventory[0]
-            if(!foodStack.isEmpty && foodStack.isFood) {
-                entity.eatFood(world, foodStack)
-                Inventories.writeNbt(tag, rawInventory)
-                stack.orCreateNbt.put("BlockEntityTag", tag)
+            if(!foodStack.isEmpty && foodStack.contains(DataComponentTypes.FOOD)) {
+                entity.eatFood(world, foodStack, foodStack.get(DataComponentTypes.FOOD))
+                stack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(rawInventory))
             }
         }
         super.inventoryTick(stack, world, entity, slot, selected)
@@ -47,34 +49,45 @@ class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, set
     override fun use(world: World, player: PlayerEntity?, hand: Hand): TypedActionResult<ItemStack> {
         if(!world.isClient) player?.let {
             val stack = player.getStackInHand(hand)
-            val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
-            player.openHandledScreen(ItemScreenHandlerFactory(this, hand, tag, ::CoolerBlockItemScreenHandler))
+            player.openHandledScreen(ItemScreenHandlerFactory(this, hand, stack, ::CoolerBlockItemScreenHandler))
             return TypedActionResult.success(stack)
         }
         return super.use(world, player, hand)
     }
 
+
     override fun getTooltipData(stack: ItemStack): Optional<TooltipData> {
-        val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
-        val tag = stack.orCreateNbt.getCompound("BlockEntityTag")
-        Inventories.readNbt(tag, rawInventory)
-        return if(!rawInventory[0].isEmpty) Optional.of(CoolerTooltipData(rawInventory)) else Optional.empty()
+        return if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
+            val client = MinecraftClient.getInstance()
+            val world = client.world
+            if(world != null) {
+                val rawInventory = DefaultedList.ofSize(1, ItemStack.EMPTY)
+                stack.get(DataComponentTypes.CONTAINER)?.copyTo(rawInventory)
+                val contents = BundleContentsComponent(rawInventory)
+                if(!rawInventory[0].isEmpty) {
+                    Optional.of(CoolerTooltipData(contents))
+                }else{
+                    Optional.empty()
+                }
+            }else{
+                Optional.empty()
+            }
+        } else {
+            Optional.empty()
+        }
     }
 
-    class CoolerTooltipData(inventory: DefaultedList<ItemStack>) : BundleTooltipData(inventory, 0)
+    data class CoolerTooltipData(val contents: BundleContentsComponent) : TooltipData
 
-    class CoolerTooltipComponent(data: BundleTooltipData) : BundleTooltipComponent(data) {
+    class CoolerTooltipComponent(contents: BundleContentsComponent) : BundleTooltipComponent(contents) {
 
-        override fun drawSlot(x: Int, y: Int, index: Int, shouldBlock: Boolean, context: DrawContext, textRenderer: TextRenderer) {
-            val itemStack = inventory[index]
-            draw(context, x, y, Sprite.SLOT)
-            context.drawItem(itemStack, x + 1, y + 1, index)
-            context.drawItemInSlot(textRenderer, itemStack, x + 1, y + 1)
+        override fun getWidth(textRenderer: TextRenderer?): Int {
+            return 20
         }
 
-        override fun getColumns() = 1
-
-        override fun getRows() = 1
+        override fun getHeight(): Int {
+            return 26
+        }
 
     }
 

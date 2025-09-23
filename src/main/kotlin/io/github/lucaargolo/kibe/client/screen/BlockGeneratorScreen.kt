@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11
 
 class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<BlockGeneratorScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/block_generator.png")
+    private val texture = Identifier.of("kibe:textures/gui/block_generator.png")
 
     private val atlas = PlayerScreenHandler.BLOCK_ATLAS_TEXTURE
     private var atlasWidth = 0f
@@ -40,7 +40,7 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }
@@ -54,7 +54,7 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
         context.drawTexture(texture, x, y, 0, 0, 176, 186)
         context.drawItem(ItemStack(handler.entity.block), x+80, y+18)
         //Draw fluids
-        RenderSystem.setShader(GameRenderer::getPositionColorTexProgram)
+        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram)
         RenderSystem.setShaderTexture(0, atlas)
         if(handler.entity.block == Blocks.BASALT) {
             drawBlockBar(context, delta, Blocks.BLUE_ICE, true)
@@ -66,7 +66,7 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
 
     private fun drawBlockBar(context: DrawContext, delta: Float, block: Block, left: Boolean) {
         val blockId = Registries.BLOCK.getId(block)
-        val supposedBlockSpriteId = SpriteIdentifier(atlas, Identifier(blockId.namespace, "block/${blockId.path}"))
+        val supposedBlockSpriteId = SpriteIdentifier(atlas, Identifier.of(blockId.namespace, "block/${blockId.path}"))
         val sprite = supposedBlockSpriteId.sprite
         drawBar(context, delta, sprite, -1, left)
     }
@@ -106,13 +106,12 @@ class BlockGeneratorScreen(handler: BlockGeneratorScreenHandler, inventory: Play
         val b = (color and 255)/255f
 
         val matrix = context.matrices.peek().positionMatrix
-        val bufferBuilder = Tessellator.getInstance().buffer
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE)
-        bufferBuilder.vertex(matrix, x0, y1, z).color(r, g, b, 1.0f).texture(u0, v1).next()
-        bufferBuilder.vertex(matrix, x1, y1, z).color(r, g, b, 1.0f).texture(u1, v1).next()
-        bufferBuilder.vertex(matrix, x1, y0, z).color(r, g, b, 1.0f).texture(u1, v0).next()
-        bufferBuilder.vertex(matrix, x0, y0, z).color(r, g, b, 1.0f).texture(u0, v0).next()
-        BufferRenderer.draw(bufferBuilder.end())
+        val bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
+        bufferBuilder.vertex(matrix, x0, y1, z).texture(u0, v1).color(r, g, b, 1.0f)
+        bufferBuilder.vertex(matrix, x1, y1, z).texture(u1, v1).color(r, g, b, 1.0f)
+        bufferBuilder.vertex(matrix, x1, y0, z).texture(u1, v0).color(r, g, b, 1.0f)
+        bufferBuilder.vertex(matrix, x0, y0, z).texture(u0, v0).color(r, g, b, 1.0f)
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end())
     }
 
 }

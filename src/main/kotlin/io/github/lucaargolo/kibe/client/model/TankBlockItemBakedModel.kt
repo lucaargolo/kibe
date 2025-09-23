@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION", "UnstableApiUsage")
-
 package io.github.lucaargolo.kibe.client.model
 
 import io.github.lucaargolo.kibe.utils.ModIdentifier
@@ -21,7 +19,9 @@ import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -39,19 +39,18 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun getModelDependencies(): MutableCollection<Identifier> = mutableListOf()
     override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {}
-    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?, modelId: Identifier?) = this
+    override fun bake(baker: Baker?, textureGetter: Function<SpriteIdentifier, Sprite>?, rotationContainer: ModelBakeSettings?) = this
 
     override fun isVanillaAdapter(): Boolean = false
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val client = MinecraftClient.getInstance()
-        val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(ModIdentifier("tank"), "level=0"))
+        val tankBlockModel = client.bakedModelManager.getModel(ModelIdentifier(ModIdentifier.of("tank"), "level=0"))
 
         (tankBlockModel as? TankCustomModel)?.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
 
-        val stackTag = stack.orCreateNbt
-        val blockEntityTag = stackTag.getCompound("BlockEntityTag")
+        val blockEntityTag = stack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
 
         val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
             override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
@@ -70,7 +69,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255)).rgb
 
         context.pushTransform { quad ->
-            quad.spriteColor(0, color, color, color, color)
+            quad.color(color, color, color, color)
             true
         }
 
@@ -89,8 +88,8 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     private fun QuadEmitter.draw(side: Direction, sprite: Sprite, left: Float, bottom: Float, right: Float, top: Float, depth: Float) {
         square(side, left, bottom, right, top, depth)
-        spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV)
-        spriteColor(0, -1, -1, -1, -1)
+        spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+        color(-1, -1, -1, -1)
         emit()
     }
 
@@ -98,7 +97,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     @Throws(IOException::class, NoSuchElementException::class)
     private fun getReaderForResource(location: Identifier): Reader {
-        val file = Identifier(location.namespace, location.path + ".json")
+        val file = Identifier.of(location.namespace, location.path + ".json")
         val resource = MinecraftClient.getInstance().resourceManager.getResource(file).get()
         return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
     }
@@ -112,7 +111,7 @@ class TankBlockItemBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun hasDepth(): Boolean = false
 
     private val transform: ModelTransformation? by lazy {
-        loadTransformFromJson(Identifier("minecraft:models/block/block"))
+        loadTransformFromJson(Identifier.of("minecraft:models/block/block"))
     }
 
     override fun getTransformation(): ModelTransformation? = transform

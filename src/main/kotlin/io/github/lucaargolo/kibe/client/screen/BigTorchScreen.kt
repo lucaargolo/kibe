@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier
 
 class BigTorchScreen(handler: BigTorchScreenHandler, inventory: PlayerInventory, title: Text): HandledScreen<BigTorchScreenHandler>(handler, inventory, title) {
 
-    private val texture = Identifier("kibe:textures/gui/big_torch.png")
+    private val texture = Identifier.of("kibe:textures/gui/big_torch.png")
 
     override fun init() {
         super.init()
@@ -23,7 +23,7 @@ class BigTorchScreen(handler: BigTorchScreenHandler, inventory: PlayerInventory,
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context)
+        this.renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         drawMouseoverTooltip(context, mouseX, mouseY)
         if(mouseX in (x+8..x+168) && mouseY in (y+19..y+33)) {

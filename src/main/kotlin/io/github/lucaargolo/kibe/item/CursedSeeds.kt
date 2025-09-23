@@ -5,7 +5,6 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemUsageContext
-import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.ActionResult
 
@@ -16,7 +15,7 @@ class CursedSeeds(settings: Settings): Item(settings) {
         if(isSpreadableInBlockState(blockState) && context.world.getLightLevel(context.blockPos.up()) <= 7) {
             if(!context.world.isClient) {
                 context.world.setBlockState(context.blockPos, BlockCompendium.CURSED_DIRT.defaultState)
-                context.player?.playSound(SoundEvents.BLOCK_GRASS_BREAK, SoundCategory.BLOCKS, 1f, 0.8f)
+                context.player?.playSound(SoundEvents.BLOCK_GRASS_BREAK, 1f, 0.8f)
             }
 // I dont know how to spawn particles
 //            (0..10).forEach { _ ->

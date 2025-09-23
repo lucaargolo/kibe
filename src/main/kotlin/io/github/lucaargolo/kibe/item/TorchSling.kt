@@ -26,13 +26,13 @@ class TorchSling(settings: Settings): Item(settings) {
         return UseAction.BOW
     }
 
-    override fun getMaxUseTime(stack: ItemStack): Int {
+    override fun getMaxUseTime(stack: ItemStack, entity: LivingEntity): Int {
         return 72000
     }
 
     override fun onStoppedUsing(stack: ItemStack, world: World, entity: LivingEntity, remainingUseTicks: Int) {
         val player = (entity as? PlayerEntity) ?: return
-        val tickStrength = ((this.getMaxUseTime(stack) - remainingUseTicks) / 20f).coerceAtLeast(0.5f).coerceAtMost(1.5f)
+        val tickStrength = ((this.getMaxUseTime(stack, entity) - remainingUseTicks) / 20f).coerceAtLeast(0.5f).coerceAtMost(1.5f)
 
         val torchStack = player.inventory.main.firstOrNull { it.item == Items.TORCH || it.item == Items.SOUL_TORCH || it.item == Items.REDSTONE_TORCH }
 

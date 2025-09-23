@@ -1,10 +1,12 @@
 package io.github.lucaargolo.kibe.block
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.BlockGeneratorBlockEntity
 import io.github.lucaargolo.kibe.menu.BlockGeneratorScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockRenderType
 import net.minecraft.block.BlockState
@@ -19,13 +21,12 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class BlockGenerator(settings: FabricBlockSettings, private var block: Block, private var rate: Float): BlockWithEntity(settings) {
+class BlockGenerator(settings: Settings, private var block: Block, private var rate: Float): BlockWithEntity(settings) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_8)
@@ -36,19 +37,18 @@ class BlockGenerator(settings: FabricBlockSettings, private var block: Block, pr
     }
 
     override fun <T : BlockEntity?> getTicker(world: World?, blockState: BlockState?, blockEntityType: BlockEntityType<T>?): BlockEntityTicker<T>? {
-        return checkType(blockEntityType, BlockEntityCompendium.BLOCK_GENERATOR, BlockGeneratorBlockEntity::tick)
+        return validateTicker(blockEntityType, BlockEntityCompendium.BLOCK_GENERATOR, BlockGeneratorBlockEntity::tick)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
         return defaultState.with(Properties.LEVEL_8, 0)
     }
 
-    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand?, hit: BlockHitResult?): ActionResult {
+    override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::BlockGeneratorScreenHandler))
         return ActionResult.SUCCESS
     }
 
-    @Suppress("DEPRECATION")
     override fun onStateReplaced(state: BlockState, world: World, pos: BlockPos?, newState: BlockState, notify: Boolean) {
         if (!state.isOf(newState.block)) {
             (world.getBlockEntity(pos) as? Inventory)?.let {
@@ -66,5 +66,14 @@ class BlockGenerator(settings: FabricBlockSettings, private var block: Block, pr
     }
 
     override fun getRenderType(state: BlockState?) = BlockRenderType.MODEL
+
+    override fun getCodec(): MapCodec<BlockGenerator> = CODEC
+
+    companion object {
+        private val CODEC: MapCodec<BlockGenerator> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(createSettingsCodec(), Block.CODEC.fieldOf("block").forGetter(BlockGenerator::block), Codec.FLOAT.fieldOf("rate").forGetter(BlockGenerator::rate))
+                .apply(instance, ::BlockGenerator)
+        }
+    }
 
 }
