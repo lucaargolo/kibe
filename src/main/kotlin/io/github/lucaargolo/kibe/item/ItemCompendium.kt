@@ -211,6 +211,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
                 } else model
             }
         }
+        MOD_BUS.addListener(::onClientSetup)
     }
 
     private fun onClientSetup(event: FMLClientSetupEvent) {
