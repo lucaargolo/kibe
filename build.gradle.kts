@@ -110,9 +110,12 @@ dependencies {
     })
 
     modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${project["fabric_version"]}")
-
-    modCompileOnly("thedarkcolour:kotlinforforge-neoforge:${project["kotlin_forge_version"]}")
-    forgeRuntimeLibrary("thedarkcolour:kotlinforforge-neoforge:${project["kotlin_forge_version"]}")
+    modImplementation("thedarkcolour:kotlinforforge-neoforge:${project["kotlin_forge_version"]}")
+    forgeRuntimeLibrary("org.jetbrains.kotlin:kotlin-stdlib:2.2.20")
+    forgeRuntimeLibrary("org.jetbrains.kotlin:kotlin-reflect:2.2.20")
+    forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0")
+    forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     modCompileOnly("top.theillusivec4.curios:curios-neoforge:${project["curios_version"]}:api")
     modRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project["curios_version"]}")
