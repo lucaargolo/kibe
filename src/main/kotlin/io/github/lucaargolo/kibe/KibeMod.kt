@@ -24,16 +24,15 @@ import io.github.lucaargolo.kibe.utils.helper.TooltipHelper
 import io.github.lucaargolo.kibe.utils.helper.TransferHelper
 import io.netty.buffer.ByteBuf
 import net.fabricmc.api.EnvType
-import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.codec.PacketCodec
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.fml.common.Mod
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
-import thedarkcolour.kotlinforforge.forge.runForDist
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.neoforge.forge.runForDist
 import java.io.File
 import java.io.PrintWriter
 import java.nio.file.Files
@@ -57,7 +56,7 @@ object KibeMod {
     }
 
     val CLIENT: Boolean by lazy { FabricLoader.getInstance().environmentType == EnvType.CLIENT }
-    val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("trinkets") }
+    val TRINKET: Boolean by lazy { FabricLoader.getInstance().isModLoaded("curios") }
 
     val LOGGER: Logger = LogManager.getLogger("Kibe")
 
@@ -106,9 +105,6 @@ object KibeMod {
         EntityCompendium.initialize()
         EffectCompendium.initialize()
         ParticleCompendium.initialize()
-        TransferHelper.initialize()
-        TooltipHelper.initialize()
-        LootHelper.initialize()
         PacketCompendium.initialize()
         EntangledTankSync.initialize()
         initChunkLoaderData()
@@ -118,6 +114,7 @@ object KibeMod {
     private fun onCommonSetup(event: FMLCommonSetupEvent) {
         TransferHelper.initialize()
         TooltipHelper.initialize()
+        LootHelper.initialize()
         runForDist(
             clientTarget = { KibeModClient },
             serverTarget = { }

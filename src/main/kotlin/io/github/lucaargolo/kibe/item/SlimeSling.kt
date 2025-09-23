@@ -60,7 +60,7 @@ class SlimeSling(settings: Settings): Item(settings) {
             entity.addVelocity(vec.x * -f, vec.y * -f/3f, vec.z * -f)
 
             if(entity is ServerPlayerEntity) {
-               entity.networkHandler.sendPacket(EntityVelocityUpdateS2CPacket(entity))
+               entity.networkHandler.send(EntityVelocityUpdateS2CPacket(entity))
             }
 
             SlimeBounceHandler.addBounceHandler(entity, 0.0)

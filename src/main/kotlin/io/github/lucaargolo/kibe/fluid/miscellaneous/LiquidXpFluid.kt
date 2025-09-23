@@ -6,11 +6,10 @@ import io.github.lucaargolo.kibe.item.ItemCompendium
 import net.minecraft.block.BlockState
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
-import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraftforge.fluids.FluidType
+import net.neoforged.neoforge.fluids.FluidType
 
 abstract class LiquidXpFluid: ModdedFluid() {
 

@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
 import net.minecraft.client.particle.FlameParticle
 import net.minecraft.particle.ParticleType
 import net.minecraft.registry.Registries
-import net.minecraftforge.registries.ForgeRegistries
+import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
-object ParticleCompendium: RegistryCompendium<ParticleType<*>>(ForgeRegistries.PARTICLE_TYPES) {
+object ParticleCompendium: RegistryCompendium<ParticleType<*>>(Registries.PARTICLE_TYPE) {
 
     val WATER_DROPS by register("water_drops", { FabricParticleTypes.simple() })
 

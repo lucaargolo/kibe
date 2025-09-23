@@ -1,23 +1,23 @@
 package io.github.lucaargolo.kibe.compat
 
-import dev.emi.trinkets.api.SlotReference
-import dev.emi.trinkets.api.Trinket
-import dev.emi.trinkets.api.TrinketsApi
 import io.github.ladysnake.pal.PlayerAbility
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.item.AbilityRing
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
-import net.minecraft.entity.LivingEntity
 import net.minecraft.item.ItemStack
+import top.theillusivec4.curios.api.CuriosApi
+import top.theillusivec4.curios.api.SlotContext
+import top.theillusivec4.curios.api.type.capability.ICurioItem
 
-class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRing(settings, ability), Trinket {
+class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRing(settings, ability), ICurioItem {
 
     init {
         KibeMod.LOGGER.info("[${KibeMod.MOD_NAME}] Creating Trinket AbilityRing for ${ability.id}")
-        TrinketsApi.registerTrinket(this, this)
+        CuriosApi.registerCurio(this, this)
     }
 
-    override fun tick(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
+    override fun curioTick(slotContext: SlotContext, stack: ItemStack) {
+        val entity = slotContext.entity
         if(!entity.world.isClient) {
             (entity as? PlayerEntityMixed)?.let {
                 try {
@@ -38,11 +38,13 @@ class TrinketAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRi
         }
     }
 
-    override fun onEquip(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
+    override fun onEquip(slotContext: SlotContext, prevStack: ItemStack, stack: ItemStack) {
+        super.onEquip(slotContext, prevStack, stack)
         enable(stack)
     }
 
-    override fun onUnequip(stack: ItemStack, slot: SlotReference, entity: LivingEntity) {
+    override fun onUnequip(slotContext: SlotContext, newStack: ItemStack, stack: ItemStack) {
+        super.onUnequip(slotContext, newStack, stack)
         disable(stack)
     }
 

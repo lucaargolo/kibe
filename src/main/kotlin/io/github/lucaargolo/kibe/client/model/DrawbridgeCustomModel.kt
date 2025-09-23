@@ -90,18 +90,18 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         when(state[Properties.FACING]) {
-            Direction.NORTH -> modelList[0].emitBlockQuads(world, state, pos, randomSupplier, context)
-            Direction.SOUTH -> modelList[1].emitBlockQuads(world, state, pos, randomSupplier, context)
-            Direction.WEST -> modelList[2].emitBlockQuads(world, state, pos, randomSupplier, context)
-            Direction.EAST -> modelList[3].emitBlockQuads(world, state, pos, randomSupplier, context)
-            Direction.UP -> modelList[4].emitBlockQuads(world, state, pos, randomSupplier, context)
-            Direction.DOWN -> modelList[5].emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.NORTH -> (modelList[0] as FabricBakedModel).emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.SOUTH -> (modelList[1] as FabricBakedModel).emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.WEST -> (modelList[2] as FabricBakedModel).emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.EAST -> (modelList[3] as FabricBakedModel).emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.UP -> (modelList[4] as FabricBakedModel).emitBlockQuads(world, state, pos, randomSupplier, context)
+            Direction.DOWN -> (modelList[5] as FabricBakedModel).emitBlockQuads(world, state, pos, randomSupplier, context)
             else -> {}
         }
     }
 
     override fun emitItemQuads(stack: ItemStack, randomSupplier: Supplier<Random>, context: RenderContext) {
-        modelList[4].emitItemQuads(stack, randomSupplier, context)
+        (modelList[4] as FabricBakedModel).emitItemQuads(stack, randomSupplier, context)
     }
 
     private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {

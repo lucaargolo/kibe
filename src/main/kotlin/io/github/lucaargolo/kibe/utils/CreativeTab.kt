@@ -19,22 +19,22 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.Registries
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.text.Text
-import net.minecraftforge.registries.DeferredRegister
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
-import thedarkcolour.kotlinforforge.forge.registerObject
+import net.neoforged.neoforge.registries.DeferredRegister
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+import java.util.function.Supplier
 
 object CreativeTab {
 
     fun initialize() {
         val itemGroups: DeferredRegister<ItemGroup> = DeferredRegister.create(RegistryKeys.ITEM_GROUP, KibeMod.MOD_ID)
 
-        itemGroups.registerObject("creative_tab") {
+        itemGroups.register("creative_tab", Supplier {
             FabricItemGroup.builder()
                 .icon { ItemStack(ItemCompendium.KIBE) }
                 .displayName(Text.translatable("itemGroup.kibe.creative_tab"))
                 .entries { _, entries -> entries.addAll(appendItems()) }
                 .build()
-        }
+        })
 
         itemGroups.register(MOD_BUS)
     }
@@ -71,7 +71,7 @@ object CreativeTab {
         }
         Registries.FLUID.indexedEntries.forEach { fluidEntry ->
             val fluid = fluidEntry.value()
-            val fluidKey = fluidEntry.key.get()
+            val fluidKey = fluidEntry.key!!.get()
             val itemStack = ItemStack(BlockCompendium.TANK)
             if (fluid == Fluids.EMPTY) {
                 list.add(itemStack)

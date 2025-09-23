@@ -63,9 +63,6 @@ fun getBranch(): String {
 }
 
 loom {
-    forge {
-        mixinConfig("kibe.mixins.json")
-    }
     accessWidenerPath.set(file("src/main/resources/kibe.accesswidener"))
 }
 
@@ -73,22 +70,6 @@ repositories {
     maven {
         name = "Fabric"
         url = uri("https://maven.fabricmc.net/")
-    }
-    maven {
-        name = "Ladysnake Mods"
-        url = uri("https://maven.ladysnake.org/releases")
-    }
-    maven {
-        name = "JitPack"
-        url = uri("https://jitpack.io")
-    }
-    maven {
-        name = "Dashloader"
-        url = uri("https://oskarstrom.net/maven")
-    }
-    maven {
-        name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/releases")
     }
     maven {
         name = "Shedaniel"
@@ -110,27 +91,34 @@ repositories {
         name = "Forgified Fabric API"
         url = uri("https://maven.su5ed.dev/releases")
     }
+    maven {
+        name = "Illusive Soulworks maven"
+        url = uri("https://maven.theillusivec4.top/")
+    }
+    flatDir {
+        dirs("libs")
+    }
     mavenLocal()
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${project["minecraft_version"]}")
-    mappings("net.fabricmc:yarn:${project["yarn_mappings"]}:v2")
-    forge("net.neoforged:forge:${project["neoforge_version"]}")
+    neoForge("net.neoforged:neoforge:${project["neoforge_version"]}")
+    mappings(loom.layered {
+        mappings("net.fabricmc:yarn:${project["yarn_mappings"]}:v2")
+        mappings("dev.architectury:yarn-mappings-patch-neoforge:${project["yarn_mappings_patch_version"]}")
+    })
 
-    modImplementation("dev.su5ed.sinytra.fabric-api:fabric-api:${project["fabric_version"]}")
-    implementation("thedarkcolour:kotlinforforge:4.10.0")
+    modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${project["fabric_version"]}")
 
-    modImplementation("dev.emi:trinkets:${project["trinkets_version"]}")
+    modCompileOnly("thedarkcolour:kotlinforforge-neoforge:${project["kotlin_forge_version"]}")
+    forgeRuntimeLibrary("thedarkcolour:kotlinforforge-neoforge:${project["kotlin_forge_version"]}")
 
-    modImplementation("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
-    include("io.github.ladysnake:PlayerAbilityLib:${project["pal_version"]}")
+    modCompileOnly("top.theillusivec4.curios:curios-neoforge:${project["curios_version"]}:api")
+    modRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project["curios_version"]}")
 
-    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.6")
-    compileOnly("io.github.llamalad7:mixinextras-common:0.3.6")
-
-    implementation("io.github.llamalad7:mixinextras-forge:0.3.6")
-    include("io.github.llamalad7:mixinextras-forge:0.3.6")
+    modImplementation("blank:pal-neoforge:${project["pal_version"]}")
+    include("blank:pal-neoforge:${project["pal_version"]}")
 }
 
 tasks.processResources {
@@ -139,7 +127,7 @@ tasks.processResources {
     inputs.property("version", project.version)
 
     from(sourceSets["main"].resources.srcDirs) {
-        include("META-INF/mods.toml")
+        include("META-INF/neoforge.mods.toml")
         expand(mutableMapOf("version" to project.version))
     }
 

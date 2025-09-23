@@ -5,7 +5,6 @@ import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import io.github.lucaargolo.kibe.utils.menu.ItemScreenHandlerFactory
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.gui.screen.ingame.HandledScreens
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
@@ -15,9 +14,11 @@ import net.minecraft.screen.ScreenHandlerType
 import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import net.minecraftforge.registries.ForgeRegistries
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
-object ScreenHandlerCompendium : RegistryCompendium<ScreenHandlerType<*>>(ForgeRegistries.MENU_TYPES) {
+object ScreenHandlerCompendium : RegistryCompendium<ScreenHandlerType<*>>(Registries.SCREEN_HANDLER) {
 
     val ENTANGLED_CHEST by register("entangled_chest", { blockHandler(::EntangledChestScreenHandler) })
     val TRASH_CAN by register("trash_can", { blockHandler(::TrashCanScreenHandler) })
@@ -47,21 +48,25 @@ object ScreenHandlerCompendium : RegistryCompendium<ScreenHandlerType<*>>(ForgeR
         return ExtendedScreenHandlerType({ i, playerInventory, data -> consumer.invoke(i, playerInventory, data.hand, playerInventory.player.world, data.stack)}, ItemScreenHandlerFactory.Data.PACKET_CODEC)
     }
 
-    override fun initializeClient() {
-        HandledScreens.register(ENTANGLED_CHEST, ::EntangledChestScreen)
-        HandledScreens.register(TRASH_CAN, ::TrashCanScreen)
-        HandledScreens.register(VACUUM_HOPPER, ::VacuumHopperScreen)
-        HandledScreens.register(BIG_TORCH, ::BigTorchScreen)
-        HandledScreens.register(COOLER, ::CoolerScreen)
-        HandledScreens.register(DRAWBRIDGE, ::DrawbridgeScreen)
-        HandledScreens.register(WITHER_BUILDER, ::WitherBuilderScreen)
-        HandledScreens.register(PLACER, ::PlacerScreen)
-        HandledScreens.register(BREAKER, ::BreakerScreen)
-        HandledScreens.register(BLOCK_GENERATOR, ::BlockGeneratorScreen)
-        HandledScreens.register(POCKET_TRASH_CAN, ::PocketTrashCanScreen)
-        HandledScreens.register(ENTANGLED_BAG, ::EntangledBagScreen)
-        HandledScreens.register(COOLER_ITEM, ::CoolerBlockItemScreen)
+    private fun initializeHandledScreens(event: RegisterMenuScreensEvent) {
+        event.register(ENTANGLED_CHEST, ::EntangledChestScreen)
+        event.register(TRASH_CAN, ::TrashCanScreen)
+        event.register(VACUUM_HOPPER, ::VacuumHopperScreen)
+        event.register(BIG_TORCH, ::BigTorchScreen)
+        event.register(COOLER, ::CoolerScreen)
+        event.register(DRAWBRIDGE, ::DrawbridgeScreen)
+        event.register(WITHER_BUILDER, ::WitherBuilderScreen)
+        event.register(PLACER, ::PlacerScreen)
+        event.register(BREAKER, ::BreakerScreen)
+        event.register(BLOCK_GENERATOR, ::BlockGeneratorScreen)
+        event.register(POCKET_TRASH_CAN, ::PocketTrashCanScreen)
+        event.register(ENTANGLED_BAG, ::EntangledBagScreen)
+        event.register(COOLER_ITEM, ::CoolerBlockItemScreen)
+    }
 
+    override fun initializeClient() {
+        super.initializeClient()
+        MOD_BUS.addListener(::initializeHandledScreens)
     }
 
 }

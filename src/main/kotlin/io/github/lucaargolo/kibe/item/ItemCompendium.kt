@@ -28,18 +28,18 @@ import net.minecraft.item.Items
 import net.minecraft.registry.Registries
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Rarity
-import net.minecraftforge.registries.ForgeRegistries
-import thedarkcolour.kotlinforforge.forge.ObjectHolderDelegate
+import net.neoforged.neoforge.registries.DeferredHolder
+import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
-object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
+object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
     val RUNES: Array<Rune>
-        get() = runes.map(ObjectHolderDelegate<Rune>::get).toTypedArray()
-    private val runes = mutableListOf<ObjectHolderDelegate<Rune>>()
+        get() = runes.map(DeferredHolder<Item, Rune>::get).toTypedArray()
+    private val runes = mutableListOf<DeferredHolder<Item, Rune>>()
 
     val FLUID_BUCKETS: Map<Fluid, BucketItem>
         get() = fluidBuckets.mapKeys { e -> e.key.get() }.mapValues { e -> e.value.get() }
-    private val fluidBuckets = mutableMapOf<ObjectHolderDelegate<out Fluid>, ObjectHolderDelegate<BucketItem>>()
+    private val fluidBuckets = mutableMapOf<DeferredHolder<Fluid, out Fluid>, DeferredHolder<Item, BucketItem>>()
 
     val KIBE         by register("kibe", { Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().nutrition(6).saturationModifier(0.8F).build())) })
     val GOLDEN_KIBE  by register("golden_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())) })
@@ -52,9 +52,9 @@ object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
     val MAGNET by register("magnet", { Magnet.create(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
     val DIAMOND_RING by register("diamond_ring", { Item(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
-    val ANGEL_RING by register("angel_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.EPIC)/*, VanillaAbilities.ALLOW_FLYING*/) })
-    val MAGMA_RING by register("magma_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE)/*, AbilityHelper.INFINITE_FIRE_RESISTENCE*/) })
-    val WATER_RING by register("water_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE)/*, AbilityHelper.INFINITE_WATER_BREATHING*/) })
+    val ANGEL_RING by register("angel_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.EPIC), VanillaAbilities.ALLOW_FLYING) })
+    val MAGMA_RING by register("magma_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE), AbilityHelper.INFINITE_FIRE_RESISTENCE) })
+    val WATER_RING by register("water_ring", { AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE), AbilityHelper.INFINITE_WATER_BREATHING) })
     val LIGHT_RING   by register("light_ring", { LightRing(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     
     val GOLDEN_LASSO  by register("golden_lasso", { Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
@@ -138,17 +138,17 @@ object ItemCompendium: RegistryCompendium<Item>(ForgeRegistries.ITEMS) {
     
     val MEASURING_TAPE by register("measuring_tape", { MeasuringTape(Settings().maxCount(1)) })
 
-    fun registerRune(string: String, entry: () -> Rune): ObjectHolderDelegate<Rune> {
+    fun registerRune(string: String, entry: () -> Rune): DeferredHolder<Item, Rune> {
         return register(string, entry).also(runes::add)
     }
 
-    fun <E : Fluid> registerBucketItem(string: String, entry: ObjectHolderDelegate<E>): ObjectHolderDelegate<BucketItem> {
-        val bucketDelegate = register(string+"_bucket", { BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)) })
+    fun <E : Fluid> registerBucketItem(string: String, entry: DeferredHolder<Fluid, E>): DeferredHolder<Item, BucketItem> {
+        val bucketDelegate = register(string+"_bucket", { BucketItem(entry.get(), Settings().recipeRemainder(Items.BUCKET).maxCount(1)) })
         fluidBuckets[entry] = bucketDelegate
         return bucketDelegate
     }
 
-    fun <E : Block> registerBlockItem(string: String, entry: ObjectHolderDelegate<E>): ObjectHolderDelegate<BlockItem> {
+    fun <E : Block> registerBlockItem(string: String, entry: DeferredHolder<Block, E>): DeferredHolder<Item, BlockItem> {
         return register(string, { BlockItem(entry.get(), Settings()) })
     }
 

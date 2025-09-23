@@ -6,14 +6,14 @@ import net.minecraft.client.render.entity.FlyingItemEntityRenderer
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.registry.Registries
-import net.minecraftforge.registries.ForgeRegistries
+import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
-object EntityCompendium : RegistryCompendium<EntityType<*>>(ForgeRegistries.ENTITY_TYPES) {
+object EntityCompendium : RegistryCompendium<EntityType<*>>(Registries.ENTITY_TYPE) {
 
     val THROWN_TORCH by register("thrown_torch", {
         EntityType.Builder.create(::ThrownTorchEntity, SpawnGroup.MISC)
             .dimensions(0.25f, 0.25f)
-            .build()
+            .build("thrown_torch")
     })
 
     override fun initializeClient() {

@@ -21,6 +21,7 @@ import net.minecraft.client.render.model.json.ModelOverrideList
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.MissingSprite
 import net.minecraft.client.texture.Sprite
+import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
@@ -49,9 +50,9 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        val background = ModIdentifier.of("item/entangled_bucket_background")
+        val background = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_bucket_background"))
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
-        backgroundModel.emitItemQuads(stack, randSupplier, context)
+        (backgroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
         var colorCode = ""
         if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
@@ -72,7 +73,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         if(fluid != Fluids.EMPTY) {
             val fluidRenderHandler: FluidRenderHandler? = FluidRenderHandlerRegistry.INSTANCE.get(fluid)
-            val fluidIdentifier = ModIdentifier.of("item/entangled_bucket_fluid")
+            val fluidIdentifier = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_bucket_fluid"))
             val fluidModel = MinecraftClient.getInstance().bakedModelManager.getModel(fluidIdentifier)
 
             val fluidColor: Int = fluidRenderHandler?.getFluidColor(MinecraftClient.getInstance().world, MinecraftClient.getInstance().player!!.blockPos, fluid.defaultState) ?: 0xffffff
@@ -95,15 +96,16 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             context.popTransform()
         }
 
-        val foreground = ModIdentifier.of("item/entangled_bucket_foreground")
+        val foreground = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_bucket_foreground"))
         val foregroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(foreground)
-        foregroundModel.emitItemQuads(stack, randSupplier, context)
+        (foregroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
         val core = if(stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledTank.DEFAULT_KEY)
             ModIdentifier.of("item/entangled_bucket_diamond_core")
         else ModIdentifier.of("item/entangled_bucket_gold_core")
-        val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
-        coreModel.emitItemQuads(stack, randSupplier, context)
+        val coreIdentifier = ModelIdentifier.ofInventoryVariant(core)
+        val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(coreIdentifier)
+        (coreModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
         var color = Color.WHITE.rgb
         if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
@@ -123,7 +125,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             true
         }
         val emitter = context.emitter
-        val ring = ModIdentifier.of("item/entangled_ring")
+        val ring = ModelIdentifier.ofInventoryVariant(ModIdentifier.of("item/entangled_ring"))
         val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
         ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q.vertexData, 0)

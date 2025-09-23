@@ -3,17 +3,13 @@ package io.github.lucaargolo.kibe.blockentity
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.client.blockentity.*
 import io.github.lucaargolo.kibe.utils.RegistryCompendium
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry
-import net.minecraft.block.Block
-import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories
 import net.minecraft.registry.Registries
-import net.minecraftforge.client.ForgeHooksClient
-import net.minecraftforge.registries.ForgeRegistries
-import thedarkcolour.kotlinforforge.forge.ObjectHolderDelegate
+import net.neoforged.neoforge.client.ClientHooks
+import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
-object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(ForgeRegistries.BLOCK_ENTITY_TYPES) {
+object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries.BLOCK_ENTITY_TYPE) {
 
     val REDSTONE_TIMER by register("redstone_timer", { BlockEntityType.Builder.create(::RedstoneTimerEntity, BlockCompendium.REDSTONE_TIMER).build(null) })
     val ENTANGLED_TANK by register("entangled_tank", { BlockEntityType.Builder.create(::EntangledTankEntity, BlockCompendium.ENTANGLED_TANK).build(null) })
@@ -34,7 +30,6 @@ object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(ForgeRegis
     val XP_SHOWER by register("xp_shower", { BlockEntityType.Builder.create(::XpShowerBlockEntity, BlockCompendium.XP_SHOWER).build(null) })
     val FLUID_HOPPER by register("fluid_hopper", { BlockEntityType.Builder.create(::FluidHopperBlockEntity, BlockCompendium.FLUID_HOPPER).build(null) })
 
-
     override fun initializeClient() {
         super.initializeClient()
         BlockEntityRendererFactories.register(ENTANGLED_CHEST, ::EntangledChestEntityRenderer)
@@ -44,13 +39,13 @@ object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(ForgeRegis
         BlockEntityRendererFactories.register(TANK, ::TankBlockEntityRenderer)
 
         EntangledChestEntityRenderer.helper.getEntries().forEach { (entityLayer, texturedModelData) ->
-            ForgeHooksClient.registerLayerDefinition(entityLayer) { texturedModelData }
+            ClientHooks.registerLayerDefinition(entityLayer) { texturedModelData }
         }
         EntangledTankEntityRenderer.helper.getEntries().forEach { (entityLayer, texturedModelData) ->
-            ForgeHooksClient.registerLayerDefinition(entityLayer) { texturedModelData }
+            ClientHooks.registerLayerDefinition(entityLayer) { texturedModelData }
         }
         RedstoneTimerEntityRenderer.selectorModelLayers.forEachIndexed{ index, entityModelLayer ->
-            ForgeHooksClient.registerLayerDefinition(entityModelLayer) { RedstoneTimerEntityRenderer.setupSelectorModel(index) }
+            ClientHooks.registerLayerDefinition(entityModelLayer) { RedstoneTimerEntityRenderer.setupSelectorModel(index) }
         }
     }
 

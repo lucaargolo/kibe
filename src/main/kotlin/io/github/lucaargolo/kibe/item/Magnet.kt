@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.item
 
 import io.github.lucaargolo.kibe.KibeMod
+import io.github.lucaargolo.kibe.compat.TrinketMagnet
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ExperienceOrbEntity

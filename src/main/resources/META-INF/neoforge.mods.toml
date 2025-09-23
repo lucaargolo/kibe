@@ -1,5 +1,5 @@
 modLoader = "kotlinforforge" #mandatory
-loaderVersion = "[4.10,)" #mandatory
+loaderVersion = "[5.10,)" #mandatory
 license = "Mozilla Public License 2.0"
 
 [[mods]] #mandatory
@@ -11,15 +11,15 @@ logoFile="assets/kibe/icon.png"
 description = '''A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.'''
 
 [[dependencies.kibe]]
-modId = "forge"
-mandatory = true
-versionRange = "[47,)"
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.kibe]]
 modId = "minecraft"
-mandatory = true
-versionRange = "[1.20.1,1.21)"
+type = "required"
+versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
