@@ -9,6 +9,7 @@ import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
 import io.github.lucaargolo.kibe.effect.EffectCompendium
 import io.github.lucaargolo.kibe.entity.EntityCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
+import io.github.lucaargolo.kibe.item.ArmorMaterialCompendium
 import io.github.lucaargolo.kibe.item.ItemCompendium
 import io.github.lucaargolo.kibe.menu.ScreenHandlerCompendium
 import io.github.lucaargolo.kibe.network.PacketCompendium
@@ -91,6 +92,7 @@ object KibeMod : ModInitializer {
         CreativeTab.initialize()
         RecipeSerializerCompendium.initialize()
         RecipeTypeCompendium.initialize()
+        ArmorMaterialCompendium.initialize()
         FluidCompendium.initialize()
         BlockCompendium.initialize()
         ItemCompendium.initialize()
