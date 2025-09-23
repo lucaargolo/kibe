@@ -21,7 +21,7 @@ public class WorldChunkMixin {
     @Shadow @Final
     World world;
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;read(Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V"), method = "method_31716", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;handleUpdateTag(Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V"), method = "method_31716", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     public void onBlockEntityUpdate(BlockPos pos, BlockEntityType<?> type, NbtCompound nbtCompound, CallbackInfo info, BlockEntity blockEntity) {
         if(blockEntity instanceof SyncableBlockEntity) {
             ((SyncableBlockEntity) blockEntity).readClientNbt(nbtCompound, this.world.getRegistryManager());

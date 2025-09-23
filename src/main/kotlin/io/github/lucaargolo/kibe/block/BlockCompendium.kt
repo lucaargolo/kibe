@@ -16,7 +16,9 @@ import net.minecraft.registry.Registries
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ColorCode
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.registries.DeferredHolder
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 import java.util.function.Supplier
 
@@ -124,12 +126,6 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
 
     override fun initializeClient() {
         super.initializeClient()
-        BlockRenderLayerMap.INSTANCE.putBlock(DRAWBRIDGE, RenderLayer.getCutoutMipped())
-        BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
-        BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutoutMipped())
-        BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
-        BlockRenderLayerMap.INSTANCE.putBlock(WITHER_PROOF_GLASS, RenderLayer.getTranslucent())
-        BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutoutMipped())
         ModelLoadingPlugin.register { plugin ->
             plugin.modifyModelOnLoad().register { model, context ->
                 val modelIdentifier = context.topLevelId()
@@ -142,6 +138,16 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
                 } else model
             }
         }
+        MOD_BUS.addListener(::onClientSetup)
+    }
+
+    private fun onClientSetup(event: FMLClientSetupEvent) {
+        BlockRenderLayerMap.INSTANCE.putBlock(DRAWBRIDGE, RenderLayer.getCutoutMipped())
+        BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
+        BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutoutMipped())
+        BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
+        BlockRenderLayerMap.INSTANCE.putBlock(WITHER_PROOF_GLASS, RenderLayer.getTranslucent())
+        BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutoutMipped())
     }
 
 }

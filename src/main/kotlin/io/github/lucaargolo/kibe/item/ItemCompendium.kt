@@ -17,19 +17,34 @@ import io.github.lucaargolo.kibe.utils.helper.AbilityHelper
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.minecraft.block.Block
+import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
+import net.minecraft.block.LeveledCauldronBlock
+import net.minecraft.block.cauldron.CauldronBehavior
 import net.minecraft.client.item.ModelPredicateProviderRegistry
 import net.minecraft.component.type.FoodComponent
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.fluid.Fluid
-import net.minecraft.item.BlockItem
-import net.minecraft.item.BucketItem
-import net.minecraft.item.Item
+import net.minecraft.item.*
 import net.minecraft.item.Item.Settings
-import net.minecraft.item.Items
 import net.minecraft.registry.Registries
+import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvent
+import net.minecraft.sound.SoundEvents
+import net.minecraft.stat.Stats
 import net.minecraft.util.DyeColor
+import net.minecraft.util.Hand
+import net.minecraft.util.ItemActionResult
 import net.minecraft.util.Rarity
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
+import net.minecraft.world.event.GameEvent
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
+import net.neoforged.neoforge.fluids.RegisterCauldronFluidContentEvent
 import net.neoforged.neoforge.registries.DeferredHolder
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
+import java.util.function.Predicate
 
 object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
@@ -152,7 +167,53 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
         return register(string, { BlockItem(entry.get(), Settings()) })
     }
 
+    override fun initialize() {
+        super.initialize()
+        MOD_BUS.addListener(::cauldronBehaviours)
+    }
+
+    private fun cauldronBehaviours(event: RegisterCauldronFluidContentEvent) {
+        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map().put(WOODEN_BUCKET, CauldronBehavior { state, world, pos, player, hand, stack ->
+            CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, ItemStack(WOODEN_WATER_BUCKET), Predicate {
+                 it!!.get<Int?>(LeveledCauldronBlock.LEVEL) == 3
+            }, SoundEvents.ITEM_BUCKET_FILL)
+        })
+        CauldronBehavior.POWDER_SNOW_CAULDRON_BEHAVIOR.map().put(WOODEN_WATER_BUCKET, CauldronBehavior { state, world, pos, player, hand, stack ->
+            fillCauldronWithWoodenBucket(world, pos, player, hand, stack, Blocks.WATER_CAULDRON.defaultState.with<Int?, Int?>(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY)
+        })
+    }
+
+    private fun fillCauldronWithWoodenBucket(world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, stack: ItemStack, state: BlockState, soundEvent: SoundEvent): ItemActionResult? {
+        if (!world.isClient) {
+            val item = stack.item
+            player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, ItemStack(WOODEN_BUCKET)))
+            player.incrementStat(Stats.FILL_CAULDRON)
+            player.incrementStat(Stats.USED.getOrCreateStat(item))
+            world.setBlockState(pos, state)
+            world.playSound(null, pos, soundEvent, SoundCategory.BLOCKS, 1.0f, 1.0f)
+            world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos)
+        }
+
+        return ItemActionResult.success(world.isClient)
+    }
+
     override fun initializeClient() {
+        ModelLoadingPlugin.register { plugin ->
+            plugin.modifyModelOnLoad().register { model, context ->
+                val modelIdentifier = context.topLevelId()
+                if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID && modelIdentifier.variant == "inventory") {
+                    when (modelIdentifier.id.path) {
+                        "entangled_bag" -> EntangledBagBakedModel()
+                        "entangled_bucket" -> EntangledBucketBakedModel()
+                        "tank" -> TankBlockItemBakedModel()
+                        else -> model
+                    }
+                } else model
+            }
+        }
+    }
+
+    private fun onClientSetup(event: FMLClientSetupEvent) {
         ModelPredicateProviderRegistry.register(MEASURING_TAPE, ModIdentifier.of("extended"), MeasuringTape.PredicateProvider())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_CHEST, EntangledChestBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_TANK, EntangledTankBlockItemDynamicRenderer())
@@ -172,22 +233,6 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
         BuiltinItemRendererRegistry.INSTANCE.register(BROWN_GLIDER, GliderDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(RED_GLIDER, GliderDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(BLACK_GLIDER, GliderDynamicRenderer())
-
-        ModelLoadingPlugin.register { plugin ->
-            plugin.modifyModelOnLoad().register { model, context ->
-                val modelIdentifier = context.topLevelId()
-                if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID && modelIdentifier.variant == "inventory") {
-                    when (modelIdentifier.id.path) {
-                        "entangled_bag" -> EntangledBagBakedModel()
-                        "entangled_bucket" -> EntangledBucketBakedModel()
-                        "tank" -> TankBlockItemBakedModel()
-                        else -> model
-                    }
-                } else model
-            }
-        }
     }
-
-
 
 }

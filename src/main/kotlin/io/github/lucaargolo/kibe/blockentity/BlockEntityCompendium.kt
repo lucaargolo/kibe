@@ -6,7 +6,9 @@ import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories
 import net.minecraft.registry.Registries
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.client.ClientHooks
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
 object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries.BLOCK_ENTITY_TYPE) {
@@ -32,12 +34,6 @@ object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries
 
     override fun initializeClient() {
         super.initializeClient()
-        BlockEntityRendererFactories.register(ENTANGLED_CHEST, ::EntangledChestEntityRenderer)
-        BlockEntityRendererFactories.register(ENTANGLED_TANK, ::EntangledTankEntityRenderer)
-        BlockEntityRendererFactories.register(VACUUM_HOPPER, ::VacuumHopperEntityRenderer)
-        BlockEntityRendererFactories.register(REDSTONE_TIMER, ::RedstoneTimerEntityRenderer)
-        BlockEntityRendererFactories.register(TANK, ::TankBlockEntityRenderer)
-
         EntangledChestEntityRenderer.helper.getEntries().forEach { (entityLayer, texturedModelData) ->
             ClientHooks.registerLayerDefinition(entityLayer) { texturedModelData }
         }
@@ -47,6 +43,15 @@ object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries
         RedstoneTimerEntityRenderer.selectorModelLayers.forEachIndexed{ index, entityModelLayer ->
             ClientHooks.registerLayerDefinition(entityModelLayer) { RedstoneTimerEntityRenderer.setupSelectorModel(index) }
         }
+        MOD_BUS.addListener(::onClientSetup)
+    }
+
+    private fun onClientSetup(event: FMLClientSetupEvent) {
+        BlockEntityRendererFactories.register(ENTANGLED_CHEST, ::EntangledChestEntityRenderer)
+        BlockEntityRendererFactories.register(ENTANGLED_TANK, ::EntangledTankEntityRenderer)
+        BlockEntityRendererFactories.register(VACUUM_HOPPER, ::VacuumHopperEntityRenderer)
+        BlockEntityRendererFactories.register(REDSTONE_TIMER, ::RedstoneTimerEntityRenderer)
+        BlockEntityRendererFactories.register(TANK, ::TankBlockEntityRenderer)
     }
 
 }

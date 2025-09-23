@@ -38,16 +38,6 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
         )
     })
 
-    private fun typeClientExtensions(event: RegisterClientExtensionsEvent) {
-        event.registerFluidType(object : IClientFluidTypeExtensions {
-            val stillSpriteId = ModIdentifier.of("block/liquid_xp_still")
-            val flowingSpriteId = ModIdentifier.of("block/liquid_xp_flow")
-
-            override fun getStillTexture() = stillSpriteId
-            override fun getFlowingTexture() = flowingSpriteId
-        }, LIQUID_XP_TYPE)
-    }
-
     val LIQUID_XP by registerStill("liquid_xp", { LiquidXpFluid.Still() })
     val LIQUID_XP_FLOWING by registerFlowing("flowing_liquid_xp", { LiquidXpFluid.Flowing() })
 
@@ -69,7 +59,17 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
     override fun initializeClient() {
         super.initializeClient()
-        MOD_BUS.addListener(::typeClientExtensions)
+        MOD_BUS.addListener(::onClientExtensions)
+    }
+
+    private fun onClientExtensions(event: RegisterClientExtensionsEvent) {
+        event.registerFluidType(object : IClientFluidTypeExtensions {
+            val stillSpriteId = ModIdentifier.of("block/liquid_xp_still")
+            val flowingSpriteId = ModIdentifier.of("block/liquid_xp_flow")
+
+            override fun getStillTexture() = stillSpriteId
+            override fun getFlowingTexture() = flowingSpriteId
+        }, LIQUID_XP_TYPE)
     }
 
 }

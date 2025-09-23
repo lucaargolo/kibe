@@ -93,6 +93,7 @@ object KibeMod {
     fun Boolean.toInt() = if (this) 1 else 0
 
     init {
+        MOD_BUS.addListener(::onCommonSetup)
         ModConfig.initialize()
         CreativeTab.initialize()
         RecipeSerializerCompendium.initialize()
@@ -110,17 +111,13 @@ object KibeMod {
         PacketCompendium.initialize()
         EntangledTankSync.initialize()
         initChunkLoaderData()
-        MOD_BUS.addListener(::onCommonSetup)
+        runForDist(clientTarget = { KibeModClient }, serverTarget = { KibeMod })
     }
 
     private fun onCommonSetup(event: FMLCommonSetupEvent) {
         TransferHelper.initialize()
         TooltipHelper.initialize()
         LootHelper.initialize()
-        runForDist(
-            clientTarget = { KibeModClient },
-            serverTarget = { }
-        )
     }
 
 

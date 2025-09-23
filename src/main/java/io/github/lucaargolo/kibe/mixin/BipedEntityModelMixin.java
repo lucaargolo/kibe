@@ -24,10 +24,9 @@ public class BipedEntityModelMixin<T extends LivingEntity> {
     @Final @Shadow public ModelPart rightLeg;
     @Final @Shadow public ModelPart leftLeg;
 
-    @Inject(at = @At("TAIL"), method = "setAngles")
+    @Inject(at = @At("TAIL"), method = "setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V")
     private void setAngles(T livingEntity, float f, float g, float h, float i, float j, CallbackInfo info) {
-        if(livingEntity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) livingEntity;
+        if(livingEntity instanceof PlayerEntity player) {
             ItemStack stack1 = livingEntity.getStackInHand(Hand.MAIN_HAND);
             ItemStack stack2 = livingEntity.getStackInHand(Hand.OFF_HAND);
             if((stack1.getItem() instanceof Glider && Glider.Companion.isEnabled(stack1)) || (stack2.getItem() instanceof Glider && Glider.Companion.isEnabled(stack2))) {

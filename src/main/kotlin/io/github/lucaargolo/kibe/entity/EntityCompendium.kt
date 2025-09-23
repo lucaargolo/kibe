@@ -6,6 +6,8 @@ import net.minecraft.client.render.entity.FlyingItemEntityRenderer
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.registry.Registries
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
 object EntityCompendium : RegistryCompendium<EntityType<*>>(Registries.ENTITY_TYPE) {
@@ -17,6 +19,10 @@ object EntityCompendium : RegistryCompendium<EntityType<*>>(Registries.ENTITY_TY
     })
 
     override fun initializeClient() {
+        MOD_BUS.addListener(::onClientSetup)
+    }
+
+    private fun onClientSetup(event: FMLClientSetupEvent) {
         EntityRendererRegistry.register(THROWN_TORCH) { context ->
             FlyingItemEntityRenderer(context)
         }
