@@ -7,6 +7,7 @@ import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.data.state.ChunkLoaderState
+import io.github.lucaargolo.kibe.datagen.KibeDatagen
 import io.github.lucaargolo.kibe.effect.EffectCompendium
 import io.github.lucaargolo.kibe.entity.EntityCompendium
 import io.github.lucaargolo.kibe.fluid.FluidCompendium
@@ -30,6 +31,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.codec.PacketCodec
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.neoforge.data.event.GatherDataEvent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -93,6 +95,7 @@ object KibeMod {
     fun Boolean.toInt() = if (this) 1 else 0
 
     init {
+        MOD_BUS.addListener(::onDataGen)
         MOD_BUS.addListener(::onCommonSetup)
         ModConfig.initialize()
         CreativeTab.initialize()
@@ -112,6 +115,10 @@ object KibeMod {
         EntangledTankSync.initialize()
         initChunkLoaderData()
         runForDist(clientTarget = { KibeModClient }, serverTarget = { KibeMod })
+    }
+
+    fun onDataGen(event: GatherDataEvent) {
+        KibeDatagen.onInitializeDataGenerator(event)
     }
 
     private fun onCommonSetup(event: FMLCommonSetupEvent) {

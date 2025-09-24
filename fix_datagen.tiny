@@ -1,0 +1,5 @@
+tiny	2	0	intermediary	named
+c	net/minecraft/class_2414	net/minecraft/data/server/advancement/vanilla/VanillaHusbandryTabAdvancementGenerator
+	f	[Lnet/minecraft/class_1792;	field_33964	WAX_SCRAPING_TOOLS
+c	net/minecraft/class_2409	net/minecraft/data/server/advancement/AdvancementProvider
+	f	Ljava/util/List;	field_11289	subProviders

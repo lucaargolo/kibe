@@ -62,7 +62,20 @@ fun getBranch(): String {
     return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
+val generatedResources = file("src/main/generated")
+
+sourceSets {
+    main {
+        resources.srcDir(generatedResources)
+    }
+}
+
 loom {
+    runs.create("data") {
+        data()
+        programArgs("--all", "--mod", "kibe")
+        programArgs("--output", generatedResources.absolutePath)
+    }
     accessWidenerPath.set(file("src/main/resources/kibe.accesswidener"))
 }
 
@@ -107,6 +120,7 @@ dependencies {
     mappings(loom.layered {
         mappings("net.fabricmc:yarn:${project["yarn_mappings"]}:v2")
         mappings("dev.architectury:yarn-mappings-patch-neoforge:${project["yarn_mappings_patch_version"]}")
+        mappings(file("fix_datagen.tiny"))
     })
 
     modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${project["fabric_version"]}")
