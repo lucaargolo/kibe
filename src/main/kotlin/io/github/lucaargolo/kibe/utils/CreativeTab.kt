@@ -69,7 +69,6 @@ object CreativeTab {
                 list.add(itemStack)
             } else if (fluid.isStill(fluid.defaultState)) {
                 val blockEntityTag = itemStack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
-                blockEntityTag.putString("id", "kibe:tank")
                 blockEntityTag.put("variant", NbtCompound().also { it.putString("fluid", fluidKey.value.toString()) })
                 blockEntityTag.putLong("amount", 16 * FluidConstants.BUCKET)
                 itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(blockEntityTag))

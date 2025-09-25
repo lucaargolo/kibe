@@ -2,28 +2,34 @@ package io.github.lucaargolo.kibe.blockentity
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
+import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.block.AirBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.client.MinecraftClient
+import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.SidedInventory
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
+import net.minecraft.item.ItemUsageContext
+import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
-import net.minecraft.registry.Registries
+import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.RegistryWrapper.WrapperLookup
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Identifier
+import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.World
 
@@ -31,8 +37,8 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(2, ItemStack.EMPTY)
 
-    var extendedBlock: Block? = null
-    var extendedBlocks = 0
+    var extendedStack: ItemStack = ItemStack.EMPTY
+    var extendedStacks: Int = 0
     var state = State.CONTRACTED
 
     var lastCoverBlock: Block = BlockCompendium.DRAWBRIDGE
@@ -47,8 +53,8 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.writeNbt(tag, registryLookup)
         tag.putString("state", state.name)
-        tag.putString("extendedBlock", extendedBlock?.let { Registries.BLOCK.getId(it).toString() } ?: "yeet")
-        tag.putInt("extendedBlocks", extendedBlocks)
+        tag.put("extendedStack", extendedStack.encodeAllowEmpty(registryLookup))
+        tag.putInt("extendedStacks", extendedStacks)
         val nbtList = NbtList()
         for (i in inventory.indices) {
             val itemStack = inventory[i]
@@ -70,8 +76,8 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
         }catch (e: IllegalArgumentException) {
             State.CONTRACTED
         }
-        extendedBlock = Registries.BLOCK.get(Identifier.of(tag.getString("extendedBlock")))
-        extendedBlocks = tag.getInt("extendedBlocks")
+        extendedStack = ItemStack.fromNbtOrEmpty(registryLookup, tag.getCompound("extendedStack"))
+        extendedStacks = tag.getInt("extendedBlocks")
         val nbtList: NbtList = tag.getList("Items", NbtElement.COMPOUND_TYPE.toInt())
 
         for (i in nbtList.indices) {
@@ -130,15 +136,16 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
     override fun canExtract(slot: Int, stack: ItemStack?, dir: Direction?) = true
 
     companion object {
+
         fun tick(world: World, pos: BlockPos, state: BlockState, blockEntity: DrawbridgeBlockEntity) {
             if(world.isClient || world.time%8 != 0L) {
                 return
             }
 
-            val direction = state[Properties.FACING]
+            val facing = state[Properties.FACING]
 
-            val hasSpace = blockEntity.inventory[0].isEmpty || blockEntity.inventory[0].count < blockEntity.inventory[0].maxCount
-            val storedBlock = (blockEntity.inventory[0].item as? BlockItem)?.block
+            val stack = blockEntity.inventory[0]
+            val hasSpace = stack.isEmpty || stack.count < stack.maxCount
 
             when(blockEntity.state) {
                 State.EXTENDED -> {
@@ -150,25 +157,32 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
                     if(!world.isReceivingRedstonePower(pos)) {
                         blockEntity.state = State.CONTRACTING
                     }
-                    if(storedBlock != null) {
+                    if(!stack.isEmpty) {
                         for(it in 1..64) {
-                            val itPos = pos.add(Vec3i( direction.vector.x*it, direction.vector.y*it, direction.vector.z*it))
-                            val itBlock = world.getBlockState(itPos).block
+                            val itPos = pos.add(Vec3i( facing.vector.x*it, facing.vector.y*it, facing.vector.z*it))
+                            val itState = world.getBlockState(itPos)
+                            val itBlock = itState.block
+                            val itStack = stackFromLootTable(world as ServerWorld, itPos, itState)
                             if(itBlock is AirBlock) {
-                                if(it != blockEntity.extendedBlocks+1) {
+                                if(it != blockEntity.extendedStacks+1) {
                                     blockEntity.state = State.EXTENDED
                                     break
                                 }
-                                blockEntity.inventory[0].decrement(1)
-                                world.setBlockState(itPos, storedBlock.defaultState)
-                                world.playSound(null, itPos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f, world.random.nextFloat() * 0.25f + 0.6f)
-                                if(blockEntity.extendedBlock != storedBlock) {
-                                    blockEntity.extendedBlock = storedBlock
-                                    blockEntity.extendedBlocks = 0
+
+                                if(!ItemStack.areItemsAndComponentsEqual(blockEntity.extendedStack, stack)) {
+                                    blockEntity.extendedStack = stack.copy()
+                                    blockEntity.extendedStacks = 0
                                 }
-                                blockEntity.extendedBlocks++
+                                blockEntity.extendedStacks++
+
+                                val fakePlayer = FakePlayer.get(world)
+                                fakePlayer.setStackInHand(Hand.MAIN_HAND, stack)
+                                val fakeHitPos = Vec3d(itPos.x + 0.5, itPos.y + 0.0, itPos.z + 0.5)
+                                (stack.item as? BlockItem)?.useOnBlock(ItemUsageContext(fakePlayer, Hand.MAIN_HAND, BlockHitResult(fakeHitPos, facing.opposite, itPos, false)))
+                                world.playSound(null, itPos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 1f, world.random.nextFloat() * 0.25f + 0.6f)
+
                                 break
-                            }else if(itBlock != storedBlock) {
+                            }else if(!ItemStack.areItemsAndComponentsEqual(itStack, stack)) {
                                 blockEntity.state = State.EXTENDED
                                 break
                             }
@@ -192,22 +206,22 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
                     }
                     if(hasSpace) {
                         var furthestPos = pos
-                        var furthestBlock = Blocks.AIR
+                        var furthestStack = ItemStack.EMPTY
 
-                        var selectedBlock = storedBlock ?: Blocks.AIR
+                        var selectedStack = stack
 
                         for(it in 1..64) {
-                            val itPos = pos.add(Vec3i(direction.vector.x*it, direction.vector.y*it, direction.vector.z*it))
-                            val itBlock = world.getBlockState(itPos).block
-                            if(selectedBlock is AirBlock) {
-                                selectedBlock = itBlock
+                            val itPos = pos.add(Vec3i(facing.vector.x*it, facing.vector.y*it, facing.vector.z*it))
+                            val itStack = stackFromLootTable(world as ServerWorld, itPos)
+                            if(selectedStack.isEmpty) {
+                                selectedStack = itStack
                             }
-                            if(blockEntity.extendedBlock != selectedBlock || it > blockEntity.extendedBlocks) {
+                            if(!ItemStack.areItemsAndComponentsEqual(blockEntity.extendedStack, selectedStack) || it > blockEntity.extendedStacks) {
                                 break
                             }
-                            if(itBlock !is AirBlock && itBlock == selectedBlock) {
+                            if(!itStack.isEmpty && ItemStack.areItemsAndComponentsEqual(selectedStack, itStack)) {
                                 furthestPos = itPos
-                                furthestBlock = itBlock
+                                furthestStack = itStack
                             } else {
                                 if(it == 1) {
                                     blockEntity.state = State.CONTRACTED
@@ -217,18 +231,38 @@ class DrawbridgeBlockEntity(pos: BlockPos, state: BlockState): SyncableBlockEnti
                         }
                         if(furthestPos != pos) {
                             if(blockEntity.inventory[0].isEmpty) {
-                                blockEntity.inventory[0] = ItemStack(furthestBlock.asItem())
+                                blockEntity.inventory[0] = furthestStack
                             }else{
                                 blockEntity.inventory[0].increment(1)
                             }
-                            blockEntity.extendedBlocks--
-                            world.setBlockState(furthestPos, Blocks.AIR.defaultState)
-                            world.playSound(null, furthestPos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f, world.random.nextFloat() * 0.25f + 0.6f)
+                            blockEntity.extendedStacks--
+
+                            world.breakBlock(furthestPos, false)
+                            world.playSound(null, furthestPos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 1f, world.random.nextFloat() * 0.25f + 0.6f)
                         }
                     }
                 }
             }
+        }
 
+        private fun stackFromLootTable(world: ServerWorld, pos: BlockPos): ItemStack {
+            val state = world.getBlockState(pos)
+            return stackFromLootTable(world, pos, state)
+        }
+
+        private fun stackFromLootTable(world: ServerWorld, pos: BlockPos, state: BlockState): ItemStack {
+            val entity = world.getBlockEntity(pos)
+            val silkTouch = Items.STICK.defaultStack.also {
+                it.addEnchantment(world.registryManager.get(RegistryKeys.ENCHANTMENT).getEntry(Enchantments.SILK_TOUCH).get(), 1)
+            }
+            val list = Block.getDroppedStacks(state, world, pos, entity, FakePlayer.get(world), silkTouch)
+            if(list.size == 1) {
+                val stack = list.first()
+                if(stack.count == 1 && stack.item is BlockItem) {
+                    return stack
+                }
+            }
+            return ItemStack.EMPTY
         }
     }
 
