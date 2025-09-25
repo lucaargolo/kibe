@@ -16,3 +16,9 @@ out/
 run/
 /.kotlin/errors/errors-1736588313060.log
 /.kotlin/errors/errors-1736588322464.log
+
+# datagen
+/src/main/generated/.cache/
+
+# kotlin
+.kotlin/

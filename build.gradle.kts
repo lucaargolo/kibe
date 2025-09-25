@@ -27,7 +27,7 @@ operator fun Project.get(property: String): String {
     return property(property) as String
 }
 
-version = project["mod_version"]
+version = project["mod_version"].split("+")[0]
 group = project["maven_group"]
 
 fun String.capitalize(): String {
@@ -40,10 +40,21 @@ fun String.capitalize(): String {
 }
 
 val systemEnvironment: Map<String, String> = System.getenv()
-val buildReleaseName = "${name.split("-").joinToString(" ") { it.capitalize() }} ${(version as String).split("+")[0]}"
-val buildReleaseType = (version as String).split("+")[0].split("-").let { if(it.size > 1) if(it[1] == "BETA" || it[1] == "ALPHA") it[1] else "ALPHA" else "RELEASE" }
-val buildReleaseFile = layout.buildDirectory.file("libs/${base.archivesName.get()}-${version}.jar").get()
-val buildGameVersion = (version as String).split("+")[1].let{ if(!project["minecraft_version"].contains("-") && project["minecraft_version"].startsWith(it)) project["minecraft_version"] else "$it-Snapshot"}
+val fileClassifier = "${project["mod_loader"]}-${project["minecraft_version"]}"
+
+val buildReleaseName = "${name.split("-").joinToString(" ") { it.capitalize() }} $version"
+val buildReleaseType = (version as String).split("-").let { if(it.size > 1) if(it[1] == "BETA" || it[1] == "ALPHA") it[1] else "ALPHA" else "RELEASE" }
+val buildReleaseFile = layout.buildDirectory.file("libs/${base.archivesName.get()}-$version-$fileClassifier.jar").get()
+val buildSourcesFile = layout.buildDirectory.file("libs/${base.archivesName.get()}-$version-$fileClassifier-sources.jar").get()
+val buildGameVersion = project["mod_version"].split("+")[1].let{ if(!project["minecraft_version"].contains("-") && project["minecraft_version"].startsWith(it)) project["minecraft_version"] else "$it-Snapshot"}
+
+println("===============[ BUILD DATA ]===============")
+println("- Release name: $buildReleaseName")
+println("- Release type: $buildReleaseType")
+println("- Release file: $buildReleaseFile")
+println("- Sources file: $buildSourcesFile")
+println("- Game version: $buildGameVersion")
+println("============================================")
 
 fun getChangeLog(): String {
     return "A changelog can be found at https://github.com/lucaargolo/$name/commits/"
@@ -163,8 +174,12 @@ java {
     withSourcesJar()
 }
 
-tasks.jar {
-    from("LICENSE")
+tasks.remapSourcesJar {
+    archiveClassifier.set("$fileClassifier-sources")
+}
+
+tasks.remapJar {
+    archiveClassifier.set(fileClassifier)
 }
 
 //Github publishing
@@ -197,15 +212,18 @@ curseforge {
         changelog = getChangeLog()
         releaseType = buildReleaseType.lowercase()
         addGameVersion(buildGameVersion)
-        addGameVersion("Fabric")
+        addGameVersion(project["mod_loader"].capitalize())
 
         mainArtifact(file(buildReleaseFile), closureOf<CurseArtifact> {
             displayName = buildReleaseName
             relations(closureOf<CurseRelation> {
                 embeddedLibrary("pal")
-                optionalDependency("roughly-enough-items")
-                requiredDependency("fabric-api")
-                requiredDependency("fabric-language-kotlin")
+                if(project["mod_loader"] == "fabric") {
+                    requiredDependency("fabric-api")
+                    requiredDependency("fabric-language-kotlin")
+                }else{
+                    requiredDependency("kotlin-for-forge")
+                }
             })
         })
 
@@ -234,12 +252,14 @@ modrinth {
     uploadFile.set(tasks.remapJar.get())
 
     gameVersions.add(project["minecraft_version"])
-    loaders.add("fabric")
+    loaders.add(project["mod_loader"])
 
     dependencies {
-        required.project("fabric-api")
+        if(project["mod_loader"] == "fabric")
+            required.project("fabric-api")
     }
 }
+
 tasks.modrinth.configure {
     group = "upload"
 }

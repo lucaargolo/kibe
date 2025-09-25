@@ -46,8 +46,8 @@ class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory,
 
     override fun onSlotClick(slot: Int, mouse: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?) {
         if(slot == 0) {
-            entity.extendedBlock = null
-            entity.extendedBlocks = 0
+            entity.extendedStack = ItemStack.EMPTY
+            entity.extendedStacks = 0
         }
         super.onSlotClick(slot, mouse, actionType, playerEntity)
     }
@@ -72,7 +72,7 @@ class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory,
                 if (!insertItem(itemStack2, 2, this.slots.size, true)) {
                     return ItemStack.EMPTY
                 }
-            } else if (invSlot == 1 || !insertItem(itemStack2, 0, 1, false)) {
+            } else if (!insertItem(itemStack2, 0, 1, false)) {
                 return ItemStack.EMPTY
             }
             if (itemStack2.isEmpty) {
