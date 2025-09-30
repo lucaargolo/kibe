@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.network
 
 import io.github.lucaargolo.kibe.blockentity.ChunkLoaderBlockEntity
 import io.github.lucaargolo.kibe.data.state.EntangledTankState
+import io.github.lucaargolo.kibe.utils.EntangledChestAnimationState
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -14,6 +15,7 @@ object PacketCompendium {
         PayloadTypeRegistry.playC2S().register(ChunkMapClickPacket.ID, ChunkMapClickPacket.PACKET_CODEC)
         PayloadTypeRegistry.playC2S().register(RequestDirtyTankStatesPacket.ID, RequestDirtyTankStatesPacket.PACKET_CODEC)
         PayloadTypeRegistry.playS2C().register(SynchronizeDirtyTankStatesPacket.ID, SynchronizeDirtyTankStatesPacket.PACKET_CODEC)
+        PayloadTypeRegistry.playS2C().register(EntangledChestAnimationStatePacket.ID, EntangledChestAnimationStatePacket.PACKET_CODEC)
 
         ServerPlayNetworking.registerGlobalReceiver(ChunkPlayerCheckPacket.ID) { data, context ->
             context.server().execute {
@@ -66,6 +68,11 @@ object PacketCompendium {
                         }
                     }
                 }
+            }
+        }
+        ClientPlayNetworking.registerGlobalReceiver(EntangledChestAnimationStatePacket.ID) { data, context ->
+            context.client().execute {
+                EntangledChestAnimationState.update(data.opened)
             }
         }
     }

@@ -16,6 +16,7 @@ import io.github.lucaargolo.kibe.network.PacketCompendium
 import io.github.lucaargolo.kibe.particle.ParticleCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
+import io.github.lucaargolo.kibe.utils.EntangledChestAnimationState
 import io.github.lucaargolo.kibe.utils.EntangledTankSync
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.api.ClientModInitializer
@@ -53,6 +54,7 @@ object KibeModClient: ClientModInitializer {
         ParticleCompendium.initializeClient()
         PacketCompendium.initializeClient()
         EntangledTankSync.initializeClient()
+        EntangledChestAnimationState.initializeClient()
         initImmediateRendering()
         initExtraModels()
         initTooltipComponents()

@@ -77,7 +77,7 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.writeNbt(tag, registryLookup)
         runeColors.forEachIndexed { idx, col ->
-            tag.putString("rune${idx+1}", col.name)
+            tag.putString("rune${idx+1}", col.getName())
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
@@ -95,7 +95,7 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
 
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
         runeColors.forEachIndexed { idx, col ->
-            tag.putString("rune${idx+1}", col.name)
+            tag.putString("rune${idx+1}", col.getName())
         }
         tag.putString("key", key)
         tag.putString("owner", owner)

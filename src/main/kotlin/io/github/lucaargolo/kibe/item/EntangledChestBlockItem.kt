@@ -3,7 +3,6 @@ package io.github.lucaargolo.kibe.item
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledChest
-import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
@@ -19,7 +18,7 @@ class EntangledChestBlockItem(settings: Settings): BlockItem(BlockCompendium.ENT
         super.appendTooltip(stack, context, tooltip, type)
         val ownerText = Text.translatable("tooltip.kibe.owner")
         val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledChest.DEFAULT_KEY
-        if(key != EntangledTank.DEFAULT_KEY && stack.contains(ComponentTypeCompendium.OWNER))
+        if(key != EntangledChest.DEFAULT_KEY && stack.contains(ComponentTypeCompendium.OWNER))
             tooltip.add(ownerText.append(Text.literal(stack.get(ComponentTypeCompendium.OWNER)).formatted(Formatting.GRAY)))
         val color = Text.translatable("tooltip.kibe.color")
         (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).forEach { dc ->

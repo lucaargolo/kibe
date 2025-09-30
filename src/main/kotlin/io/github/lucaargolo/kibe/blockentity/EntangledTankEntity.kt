@@ -93,7 +93,7 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.writeNbt(tag, registryLookup)
         runeColors.forEachIndexed { idx, col ->
-            tag.putString("rune${idx+1}", col.name)
+            tag.putString("rune${idx+1}", col.getName())
         }
         tag.putString("key", key)
         tag.putString("owner", owner)

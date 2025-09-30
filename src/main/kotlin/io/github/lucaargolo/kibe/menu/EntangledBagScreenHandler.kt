@@ -4,6 +4,7 @@ import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledChest
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.data.state.EntangledChestState
+import io.github.lucaargolo.kibe.utils.EntangledChestOpenState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
@@ -11,6 +12,7 @@ import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
@@ -29,7 +31,6 @@ class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @
 
     val key: String = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledChest.DEFAULT_KEY
     val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
-
 
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
 
@@ -106,6 +107,16 @@ class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @
             addSlot(Slot(playerInventory, n, 8 + n * 18, 161 + i))
         }
 
+        (playerInventory.player as? ServerPlayerEntity)?.let { serverPlayer ->
+            EntangledChestOpenState.open(serverPlayer, key, colorCode)
+        }
+    }
+
+    override fun onClosed(player: PlayerEntity) {
+        super.onClosed(player)
+        (player as? ServerPlayerEntity)?.let { serverPlayer ->
+            EntangledChestOpenState.close(serverPlayer, key, colorCode)
+        }
     }
 
     override fun canUse(player: PlayerEntity): Boolean {

@@ -17,6 +17,7 @@ import io.github.lucaargolo.kibe.particle.ParticleCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
 import io.github.lucaargolo.kibe.utils.CreativeTab
+import io.github.lucaargolo.kibe.utils.EntangledChestOpenState
 import io.github.lucaargolo.kibe.utils.EntangledTankSync
 import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.helper.LootHelper
@@ -110,6 +111,7 @@ object KibeMod : ModInitializer {
         LootHelper.initialize()
         PacketCompendium.initialize()
         EntangledTankSync.initialize()
+        EntangledChestOpenState.initialize()
         initChunkLoaderData()
     }
 

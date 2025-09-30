@@ -196,24 +196,24 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
             val int = when(x) {
                 in 0.6875..0.8125 -> {
                     when(z) {
-                        in 0.6875..0.8125 -> 1
-                        in 0.4375..0.5625 -> 8
-                        in 0.1875..0.3125 -> 7
+                        in 0.6875..0.8125 -> 0
+                        in 0.4375..0.5625 -> 7
+                        in 0.1875..0.3125 -> 6
                         else -> null
                     }
                 }
                 in 0.4375..0.5625 -> {
                     when(z) {
-                        in 0.6875..0.8125 -> 2
-                        in 0.1875..0.3125 -> 6
+                        in 0.6875..0.8125 -> 1
+                        in 0.1875..0.3125 -> 5
                         else -> null
                     }
                 }
                 in 0.1875..0.3125 -> {
                     when(z) {
-                        in 0.6875..0.8125 -> 3
-                        in 0.4375..0.5625 -> 4
-                        in 0.1875..0.3125 -> 5
+                        in 0.6875..0.8125 -> 2
+                        in 0.4375..0.5625 -> 3
+                        in 0.1875..0.3125 -> 4
                         else -> null
                     }
                 }
@@ -223,9 +223,9 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
             else {
                 when(direction) {
                     Direction.SOUTH -> int
-                    Direction.EAST -> if (int + 2 > 8) (int+2)-8 else (int+2)
-                    Direction.NORTH -> if (int + 4 > 8) (int+4)-8 else (int+4)
-                    Direction.WEST -> if (int + 6 > 8) (int+6)-8 else (int+6)
+                    Direction.EAST -> if (int + 2 >= 8) (int+2)-8 else (int+2)
+                    Direction.NORTH -> if (int + 4 >= 8) (int+4)-8 else (int+4)
+                    Direction.WEST -> if (int + 6 >= 8) (int+6)-8 else (int+6)
                     else -> null
                 }
             }
