@@ -16,6 +16,7 @@ import io.github.lucaargolo.kibe.network.PacketCompendium
 import io.github.lucaargolo.kibe.particle.ParticleCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
+import io.github.lucaargolo.kibe.utils.EntangledChestAnimationState
 import io.github.lucaargolo.kibe.utils.EntangledTankSync
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
@@ -52,16 +53,18 @@ object KibeModClient {
         ParticleCompendium.initializeClient()
         PacketCompendium.initializeClient()
         EntangledTankSync.initializeClient()
-        initImmediateRendering()
+        EntangledChestAnimationState.initializeClient()
+        initExtraRender()
         initExtraModels()
         initTooltipComponents()
     }
 
-    fun initImmediateRendering() {
+    fun initExtraRender() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register { context ->
             drawMeasuringTapeOverlay(context)
             immediate.draw()
         }
+        MinecraftClient.getInstance().overlay
     }
 
     fun initExtraModels() {

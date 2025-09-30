@@ -48,10 +48,6 @@ import java.util.function.Predicate
 
 object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
-    val RUNES: Array<Rune>
-        get() = runes.map(DeferredHolder<Item, Rune>::get).toTypedArray()
-    private val runes = mutableListOf<DeferredHolder<Item, Rune>>()
-
     val FLUID_BUCKETS: Map<Fluid, BucketItem>
         get() = fluidBuckets.mapKeys { e -> e.key.get() }.mapValues { e -> e.value.get() }
     private val fluidBuckets = mutableMapOf<DeferredHolder<Fluid, out Fluid>, DeferredHolder<Item, BucketItem>>()
@@ -75,24 +71,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val GOLDEN_LASSO  by register("golden_lasso", { Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     val CURSED_LASSO  by register("cursed_lasso", { Lasso.CursedLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     val DIAMOND_LASSO by register("diamond_lasso", { Lasso.DiamondLasso(Settings().maxCount(1).rarity(Rarity.RARE)) })
-    
-    val WHITE_RUNE      by registerRune("white_rune", { Rune(DyeColor.WHITE, Settings()) })
-    val ORANGE_RUNE     by registerRune("orange_rune", { Rune(DyeColor.ORANGE, Settings()) })
-    val MAGENTA_RUNE    by registerRune("magenta_rune", { Rune(DyeColor.MAGENTA, Settings()) })
-    val LIGHT_BLUE_RUNE by registerRune("light_blue_rune", { Rune(DyeColor.LIGHT_BLUE, Settings()) })
-    val YELLOW_RUNE     by registerRune("yellow_rune", { Rune(DyeColor.YELLOW, Settings()) })
-    val LIME_RUNE       by registerRune("lime_rune", { Rune(DyeColor.LIME, Settings()) })
-    val PINK_RUNE       by registerRune("pink_rune", { Rune(DyeColor.PINK, Settings()) })
-    val GRAY_RUNE       by registerRune("gray_rune", { Rune(DyeColor.GRAY, Settings()) })
-    val LIGHT_GRAY_RUNE by registerRune("light_gray_rune", { Rune(DyeColor.LIGHT_GRAY, Settings()) })
-    val CYAN_RUNE       by registerRune("cyan_rune", { Rune(DyeColor.CYAN, Settings()) })
-    val BLUE_RUNE       by registerRune("blue_rune", { Rune(DyeColor.BLUE, Settings()) })
-    val PURPLE_RUNE     by registerRune("purple_rune", { Rune(DyeColor.PURPLE, Settings()) })
-    val GREEN_RUNE      by registerRune("green_rune", { Rune(DyeColor.GREEN, Settings()) })
-    val BROWN_RUNE      by registerRune("brown_rune", { Rune(DyeColor.BROWN, Settings()) })
-    val RED_RUNE        by registerRune("red_rune", { Rune(DyeColor.RED, Settings()) })
-    val BLACK_RUNE      by registerRune("black_rune", { Rune(DyeColor.BLACK, Settings()) })
-    
+
     val SLIME_BOOTS by register("slime_boots", { SlimeBoots(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)) })
     val SLIME_SLING by register("slime_sling", { SlimeSling(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)) })
     
@@ -152,10 +131,6 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val BLACK_SLEEPING_BAG by register("black_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
     
     val MEASURING_TAPE by register("measuring_tape", { MeasuringTape(Settings().maxCount(1)) })
-
-    fun registerRune(string: String, entry: () -> Rune): DeferredHolder<Item, Rune> {
-        return register(string, entry).also(runes::add)
-    }
 
     fun <E : Fluid> registerBucketItem(string: String, entry: DeferredHolder<Fluid, E>): DeferredHolder<Item, BucketItem> {
         val bucketDelegate = register(string+"_bucket", { BucketItem(entry.get(), Settings().recipeRemainder(Items.BUCKET).maxCount(1)) })

@@ -19,6 +19,7 @@ import io.github.lucaargolo.kibe.particle.ParticleCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
 import io.github.lucaargolo.kibe.utils.CreativeTab
+import io.github.lucaargolo.kibe.utils.EntangledChestOpenState
 import io.github.lucaargolo.kibe.utils.EntangledTankSync
 import io.github.lucaargolo.kibe.utils.ModConfig
 import io.github.lucaargolo.kibe.utils.helper.LootHelper
@@ -29,6 +30,8 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.codec.PacketCodec
+import net.minecraft.util.DyeColor
+import net.minecraft.util.collection.DefaultedList
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.data.event.GatherDataEvent
@@ -47,6 +50,7 @@ object KibeMod {
     const val MOD_ID = "kibe"
     const val MOD_NAME = "Kibe"
     val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
+    val DEFAULT_RUNE_SET = DefaultedList.ofSize<DyeColor>(8, DyeColor.WHITE)
 
     val LONG_CODEC: PacketCodec<ByteBuf, Long> = object : PacketCodec<ByteBuf, Long> {
         override fun decode(byteBuf: ByteBuf): Long {
@@ -113,6 +117,7 @@ object KibeMod {
         ParticleCompendium.initialize()
         PacketCompendium.initialize()
         EntangledTankSync.initialize()
+        EntangledChestOpenState.initialize()
         initChunkLoaderData()
         runForDist(clientTarget = { KibeModClient }, serverTarget = { KibeMod })
     }

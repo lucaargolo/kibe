@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.client.model
 
 import com.google.common.base.Suppliers
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.data.state.EntangledTankState
@@ -26,6 +27,7 @@ import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.PlayerScreenHandler
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -54,14 +56,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         (backgroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
 
-        var colorCode = ""
-        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
-            }
-        }else{
-            colorCode = "00000000"
-        }
+        val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
         val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
 
         EntangledTankState.CURRENT_CLIENT_PLAYER_REQUESTS.add(Pair(key, colorCode))

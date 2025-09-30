@@ -111,24 +111,6 @@
   "item.kibe.slime_sling": "Slime Sling",
   "item.kibe.slime_boots": "Slime Boots",
 
-  "item.kibe.blank_rune": "Blank Rune",
-  "item.kibe.white_rune": "White Rune",
-  "item.kibe.orange_rune": "Orange Rune",
-  "item.kibe.magenta_rune": "Magenta Rune",
-  "item.kibe.light_blue_rune": "Light Blue Rune",
-  "item.kibe.yellow_rune": "Yellow Rune",
-  "item.kibe.lime_rune": "Lime Rune",
-  "item.kibe.pink_rune": "Pink Rune",
-  "item.kibe.gray_rune": "Gray Rune",
-  "item.kibe.light_gray_rune": "Light Gray Rune",
-  "item.kibe.cyan_rune": "Cyan Rune",
-  "item.kibe.blue_rune": "Blue Rune",
-  "item.kibe.purple_rune": "Purple Rune",
-  "item.kibe.green_rune": "Green Rune",
-  "item.kibe.brown_rune": "Brown Rune",
-  "item.kibe.red_rune": "Red Rune",
-  "item.kibe.black_rune": "Black Rune",
-
   "item.kibe.glider_right_wing": "Glider Right Wing",
   "item.kibe.glider_left_wing": "Glider Left Wing",
   "item.kibe.white_glider": "White Glider",
@@ -164,7 +146,6 @@
 
   "effect.kibe.cursed_effect": "Cursed Effect",
 
-  "chat.kibe.tried_dye_on_entangled": "§cYou need to use runes to change the entanglement code.",
   "chat.kibe.entangled_bucket.success": "§6Successfully linked bucket!",
   "chat.kibe.entangled_bag.success": "§6Successfully linked bag!",
   "chat.kibe.cursed_dirt.nothing": "§cNo mobs are able to spawn",

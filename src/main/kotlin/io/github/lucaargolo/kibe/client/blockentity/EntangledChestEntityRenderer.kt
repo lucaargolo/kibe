@@ -1,12 +1,9 @@
 package io.github.lucaargolo.kibe.client.blockentity
 
-import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledChest
 import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
-import io.github.lucaargolo.kibe.client.screen.EntangledBagScreen
-import io.github.lucaargolo.kibe.client.screen.EntangledChestScreen
-import io.github.lucaargolo.kibe.item.Rune
+import io.github.lucaargolo.kibe.utils.EntangledChestAnimationState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
@@ -16,14 +13,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.item.DyeItem
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.state.property.Properties
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.RotationAxis
 import org.joml.Matrix4f
 import java.util.*
@@ -32,6 +28,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
 
     companion object {
         val helper = EntangledRenderer("entangled_chest")
+        private val previousAnimations = mutableMapOf<Pair<String, String>, Float>()
     }
 
     private val bottomModel = arg.getLayerModelPart(helper.bottomModelLayer)
@@ -39,85 +36,11 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
     private val coreModelGold = arg.getLayerModelPart(helper.coreModelLayerGold)
     private val coreModelDiamond = arg.getLayerModelPart(helper.coreModelLayerDiamond)
 
+
     private val random = Random(31100L)
 
-    enum class AnimationState {
-        GOING_UP,
-        GOING_DOWN,
-        UP,
-        DOWN
-    }
-
-    private val contextMap = mutableMapOf<BlockPos, Context>()
-
-    private class Context {
-        var isScreenOpen = false
-        var currentState = AnimationState.DOWN
-        var counter = 0f
-    }
-
     override fun render(entity: EntangledChestEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-
-        var context = Context()
-
-        if(contextMap.contains(entity.pos)) {
-            context = contextMap[entity.pos]!!
-        }else{
-            contextMap[entity.pos] = context
-        }
-
-        var isScreenOpen = context.isScreenOpen
-        var currentState = context.currentState
-        var counter = context.counter
-
-        val screen = MinecraftClient.getInstance().currentScreen
-        val isChestScreenOpen = if(screen is EntangledChestScreen) {
-            screen.screenHandler.entity.runeColors == entity.runeColors
-        }else false
-        val isBagScreenOpen = if(screen is EntangledBagScreen) {
-            screen.hasSameColors(entity.runeColors)
-        }else false
-
-        if((isChestScreenOpen || isBagScreenOpen) && EntangledChest.canOpen(entity.world, entity.pos)) {
-            if(!isScreenOpen) {
-                isScreenOpen = true
-                when(currentState){
-                    AnimationState.DOWN -> {
-                        currentState = AnimationState.GOING_UP
-                        counter = 0f
-                    }
-                    AnimationState.GOING_DOWN -> {
-                        currentState = AnimationState.GOING_UP
-                        counter = 30f-counter
-                    }
-                    else -> print("AAAAAAAAAAAAAAAAaaa")
-                }
-            }
-        }else{
-            if(isScreenOpen) {
-                isScreenOpen = false
-                when(currentState){
-                    AnimationState.UP -> {
-                        currentState = AnimationState.GOING_DOWN
-                        counter = 0f
-                    }
-                    AnimationState.GOING_UP -> {
-                        currentState = AnimationState.GOING_DOWN
-                        counter = 30f-counter
-                    }
-                    else -> print("BBBBBBBBBBBbbb")
-                }
-            }
-        }
-
-        val world = entity.world
-        val blockState = if (world != null) entity.cachedState else (BlockCompendium.ENTANGLED_CHEST.defaultState.with(Properties.HORIZONTAL_FACING, Direction.SOUTH))
-
         matrices.push()
-        val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
-        matrices.translate(0.5, 0.5, 0.5)
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f))
-        matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest"))
         val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers, RenderLayer::getEntityCutout)
@@ -132,38 +55,28 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         renderMiddleDownPart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
 
         matrices.translate(0.5, 0.0, 0.5)
-        when(currentState) {
-            AnimationState.GOING_UP -> {
-                counter += tickDelta
-                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(counter*6))
-                matrices.translate(0.0, counter/90.0, 0.0)
-                if(counter >= 30f) currentState = AnimationState.UP
-            }
-            AnimationState.GOING_DOWN -> {
-                counter += tickDelta
-                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(360-counter*6))
-                matrices.translate(0.0, 0.333-counter/90.0, 0.0)
-                if(counter >= 30f) currentState = AnimationState.DOWN
-            }
-            AnimationState.UP -> {
-                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(360f))
-                matrices.translate(0.0, 30.0/90.0, 0.0)
-                counter = 0f
-            }
-            AnimationState.DOWN -> {
-                counter = 0f
-            }
+
+        val p = Pair(entity.key, entity.colorCode)
+        val animation = EntangledChestAnimationState.state(p)
+        val previousAnimation = previousAnimations.getOrPut(p) { animation }
+        val a = MathHelper.lerp(tickDelta, previousAnimation, animation)
+        previousAnimations.put(p, a)
+
+        if(EntangledChest.canOpen(entity.world, entity.pos)) {
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(a * 9))
+            matrices.translate(0f, a / 30f, 0f)
         }
-        matrices.translate(-0.5, 0.0, -0.5)
+
+        matrices.translate(-0.5f, 0f, -0.5f)
 
         val popup = if(
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
-            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
+            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is DyeItem
         ) 0.0625 else 0.0
 
-        (1..8).forEach { runeId ->
-            val runeModelLayer = entity.runeColors[runeId]?.let { EntangledTankEntityRenderer.helper.getRuneLayer(runeId, it) }
+        entity.runeColors.forEachIndexed { idx, col ->
+            val runeModelLayer = EntangledTankEntityRenderer.helper.getRuneLayer(idx, col)
             matrices.translate(0.0, popup, 0.0)
             runeModelLayer?.let {
                 val rune = arg.getLayerModelPart(runeModelLayer)
@@ -180,10 +93,6 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
 
         m = matrices.peek().positionMatrix
         renderMiddlePart(0.15f, m, vertexConsumers.getBuffer(RenderLayer.getEndPortal()))
-
-        contextMap[entity.pos]!!.isScreenOpen = isScreenOpen
-        contextMap[entity.pos]!!.currentState = currentState
-        contextMap[entity.pos]!!.counter = counter
 
         matrices.pop()
     }
@@ -214,20 +123,6 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         vertexConsumer.vertex(matrix4f, g, h, k).color(red, green, blue, 1.0f)
         vertexConsumer.vertex(matrix4f, g, i, l).color(red, green, blue, 1.0f)
         vertexConsumer.vertex(matrix4f, f, i, m).color(red, green, blue, 1.0f)
-    }
-
-
-    private fun getLayersToRender(d: Double): Int {
-        return when {
-            d > 36864.0 -> 1
-            d > 25600.0 -> 3
-            d > 16384.0 -> 5
-            d > 9216.0 -> 7
-            d > 4096.0 -> 9
-            d > 1024.0 -> 11
-            d > 576.0 -> 13
-            else -> if (d > 256.0) 14 else 15
-        }
     }
 
 }

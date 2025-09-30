@@ -1,11 +1,9 @@
 package io.github.lucaargolo.kibe.client.blockentity
 
-import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
 import io.github.lucaargolo.kibe.data.state.EntangledTankState
-import io.github.lucaargolo.kibe.item.Rune
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
@@ -14,15 +12,14 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.fluid.Fluids
+import net.minecraft.item.DyeItem
 import net.minecraft.screen.PlayerScreenHandler
-import net.minecraft.state.property.Properties
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.RotationAxis
 import org.joml.Vector3f
 import java.awt.Color
 
@@ -38,16 +35,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
     private val coreModelDiamond = arg.getLayerModelPart(helper.coreModelLayerDiamond)
 
     override fun render(entity: EntangledTankEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
-
-        val world = entity.world
-        val blockState = if (world != null) entity.cachedState else (BlockCompendium.ENTANGLED_TANK.defaultState.with(Properties.HORIZONTAL_FACING, Direction.SOUTH))
-
         matrices.push()
-
-        val f = (blockState.get(Properties.HORIZONTAL_FACING) as Direction).asRotation()
-        matrices.translate(0.5, 0.5, 0.5)
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f))
-        matrices.translate(-0.5, -0.5, -0.5)
 
         val chestIdentifier = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("kibe:block/entangled_chest"))
         val chestConsumer = chestIdentifier.getVertexConsumer(vertexConsumers) { texture: Identifier? -> RenderLayer.getEntityCutout(texture) }
@@ -61,11 +49,11 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val popup = if(
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
-            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
+            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is DyeItem
         ) 0.0625 else 0.0
 
-        (1..8).forEach { runeId ->
-            val runeModelLayer = entity.runeColors[runeId]?.let { helper.getRuneLayer(runeId, it) }
+        entity.runeColors.forEachIndexed { idx, col ->
+            val runeModelLayer = helper.getRuneLayer(idx, col)
             matrices.translate(0.0, popup, 0.0)
             runeModelLayer?.let {
                 val rune = arg.getLayerModelPart(runeModelLayer)

@@ -3,27 +3,21 @@ package io.github.lucaargolo.kibe.block
 import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
-import io.github.lucaargolo.kibe.item.ItemCompendium
-import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.menu.EntangledChestScreenHandler
+import io.github.lucaargolo.kibe.mixin.DyeItemAccessor
 import io.github.lucaargolo.kibe.utils.SyncableBlockEntity
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.mob.ShulkerEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.DyeItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
-import net.minecraft.util.BlockMirror
-import net.minecraft.util.BlockRotation
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -34,22 +28,6 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
 class EntangledChest(settings: Settings): BlockWithEntity(settings) {
-
-    override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
-        stateManager.add(Properties.HORIZONTAL_FACING)
-    }
-
-    override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
-    }
-
-    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
-        return state.with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
-    }
-
-    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
-        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
-    }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
         return BlockRenderType.ENTITYBLOCK_ANIMATED
@@ -64,8 +42,8 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
     }
 
     override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos?, context: ShapeContext): VoxelShape {
-        val isHoldingRune = ItemCompendium.RUNES.any(context::isHolding)
-        if(isHoldingRune) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
+        val isHoldingDye = DyeItemAccessor.getDyes().values.any(context::isHolding)
+        if(isHoldingDye) return VoxelShapes.union(getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
         if(context.isHolding(Items.DIAMOND) || context.isHolding(Items.GOLD_INGOT)) return VoxelShapes.union(
             VoxelShapes.union(
                 createCuboidShape(9.0, 14.0, 7.0, 10.0, 16.0, 9.0),
@@ -90,25 +68,15 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
         val poss = player.raycast(4.5, 1.0F, false).pos
         val stack = player.getStackInHand(hand)
         if((poss.y-pos.y) > 0.9375) {
-            if(stack.isIn(ConventionalItemTags.DYES)) {
-                if(!world.isClient) {
-                    player.sendMessage(Text.translatable("chat.kibe.tried_dye_on_entangled"), true)
-                }
-                return ActionResult.FAIL
-            }
-            if(stack.item is Rune) {
-                val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
+            if(stack.item is DyeItem) {
+                val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z))
                 if(int != null) {
                     if(!world.isClient) {
                         val oldColor = (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int]
-                        val newColor = (stack.item as Rune).color
+                        val newColor = (stack.item as DyeItem).color
                         if(oldColor != newColor) {
                             (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int] = newColor
-                            (world.getBlockEntity(pos) as EntangledChestEntity).updateColorCode()
                             if(!player.isCreative) {
-                                oldColor?.let(Rune::getRuneByColor)?.let {
-                                    Block.dropStack(world, pos.up(), ItemStack(it))
-                                }
                                 stack.decrement(1)
                             }
                         }
@@ -204,43 +172,34 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
             val box = ShulkerEntity.calculateBoundingBox(1f, Direction.UP, 0.0f, 0.25f).offset(pos).contract(1.0E-6)
             return world?.isSpaceEmpty(box) ?: true
         }
-        fun getRuneByPos(x: Double, z: Double, direction: Direction): Int? {
+        fun getRuneByPos(x: Double, z: Double): Int? {
             val int = when(x) {
                 in 0.6875..0.8125 -> {
                     when(z) {
-                        in 0.6875..0.8125 -> 1
-                        in 0.4375..0.5625 -> 8
-                        in 0.1875..0.3125 -> 7
+                        in 0.6875..0.8125 -> 0
+                        in 0.4375..0.5625 -> 7
+                        in 0.1875..0.3125 -> 6
                         else -> null
                     }
                 }
                 in 0.4375..0.5625 -> {
                     when(z) {
-                        in 0.6875..0.8125 -> 2
-                        in 0.1875..0.3125 -> 6
+                        in 0.6875..0.8125 -> 1
+                        in 0.1875..0.3125 -> 5
                         else -> null
                     }
                 }
                 in 0.1875..0.3125 -> {
                     when(z) {
-                        in 0.6875..0.8125 -> 3
-                        in 0.4375..0.5625 -> 4
-                        in 0.1875..0.3125 -> 5
+                        in 0.6875..0.8125 -> 2
+                        in 0.4375..0.5625 -> 3
+                        in 0.1875..0.3125 -> 4
                         else -> null
                     }
                 }
                 else -> null
             }
-            return if(int == null) null
-            else {
-                when(direction) {
-                    Direction.SOUTH -> int
-                    Direction.EAST -> if (int + 2 > 8) (int+2)-8 else (int+2)
-                    Direction.NORTH -> if (int + 4 > 8) (int+4)-8 else (int+4)
-                    Direction.WEST -> if (int + 6 > 8) (int+6)-8 else (int+6)
-                    else -> null
-                }
-            }
+            return int
         }
 
         fun getRunesShape(): VoxelShape {

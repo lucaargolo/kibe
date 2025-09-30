@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.item
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.tooltip.TooltipType
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Rarity
 
@@ -23,23 +25,17 @@ class EntangledTankBlockItem(settings: Settings): BlockItem(BlockCompendium.ENTA
         if(key != EntangledTank.DEFAULT_KEY && stack.contains(ComponentTypeCompendium.OWNER))
             tooltip.add(ownerText.append(Text.literal(stack.get(ComponentTypeCompendium.OWNER)).formatted(Formatting.GRAY)))
         val color = Text.translatable("tooltip.kibe.color")
-        var colorCode = ""
-        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
-                val text = Text.literal("■")
-                text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
-                color.append(text)
-            }
-        }else{
-            colorCode = "00000000"
-            color.append(Text.literal("■■■■■■■■"))
+        val runeColors = stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET
+        runeColors.forEach { dc ->
+            val text = Text.literal("■")
+            text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
+            color.append(text)
         }
         tooltip.add(color)
+        val colorCode = runeColors.map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
         val fluidInv = getFluidInv(null, key, colorCode)
         if(!fluidInv.isResourceBlank)
             tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).copyContentOnly().append(Text.literal(": ${Formatting.GRAY}${FluidHelper.getMb(fluidInv.amount)}mB")))
-
     }
 
 }

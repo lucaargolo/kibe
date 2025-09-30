@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.menu
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
+import io.github.lucaargolo.kibe.utils.EntangledChestOpenState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventory
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.slot.Slot
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
@@ -76,6 +78,17 @@ class EntangledChestScreenHandler(syncId: Int, playerInventory: PlayerInventory,
 
         (0..8).forEach { n ->
             addSlot(Slot(playerInventory, n, 8 + n * 18, 161 + i))
+        }
+
+        (playerInventory.player as? ServerPlayerEntity)?.let { serverPlayer ->
+            EntangledChestOpenState.open(serverPlayer, entity.key, entity.colorCode)
+        }
+    }
+
+    override fun onClosed(player: PlayerEntity) {
+        super.onClosed(player)
+        (player as? ServerPlayerEntity)?.let { serverPlayer ->
+            EntangledChestOpenState.close(serverPlayer, entity.key, entity.colorCode)
         }
     }
 
