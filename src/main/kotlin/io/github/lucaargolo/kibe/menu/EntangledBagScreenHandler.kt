@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.menu
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledChest
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.data.state.EntangledChestState
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.slot.Slot
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
@@ -26,7 +28,9 @@ class EntangledBagScreenHandler(syncId: Int, playerInventory: PlayerInventory, @
     }
 
     val key: String = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledChest.DEFAULT_KEY
-    val colorCode: String = stack.get(ComponentTypeCompendium.COLOR_CODE) ?: "00000000"
+    val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
+
+
     val inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
 
     private var synchronizedInventory: Inventory = object: Inventory {

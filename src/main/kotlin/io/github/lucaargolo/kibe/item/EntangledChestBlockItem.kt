@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.item
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.block.EntangledChest
 import io.github.lucaargolo.kibe.block.EntangledTank
@@ -21,17 +22,10 @@ class EntangledChestBlockItem(settings: Settings): BlockItem(BlockCompendium.ENT
         if(key != EntangledTank.DEFAULT_KEY && stack.contains(ComponentTypeCompendium.OWNER))
             tooltip.add(ownerText.append(Text.literal(stack.get(ComponentTypeCompendium.OWNER)).formatted(Formatting.GRAY)))
         val color = Text.translatable("tooltip.kibe.color")
-        var colorCode = ""
-        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
-                val text = Text.literal("■")
-                text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
-                color.append(text)
-            }
-        }else{
-            colorCode = "00000000"
-            color.append(Text.literal("■■■■■■■■"))
+        (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).forEach { dc ->
+            val text = Text.literal("■")
+            text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
+            color.append(text)
         }
         tooltip.add(color)
     }

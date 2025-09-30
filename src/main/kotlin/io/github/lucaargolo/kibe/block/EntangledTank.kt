@@ -3,21 +3,19 @@ package io.github.lucaargolo.kibe.block
 import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.BlockEntityCompendium
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
-import io.github.lucaargolo.kibe.item.ItemCompendium
-import io.github.lucaargolo.kibe.item.Rune
+import io.github.lucaargolo.kibe.mixin.DyeItemAccessor
 import io.github.lucaargolo.kibe.utils.helper.FluidHelper
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.DyeItem
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.BlockMirror
 import net.minecraft.util.BlockRotation
@@ -102,8 +100,8 @@ class EntangledTank(settings: Settings): BlockWithEntity(settings) {
     }
 
     override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos?, context: ShapeContext): VoxelShape {
-        val isHoldingRune = ItemCompendium.RUNES.any(context::isHolding)
-        if(isHoldingRune) return VoxelShapes.union(EntangledChest.getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
+        val isHoldingDye = DyeItemAccessor.getDyes().values.any(context::isHolding)
+        if(isHoldingDye) return VoxelShapes.union(EntangledChest.getRunesShape(), createCuboidShape(1.0, 0.0, 1.0, 15.0, 15.0, 15.0))
         if(context.isHolding(Items.DIAMOND) || context.isHolding(Items.GOLD_INGOT)) return VoxelShapes.union(
             VoxelShapes.union(
                 createCuboidShape(9.0, 14.0, 7.0, 10.0, 16.0, 9.0),
@@ -121,25 +119,15 @@ class EntangledTank(settings: Settings): BlockWithEntity(settings) {
         val stack = player.getStackInHand(hand)
         return (world.getBlockEntity(pos) as? EntangledTankEntity)?.let { tank ->
             if ((poss.y - pos.y) > 0.9375) {
-                if(stack.isIn(ConventionalItemTags.DYES)) {
-                    if(!world.isClient) {
-                        player.sendMessage(Text.translatable("chat.kibe.tried_dye_on_entangled"), true)
-                    }
-                    return ActionResult.FAIL
-                }
-                if (stack.item is Rune) {
+                if (stack.item is DyeItem) {
                     val int = EntangledChest.getRuneByPos((poss.x - pos.x), (poss.z - pos.z), state[Properties.HORIZONTAL_FACING])
                     if (int != null) {
                         if (!world.isClient) {
                             val oldColor = tank.runeColors[int]
-                            val newColor = (stack.item as Rune).color
+                            val newColor = (stack.item as DyeItem).color
                             if(oldColor != newColor) {
                                 tank.runeColors[int] = newColor
-                                tank.updateColorCode()
                                 if(!player.isCreative) {
-                                    oldColor?.let(Rune::getRuneByColor)?.let {
-                                        Block.dropStack(world, pos.up(), ItemStack(it))
-                                    }
                                     stack.decrement(1)
                                 }
                             }

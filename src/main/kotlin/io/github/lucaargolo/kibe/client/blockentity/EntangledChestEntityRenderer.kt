@@ -6,7 +6,6 @@ import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
 import io.github.lucaargolo.kibe.client.screen.EntangledBagScreen
 import io.github.lucaargolo.kibe.client.screen.EntangledChestScreen
-import io.github.lucaargolo.kibe.item.Rune
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
@@ -16,6 +15,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.item.DyeItem
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Hand
@@ -90,7 +90,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
                         currentState = AnimationState.GOING_UP
                         counter = 30f-counter
                     }
-                    else -> print("AAAAAAAAAAAAAAAAaaa")
+                    else -> { }
                 }
             }
         }else{
@@ -139,7 +139,6 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         matrices.translate(0.5, 0.0, 0.5)
         when(currentState) {
             AnimationState.GOING_UP -> {
-                counter += tickDelta
                 matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(counter*6))
                 matrices.translate(0.0, counter/90.0, 0.0)
                 if(counter >= 30f) currentState = AnimationState.UP
@@ -164,11 +163,11 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
         val popup = if(
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
-            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
+            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is DyeItem
         ) 0.0625 else 0.0
 
-        (1..8).forEach { runeId ->
-            val runeModelLayer = entity.runeColors[runeId]?.let { EntangledTankEntityRenderer.helper.getRuneLayer(runeId, it) }
+        entity.runeColors.forEachIndexed { idx, col ->
+            val runeModelLayer = EntangledTankEntityRenderer.helper.getRuneLayer(idx, col)
             matrices.translate(0.0, popup, 0.0)
             runeModelLayer?.let {
                 val rune = arg.getLayerModelPart(runeModelLayer)

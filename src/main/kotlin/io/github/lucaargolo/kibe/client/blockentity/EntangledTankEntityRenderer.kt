@@ -5,7 +5,6 @@ import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
 import io.github.lucaargolo.kibe.data.state.EntangledTankState
-import io.github.lucaargolo.kibe.item.Rune
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
@@ -14,6 +13,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.fluid.Fluids
+import net.minecraft.item.DyeItem
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
 import net.minecraft.util.Hand
@@ -61,11 +61,11 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         val popup = if(
             MinecraftClient.getInstance().crosshairTarget!!.type == HitResult.Type.BLOCK &&
             (MinecraftClient.getInstance().crosshairTarget!! as BlockHitResult).blockPos == entity.pos &&
-            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is Rune
+            MinecraftClient.getInstance().player!!.getStackInHand(Hand.MAIN_HAND).item is DyeItem
         ) 0.0625 else 0.0
 
-        (1..8).forEach { runeId ->
-            val runeModelLayer = entity.runeColors[runeId]?.let { helper.getRuneLayer(runeId, it) }
+        entity.runeColors.forEachIndexed { idx, col ->
+            val runeModelLayer = helper.getRuneLayer(idx, col)
             matrices.translate(0.0, popup, 0.0)
             runeModelLayer?.let {
                 val rune = arg.getLayerModelPart(runeModelLayer)

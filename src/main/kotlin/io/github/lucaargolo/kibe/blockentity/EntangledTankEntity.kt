@@ -25,18 +25,13 @@ import net.minecraft.world.World
 class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(BlockEntityCompendium.ENTANGLED_TANK, pos, state) {
 
     var lastRenderedFluid = 0f
-    var runeColors = mutableMapOf<Int, DyeColor>()
+
+    val runeColors : Array<DyeColor> = arrayOf(DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE)
+    val colorCode : String
+        get() = runeColors.map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
+
     var key = EntangledTank.DEFAULT_KEY
     var owner = ""
-
-    init {
-        (1..8).forEach {
-            runeColors[it] = DyeColor.WHITE
-        }
-        updateColorCode()
-    }
-
-    var colorCode = "00000000"
 
     fun getPersistentState(): EntangledTankState {
         val serverWorld = world as? ServerWorld
@@ -49,14 +44,6 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
 
     fun getTank(): SingleVariantStorage<FluidVariant> {
         return getPersistentState().getOrCreateInventory(colorCode)
-    }
-
-    fun updateColorCode() {
-        var code = ""
-        (1..8).forEach {
-            code += runeColors[it]?.id?.let { int -> Integer.toHexString(int) }
-        }
-        colorCode = code
     }
 
     fun markDirtyAndSync() {
@@ -86,10 +73,9 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
 
     override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.readNbt(tag, registryLookup)
-        (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+        (0 until runeColors.size).forEach { idx ->
+            runeColors[idx] = DyeColor.byName(tag.getString("rune${idx+1}"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
-        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
         isBeingCompared = tag.getBoolean("isBeingCompared")
@@ -97,18 +83,17 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
     }
 
     override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
-        (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+        (0 until runeColors.size).forEach { idx ->
+            runeColors[idx] = DyeColor.byName(tag.getString("rune${idx+1}"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
-        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
     }
 
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.writeNbt(tag, registryLookup)
-        (1..8).forEach {
-            tag.putString("rune$it", runeColors[it]?.getName() ?: "white")
+        runeColors.forEachIndexed { idx, col ->
+            tag.putString("rune${idx+1}", col.name)
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
@@ -119,16 +104,15 @@ class EntangledTankEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) = tag.also { writeNbt(it, registryLookup) }
 
     override fun addComponents(builder: ComponentMap.Builder) {
-        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.values.toList())
+        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.toList())
         builder.add(ComponentTypeCompendium.ENTANGLED_KEY, key)
         builder.add(ComponentTypeCompendium.OWNER, owner)
     }
 
     override fun readComponents(components: ComponentsAccess) {
         components.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { index, component ->
-            this.runeColors[index+1] = component
+            this.runeColors[index] = component
         }
-        updateColorCode()
         components.get(ComponentTypeCompendium.ENTANGLED_KEY)?.let { this.key = it }
         components.get(ComponentTypeCompendium.OWNER)?.let { this.owner = it }
     }

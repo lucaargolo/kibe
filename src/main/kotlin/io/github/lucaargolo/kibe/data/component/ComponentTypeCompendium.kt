@@ -16,7 +16,6 @@ object ComponentTypeCompendium: RegistryCompendium<ComponentType<*>>(Registries.
     val ENTANGLED_KEY = register("entangled_key", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
     val RUNE_SET = register("rune_set", ComponentType.Builder<List<DyeColor>>().codec(Codec.list(DyeColor.CODEC)).packetCodec(PacketCodecs.collection(::ArrayList, DyeColor.PACKET_CODEC)).build())
     val OWNER = register("owner", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
-    val COLOR_CODE = register("color_code", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
 
     val MEASURING_FROM = register("measuring_from", ComponentType.Builder<MeasuringTape.MeasuringData>().codec(MeasuringTape.MeasuringData.CODEC).packetCodec(MeasuringTape.MeasuringData.PACKET_CODEC).build())
     val MEASURING_TO = register("measuring_to", ComponentType.Builder<MeasuringTape.MeasuringData>().codec(MeasuringTape.MeasuringData.CODEC).packetCodec(MeasuringTape.MeasuringData.PACKET_CODEC).build())

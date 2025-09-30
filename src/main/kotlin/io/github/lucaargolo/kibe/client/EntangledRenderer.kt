@@ -19,7 +19,7 @@ class EntangledRenderer(val parent: String) {
 
     init {
         (1..8).forEach { runeId ->
-            DyeColor.values().forEach { runeColor ->
+            DyeColor.entries.forEach { runeColor ->
                 runeModelLayers["rune${runeId}_${runeColor.getName()}"] = EntityModelLayer(ModIdentifier.of(parent), "rune${runeId}_${runeColor.getName()}")
             }
         }
@@ -32,8 +32,8 @@ class EntangledRenderer(val parent: String) {
 
 
 
-    fun getRuneLayer(runeId: Int, runeColor: DyeColor): EntityModelLayer? {
-        return runeModelLayers["rune${runeId}_${runeColor.getName()}"]
+    fun getRuneLayer(idx: Int, col: DyeColor): EntityModelLayer? {
+        return runeModelLayers["rune${idx+1}_${col.getName()}"]
     }
 
     fun getEntries(): LinkedHashMap<EntityModelLayer, TexturedModelData> {

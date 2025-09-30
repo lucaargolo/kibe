@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.item
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledChest
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
@@ -26,17 +27,10 @@ class EntangledBag(settings: Settings): Item(settings){
         if(key != EntangledTank.DEFAULT_KEY && stack.contains(ComponentTypeCompendium.OWNER))
             tooltip.add(ownerText.append(Text.literal(stack.get(ComponentTypeCompendium.OWNER)).formatted(Formatting.GRAY)))
         val color = Text.translatable("tooltip.kibe.color")
-        var colorCode = ""
-        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
-                val text = Text.literal("■")
-                text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
-                color.append(text)
-            }
-        }else{
-            colorCode = "00000000"
-            color.append(Text.literal("■■■■■■■■"))
+        (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).forEach { dc ->
+            val text = Text.literal("■")
+            text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
+            color.append(text)
         }
         tooltip.add(color)
     }
@@ -52,7 +46,6 @@ class EntangledBag(settings: Settings): Item(settings){
             context.stack.set(ComponentTypeCompendium.ENTANGLED_KEY, blockEntityTag.getString("key"))
             context.stack.set(ComponentTypeCompendium.OWNER, blockEntityTag.getString("owner"))
             context.stack.set(ComponentTypeCompendium.RUNE_SET, runeSet)
-            context.stack.set(ComponentTypeCompendium.COLOR_CODE, blockEntity.colorCode)
             if(!context.world.isClient) context.player!!.sendMessage(Text.translatable("chat.kibe.entangled_bag.success"), true)
             return ActionResult.SUCCESS
         }

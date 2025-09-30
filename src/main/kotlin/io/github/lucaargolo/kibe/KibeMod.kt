@@ -28,6 +28,8 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.codec.PacketCodec
+import net.minecraft.util.DyeColor
+import net.minecraft.util.collection.DefaultedList
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.File
@@ -40,6 +42,7 @@ object KibeMod : ModInitializer {
     const val MOD_ID = "kibe"
     const val MOD_NAME = "Kibe"
     val FAKE_PLAYER_UUID: UUID = UUID.randomUUID()
+    val DEFAULT_RUNE_SET = DefaultedList.ofSize<DyeColor>(8, DyeColor.WHITE)
 
     val LONG_CODEC: PacketCodec<ByteBuf, Long> = object : PacketCodec<ByteBuf, Long> {
         override fun decode(byteBuf: ByteBuf): Long {

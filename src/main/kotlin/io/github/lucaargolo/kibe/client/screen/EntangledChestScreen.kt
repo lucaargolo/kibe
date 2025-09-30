@@ -1,11 +1,9 @@
 package io.github.lucaargolo.kibe.client.screen
 
-import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.menu.EntangledChestScreenHandler
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
@@ -23,15 +21,14 @@ class EntangledChestScreen(screenHandler: EntangledChestScreenHandler, inventory
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context, mouseX, mouseY, delta)
-        drawRunes(context)
         super.render(context, mouseX, mouseY, delta)
+        drawRunes(context)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
     private fun drawRunes(context: DrawContext) {
-        handler.entity.runeColors.forEach { (n, color) ->
-            context.drawItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(n-1)*10, startY+2)
+        handler.entity.runeColors.forEachIndexed { idx, col ->
+            context.drawTexture(texture, startX + 91 + idx*10, startY + 5, col.id*8, 167, 8, 10)
         }
     }
 

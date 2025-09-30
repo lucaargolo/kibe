@@ -22,26 +22,13 @@ import net.minecraft.world.World
 class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntity(BlockEntityCompendium.ENTANGLED_CHEST, pos, state), Inventory {
 
     var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(27, ItemStack.EMPTY)
-    var runeColors = mutableMapOf<Int, DyeColor>()
+
+    val runeColors : Array<DyeColor> = arrayOf(DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE, DyeColor.WHITE)
+    val colorCode : String
+        get() = runeColors.map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
+
     var key = EntangledChest.DEFAULT_KEY
     var owner = ""
-
-    init {
-        (1..8).forEach {
-            runeColors[it] = DyeColor.WHITE
-        }
-        updateColorCode()
-    }
-
-    var colorCode = "00000000"
-
-    fun updateColorCode() {
-        var code = ""
-        (1..8).forEach {
-            code += runeColors[it]?.id?.let { int -> Integer.toHexString(int) }
-        }
-        colorCode = code
-    }
 
     private fun hasPersistentState(): Boolean = hasWorld() && !world!!.isClient
 
@@ -70,10 +57,9 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
 
     override fun readNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.readNbt(tag, registryLookup)
-        (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+        (0 until runeColors.size).forEach { idx ->
+            runeColors[idx] = DyeColor.byName(tag.getString("rune${idx+1}"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
-        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
         isBeingCompared = tag.getBoolean("isBeingCompared")
@@ -81,18 +67,17 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
     }
 
     override fun readClientNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
-        (1..8).forEach {
-            runeColors[it] = DyeColor.byName(tag.getString("rune$it"), DyeColor.WHITE) ?: DyeColor.WHITE
+        (0 until runeColors.size).forEach { idx ->
+            runeColors[idx] = DyeColor.byName(tag.getString("rune${idx+1}"), DyeColor.WHITE) ?: DyeColor.WHITE
         }
-        updateColorCode()
         key = tag.getString("key")
         owner = tag.getString("owner")
     }
 
     override fun writeNbt(tag: NbtCompound, registryLookup: WrapperLookup) {
         super.writeNbt(tag, registryLookup)
-        (1..8).forEach {
-            tag.putString("rune$it", runeColors[it]!!.getName())
+        runeColors.forEachIndexed { idx, col ->
+            tag.putString("rune${idx+1}", col.name)
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
@@ -109,8 +94,8 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
     }
 
     override fun writeClientNbt(tag: NbtCompound, registryLookup: WrapperLookup): NbtCompound {
-        (1..8).forEach {
-            tag.putString("rune$it", runeColors[it]!!.getName())
+        runeColors.forEachIndexed { idx, col ->
+            tag.putString("rune${idx+1}", col.name)
         }
         tag.putString("key", key)
         tag.putString("owner", owner)
@@ -118,16 +103,15 @@ class EntangledChestEntity(pos: BlockPos, state: BlockState): SyncableBlockEntit
     }
 
     override fun addComponents(builder: ComponentMap.Builder) {
-        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.values.toList())
+        builder.add(ComponentTypeCompendium.RUNE_SET, runeColors.toList())
         builder.add(ComponentTypeCompendium.ENTANGLED_KEY, key)
         builder.add(ComponentTypeCompendium.OWNER, owner)
     }
 
     override fun readComponents(components: ComponentsAccess) {
         components.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { index, component ->
-            this.runeColors[index+1] = component
+            this.runeColors[index] = component
         }
-        updateColorCode()
         components.get(ComponentTypeCompendium.ENTANGLED_KEY)?.let { this.key = it }
         components.get(ComponentTypeCompendium.OWNER)?.let { this.owner = it }
     }

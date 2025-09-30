@@ -23,6 +23,7 @@ import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
 import net.minecraft.server.MinecraftServer
+import net.minecraft.util.DyeColor
 
 object TransferHelper {
 
@@ -59,14 +60,7 @@ object TransferHelper {
         FluidStorage.ITEM.registerForItems({ stack, context -> TankBlockItem.getFluidStorage(stack, context) }, ItemCompendium.TANK)
         FluidStorage.ITEM.registerForItems({ stack, _ ->
             val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
-            var colorCode = ""
-            if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-                stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                    colorCode += dc.id.let { int -> Integer.toHexString(int) }
-                }
-            }else{
-                colorCode = "00000000"
-            }
+            val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
 
             @Suppress("DEPRECATION")
             FabricLoader.getInstance().gameInstance.let {

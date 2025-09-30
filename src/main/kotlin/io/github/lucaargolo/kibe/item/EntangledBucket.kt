@@ -1,5 +1,6 @@
 package io.github.lucaargolo.kibe.item
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledTank
 import io.github.lucaargolo.kibe.blockentity.EntangledTankEntity
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
@@ -51,37 +52,24 @@ class EntangledBucket(settings: Settings): Item(settings)  {
         if(key != EntangledTank.DEFAULT_KEY && stack.contains(ComponentTypeCompendium.OWNER))
             tooltip.add(ownerText.append(Text.literal(stack.get(ComponentTypeCompendium.OWNER)).formatted(Formatting.GRAY)))
         val color = Text.translatable("tooltip.kibe.color")
-        var colorCode = ""
-        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
-                val text = Text.literal("■")
-                text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
-                color.append(text)
-            }
-        }else{
-            colorCode = "00000000"
-            color.append(Text.literal("■■■■■■■■"))
+        val runeColors = stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET
+        runeColors.forEach { dc ->
+            val text = Text.literal("■")
+            text.style = text.style.withColor(TextColor.fromRgb(dc.mapColor.color))
+            color.append(text)
         }
         tooltip.add(color)
+        val colorCode = runeColors.map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
         val fluidInv = getFluidInv(null, key, colorCode)
         if(!fluidInv.isResourceBlank)
             tooltip.add(FluidVariantAttributes.getName(fluidInv.variant).copyContentOnly().append(Text.literal(": ${Formatting.GRAY}${FluidHelper.getMb(fluidInv.amount)}mB")))
-
     }
 
     override fun use(world: World, user: PlayerEntity, hand: Hand?): TypedActionResult<ItemStack>? {
         val stack = user.getStackInHand(hand)
 
         val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
-        var colorCode = ""
-        if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
-            stack.get(ComponentTypeCompendium.RUNE_SET)?.forEach { dc ->
-                colorCode += dc.id.let { int -> Integer.toHexString(int) }
-            }
-        }else{
-            colorCode = "00000000"
-        }
+        val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
 
         val fluidInv = getFluidInv(world, key, colorCode)
         val fluid = if(fluidInv.isResourceBlank) Fluids.EMPTY else fluidInv.variant.fluid ?: Fluids.EMPTY
@@ -205,7 +193,6 @@ class EntangledBucket(settings: Settings): Item(settings)  {
                 context.stack.set(ComponentTypeCompendium.ENTANGLED_KEY, blockEntityTag.getString("key"))
                 context.stack.set(ComponentTypeCompendium.OWNER, blockEntityTag.getString("owner"))
                 context.stack.set(ComponentTypeCompendium.RUNE_SET, runeSet)
-                context.stack.set(ComponentTypeCompendium.COLOR_CODE, blockEntity.colorCode)
                 if(!context.world.isClient) context.player!!.sendMessage(Text.translatable("chat.kibe.entangled_bucket.success"), true)
                 return ActionResult.SUCCESS
             }

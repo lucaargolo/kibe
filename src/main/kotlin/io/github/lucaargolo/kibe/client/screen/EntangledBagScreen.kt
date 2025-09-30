@@ -1,12 +1,11 @@
 package io.github.lucaargolo.kibe.client.screen
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
-import io.github.lucaargolo.kibe.item.Rune
 import io.github.lucaargolo.kibe.menu.EntangledBagScreenHandler
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
@@ -25,15 +24,14 @@ class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: Pl
     }
 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        this.renderBackground(context, mouseX, mouseY, delta)
-        drawRunes(context)
         super.render(context, mouseX, mouseY, delta)
+        drawRunes(context)
         drawMouseoverTooltip(context, mouseX, mouseY)
     }
 
     private fun drawRunes(context: DrawContext) {
-        handler.stack.get(ComponentTypeCompendium.RUNE_SET)?.forEachIndexed { it, color ->
-            context.drawItem(ItemStack(Rune.getRuneByColor(color)), startX+87+(it)*10, startY+2)
+        (handler.stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).forEachIndexed { idx, col ->
+            context.drawTexture(texture, startX + 91 + idx*10, startY + 5, col.id*8, 167, 8, 10)
         }
     }
 
@@ -46,10 +44,10 @@ class EntangledBagScreen(screenHandler: EntangledBagScreenHandler, inventory: Pl
         context.drawTexture(texture, startX, startY, 0, 0, 176, 166)
     }
 
-    fun hasSameColors(map: MutableMap<Int, DyeColor>): Boolean {
-        val runeSet = handler.stack.get(ComponentTypeCompendium.RUNE_SET) ?: listOf()
-        map.forEach { (key, value) ->
-            if(value != runeSet.getOrElse(key-1) { DyeColor.WHITE }) return false
+    fun hasSameColors(array: Array<DyeColor>): Boolean {
+        val runeSet = handler.stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET
+        array.forEachIndexed { idx, col ->
+            if(col != runeSet[idx]) return false
         }
         return true
     }

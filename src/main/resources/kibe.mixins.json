@@ -8,6 +8,7 @@
     "BucketItemAccessor",
     "CauldronBehaviorMixin",
     "CraftingTableContainerMixin",
+    "DyeItemAccessor",
     "EndermanEntityMixin",
     "EntityMixin",
     "ExperienceOrbEntityAccessor",
