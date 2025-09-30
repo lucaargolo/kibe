@@ -3,8 +3,8 @@ package io.github.lucaargolo.kibe.utils
 import io.github.lucaargolo.kibe.menu.EntangledBagScreenHandler
 import io.github.lucaargolo.kibe.menu.EntangledChestScreenHandler
 import io.github.lucaargolo.kibe.network.EntangledChestAnimationStatePacket
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayerEntity
@@ -28,9 +28,9 @@ object EntangledChestOpenState {
         ServerTickEvents.END_SERVER_TICK.register { server ->
             tick(server)
         }
-        ServerPlayerEvents.JOIN.register { player ->
+        ServerPlayConnectionEvents.JOIN.register { handler, sender, server ->
             val payload = EntangledChestAnimationStatePacket(map.keys)
-            ServerPlayNetworking.send(player, payload)
+            ServerPlayNetworking.send(handler.player, payload)
         }
     }
 
