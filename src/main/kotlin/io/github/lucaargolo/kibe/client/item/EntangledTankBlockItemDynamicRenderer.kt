@@ -27,7 +27,7 @@ class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.Dynamic
         val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyTank, client.renderTickCounter.getTickDelta(true), matrixStack, vertexConsumerProvider, lightmap, overlay)
 
-        val tankGlassIdentifier = ModelIdentifier(ModIdentifier.of("entangled_tank"), "facing=north,level=0")
+        val tankGlassIdentifier = ModelIdentifier(ModIdentifier.of("entangled_tank"), "level=0")
         val tankGlassModel = client.bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumerProvider.getBuffer(RenderLayer.getCutout())

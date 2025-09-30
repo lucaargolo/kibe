@@ -33,6 +33,7 @@
   "client": [
     "BipedEntityModelMixin",
     "ClientPlayNetworkHandlerMixin",
+    "GameRendererMixin",
     "HeldItemRendererMixin",
     "ItemMixin",
     "LivingEntityRendererMixin",

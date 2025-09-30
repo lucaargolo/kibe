@@ -55,16 +55,17 @@ object KibeModClient: ClientModInitializer {
         PacketCompendium.initializeClient()
         EntangledTankSync.initializeClient()
         EntangledChestAnimationState.initializeClient()
-        initImmediateRendering()
+        initExtraRender()
         initExtraModels()
         initTooltipComponents()
     }
 
-    fun initImmediateRendering() {
+    fun initExtraRender() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register { context ->
             drawMeasuringTapeOverlay(context)
             immediate.draw()
         }
+        MinecraftClient.getInstance().overlay
     }
 
     fun initExtraModels() {

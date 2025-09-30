@@ -17,8 +17,6 @@ import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
-import net.minecraft.util.BlockMirror
-import net.minecraft.util.BlockRotation
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -32,19 +30,10 @@ class EntangledTank(settings: Settings): BlockWithEntity(settings) {
 
     override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
         stateManager.add(Properties.LEVEL_15)
-        stateManager.add(Properties.HORIZONTAL_FACING)
     }
 
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.LEVEL_15, 0).with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
-    }
-
-    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
-        return state.with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
-    }
-
-    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
-        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
+        return defaultState.with(Properties.LEVEL_15, 0)
     }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
@@ -120,7 +109,7 @@ class EntangledTank(settings: Settings): BlockWithEntity(settings) {
         return (world.getBlockEntity(pos) as? EntangledTankEntity)?.let { tank ->
             if ((poss.y - pos.y) > 0.9375) {
                 if (stack.item is DyeItem) {
-                    val int = EntangledChest.getRuneByPos((poss.x - pos.x), (poss.z - pos.z), state[Properties.HORIZONTAL_FACING])
+                    val int = EntangledChest.getRuneByPos((poss.x - pos.x), (poss.z - pos.z))
                     if (int != null) {
                         if (!world.isClient) {
                             val oldColor = tank.runeColors[int]

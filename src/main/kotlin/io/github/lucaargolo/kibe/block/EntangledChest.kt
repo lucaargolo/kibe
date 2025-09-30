@@ -14,14 +14,10 @@ import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.entity.mob.ShulkerEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.DyeItem
-import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
-import net.minecraft.util.BlockMirror
-import net.minecraft.util.BlockRotation
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
@@ -32,22 +28,6 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
 class EntangledChest(settings: Settings): BlockWithEntity(settings) {
-
-    override fun appendProperties(stateManager: StateManager.Builder<Block?, BlockState?>) {
-        stateManager.add(Properties.HORIZONTAL_FACING)
-    }
-
-    override fun getPlacementState(ctx: ItemPlacementContext): BlockState? {
-        return defaultState.with(Properties.HORIZONTAL_FACING, ctx.horizontalPlayerFacing)
-    }
-
-    override fun rotate(state: BlockState, rotation: BlockRotation): BlockState? {
-        return state.with(Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING]))
-    }
-
-    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
-        return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
-    }
 
     override fun getRenderType(state: BlockState?): BlockRenderType {
         return BlockRenderType.ENTITYBLOCK_ANIMATED
@@ -89,7 +69,7 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
         val stack = player.getStackInHand(hand)
         if((poss.y-pos.y) > 0.9375) {
             if(stack.item is DyeItem) {
-                val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z), state[Properties.HORIZONTAL_FACING])
+                val int = getRuneByPos((poss.x-pos.x), (poss.z-pos.z))
                 if(int != null) {
                     if(!world.isClient) {
                         val oldColor = (world.getBlockEntity(pos) as EntangledChestEntity).runeColors[int]
@@ -192,7 +172,7 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
             val box = ShulkerEntity.calculateBoundingBox(1f, Direction.UP, 0.0f, 0.25f).offset(pos).contract(1.0E-6)
             return world?.isSpaceEmpty(box) ?: true
         }
-        fun getRuneByPos(x: Double, z: Double, direction: Direction): Int? {
+        fun getRuneByPos(x: Double, z: Double): Int? {
             val int = when(x) {
                 in 0.6875..0.8125 -> {
                     when(z) {
@@ -219,16 +199,7 @@ class EntangledChest(settings: Settings): BlockWithEntity(settings) {
                 }
                 else -> null
             }
-            return if(int == null) null
-            else {
-                when(direction) {
-                    Direction.SOUTH -> int
-                    Direction.EAST -> if (int + 2 >= 8) (int+2)-8 else (int+2)
-                    Direction.NORTH -> if (int + 4 >= 8) (int+4)-8 else (int+4)
-                    Direction.WEST -> if (int + 6 >= 8) (int+6)-8 else (int+6)
-                    else -> null
-                }
-            }
+            return int
         }
 
         fun getRunesShape(): VoxelShape {
