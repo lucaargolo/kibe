@@ -48,7 +48,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             true
         }
 
-        val background = ModelLoadingConstants.toResourceModelId(Identifier.of("item/entangled_bag_background"))
+        val background = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bag_background"))
         val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
         backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
             emitter.fromVanilla(q, defaultMaterial, null)
