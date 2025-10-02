@@ -18,7 +18,7 @@ A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.
 
 ---
 
-![Main Features](https://cdn.lucaargolo.dev/kibe/main_features.png)
+## ![Main Features](https://cdn.lucaargolo.dev/kibe/main_features.png)
 
 
 ## Entangled Chests & Entangled Tanks
@@ -120,7 +120,7 @@ A **Glider** is an item that when active and being held by a player, will allow 
 
 ---
 
-![Other Features](https://cdn.lucaargolo.dev/kibe/other_features.png)
+## ![Other Features](https://cdn.lucaargolo.dev/kibe/other_features.png)
 
 <details>
 
@@ -215,7 +215,7 @@ Toggles itself on and off automatically and has 16 different speed levels.
 
 ---
 
-<img src="https://cdn.lucaargolo.dev/kibe/other_info.png" alt="Other Information" width="256px" height="64px" />
+## ![Other Information](https://cdn.lucaargolo.dev/kibe/other_info.png)
 
 For bug reporting please proceed to the mod's GitHub repository: [https://github.com/lucaargolo/kibe](https://github.com/lucaargolo/kibe)
 
