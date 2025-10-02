@@ -1,7 +1,7 @@
 <center>
 <div align="center" style="text-align: center">
 
-![](https://cdn.lucaargolo.dev/kibe/title.png)
+![Kibe Utilities](https://cdn.lucaargolo.dev/kibe/title.png)
 
 A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.
 
@@ -18,12 +18,12 @@ A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.
 
 ---
 
-![](https://cdn.lucaargolo.dev/kibe/main_features.png)
+![Main Features](https://cdn.lucaargolo.dev/kibe/main_features.png)
 
 
 ## Entangled Chests & Entangled Tanks
 
-![](https://cdn.lucaargolo.dev/kibe/promo1.png)
+![Entangled Chests & Entangled Tanks](https://cdn.lucaargolo.dev/kibe/promo1.png)
 
 **Entangled Chests** are universally linked chests that work across dimensions and stores the same items as long as they are color-coded the same.
 
@@ -36,7 +36,7 @@ You can use an **Entangled Bucket** to access the contents of your Entangled Tan
 
 ## Cursed Dirt
 
-![](https://cdn.lucaargolo.dev/kibe/promo2.png)
+![Cursed Dirt](https://cdn.lucaargolo.dev/kibe/promo2.png)
 
 **Cursed Dirt** is a simple grass-like block that burns when exposed to sunlight, but when in dark environments, will have vastly improved spawn rate for monsters.
 
@@ -47,21 +47,21 @@ They are created by using **Cursed Seeds** in a regular grass or dirt block, and
 
 ## Big Torch
 
-![](https://cdn.lucaargolo.dev/kibe/promo3.png)
+![Big Torch](https://cdn.lucaargolo.dev/kibe/promo3.png)
 
 **Big Torch** is a block that cancels any mob spawning that requires no light in a configurable area. It's useful to protect your base and to clean caves and dungeons.
 
 
 ## Elevators
 
-![](https://cdn.lucaargolo.dev/kibe/promo4.png)
+![Elevators](https://cdn.lucaargolo.dev/kibe/promo4.png)
 
 **Elevators** are simple blocks that, when stepped upon, can teleport the player upwards and downwards, as long as it finds another elevator directly above or below it.
 
 
 ## Vacuum Hoppers
 
-![](https://cdn.lucaargolo.dev/kibe/promo5.png)
+![Vacuum Hoppers](https://cdn.lucaargolo.dev/kibe/promo5.png)
 
 **Vacuum Hoppers** are blocks that can pull nearby dropped items and experience orbs to their own inventory.
 
@@ -72,7 +72,7 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 ## Tanks, Fluid Hoppers, XP Drains, and XP Showers
 
-![](https://cdn.lucaargolo.dev/kibe/promo6.png)
+![Tanks, Fluid Hoppers, XP Drains, and XP Showers](https://cdn.lucaargolo.dev/kibe/promo6.png)
 
 **Tanks** are blocks that can store fluids, each tank can store up to 16 buckets, and when placed side by side they will connect and fluids will flow through them.
 
@@ -85,7 +85,7 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 ## Placers and Breakers
 
-![](https://cdn.lucaargolo.dev/kibe/promo8.png)
+![Placers and Breakers](https://cdn.lucaargolo.dev/kibe/promo8.png)
 
 **Placers** are blocks that when activated by a redstone signal, will place any block in its inventory in front of it, if possible.
 
@@ -94,7 +94,7 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 ## Witherproof Blocks and Wither Builders
 
-![](https://cdn.lucaargolo.dev/kibe/promo9.png)
+![Witherproof Blocks and Wither Builders](https://cdn.lucaargolo.dev/kibe/promo9.png)
 
 **Witherproof Blocks** are blocks that cannot be destroyed by the wither boss. They are useful for traps and automatic Wither farms.
 
@@ -103,7 +103,7 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 ## Slime Boots and Slime Sling
 
-![](https://cdn.lucaargolo.dev/kibe/promo7.png)
+![Slime Boots and Slime Sling](https://cdn.lucaargolo.dev/kibe/promo7.png)
 
 **Slime Boots** is a wearable item that negates fall damage and makes the player bounce when hitting the floor with considerable speed.
 
@@ -114,19 +114,19 @@ Using both together can be a good way of traveling through the world in the earl
 
 ## Gliders
 
-![](https://cdn.lucaargolo.dev/kibe/promo10.png)
+![Gliders](https://cdn.lucaargolo.dev/kibe/promo10.png)
 
 A **Glider** is an item that when active and being held by a player, will allow them to glide through the skies instead of falling normally.
 
 ---
 
-![](https://cdn.lucaargolo.dev/kibe/other_features.png)
+![Other Features](https://cdn.lucaargolo.dev/kibe/other_features.png)
 
 <details>
 
 ### Rings
 
-![](https://i.imgur.com/LOegcn3.png)
+![Rings](https://i.imgur.com/LOegcn3.png)
 
 There are 5 rings currently available:
 
@@ -142,7 +142,7 @@ There are 5 rings currently available:
 
 ### Lassos
 
-![](https://i.imgur.com/SXaBaip.png)
+![Lassos](https://i.imgur.com/SXaBaip.png)
 
 Lassos are magical items that can capture entities and later release them in another part of the world.
 
@@ -156,20 +156,20 @@ There are 3 lassos currently available:
 
 ### Kibes
 
-![](https://i.imgur.com/iGXncq2.png)
+![Kibes](https://i.imgur.com/iGXncq2.png)
 
 A type of food that gives name to the mod. (Has cursed, golden, and diamond alternatives.)
 
 ### Conveyor Belts
 
-![](https://i.imgur.com/oWuBb5q.gif)
+![Conveyor Belts](https://i.imgur.com/oWuBb5q.gif)
 
 Entities standing above it will be moved.  
 Cursed Dirt can still spawn mobs when below it.
 
 ### Spikes
 
-![](https://i.imgur.com/hkTuFBS.png)
+![Spikes](https://i.imgur.com/hkTuFBS.png)
 
 Will damage mobs that step on it.
 
@@ -183,31 +183,31 @@ Mobs killed by Diamond Spikes will drop experience and player loot.
 
 ### Trash Can and Portable Trash Can
 
-![](https://i.imgur.com/AYflQ9C.png)
+![Trash Can and Portable Trash Can](https://i.imgur.com/AYflQ9C.png)
 
 Dispose of your items in a proper way!
 
 ### Portable Crafting Table
 
-![](https://i.imgur.com/sepIMV5.png)
+![Portable Crafting Table](https://i.imgur.com/sepIMV5.png)
 
 Craft the world from your own inventory!
 
 ### Magnet
 
-![](https://i.imgur.com/DVrEi9l.png)
+![Magnet](https://i.imgur.com/DVrEi9l.png)
 
 When activated, attracts nearby dropped items to your player.
 
 ### Sleeping Bag
 
-![](https://i.imgur.com/FpbDHif.png)
+![Sleeping Bag](https://i.imgur.com/FpbDHif.png)
 
 Let you sleep anywhere without overwriting your bed spawn point.
 
 ### Redstone Timer
 
-![](https://i.imgur.com/jIyKvz7.png)
+![Redstone Timer](https://i.imgur.com/jIyKvz7.png)
 
 Toggles itself on and off automatically and has 16 different speed levels.
 
