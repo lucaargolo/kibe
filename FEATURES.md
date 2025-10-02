@@ -9,10 +9,10 @@ A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.
 
 <div style="line-height: 0;">
     <a href="https://github.com/lucaargolo/fabric-seasons">
-        <img src="https://cdn.lucaargolo.dev/kibe/also_try_1.png" alt="Also try Fabric Seasons"/>
+        <img src="https://cdn.lucaargolo.dev/kibe/also_try_1.png" alt="Also try Fabric Seasons" style="display:block; margin:0;"/>
     </a>
     <a href="https://github.com/lucaargolo/charta">
-        <img src="https://cdn.lucaargolo.dev/kibe/also_try_2.png" alt="Also try Charta""/>
+        <img src="https://cdn.lucaargolo.dev/kibe/also_try_2.png" alt="Also try Charta" style="display:block; margin:0;"/>
     </a>
 </div>
 
