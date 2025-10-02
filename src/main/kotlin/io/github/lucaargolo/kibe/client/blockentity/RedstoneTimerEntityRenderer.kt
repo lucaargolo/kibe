@@ -9,7 +9,6 @@ import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.render.entity.model.EntityModelLayer
-import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.screen.PlayerScreenHandler
@@ -118,7 +117,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             matrices.pop()
         }
 
-        val tankGlassIdentifier = ModelIdentifier(ModIdentifier.of("redstone_timer_structure"), "")
+        val tankGlassIdentifier = ModIdentifier.of("block/redstone_timer_structure")
         val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumers.getBuffer(RenderLayer.getCutout())
