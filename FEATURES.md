@@ -1,4 +1,5 @@
-<div style="text-align: center;">
+<center>
+<div align="center" style="text-align: center">
 
 ![](https://cdn.lucaargolo.dev/kibe/title.png)
 
@@ -11,7 +12,7 @@ A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.
         <img src="https://cdn.lucaargolo.dev/kibe/also_try_1.png" alt="Also try Fabric Seasons"/>
     </a>
     <a href="https://github.com/lucaargolo/charta">
-        <img src="https://cdn.lucaargolo.dev/kibe/also_try_2.png" alt="Also try Charta"/>
+        <img src="https://cdn.lucaargolo.dev/kibe/also_try_2.png" alt="Also try Charta""/>
     </a>
 </div>
 
@@ -19,9 +20,8 @@ A miscellaneous mod that adds a bunch of random, and mostly unoriginal things.
 
 ![](https://cdn.lucaargolo.dev/kibe/main_features.png)
 
----
 
-### Entangled Chests & Entangled Tanks
+## Entangled Chests & Entangled Tanks
 
 ![](https://cdn.lucaargolo.dev/kibe/promo1.png)
 
@@ -33,9 +33,8 @@ You can use an **Entangled Bag** to access the contents of your Entangled Chest 
 
 You can use an **Entangled Bucket** to access the contents of your Entangled Tank directly in your inventory.
 
----
 
-### Cursed Dirt
+## Cursed Dirt
 
 ![](https://cdn.lucaargolo.dev/kibe/promo2.png)
 
@@ -45,25 +44,22 @@ They are created by using **Cursed Seeds** in a regular grass or dirt block, and
 
 **Cursed Droplets will drop from Wither Skeletons and mobs spawned in Cursed Dirt.**
 
----
 
-### Big Torch
+## Big Torch
 
 ![](https://cdn.lucaargolo.dev/kibe/promo3.png)
 
 **Big Torch** is a block that cancels any mob spawning that requires no light in a configurable area. It's useful to protect your base and to clean caves and dungeons.
 
----
 
-### Elevators
+## Elevators
 
 ![](https://cdn.lucaargolo.dev/kibe/promo4.png)
 
 **Elevators** are simple blocks that, when stepped upon, can teleport the player upwards and downwards, as long as it finds another elevator directly above or below it.
 
----
 
-### Vacuum Hoppers
+## Vacuum Hoppers
 
 ![](https://cdn.lucaargolo.dev/kibe/promo5.png)
 
@@ -73,9 +69,8 @@ Stored items can be accessed by opening the block's GUI or by using regular Hopp
 
 Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
----
 
-### Tanks, Fluid Hoppers, XP Drains, and XP Showers
+## Tanks, Fluid Hoppers, XP Drains, and XP Showers
 
 ![](https://cdn.lucaargolo.dev/kibe/promo6.png)
 
@@ -87,9 +82,8 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 **XP Showers** are blocks that can transform the liquid XP from tanks behind it into experience orbs that players can absorb.
 
----
 
-### Placers and Breakers
+## Placers and Breakers
 
 ![](https://cdn.lucaargolo.dev/kibe/promo8.png)
 
@@ -97,9 +91,8 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 **Breakers** are blocks that when activated by a redstone signal, will break any block in front of it and store its drops in its inventory, if possible.
 
----
 
-### Witherproof Blocks and Wither Builders
+## Witherproof Blocks and Wither Builders
 
 ![](https://cdn.lucaargolo.dev/kibe/promo9.png)
 
@@ -107,9 +100,8 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 **Wither Builders** are blocks that when activated by a redstone signal, will summon a wither if there's enough building material in its inventory and available space in front of it.
 
----
 
-### Slime Boots and Slime Sling
+## Slime Boots and Slime Sling
 
 ![](https://cdn.lucaargolo.dev/kibe/promo7.png)
 
@@ -119,9 +111,8 @@ Stored XP can be used to craft Bottle o' Enchanting or Liquid XP buckets
 
 Using both together can be a good way of traveling through the world in the early game.
 
----
 
-### Gliders
+## Gliders
 
 ![](https://cdn.lucaargolo.dev/kibe/promo10.png)
 
@@ -231,3 +222,4 @@ For bug reporting please proceed to the mod's GitHub repository: [https://github
 [![](https://discordapp.com/api/guilds/707435077679841350/embed.png?style=banner2&v=2)](https://discord.com/invite/G4PjhEf)
 
 </div>
+</center>

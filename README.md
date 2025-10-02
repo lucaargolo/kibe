@@ -1,10 +1,9 @@
-<div style="text-align: center;">
+<center>
+<div align="center" style="text-align: center">
 
 ![](https://cdn.lucaargolo.dev/kibe/title.png)
 
 A miscellaneous mod for Minecraft that adds a bunch of random, and mostly unoriginal things.
-
----
 
 ![https://github.com/lucaargolo/kibe/actions](https://github.com/lucaargolo/kibe/workflows/Build/badge.svg)
 ![https://opensource.org/licenses/MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-blue)
@@ -16,18 +15,15 @@ A miscellaneous mod for Minecraft that adds a bunch of random, and mostly unorig
 ---
 
 ## Features
-[Click here](FEATURES.md) for a complete list of features 
-
----
+[Click here](FEATURES.md) for a complete list of features
 
 ## License
 Distributed under the Mozilla Public License 2.0. See `LICENSE` for more information.
 
----
-
 ## Build
-If you want to build this yourself, please clone the repository and execute `gradlew build` in the projects folder. 
+If you want to build this yourself, please clone the repository and execute `gradlew build` in the projects folder.
 
 Artifacts will be generated at `/build/libs`
 
 </div>
+</center>
