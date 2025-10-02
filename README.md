@@ -1,4 +1,4 @@
-<center>
+<div style="text-align: center;">
 
 ![](https://cdn.lucaargolo.dev/kibe/title.png)
 
@@ -30,4 +30,4 @@ If you want to build this yourself, please clone the repository and execute `gra
 
 Artifacts will be generated at `/build/libs`
 
-</center>
+</div>

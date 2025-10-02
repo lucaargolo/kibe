@@ -1,4 +1,4 @@
-<center>
+<div style="text-align: center;">
 
 ![](https://cdn.lucaargolo.dev/kibe/title.png)
 
@@ -230,4 +230,4 @@ For bug reporting please proceed to the mod's GitHub repository: [https://github
 
 [![](https://discordapp.com/api/guilds/707435077679841350/embed.png?style=banner2&v=2)](https://discord.com/invite/G4PjhEf)
 
-</center>
+</div>
