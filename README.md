@@ -1,7 +1,7 @@
 <center>
 <div align="center" style="text-align: center">
 
-![](https://cdn.lucaargolo.dev/kibe/title.png)
+![Kibe Utilities](https://cdn.lucaargolo.dev/kibe/title.png)
 
 A miscellaneous mod for Minecraft that adds a bunch of random, and mostly unoriginal things.
 
