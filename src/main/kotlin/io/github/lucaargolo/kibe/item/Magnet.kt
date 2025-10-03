@@ -1,7 +1,7 @@
 package io.github.lucaargolo.kibe.item
 
 import io.github.lucaargolo.kibe.KibeMod
-import io.github.lucaargolo.kibe.compat.TrinketMagnet
+import io.github.lucaargolo.kibe.compat.CurioMagnet
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ExperienceOrbEntity
@@ -36,6 +36,6 @@ open class Magnet(settings: Settings) : BooleanItem(settings) {
     companion object {
 
         val MAGNET_INHIBITOR_TAG = TagKey.of(RegistryKeys.BLOCK, ModIdentifier.of("magnet_inhibitor"))
-        fun create(settings: Settings): Magnet = if (KibeMod.TRINKET) TrinketMagnet(settings) else Magnet(settings)
+        fun create(settings: Settings): Magnet = if (KibeMod.TRINKET) CurioMagnet(settings) else Magnet(settings)
     }
 }

@@ -23,6 +23,8 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
 import net.minecraft.client.render.model.BakedModel
@@ -59,9 +61,13 @@ object KibeModClient {
         initExtraModels()
         initTooltipComponents()
     }
-    
+
+
+    @Suppress("UnstableApiUsage", "IfThenToSafeAccess")
     fun bakedModel(identifier: Identifier): BakedModel? {
-        return MinecraftClient.getInstance().bakedModelManager.getModel(identifier)
+        val modelId = ModelLoadingConstants.toResourceModelId(identifier)
+        val model = MinecraftClient.getInstance().bakedModelManager.getModel(modelId)
+        return if(model is FabricBakedModel) model else null
     }
 
     fun initExtraRender() {

@@ -17,13 +17,15 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.ExperienceBottleItem
 import net.minecraft.item.Items
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.DyeColor
+import net.neoforged.neoforge.server.ServerLifecycleHooks
+import thedarkcolour.kotlinforforge.neoforge.forge.runForDist
+
 
 object TransferHelper {
 
@@ -62,8 +64,7 @@ object TransferHelper {
             val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
             val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
 
-            @Suppress("DEPRECATION")
-            FabricLoader.getInstance().gameInstance.let {
+            (runForDist(clientTarget = { MinecraftClient.getInstance() }, serverTarget = { ServerLifecycleHooks.getCurrentServer() })).let {
                 if (KibeMod.CLIENT && it is MinecraftClient) {
                     if (it.isOnThread) {
                         EntangledBucket.getFluidInv(null, key, colorCode)

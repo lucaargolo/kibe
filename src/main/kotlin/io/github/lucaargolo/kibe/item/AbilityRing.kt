@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.item
 
 import io.github.ladysnake.pal.PlayerAbility
 import io.github.lucaargolo.kibe.KibeMod
-import io.github.lucaargolo.kibe.compat.TrinketAbilityRing
+import io.github.lucaargolo.kibe.compat.CurioAbilityRing
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.mixed.PlayerEntityMixed
 import net.minecraft.entity.Entity
@@ -71,6 +71,6 @@ open class AbilityRing(settings: Settings, val ability: PlayerAbility): BooleanI
         val RINGS = mutableListOf<AbilityRing>()
 
         fun create(settings: Settings, ability: PlayerAbility): AbilityRing =
-            if (KibeMod.TRINKET) TrinketAbilityRing(settings, ability) else AbilityRing(settings, ability)
+            if (KibeMod.TRINKET) CurioAbilityRing(settings, ability) else AbilityRing(settings, ability)
     }
 }

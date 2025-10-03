@@ -45,12 +45,12 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         val background = ModIdentifier.of("item/entangled_bag_background")
-        val backgroundModel = KibeModClient.bakedModel(background)
+        val backgroundModel = KibeModClient.bakedModel(background) as? FabricBakedModel
         backgroundModel?.emitItemQuads(stack, randSupplier, context)
 
         val private = stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledChest.DEFAULT_KEY
         val core = ModIdentifier.of("item/entangled_bag_${if(private) "diamond" else "gold"}_core")
-        val coreModel = KibeModClient.bakedModel(core)
+        val coreModel = KibeModClient.bakedModel(core) as? FabricBakedModel
         coreModel?.emitItemQuads(stack, randSupplier, context)
 
         context.popTransform()
@@ -74,7 +74,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         val ring = ModIdentifier.of("item/entangled_ring")
-        val ringModel = KibeModClient.bakedModel(ring)
+        val ringModel = KibeModClient.bakedModel(ring) as? FabricBakedModel
         ringModel?.emitItemQuads(stack, randSupplier, context)
 
         context.popTransform()

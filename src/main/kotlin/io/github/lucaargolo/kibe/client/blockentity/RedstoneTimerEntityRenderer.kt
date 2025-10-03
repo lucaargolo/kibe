@@ -106,13 +106,11 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
             matrices.translate(-0.5, -0.5, -0.5)
             val entry = matrices.peek()
-            val sprite = timerTexture.sprite
-            val p = (sprite.maxU - sprite.minU)/16f
 
-            timerConsumer.vertex(entry, 0.0625f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.maxV-p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
-            timerConsumer.vertex(entry, 0.9375f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.maxV-p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
-            timerConsumer.vertex(entry, 0.9375f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.minV+p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
-            timerConsumer.vertex(entry, 0.0625f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.minV+p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.0625f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(0f, 1f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.9375f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(1f, 1f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.9375f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(1f, 0f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.0625f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(0f, 0f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
 
             matrices.pop()
         }

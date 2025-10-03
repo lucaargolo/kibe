@@ -52,7 +52,7 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
         val background = ModIdentifier.of("item/entangled_bucket_background")
-        val backgroundModel = KibeModClient.bakedModel(background)
+        val backgroundModel = KibeModClient.bakedModel(background) as? FabricBakedModel
         backgroundModel?.emitItemQuads(stack, randSupplier, context)
 
         val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
@@ -91,12 +91,12 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         val foreground = ModIdentifier.of("item/entangled_bucket_foreground")
-        val foregroundModel = KibeModClient.bakedModel(foreground)
+        val foregroundModel = KibeModClient.bakedModel(foreground) as? FabricBakedModel
         foregroundModel?.emitItemQuads(stack, randSupplier, context)
 
         val private = stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledTank.DEFAULT_KEY
         val core = ModIdentifier.of("item/entangled_bucket_${if(private) "diamond" else "gold"}_core")
-        val coreModel = KibeModClient.bakedModel(core)
+        val coreModel = KibeModClient.bakedModel(core) as? FabricBakedModel
         coreModel?.emitItemQuads(stack, randSupplier, context)
 
         var color = Color.WHITE.rgb

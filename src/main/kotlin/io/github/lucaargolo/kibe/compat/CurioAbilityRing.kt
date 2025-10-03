@@ -1,21 +1,18 @@
 package io.github.lucaargolo.kibe.compat
 
-import io.github.lucaargolo.kibe.item.Magnet
+import io.github.ladysnake.pal.PlayerAbility
+import io.github.lucaargolo.kibe.KibeMod
+import io.github.lucaargolo.kibe.item.AbilityRing
 import net.minecraft.item.ItemStack
 import top.theillusivec4.curios.api.CuriosApi
 import top.theillusivec4.curios.api.SlotContext
 import top.theillusivec4.curios.api.type.capability.ICurioItem
 
-
-class TrinketMagnet(settings: Settings) : Magnet(settings), ICurioItem {
+class CurioAbilityRing(settings: Settings, ability: PlayerAbility) : AbilityRing(settings, ability), ICurioItem {
 
     init {
+        KibeMod.LOGGER.info("[${KibeMod.MOD_NAME}] Creating Trinket AbilityRing for ${ability.id}")
         CuriosApi.registerCurio(this, this)
-    }
-
-    override fun curioTick(slotContext: SlotContext, stack: ItemStack) {
-        super.curioTick(slotContext, stack)
-        inventoryTick(stack, slotContext.entity.world, slotContext.entity, -1, false)
     }
 
     override fun onEquip(slotContext: SlotContext, prevStack: ItemStack, stack: ItemStack) {
@@ -29,3 +26,4 @@ class TrinketMagnet(settings: Settings) : Magnet(settings), ICurioItem {
     }
 
 }
+
