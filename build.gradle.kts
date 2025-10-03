@@ -193,7 +193,7 @@ tasks.register("github") {
         val github = GitHub.connectUsingOAuth(systemEnvironment["GITHUB_TOKEN"])
         val repository = github.getRepository(systemEnvironment["GITHUB_REPOSITORY"])
 
-        val releaseBuilder = GHReleaseBuilder(repository, "$version-${project["mod_loader"].capitalize()}")
+        val releaseBuilder = GHReleaseBuilder(repository, "$version-${project["mod_loader"].uppercase()}")
         releaseBuilder.name(buildReleaseName)
         releaseBuilder.body(getChangeLog())
         releaseBuilder.commitish(getBranch())
@@ -212,7 +212,12 @@ curseforge {
         changelog = getChangeLog()
         releaseType = buildReleaseType.lowercase()
         addGameVersion(buildGameVersion)
-        addGameVersion(project["mod_loader"].capitalize())
+
+        var whyCantYouJustWorkCurseForge = project["mod_loader"].capitalize()
+        if(whyCantYouJustWorkCurseForge == "Neoforge") {
+            whyCantYouJustWorkCurseForge = "NeoForge"
+        }
+        addGameVersion(whyCantYouJustWorkCurseForge)
 
         mainArtifact(file(buildReleaseFile), closureOf<CurseArtifact> {
             displayName = buildReleaseName
