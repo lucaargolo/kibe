@@ -1,9 +1,9 @@
 package io.github.lucaargolo.kibe.client.item
 
+import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.item.Glider
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -69,25 +69,24 @@ class GliderDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
         val itemId = Registries.ITEM.getId(stack.item)
 
         if(force3d || (isEnabled && !isGui)) {
-            val handleIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/glider_handle"))
-            val handleModel = MinecraftClient.getInstance().bakedModelManager.getModel(handleIdentifier)
+            val handleIdentifier = ModIdentifier.of("item/glider_handle")
+            val handleModel = KibeModClient.bakedModel(handleIdentifier)
 
-            handleModel.getQuads(null, null, Random.create()).forEach { q ->
+            handleModel?.getQuads(null, null, Random.create())?.forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, 1f, lightmap, overlay)
             }
 
-            val gliderIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/"+itemId.path + "_active"))
-            val gliderModel = MinecraftClient.getInstance().bakedModelManager.getModel(gliderIdentifier)
+            val gliderIdentifier = ModIdentifier.of("item/"+itemId.path + "_active")
+            val gliderModel = KibeModClient.bakedModel(gliderIdentifier)
 
-            gliderModel.getQuads(null, null, Random.create()).forEach { q ->
+            gliderModel?.getQuads(null, null, Random.create())?.forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, 1f, lightmap, overlay)
             }
         }else {
             val statusId = if(isEnabled) ModIdentifier.of("item/glider_active") else ModIdentifier.of("item/"+itemId.path + "_inactive")
-            val statusIdentifier = ModelLoadingConstants.toResourceModelId(statusId)
-            val invModel = MinecraftClient.getInstance().bakedModelManager.getModel(statusIdentifier)
+            val invModel = KibeModClient.bakedModel(statusId)
 
-            invModel.getQuads(null, null, Random.create()).forEach { q ->
+            invModel?.getQuads(null, null, Random.create())?.forEach { q ->
                 cutoutBuffer.quad(matrixStack.peek(), q, 1f, 1f, 1f, 1f, lightmap, overlay)
             }
         }

@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
+import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.util.BufferAllocator
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
@@ -57,6 +58,10 @@ object KibeModClient {
         initExtraRender()
         initExtraModels()
         initTooltipComponents()
+    }
+    
+    fun bakedModel(identifier: Identifier): BakedModel? {
+        return MinecraftClient.getInstance().bakedModelManager.getModel(identifier)
     }
 
     fun initExtraRender() {

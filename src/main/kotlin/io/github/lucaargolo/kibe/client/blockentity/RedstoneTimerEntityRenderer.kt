@@ -1,9 +1,8 @@
 package io.github.lucaargolo.kibe.client.blockentity
 
 import io.github.lucaargolo.kibe.blockentity.RedstoneTimerEntity
+import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.utils.ModIdentifier
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.*
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -107,20 +106,22 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
             matrices.translate(-0.5, -0.5, -0.5)
             val entry = matrices.peek()
+            val sprite = timerTexture.sprite
+            val p = (sprite.maxU - sprite.minU)/16f
 
-            timerConsumer.vertex(entry, 0.0625f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(0f, 1f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
-            timerConsumer.vertex(entry, 0.9375f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(1f, 1f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
-            timerConsumer.vertex(entry, 0.9375f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(1f, 0f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
-            timerConsumer.vertex(entry, 0.0625f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(0f, 0f).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.0625f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.maxV-p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.9375f, 0.0625f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.maxV-p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.9375f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.maxU-p, sprite.minV+p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
+            timerConsumer.vertex(entry, 0.0625f, 0.9375f, 0.9375f).color(1f, 1f, 1f, 1f).texture(sprite.minU+p, sprite.minV+p).overlay(overlay).light(light).normal(entry, vec.x, vec.y, vec.z)
 
             matrices.pop()
         }
 
-        val tankGlassIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("block/redstone_timer_structure"))
-        val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
+        val tankGlassIdentifier = ModIdentifier.of("block/redstone_timer_structure")
+        val tankGlassModel = KibeModClient.bakedModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumers.getBuffer(RenderLayer.getCutout())
-        tankGlassModel.getQuads(null, null, Random.create()).forEach { q ->
+        tankGlassModel?.getQuads(null, null, Random.create())?.forEach { q ->
             cutoutBuffer.quad(matrices.peek(), q, 1f, 1f, 1f, 1f, light, overlay)
         }
 

@@ -3,6 +3,7 @@ package io.github.lucaargolo.kibe.client.model
 import com.google.common.base.Suppliers
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.EntangledTank
+import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import io.github.lucaargolo.kibe.utils.ModIdentifier
@@ -14,7 +15,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper
-import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.*
@@ -38,7 +38,6 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.Reader
-import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -52,9 +51,9 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        val background = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bucket_background"))
-        val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
-        (backgroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
+        val background = ModIdentifier.of("item/entangled_bucket_background")
+        val backgroundModel = KibeModClient.bakedModel(background)
+        backgroundModel?.emitItemQuads(stack, randSupplier, context)
 
         val colorCode = (stack.get(ComponentTypeCompendium.RUNE_SET) ?: KibeMod.DEFAULT_RUNE_SET).map(DyeColor::getId).joinToString(separator = "", transform = Integer::toHexString)
         val key = stack.get(ComponentTypeCompendium.ENTANGLED_KEY) ?: EntangledTank.DEFAULT_KEY
@@ -68,8 +67,8 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
         if(fluid != Fluids.EMPTY) {
             val fluidRenderHandler: FluidRenderHandler? = FluidRenderHandlerRegistry.INSTANCE.get(fluid)
-            val fluidIdentifier = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bucket_fluid"))
-            val fluidModel = MinecraftClient.getInstance().bakedModelManager.getModel(fluidIdentifier)
+            val fluidIdentifier = ModIdentifier.of("item/entangled_bucket_fluid")
+            val fluidModel = KibeModClient.bakedModel(fluidIdentifier)
 
             val fluidColor: Int = fluidRenderHandler?.getFluidColor(MinecraftClient.getInstance().world, MinecraftClient.getInstance().player!!.blockPos, fluid.defaultState) ?: 0xffffff
             val fluidSprite: Sprite = fluidRenderHandler?.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid.defaultState)?.get(0) ?: MISSING_SPRITE.get();
@@ -84,23 +83,21 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             }
 
             val emitter = context.emitter
-            fluidModel.getQuads(null, null, randSupplier.get()).forEach(Consumer { q: BakedQuad ->
+            fluidModel?.getQuads(null, null, randSupplier.get())?.forEach { q ->
                 emitter.fromVanilla(q.vertexData, 0)
                 emitter.emit()
-            })
+            }
             context.popTransform()
         }
 
-        val foreground = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_bucket_foreground"))
-        val foregroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(foreground)
-        (foregroundModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
+        val foreground = ModIdentifier.of("item/entangled_bucket_foreground")
+        val foregroundModel = KibeModClient.bakedModel(foreground)
+        foregroundModel?.emitItemQuads(stack, randSupplier, context)
 
-        val core = if(stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledTank.DEFAULT_KEY)
-            ModIdentifier.of("item/entangled_bucket_diamond_core")
-        else ModIdentifier.of("item/entangled_bucket_gold_core")
-        val coreIdentifier = ModelLoadingConstants.toResourceModelId(core)
-        val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(coreIdentifier)
-        (coreModel as FabricBakedModel).emitItemQuads(stack, randSupplier, context)
+        val private = stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledTank.DEFAULT_KEY
+        val core = ModIdentifier.of("item/entangled_bucket_${if(private) "diamond" else "gold"}_core")
+        val coreModel = KibeModClient.bakedModel(core)
+        coreModel?.emitItemQuads(stack, randSupplier, context)
 
         var color = Color.WHITE.rgb
         if(stack.contains(ComponentTypeCompendium.RUNE_SET)) {
@@ -115,17 +112,20 @@ class EntangledBucketBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             }
             color = Color(sumr / 8, sumg / 8, sumb / 8, 255).rgb
         }
+
         context.pushTransform { quad ->
             quad.color(color, color, color, color)
             true
         }
+
         val emitter = context.emitter
-        val ring = ModelLoadingConstants.toResourceModelId(ModIdentifier.of("item/entangled_ring"))
-        val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
-        ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
+        val ring = ModIdentifier.of("item/entangled_ring")
+        val ringModel = KibeModClient.bakedModel(ring)
+        ringModel?.getQuads(null, null, randSupplier.get())?.forEach { q ->
             emitter.fromVanilla(q.vertexData, 0)
             emitter.emit()
         }
+
         context.popTransform()
     }
 

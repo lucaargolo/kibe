@@ -107,16 +107,16 @@ class DrawbridgeCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     private fun BakedModel.emitFromVanilla(state: BlockState, context: RenderContext, randSupplier: Supplier<Random>, shouldEmit: (BakedQuad) -> Boolean) {
         val emitter = context.emitter
         Direction.entries.forEach { dir ->
-            getQuads(state, dir, randSupplier.get()).forEach { quad ->
-                if (shouldEmit(quad)) {
-                    emitter.fromVanilla(quad.vertexData, 0, false)
+            getQuads(state, dir, randSupplier.get()).forEach { q ->
+                if (shouldEmit(q)) {
+                    emitter.fromVanilla(q.vertexData, 0)
                     emitter.emit()
                 }
             }
         }
-        getQuads(state, null, randSupplier.get()).forEach { quad ->
-            if (shouldEmit(quad)) {
-                emitter.fromVanilla(quad.vertexData, 0, false)
+        getQuads(state, null, randSupplier.get()).forEach { q ->
+            if (shouldEmit(q)) {
+                emitter.fromVanilla(q.vertexData, 0)
                 emitter.emit()
             }
         }
