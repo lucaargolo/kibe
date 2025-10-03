@@ -170,7 +170,7 @@ tasks.register("github") {
         val github = GitHub.connectUsingOAuth(systemEnvironment["GITHUB_TOKEN"])
         val repository = github.getRepository(systemEnvironment["GITHUB_REPOSITORY"])
 
-        val releaseBuilder = GHReleaseBuilder(repository, version as String)
+        val releaseBuilder = GHReleaseBuilder(repository, "$version-${project["mod_loader"].capitalize()}")
         releaseBuilder.name(buildReleaseName)
         releaseBuilder.body(getChangeLog())
         releaseBuilder.commitish(getBranch())
