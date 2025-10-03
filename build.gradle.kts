@@ -222,6 +222,7 @@ curseforge {
                     requiredDependency("fabric-api")
                     requiredDependency("fabric-language-kotlin")
                 }else{
+                    requiredDependency("forgified-fabric-api")
                     requiredDependency("kotlin-for-forge")
                 }
             })
@@ -257,6 +258,8 @@ modrinth {
     dependencies {
         if(project["mod_loader"] == "fabric")
             required.project("fabric-api")
+        else
+            required.project("forgified-fabric-api")
     }
 }
 
