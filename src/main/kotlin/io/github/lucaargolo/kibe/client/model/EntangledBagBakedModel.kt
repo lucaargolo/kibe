@@ -4,7 +4,6 @@ import io.github.lucaargolo.kibe.block.EntangledChest
 import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.utils.ModIdentifier
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
 import net.minecraft.block.BlockState
@@ -39,10 +38,7 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
 
-        val defaultMaterial = RendererAccess.INSTANCE.renderer?.materialFinder()?.find() ?: return
-        var color = Color(255, 255, 255, 255).rgb
-        val emitter = context.emitter
-
+        var color = Color.WHITE.rgb
         context.pushTransform { quad ->
             quad.color(color, color, color, color)
             true
