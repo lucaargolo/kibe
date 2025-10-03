@@ -1,8 +1,8 @@
 package io.github.lucaargolo.kibe.client.blockentity
 
 import io.github.lucaargolo.kibe.blockentity.RedstoneTimerEntity
+import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.utils.ModIdentifier
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.model.*
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
@@ -118,10 +118,10 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         }
 
         val tankGlassIdentifier = ModIdentifier.of("block/redstone_timer_structure")
-        val tankGlassModel = MinecraftClient.getInstance().bakedModelManager.getModel(tankGlassIdentifier)
+        val tankGlassModel = KibeModClient.bakedModel(tankGlassIdentifier)
 
         val cutoutBuffer = vertexConsumers.getBuffer(RenderLayer.getCutout())
-        tankGlassModel.getQuads(null, null, Random.create()).forEach { q ->
+        tankGlassModel?.getQuads(null, null, Random.create())?.forEach { q ->
             cutoutBuffer.quad(matrices.peek(), q, 1f, 1f, 1f, 1f, light, overlay)
         }
 

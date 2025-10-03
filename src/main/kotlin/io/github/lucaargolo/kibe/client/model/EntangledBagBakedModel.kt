@@ -1,6 +1,7 @@
 package io.github.lucaargolo.kibe.client.model
 
 import io.github.lucaargolo.kibe.block.EntangledChest
+import io.github.lucaargolo.kibe.client.KibeModClient
 import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess
@@ -48,24 +49,13 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
         }
 
         val background = ModIdentifier.of("item/entangled_bag_background")
-        val backgroundModel = MinecraftClient.getInstance().bakedModelManager.getModel(background)
-        backgroundModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q, defaultMaterial, null)
-            emitter.emit()
-        }
+        val backgroundModel = KibeModClient.bakedModel(background)
+        backgroundModel?.emitItemQuads(stack, randSupplier, context)
 
-        val core =
-            if(stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledChest.DEFAULT_KEY)
-                ModIdentifier.of("item/entangled_bag_diamond_core")
-            else
-                ModIdentifier.of("item/entangled_bag_gold_core")
-        val coreModel = MinecraftClient.getInstance().bakedModelManager.getModel(core)
-
-        coreModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q, defaultMaterial, null)
-            emitter.emit()
-        }
-
+        val private = stack.contains(ComponentTypeCompendium.ENTANGLED_KEY) && stack.get(ComponentTypeCompendium.ENTANGLED_KEY) != EntangledChest.DEFAULT_KEY
+        val core = ModIdentifier.of("item/entangled_bag_${if(private) "diamond" else "gold"}_core")
+        val coreModel = KibeModClient.bakedModel(core)
+        coreModel?.emitItemQuads(stack, randSupplier, context)
 
         context.popTransform()
 
@@ -81,16 +71,16 @@ class EntangledBagBakedModel: UnbakedModel, BakedModel, FabricBakedModel {
             }
             color = Color(sumr/8, sumg/8, sumb/8, 255).rgb
         }
+
         context.pushTransform { quad ->
             quad.color(color, color, color, color)
             true
         }
+
         val ring = ModIdentifier.of("item/entangled_ring")
-        val ringModel = MinecraftClient.getInstance().bakedModelManager.getModel(ring)
-        ringModel.getQuads(null, null, randSupplier.get()).forEach { q ->
-            emitter.fromVanilla(q, defaultMaterial, null)
-            emitter.emit()
-        }
+        val ringModel = KibeModClient.bakedModel(ring)
+        ringModel?.emitItemQuads(stack, randSupplier, context)
+
         context.popTransform()
     }
 
