@@ -12,6 +12,7 @@ import net.minecraft.registry.tag.BlockTags
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.UseAction
+import net.minecraft.world.Heightmap
 import net.minecraft.world.World
 
 class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
@@ -39,13 +40,13 @@ class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
 
     override fun onStoppedUsing(stack: ItemStack, world: World, entity: LivingEntity, remainingUseTicks: Int) {
         if(entity !is PlayerEntity || 72000 - remainingUseTicks < 20) return
-        var pos = entity.blockPos
-        while (!world.isSkyVisible(pos) && pos.y < world.dimension.logicalHeight-2) {
-            pos = pos.up()
-        }
-        if(pos.y != entity.blockPos.y && world.getBlockState(pos.up()).isAir && world.getBlockState(pos.up().up()).isAir) {
-            stack.damage(pos.y-entity.blockPos.y, entity, if(entity.activeHand == Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
-            entity.teleport(pos.x+0.5, pos.y+1.0, pos.z+0.5, true)
+        if(!world.isClient && !world.dimension.hasCeiling) {
+            val topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, entity.blockPos.x, entity.blockPos.z)
+            val pos = entity.blockPos.withY(topY)
+            if(pos.getSquaredDistance(entity.blockPos) > 2) {
+                stack.damage(pos.y - entity.blockPos.y, entity, if (entity.activeHand == Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
+                entity.requestTeleport(pos.x + 0.5, pos.y + 1.0, pos.z + 0.5)
+            }
         }
     }
 
