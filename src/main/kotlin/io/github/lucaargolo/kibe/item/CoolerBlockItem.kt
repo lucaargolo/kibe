@@ -1,6 +1,8 @@
 package io.github.lucaargolo.kibe.item
 
+import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
+import io.github.lucaargolo.kibe.compat.TrinketCoolerBlockItem
 import io.github.lucaargolo.kibe.menu.CoolerBlockItemScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.ItemScreenHandlerFactory
 import net.fabricmc.api.EnvType
@@ -24,7 +26,7 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 import java.util.*
 
-class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, settings) {
+open class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, settings) {
 
     override fun inventoryTick(stack: ItemStack, world: World, entity: Entity, slot: Int, selected: Boolean) {
         if(entity is PlayerEntity && entity.currentScreenHandler !is CoolerBlockItemScreenHandler && !entity.isCreative && !entity.isSpectator && !entity.isInvulnerable && !entity.abilities.invulnerable && entity.canConsume(false)) {
@@ -88,6 +90,10 @@ class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, set
             return 26
         }
 
+    }
+
+    companion object {
+        fun create(settings: Settings): CoolerBlockItem = if (KibeMod.TRINKET) TrinketCoolerBlockItem(settings) else CoolerBlockItem(settings)
     }
 
 }

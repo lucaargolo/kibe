@@ -87,7 +87,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val ENTANGLED_TANK = register("entangled_tank", EntangledTankBlockItem(Settings()))
     val ENTANGLED_BAG = register("entangled_bag",  EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val ENTANGLED_BUCKET = register("entangled_bucket",  EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val COOLER = register("cooler", CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val COOLER = register("cooler", CoolerBlockItem.create(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
     val TANK = register("tank", TankBlockItem(Settings()))
     
     val WHITE_SLEEPING_BAG = register("white_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))

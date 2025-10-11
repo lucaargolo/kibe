@@ -3,6 +3,7 @@
     "player"
   ],
   "slots": [
+    "legs/belt",
     "hand/ring",
     "offhand/ring",
     "chest/necklace"

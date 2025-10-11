@@ -51,7 +51,7 @@ class TankBlockEntityRenderer(private val arg: BlockEntityRendererFactory.Contex
         val partUv = UV(sprite)
         partUv.maxV -= (sprite.maxV - sprite.minV)*((16f-p)/16f)
         p /= 16f
-        p -= 0.001f
+        p += 0.001f
 
         renderVertices(bb, entry, normal, color, overlay, light, partUv, 0.001f, 0.999f, 0.001f, p, 0.999f, 0.999f, 0.999f, 0.999f) //Direction.SOUTH
         renderVertices(bb, entry, normal, color, overlay, light, partUv, 0.001f, 0.999f, p, 0.001f, 0.001f, 0.001f, 0.001f, 0.001f) //Direction.NORTH
