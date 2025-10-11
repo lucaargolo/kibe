@@ -2,7 +2,7 @@ package io.github.lucaargolo.kibe.item
 
 import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.block.BlockCompendium
-import io.github.lucaargolo.kibe.compat.TrinketCoolerBlockItem
+import io.github.lucaargolo.kibe.compat.CurioCoolerBlockItem
 import io.github.lucaargolo.kibe.menu.CoolerBlockItemScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.ItemScreenHandlerFactory
 import net.fabricmc.api.EnvType
@@ -93,7 +93,7 @@ open class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER
     }
 
     companion object {
-        fun create(settings: Settings): CoolerBlockItem = if (KibeMod.TRINKET) TrinketCoolerBlockItem(settings) else CoolerBlockItem(settings)
+        fun create(settings: Settings): CoolerBlockItem = if (KibeMod.TRINKET) CurioCoolerBlockItem(settings) else CoolerBlockItem(settings)
     }
 
 }
