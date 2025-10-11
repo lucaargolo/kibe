@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "kibe:obsidian_sand",
     "kibe:wither_proof_block",
