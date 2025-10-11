@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:obsidian"
+      "tag": "c:obsidians/normal"
     },
     "G": {
-      "item": "minecraft:glass"
+      "tag": "c:glass_blocks"
     }
   },
   "result": {

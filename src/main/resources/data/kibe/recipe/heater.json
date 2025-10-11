@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:cobblestone"
+      "tag": "c:cobblestones"
     },
     "B": {
       "item": "minecraft:blaze_powder"

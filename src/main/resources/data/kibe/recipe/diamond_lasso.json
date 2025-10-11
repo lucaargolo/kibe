@@ -10,7 +10,7 @@
       "item": "kibe:golden_lasso"
     },
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "c:gems/diamond"
     },
     "L": {
       "item": "minecraft:lead"

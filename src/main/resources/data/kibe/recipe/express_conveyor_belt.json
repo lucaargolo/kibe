@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:blue_dye"
+      "tag": "c:dyes/blue"
     },
     "S": {
       "item": "kibe:fast_conveyor_belt"
@@ -16,7 +16,7 @@
       "item": "minecraft:sugar"
     },
     "i": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     }
   },
   "result": {

@@ -7,13 +7,13 @@
   ],
   "key": {
     "y": {
-      "item": "minecraft:yellow_dye"
+      "tag": "c:dyes/yellow"
     },
     "i": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     },
     "l": {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "c:gems/lapis"
     }
   },
   "result": {

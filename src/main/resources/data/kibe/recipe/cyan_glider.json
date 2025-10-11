@@ -6,13 +6,13 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:cyan_dye"
+      "tag": "c:dyes/cyan"
     },
     "L": {
       "item": "kibe:glider_left_wing"
     },
     "i": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     },
     "D": {
       "item": "kibe:glider_right_wing"

@@ -10,10 +10,10 @@
       "item": "minecraft:gold_nugget"
     },
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "c:gems/diamond"
     },
     "g": {
-      "item": "minecraft:gold_ingot"
+      "tag": "c:ingots/gold"
     }
   },
   "result": {

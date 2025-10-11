@@ -5,7 +5,7 @@
       "tag": "kibe:gliders"
     },
     {
-      "item": "minecraft:green_dye"
+      "tag": "c:dyes/green"
     }
   ],
   "result": {

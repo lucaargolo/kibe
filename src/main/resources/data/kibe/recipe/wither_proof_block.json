@@ -10,10 +10,10 @@
       "item": "minecraft:chain"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "c:obsidians/normal"
     },
     "n": {
-      "item": "minecraft:netherite_ingot"
+      "tag": "c:ingots/netherite"
     }
   },
   "result": {

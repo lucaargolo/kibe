@@ -7,7 +7,7 @@
   ],
   "key": {
     "g": {
-      "item": "minecraft:gold_ingot"
+      "tag": "c:ingots/gold"
     },
     "G": {
       "item": "minecraft:golden_pickaxe"
@@ -19,7 +19,7 @@
       "item": "minecraft:dispenser"
     },
     "R": {
-      "item": "minecraft:redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "result": {

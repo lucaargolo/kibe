@@ -13,13 +13,13 @@
       "item": "minecraft:water_bucket"
     },
     "I": {
-      "item": "minecraft:iron_block"
+      "tag": "c:storage_blocks/iron"
     },
     "L": {
       "item": "minecraft:lava_bucket"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests"
     }
   },
   "result": {

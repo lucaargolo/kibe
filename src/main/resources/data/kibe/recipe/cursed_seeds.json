@@ -10,7 +10,7 @@
       "item": "kibe:cursed_droplets"
     },
     "W": {
-      "item": "minecraft:wheat_seeds"
+      "tag": "c:seeds"
     }
   },
   "result": {

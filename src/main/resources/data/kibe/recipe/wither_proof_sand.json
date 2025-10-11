@@ -13,7 +13,7 @@
       "item": "kibe:obsidian_sand"
     },
     "n": {
-      "item": "minecraft:netherite_ingot"
+      "tag": "c:ingots/netherite"
     }
   },
   "result": {

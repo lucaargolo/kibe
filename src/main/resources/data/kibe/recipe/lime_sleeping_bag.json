@@ -9,7 +9,7 @@
       "item": "minecraft:lime_wool"
     },
     "S": {
-      "item": "minecraft:string"
+      "tag": "c:strings"
     }
   },
   "result": {

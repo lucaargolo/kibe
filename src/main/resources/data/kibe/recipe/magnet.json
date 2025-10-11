@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:red_dye"
+      "tag": "c:dyes/red"
     },
     "i": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     },
     "E": {
       "item": "minecraft:ender_eye"

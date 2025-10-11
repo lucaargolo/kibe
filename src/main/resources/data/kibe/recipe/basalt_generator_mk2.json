@@ -10,7 +10,7 @@
       "item": "kibe:basalt_generator_mk1"
     },
     "G": {
-      "item": "minecraft:gold_block"
+      "tag": "c:storage_blocks/gold"
     }
   },
   "result": {

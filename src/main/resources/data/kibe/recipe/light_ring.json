@@ -10,7 +10,7 @@
       "item": "minecraft:soul_torch"
     },
     "G": {
-      "item": "minecraft:glowstone"
+      "tag": "c:dusts/glowstone"
     },
     "O": {
       "item": "kibe:diamond_ring"

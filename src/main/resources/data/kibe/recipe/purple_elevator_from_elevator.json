@@ -5,7 +5,7 @@
       "tag": "kibe:elevators"
     },
     {
-      "item": "minecraft:purple_dye"
+      "tag": "c:dyes/purple"
     }
   ],
   "result": {
