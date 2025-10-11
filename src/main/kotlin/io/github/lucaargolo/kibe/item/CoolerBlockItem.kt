@@ -17,7 +17,6 @@ import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.tooltip.TooltipData
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
@@ -33,7 +32,7 @@ class CoolerBlockItem(settings: Settings): BlockItem(BlockCompendium.COOLER, set
             stack.get(DataComponentTypes.CONTAINER)?.copyTo(rawInventory)
             val foodStack = rawInventory[0]
             if(!foodStack.isEmpty && foodStack.contains(DataComponentTypes.FOOD)) {
-                entity.eatFood(world, foodStack, foodStack.get(DataComponentTypes.FOOD))
+                rawInventory[0] = entity.eatFood(world, foodStack, foodStack.get(DataComponentTypes.FOOD))
                 stack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(rawInventory))
             }
         }
