@@ -1,13 +1,19 @@
 package io.github.lucaargolo.kibe.client.model
 
 import io.github.lucaargolo.kibe.block.BlockCompendium
+import io.github.lucaargolo.kibe.item.TankBlockItem
 import io.github.lucaargolo.kibe.utils.ModIdentifier
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.BlockState
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.model.*
+import net.minecraft.client.render.model.json.ModelOverrideList
+import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.item.ItemStack
@@ -28,12 +34,22 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     )
     val spriteList = mutableListOf<Sprite>()
 
+    private val modelIdList = mutableListOf(
+        Identifier.of("block/stone")
+    )
+
     override fun getModelDependencies(): Collection<Identifier> = listOf()
 
-    override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) {
-    }
+    override fun setParents(modelLoader: Function<Identifier, UnbakedModel>?) { }
+
+    lateinit var modelTransformation: ModelTransformation
 
     override fun bake(baker: Baker, textureGetter: Function<SpriteIdentifier, Sprite>, rotationContainer: ModelBakeSettings): BakedModel {
+        val model = baker.getOrLoadModel(modelIdList[0])
+        val baked = model.bake(baker, textureGetter, ModelRotation.X0_Y0)!!
+
+        modelTransformation = baked.transformation
+
         spriteIdList.forEach { spriteIdentifier ->
             spriteList.add(textureGetter.apply(spriteIdentifier))
         }
@@ -121,14 +137,49 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
 
     }
 
+    override fun emitItemQuads(stack: ItemStack, randSupplier: Supplier<Random>, context: RenderContext) {
+        val client = MinecraftClient.getInstance()
+        this.emitBlockQuads(null, null, BlockPos.ORIGIN, randSupplier, context)
+
+        val fluidTank = TankBlockItem.getFluidTank(stack)
+        val player = client.player
+        val world = player?.world
+        val pos = player?.blockPos
+
+        val fluid = fluidTank.resource.fluid
+        val fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid) ?: return
+        val fluidColor = fluidRenderHandler.getFluidColor(world, pos, fluid.defaultState)
+        val fluidSprite = fluidRenderHandler.getFluidSprites(world, pos, fluid.defaultState)[0]
+        val color = Color((fluidColor shr 16 and 255), (fluidColor shr 8 and 255), (fluidColor and 255)).rgb
+
+        context.pushTransform { quad ->
+            quad.color(color, color, color, color)
+            true
+        }
+
+        val emitter = context.emitter
+
+        val p = fluidTank.amount/(FluidConstants.BUCKET*16f)
+        emitter.draw(Direction.UP, fluidSprite, 0f, 0f, 1f, 1f, (1f-p)+0.001f )
+        emitter.draw(Direction.DOWN, fluidSprite, 0f, 0f, 1f, 1f, 0.001f)
+        emitter.draw(Direction.NORTH, fluidSprite, 0f, 0f, 1f, p, 0.001f)
+        emitter.draw(Direction.SOUTH, fluidSprite, 0f, 0f, 1f, p, 0.001f)
+        emitter.draw(Direction.EAST, fluidSprite, 0f, 0f, 1f, p, 0.001f)
+        emitter.draw(Direction.WEST, fluidSprite, 0f, 0f, 1f, p, 0.001f)
+
+        context.popTransform()
+    }
+
     private fun QuadEmitter.draw(side: Direction, left: Float, bottom: Float, right: Float, top: Float, depth: Float) {
+        draw(side, particleSprite, left, bottom, right, top, depth)
+    }
+
+    private fun QuadEmitter.draw(side: Direction, sprite: Sprite, left: Float, bottom: Float, right: Float, top: Float, depth: Float) {
         square(side, left, bottom, right, top, depth)
-        spriteBake(particleSprite, MutableQuadView.BAKE_LOCK_UV)
+        spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
         color(-1, -1, -1, -1)
         emit()
     }
-
-    override fun emitItemQuads(p0: ItemStack?, p1: Supplier<Random>?, p2: RenderContext?) {}
 
     override fun getQuads(state: BlockState?, face: Direction?, random: Random?): MutableList<BakedQuad> = mutableListOf()
 
@@ -137,7 +188,7 @@ class TankCustomModel: UnbakedModel, BakedModel, FabricBakedModel {
     override fun isSideLit() = false
     override fun isBuiltin() = false
 
-    override fun getOverrides() = null
-    override fun getTransformation() = null
+    override fun getOverrides(): ModelOverrideList = ModelOverrideList.EMPTY
+    override fun getTransformation() = modelTransformation
 
 }

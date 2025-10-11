@@ -24,17 +24,27 @@ class TankBlockItem(settings: Settings): BlockItem(BlockCompendium.TANK, setting
 
     override fun appendTooltip(stack: ItemStack, context: TooltipContext?, tooltip: MutableList<Text>, type: TooltipType?) {
         super.appendTooltip(stack, context, tooltip, type)
-        val blockEntityTag = stack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
-        val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
-            override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
-            override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
+        getFluidTank(stack).let {
+            if(!it.isResourceBlank) {
+                tooltip.add(FluidVariantAttributes.getName(it.variant)
+                    .copyContentOnly()
+                    .append(Text.literal(": ${Formatting.GRAY}${FluidHelper.getMb(it.amount)}mB"))
+                )
+            }
         }
-        FluidHelper.readTank(blockEntityTag, dummyFluidTank)
-        if(!dummyFluidTank.isResourceBlank)
-            tooltip.add(FluidVariantAttributes.getName(dummyFluidTank.variant).copyContentOnly().append(Text.literal(": ${Formatting.GRAY}${FluidHelper.getMb(dummyFluidTank.amount)}mB")))
     }
 
     companion object {
+
+        fun getFluidTank(stack: ItemStack): SingleVariantStorage<FluidVariant> {
+            val blockEntityTag = stack.get(DataComponentTypes.CUSTOM_DATA)?.copyNbt() ?: NbtCompound()
+            val dummyFluidTank = object: SingleVariantStorage<FluidVariant>() {
+                override fun getBlankVariant(): FluidVariant = FluidVariant.blank()
+                override fun getCapacity(variant: FluidVariant?): Long = FluidConstants.BUCKET * 16
+            }
+            FluidHelper.readTank(blockEntityTag, dummyFluidTank)
+            return dummyFluidTank
+        }
 
         fun getFluidStorage(stack: ItemStack, context: ContainerItemContext): Storage<FluidVariant> {
             val tank = object: SingleVariantStorage<FluidVariant>() {

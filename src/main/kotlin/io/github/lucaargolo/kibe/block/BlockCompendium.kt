@@ -126,7 +126,7 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
                 if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID) {
                     when (modelIdentifier.id.path) {
                         "drawbridge" -> DrawbridgeCustomModel()
-                        "tank" -> if(modelIdentifier.variant != "inventory") TankCustomModel() else model
+                        "tank" -> TankCustomModel()
                         else -> model
                     }
                 } else model

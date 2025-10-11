@@ -10,7 +10,6 @@ import io.github.lucaargolo.kibe.client.item.EntangledTankBlockItemDynamicRender
 import io.github.lucaargolo.kibe.client.item.GliderDynamicRenderer
 import io.github.lucaargolo.kibe.client.model.EntangledBagBakedModel
 import io.github.lucaargolo.kibe.client.model.EntangledBucketBakedModel
-import io.github.lucaargolo.kibe.client.model.TankBlockItemBakedModel
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import io.github.lucaargolo.kibe.utils.helper.AbilityHelper
@@ -146,7 +145,6 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
                     when (modelIdentifier.id.path) {
                         "entangled_bag" -> EntangledBagBakedModel()
                         "entangled_bucket" -> EntangledBucketBakedModel()
-                        "tank" -> TankBlockItemBakedModel()
                         else -> model
                     }
                 } else model
