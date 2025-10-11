@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:leather"
+      "tag": "c:leathers"
     },
     "E": {
       "item": "kibe:entangled_chest"

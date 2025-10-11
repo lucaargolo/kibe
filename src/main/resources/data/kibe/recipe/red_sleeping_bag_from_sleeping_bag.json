@@ -5,7 +5,7 @@
       "tag": "kibe:sleeping_bags"
     },
     {
-      "item": "minecraft:red_dye"
+      "tag": "c:dyes/red"
     }
   ],
   "result": {

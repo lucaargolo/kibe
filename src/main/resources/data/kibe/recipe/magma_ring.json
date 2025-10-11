@@ -19,7 +19,7 @@
       "item": "minecraft:nether_wart"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "c:obsidians/normal"
     }
   },
   "result": {

@@ -36,8 +36,8 @@ public abstract class EntityMixin {
                 pos = pos.down();
                 while(pos.getY() > world.getBottomY()) {
                     if(world.getBlockState(pos.down()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.down())) {
-                        world.playSound(null, pos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
                         requestTeleport(this.pos.x, pos.down().getY()+1.15, this.pos.z);
+                        world.playSound(null, pos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
                         break;
                     }else{
                         pos = pos.down();

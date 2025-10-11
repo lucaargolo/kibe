@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "kibe:white_glider",
+    "kibe:orange_glider",
+    "kibe:magenta_glider",
+    "kibe:light_blue_glider",
+    "kibe:yellow_glider",
+    "kibe:lime_glider",
+    "kibe:pink_glider",
+    "kibe:gray_glider",
+    "kibe:light_gray_glider",
+    "kibe:cyan_glider",
+    "kibe:blue_glider",
+    "kibe:purple_glider",
+    "kibe:green_glider",
+    "kibe:brown_glider",
+    "kibe:red_glider",
+    "kibe:black_glider"
+  ]
+}

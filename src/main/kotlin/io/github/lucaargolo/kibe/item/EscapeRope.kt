@@ -7,11 +7,20 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.item.ToolItem
 import net.minecraft.item.ToolMaterial
+import net.minecraft.particle.ParticleTypes
 import net.minecraft.recipe.Ingredient
 import net.minecraft.registry.tag.BlockTags
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
+import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvents
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.UseAction
+import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
+import net.minecraft.world.Heightmap
+import net.minecraft.world.TeleportTarget
 import net.minecraft.world.World
 
 class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
@@ -38,14 +47,21 @@ class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
     }
 
     override fun onStoppedUsing(stack: ItemStack, world: World, entity: LivingEntity, remainingUseTicks: Int) {
-        if(entity !is PlayerEntity || 72000 - remainingUseTicks < 20) return
-        var pos = entity.blockPos
-        while (!world.isSkyVisible(pos) && pos.y < world.dimension.logicalHeight-2) {
-            pos = pos.up()
-        }
-        if(pos.y != entity.blockPos.y && world.getBlockState(pos.up()).isAir && world.getBlockState(pos.up().up()).isAir) {
-            stack.damage(pos.y-entity.blockPos.y, entity, if(entity.activeHand == Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
-            entity.teleport(pos.x+0.5, pos.y+1.0, pos.z+0.5, true)
+        if(entity !is ServerPlayerEntity || 72000 - remainingUseTicks < 20) return
+        if(!world.dimension.hasCeiling) {
+            val topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, entity.blockPos.x, entity.blockPos.z)
+            val pos = entity.pos.withAxis(Direction.Axis.Y, topY+0.5)
+            if(pos.distanceTo(entity.pos) > 2) {
+                if(world is ServerWorld) {
+                    world.spawnParticles(ParticleTypes.WHITE_SMOKE, pos.x, pos.y, pos.z, 32, 0.0, 1.0, 0.0, 0.01)
+                    entity.teleportTo(TeleportTarget(world, pos, entity.getVelocity(), entity.getYaw(), entity.getPitch(), TeleportTarget.NO_OP))
+                    entity.onLanding()
+                    entity.clearCurrentExplosion()
+                    stack.damage(MathHelper.floor(pos.y) - entity.blockPos.y, entity, if (entity.activeHand == Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
+                    world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_LEASH_KNOT_PLACE, SoundCategory.PLAYERS)
+                }
+
+            }
         }
     }
 

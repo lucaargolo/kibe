@@ -2,13 +2,20 @@ package io.github.lucaargolo.kibe.block
 
 import com.mojang.serialization.MapCodec
 import io.github.lucaargolo.kibe.blockentity.CoolerBlockEntity
+import io.github.lucaargolo.kibe.item.ItemCompendium
 import io.github.lucaargolo.kibe.menu.CoolerScreenHandler
 import io.github.lucaargolo.kibe.utils.menu.BlockScreenHandlerFactory
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
+import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ActionResult
@@ -44,6 +51,22 @@ class Cooler(settings: Settings): BlockWithEntity(settings) {
     }
 
     override fun onUse(state: BlockState?, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult?): ActionResult {
+        if(player.isSneaking) {
+            val playerInventoryStorage = PlayerInventoryStorage.of(player)
+            val inserted = StorageUtil.simulateInsert(playerInventoryStorage, ItemVariant.of(ItemCompendium.COOLER), 1L, null)
+            if(inserted > 0L) {
+                if(world is ServerWorld) {
+                    getDroppedStacks(state, world, pos, world.getBlockEntity(pos), player, ItemStack.EMPTY).forEach {
+                        Transaction.openOuter().use { transaction ->
+                            playerInventoryStorage.offerOrDrop(ItemVariant.of(it), it.count + 0L, transaction)
+                            transaction.commit()
+                        }
+                    }
+                    world.breakBlock(pos, false)
+                }
+                return ActionResult.SUCCESS
+            }
+        }
         player.openHandledScreen(BlockScreenHandlerFactory(this, pos, ::CoolerScreenHandler))
         return ActionResult.SUCCESS
     }

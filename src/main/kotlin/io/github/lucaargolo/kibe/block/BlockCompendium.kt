@@ -48,7 +48,7 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     val ENTANGLED_TANK by register("entangled_tank", { EntangledTank(Settings.copy(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F).luminance { state -> state[Properties.LEVEL_15] }) }, false)
     val ENTANGLED_CHEST by register("entangled_chest", { EntangledChest(Settings.copy(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F)) }, false)
     val TRASH_CAN by register("trash_can", { TrashCan(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)) })
-    val VACUUM_HOPPER by register("vacuum_hopper", { VacuumHopper(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) })
+    val VACUUM_HOPPER by register("vacuum_hopper", { VacuumHopper(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)) })
     val BIG_TORCH by register("big_torch", { BigTorch(Settings.copy(Blocks.TORCH).strength(0.5f).luminance{ state -> if(state[Properties.ENABLED]) 15 else 0 }.sounds(BlockSoundGroup.WOOD)) })
     val COOLER by register("cooler", { Cooler(Settings.create().strength(0.2F).sounds(BlockSoundGroup.SNOW)) }, false)
     val DRAWBRIDGE by register("drawbridge", { Drawbridge(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()) })
@@ -132,7 +132,7 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
                 if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID) {
                     when (modelIdentifier.id.path) {
                         "drawbridge" -> DrawbridgeCustomModel()
-                        "tank" -> if(modelIdentifier.variant != "inventory") TankCustomModel() else model
+                        "tank" -> TankCustomModel()
                         else -> model
                     }
                 } else model

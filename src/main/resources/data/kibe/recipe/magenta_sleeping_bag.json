@@ -9,7 +9,7 @@
       "item": "minecraft:magenta_wool"
     },
     "S": {
-      "item": "minecraft:string"
+      "tag": "c:strings"
     }
   },
   "result": {

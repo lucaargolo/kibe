@@ -7,7 +7,7 @@
   ],
   "key": {
     "/": {
-      "item": "minecraft:blaze_rod"
+      "tag": "c:rods/blaze"
     },
     "S": {
       "item": "minecraft:stone_bricks"
@@ -19,7 +19,7 @@
       "item": "minecraft:cauldron"
     },
     "G": {
-      "item": "minecraft:gold_block"
+      "tag": "c:storage_blocks/gold"
     }
   },
   "result": {

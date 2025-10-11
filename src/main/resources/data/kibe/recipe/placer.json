@@ -13,16 +13,16 @@
       "item": "minecraft:dropper"
     },
     "R": {
-      "item": "minecraft:redstone"
+      "tag": "c:dusts/redstone"
     },
     "P": {
       "item": "minecraft:dispenser"
     },
     "C": {
-      "item": "minecraft:cobblestone"
+      "tag": "c:cobblestones"
     },
     "L": {
-      "item": "minecraft:chest"
+      "tag": "c:chests"
     }
   },
   "result": {

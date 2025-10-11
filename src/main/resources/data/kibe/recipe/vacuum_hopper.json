@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:obsidian"
+      "tag": "c:obsidians/normal"
     },
     "I": {
       "item": "minecraft:iron_bars"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests"
     },
     "E": {
       "item": "minecraft:ender_eye"

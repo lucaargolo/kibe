@@ -97,8 +97,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         if (block instanceof Elevator && getWorld().getBlockState(pos).getCollisionShape(getWorld(), pos).isEmpty()) {
             while(pos.getY() < getWorld().getTopY()) {
                 if(getWorld().getBlockState(pos.up()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(getWorld(), pos.up())) {
-                    getWorld().playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, getWorld().random.nextFloat() * 0.25F + 0.6F);
                     this.teleport(this.getPos().x, pos.up().getY()+1.15, this.getPos().z, false);
+                    getWorld().playSound(null, pos, SoundEvents.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5F, getWorld().random.nextFloat() * 0.25F + 0.6F);
                     break;
                 }else{
                     pos = pos.up();

@@ -13,13 +13,13 @@
       "item": "minecraft:blue_ice"
     },
     "I": {
-      "item": "minecraft:iron_block"
+      "tag": "c:storage_blocks/iron"
     },
     "L": {
       "item": "minecraft:lava_bucket"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests"
     }
   },
   "result": {

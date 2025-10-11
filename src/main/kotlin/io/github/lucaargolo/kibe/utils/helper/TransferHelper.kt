@@ -30,7 +30,17 @@ import thedarkcolour.kotlinforforge.neoforge.forge.runForDist
 object TransferHelper {
 
     fun initialize() {
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.BIG_TORCH)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.BLOCK_GENERATOR)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.BREAKER)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.COOLER)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.DRAWBRIDGE)
         ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.ENTANGLED_CHEST)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.PLACER)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.TRASH_CAN)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.VACUUM_HOPPER)
+        ItemStorage.SIDED.registerForBlockEntity(InventoryStorage::of, BlockEntityCompendium.WITHER_BUILDER)
+
         FluidStorage.SIDED.registerForBlockEntity(EntangledTankEntity.Companion::getFluidStorage, BlockEntityCompendium.ENTANGLED_TANK)
         FluidStorage.SIDED.registerForBlockEntity(FluidHopperBlockEntity.Companion::getFluidStorage, BlockEntityCompendium.FLUID_HOPPER)
         FluidStorage.SIDED.registerForBlockEntity(VacuumHopperEntity.Companion::getFluidStorage, BlockEntityCompendium.VACUUM_HOPPER)

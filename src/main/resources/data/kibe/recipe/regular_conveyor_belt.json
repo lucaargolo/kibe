@@ -7,16 +7,16 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:yellow_dye"
+      "tag": "c:dyes/yellow"
     },
     "S": {
-      "item": "minecraft:leather"
+      "tag": "c:leathers"
     },
     "L": {
       "item": "minecraft:sugar"
     },
     "i": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     }
   },
   "result": {

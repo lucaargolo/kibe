@@ -7,19 +7,19 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:cobblestone"
+      "tag": "c:cobblestones"
     },
     "S": {
       "item": "minecraft:sponge"
     },
     "L": {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "c:gems/lapis"
     },
     "F": {
       "item": "minecraft:furnace"
     },
     "N": {
-      "item": "minecraft:sand"
+      "tag": "c:sands"
     }
   },
   "result": {

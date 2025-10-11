@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:string"
+      "tag": "c:strings"
     },
     "S": {
       "item": "minecraft:slime_block"

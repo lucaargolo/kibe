@@ -13,7 +13,7 @@
       "item": "minecraft:stone_bricks"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests"
     },
     "F": {
       "item": "minecraft:cactus"

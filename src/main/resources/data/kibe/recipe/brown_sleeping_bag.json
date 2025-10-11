@@ -9,7 +9,7 @@
       "item": "minecraft:brown_wool"
     },
     "S": {
-      "item": "minecraft:string"
+      "tag": "c:strings"
     }
   },
   "result": {

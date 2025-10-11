@@ -10,7 +10,6 @@ import io.github.lucaargolo.kibe.client.item.EntangledTankBlockItemDynamicRender
 import io.github.lucaargolo.kibe.client.item.GliderDynamicRenderer
 import io.github.lucaargolo.kibe.client.model.EntangledBagBakedModel
 import io.github.lucaargolo.kibe.client.model.EntangledBucketBakedModel
-import io.github.lucaargolo.kibe.client.model.TankBlockItemBakedModel
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import io.github.lucaargolo.kibe.utils.helper.AbilityHelper
@@ -110,7 +109,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val ENTANGLED_TANK by register("entangled_tank", { EntangledTankBlockItem(Settings()) })
     val ENTANGLED_BAG by register("entangled_bag", { EntangledBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
     val ENTANGLED_BUCKET by register("entangled_bucket", { EntangledBucket(Settings().maxCount(1).rarity(Rarity.RARE)) })
-    val COOLER by register("cooler", { CoolerBlockItem(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
+    val COOLER by register("cooler", { CoolerBlockItem.create(Settings().maxCount(1).rarity(Rarity.UNCOMMON)) })
     val TANK by register("tank", { TankBlockItem(Settings()) })
     
     val WHITE_SLEEPING_BAG by register("white_sleeping_bag", { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) })
@@ -180,7 +179,6 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
                     when (modelIdentifier.id.path) {
                         "entangled_bag" -> EntangledBagBakedModel()
                         "entangled_bucket" -> EntangledBucketBakedModel()
-                        "tank" -> TankBlockItemBakedModel()
                         else -> model
                     }
                 } else model

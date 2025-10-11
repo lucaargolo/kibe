@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "kibe:basalt_generator_mk2",
     "kibe:cobblestone_generator_mk2",

@@ -10,10 +10,10 @@
       "item": "minecraft:ender_eye"
     },
     "G": {
-      "item": "minecraft:gold_block"
+      "tag": "c:storage_blocks/gold"
     },
     "O": {
-      "item": "minecraft:obsidian"
+      "tag": "c:obsidians/normal"
     },
     "E": {
       "item": "minecraft:enchanting_table"

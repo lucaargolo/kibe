@@ -7,10 +7,10 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:string"
+      "tag": "c:strings"
     },
     "i": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     }
   },
   "result": {

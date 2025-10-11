@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:coal_block"
+      "tag": "c:storage_blocks/coal"
     },
     "O": {
       "tag": "minecraft:logs"

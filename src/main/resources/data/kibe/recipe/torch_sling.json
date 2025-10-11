@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:string"
+      "tag": "c:strings"
     },
     "C": {
       "item": "minecraft:coal"

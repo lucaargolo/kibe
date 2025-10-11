@@ -10,7 +10,7 @@
       "item": "kibe:basalt_generator_mk4"
     },
     "G": {
-      "item": "minecraft:netherite_block"
+      "tag": "c:storage_blocks/netherite"
     }
   },
   "result": {

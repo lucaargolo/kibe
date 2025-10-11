@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:diamond"
+      "tag": "c:gems/diamond"
     },
     "C": {
       "item": "kibe:golden_kibe"
