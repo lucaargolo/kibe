@@ -5,6 +5,7 @@ import io.github.lucaargolo.kibe.data.component.ComponentTypeCompendium
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
 import net.minecraft.block.Block
+import net.minecraft.block.Blocks
 import net.minecraft.component.ComponentType
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.loot.LootPool
@@ -21,6 +22,8 @@ class KibeBlockLootProvider(dataOutput: FabricDataOutput, registryLookup: Comple
     override fun generate() {
         val list = mutableListOf<Block>()
         list.addAll(BlockCompendium.map.values)
+        list.remove(BlockCompendium.CURSED_DIRT)
+        this.addDrop(BlockCompendium.CURSED_DIRT) { block -> this.drops(Blocks.DIRT) }
         addBlockEntity(list, BlockCompendium.ENTANGLED_CHEST, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)
         addBlockEntity(list, BlockCompendium.ENTANGLED_TANK, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)
         addBlockEntity(list, BlockCompendium.TANK, DataComponentTypes.CUSTOM_DATA)
