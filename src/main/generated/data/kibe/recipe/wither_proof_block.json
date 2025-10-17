@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "minecraft:chain"
+    },
+    "O": {
+      "tag": "c:obsidians/normal"
+    },
+    "n": {
+      "tag": "c:ingots/netherite"
+    }
+  },
+  "pattern": [
+    "#O#",
+    "OnO",
+    "#O#"
+  ],
+  "result": {
+    "count": 4,
+    "id": "kibe:wither_proof_block"
+  }
+}

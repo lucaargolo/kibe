@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_glider_left_wing": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:glider_left_wing"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:glider_right_wing_from_left"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_glider_left_wing"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:glider_right_wing_from_left"
+    ]
+  }
+}

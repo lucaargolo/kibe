@@ -96,7 +96,7 @@
   "item.kibe.gray_sleeping_bag": "Gray Sleeping Bag",
   "item.kibe.light_gray_sleeping_bag": "Light Gray Sleeping Bag",
   "item.kibe.cyan_sleeping_bag": "Cyan Sleeping Bag",
-  "item.kibe.sleeping_bag": "Blue Sleeping Bag",
+  "item.kibe.blue_sleeping_bag": "Blue Sleeping Bag",
   "item.kibe.purple_sleeping_bag": "Purple Sleeping Bag",
   "item.kibe.green_sleeping_bag": "Green Sleeping Bag",
   "item.kibe.brown_sleeping_bag": "Brown Sleeping Bag",
@@ -252,5 +252,7 @@
 
   "tag.item.kibe.elevators": "Elevators",
   "tag.item.kibe.gliders": "Gliders",
-  "tag.item.kibe.sleeping_bags": "Sleeping Bags"
+  "tag.item.kibe.sleeping_bags": "Sleeping Bags",
+
+  "enchantment.kibe.slimy": "Slimy"
 }

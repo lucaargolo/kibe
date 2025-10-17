@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "kibe:cursed_dirt"
+          "name": "minecraft:dirt"
         }
       ],
       "rolls": 1.0

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:soul_soil"
+    },
+    "C": {
+      "tag": "c:chests"
+    },
+    "I": {
+      "tag": "c:storage_blocks/iron"
+    },
+    "L": {
+      "tag": "c:buckets/lava"
+    },
+    "W": {
+      "item": "minecraft:blue_ice"
+    }
+  },
+  "pattern": [
+    "###",
+    "WIL",
+    "#C#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:basalt_generator_mk1"
+  }
+}

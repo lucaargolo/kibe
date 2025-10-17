@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "G": {
+      "item": "minecraft:golden_pickaxe"
+    },
+    "P": {
+      "item": "minecraft:polished_basalt"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "g": {
+      "tag": "c:ingots/gold"
+    }
+  },
+  "pattern": [
+    "gGg",
+    "PDP",
+    "PRP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:drawbridge"
+  }
+}

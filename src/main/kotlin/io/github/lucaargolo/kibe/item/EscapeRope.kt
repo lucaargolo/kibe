@@ -51,13 +51,14 @@ class EscapeRope(settings: Settings): ToolItem(object: ToolMaterial {
         if(!world.dimension.hasCeiling) {
             val topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, entity.blockPos.x, entity.blockPos.z)
             val pos = entity.pos.withAxis(Direction.Axis.Y, topY+0.5)
-            if(pos.distanceTo(entity.pos) > 2) {
+            val distance = pos.distanceTo(entity.pos)
+            if(distance > 2) {
                 if(world is ServerWorld) {
                     world.spawnParticles(ParticleTypes.WHITE_SMOKE, pos.x, pos.y, pos.z, 32, 0.0, 1.0, 0.0, 0.01)
                     entity.teleportTo(TeleportTarget(world, pos, entity.getVelocity(), entity.getYaw(), entity.getPitch(), TeleportTarget.NO_OP))
                     entity.onLanding()
                     entity.clearCurrentExplosion()
-                    stack.damage(MathHelper.floor(pos.y) - entity.blockPos.y, entity, if (entity.activeHand == Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
+                    stack.damage(MathHelper.floor(distance), entity, if (entity.activeHand == Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
                     world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_LEASH_KNOT_PLACE, SoundCategory.PLAYERS)
                 }
 

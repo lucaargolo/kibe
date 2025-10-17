@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:nether_star"
+    },
+    "G": {
+      "item": "kibe:diamond_ring"
+    },
+    "N": {
+      "item": "minecraft:nether_wart"
+    },
+    "P": {
+      "item": "minecraft:pufferfish"
+    },
+    "T": {
+      "item": "minecraft:lily_pad"
+    }
+  },
+  "pattern": [
+    " # ",
+    "PGP",
+    "NTN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:water_ring"
+  }
+}

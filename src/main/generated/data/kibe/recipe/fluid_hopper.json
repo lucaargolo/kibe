@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:cauldron"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "i i",
+    "iCi",
+    " i "
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:fluid_hopper"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:blue_wool"
+    },
+    "S": {
+      "tag": "c:strings"
+    }
+  },
+  "pattern": [
+    "###",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:blue_sleeping_bag"
+  }
+}

@@ -12,11 +12,11 @@ import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
 object EntityCompendium : RegistryCompendium<EntityType<*>>(Registries.ENTITY_TYPE) {
 
-    val THROWN_TORCH by register("thrown_torch", {
+    val THROWN_TORCH by register("thrown_torch") {
         EntityType.Builder.create(::ThrownTorchEntity, SpawnGroup.MISC)
             .dimensions(0.25f, 0.25f)
             .build("thrown_torch")
-    })
+    }
 
     override fun initializeClient() {
         MOD_BUS.addListener(::onClientSetup)

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fast_conveyor_belt": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:fast_conveyor_belt"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:express_conveyor_belt"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fast_conveyor_belt"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:express_conveyor_belt"
+    ]
+  }
+}

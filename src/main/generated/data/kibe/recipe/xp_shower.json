@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "item": "minecraft:iron_bars"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "iB",
+    " I"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:xp_shower"
+  }
+}

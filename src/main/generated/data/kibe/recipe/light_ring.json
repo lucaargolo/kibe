@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:soul_torch"
+    },
+    "G": {
+      "tag": "c:dusts/glowstone"
+    },
+    "O": {
+      "item": "kibe:diamond_ring"
+    }
+  },
+  "pattern": [
+    "#G#",
+    "GOG",
+    "#G#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:light_ring"
+  }
+}

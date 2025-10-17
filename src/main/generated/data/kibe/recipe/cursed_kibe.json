@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "kibe:cursed_droplets"
+    },
+    "C": {
+      "item": "kibe:kibe"
+    }
+  },
+  "pattern": [
+    " C ",
+    "C#C",
+    " C "
+  ],
+  "result": {
+    "count": 8,
+    "id": "kibe:cursed_kibe"
+  }
+}

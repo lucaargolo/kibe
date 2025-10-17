@@ -8,6 +8,6 @@ import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
 object RecipeSerializerCompendium: RegistryCompendium<RecipeSerializer<*>>(Registries.RECIPE_SERIALIZER) {
 
-    val VACUUM_HOPPER by register("vacuum_hopper", { VacuumHopperRecipeSerializer() })
+    val VACUUM_HOPPER by register("vacuum_hopper") { VacuumHopperRecipeSerializer() }
 
 }

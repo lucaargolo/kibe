@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "kibe:elevators"
+    },
+    {
+      "tag": "c:dyes/cyan"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:cyan_elevator"
+  }
+}

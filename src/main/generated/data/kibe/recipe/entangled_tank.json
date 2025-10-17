@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "/": {
+      "tag": "c:rods/blaze"
+    },
+    "C": {
+      "item": "minecraft:cauldron"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "G": {
+      "tag": "c:storage_blocks/gold"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "pattern": [
+    "/S/",
+    "ECE",
+    "/G/"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:entangled_tank"
+  }
+}

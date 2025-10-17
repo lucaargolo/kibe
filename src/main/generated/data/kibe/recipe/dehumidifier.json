@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:cobblestones/normal"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "L": {
+      "tag": "c:gems/lapis"
+    },
+    "N": {
+      "tag": "c:sands"
+    },
+    "S": {
+      "item": "minecraft:sponge"
+    }
+  },
+  "pattern": [
+    "#S#",
+    "LFL",
+    "#N#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:dehumidifier"
+  }
+}

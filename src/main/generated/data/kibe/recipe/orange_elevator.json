@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:orange_wool"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "#E#",
+    "iPi",
+    "#i#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:orange_elevator"
+  }
+}

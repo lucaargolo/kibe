@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:smooth_stone"
+    },
+    "C": {
+      "tag": "c:cobblestones/normal"
+    },
+    "D": {
+      "item": "minecraft:dropper"
+    },
+    "L": {
+      "tag": "c:chests"
+    },
+    "P": {
+      "item": "minecraft:dispenser"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "#D#",
+    "RPR",
+    "CLC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:placer"
+  }
+}

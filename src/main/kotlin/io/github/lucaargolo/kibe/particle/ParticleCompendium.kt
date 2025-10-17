@@ -12,7 +12,7 @@ import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
 object ParticleCompendium: RegistryCompendium<ParticleType<*>>(Registries.PARTICLE_TYPE) {
 
-    val WATER_DROPS by register("water_drops", { FabricParticleTypes.simple() })
+    val WATER_DROPS by register("water_drops") { FabricParticleTypes.simple() }
 
     override fun initializeClient() {
         MOD_BUS.addListener(::onClientSetup)

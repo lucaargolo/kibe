@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:blue_ice"
+    },
+    "C": {
+      "tag": "c:chests"
+    },
+    "S": {
+      "item": "minecraft:snow_block"
+    },
+    "W": {
+      "item": "minecraft:white_stained_glass"
+    }
+  },
+  "pattern": [
+    "#W#",
+    "SCS",
+    "#S#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:cooler"
+  }
+}

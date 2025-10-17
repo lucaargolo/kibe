@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:nether_star"
+    },
+    "G": {
+      "item": "kibe:diamond_ring"
+    },
+    "M": {
+      "item": "minecraft:magma_cream"
+    },
+    "N": {
+      "item": "minecraft:nether_wart"
+    },
+    "O": {
+      "tag": "c:obsidians"
+    }
+  },
+  "pattern": [
+    " # ",
+    "MGM",
+    "NON"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:magma_ring"
+  }
+}

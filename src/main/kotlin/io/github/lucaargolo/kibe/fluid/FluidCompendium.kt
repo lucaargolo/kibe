@@ -13,6 +13,7 @@ import net.minecraft.sound.SoundEvents
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent
 import net.neoforged.neoforge.common.SoundActions
+import net.minecraft.util.Identifier
 import net.neoforged.neoforge.fluids.FluidType
 import net.neoforged.neoforge.fluids.FluidType.Properties
 import net.neoforged.neoforge.registries.DeferredHolder
@@ -21,7 +22,6 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 import java.util.function.Supplier
-
 
 object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
@@ -40,6 +40,7 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
     val LIQUID_XP by registerStill("liquid_xp", { LiquidXpFluid.Still() })
     val LIQUID_XP_FLOWING by registerFlowing("flowing_liquid_xp", { LiquidXpFluid.Flowing() })
+    val EXPERIENCE = registerTag(Identifier.of("c", "experience"), "liquid_xp")
 
     fun <E : FlowableFluid> registerStill(string: String, entry: () -> E): DeferredHolder<Fluid, E> {
         val delegate = super.register(string, entry)

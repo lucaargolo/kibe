@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "kibe.refmap.json",
   "mixins": [
+    "AnvilScreenHandlerMixin",
     "BiomeMixin",
     "BlockRenderViewMixin",
     "BucketItemAccessor",

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "kibe:elevators"
+    },
+    {
+      "tag": "c:dyes/brown"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:brown_elevator"
+  }
+}

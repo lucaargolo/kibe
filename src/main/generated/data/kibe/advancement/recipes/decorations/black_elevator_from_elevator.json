@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_elevators": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#kibe:elevators"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:black_elevator_from_elevator"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_elevators"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:black_elevator_from_elevator"
+    ]
+  }
+}

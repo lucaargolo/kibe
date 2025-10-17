@@ -10,27 +10,34 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.client.ClientHooks
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
+import java.util.function.Supplier
 
 object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries.BLOCK_ENTITY_TYPE) {
 
-    val REDSTONE_TIMER by register("redstone_timer", { BlockEntityType.Builder.create(::RedstoneTimerEntity, BlockCompendium.REDSTONE_TIMER).build(null) })
-    val ENTANGLED_TANK by register("entangled_tank", { BlockEntityType.Builder.create(::EntangledTankEntity, BlockCompendium.ENTANGLED_TANK).build(null) })
-    val ENTANGLED_CHEST by register("entangled_chest", { BlockEntityType.Builder.create(::EntangledChestEntity, BlockCompendium.ENTANGLED_CHEST).build(null) })
-    val TRASH_CAN by register("trash_can", { BlockEntityType.Builder.create(::TrashCanEntity, BlockCompendium.TRASH_CAN).build(null) })
-    val VACUUM_HOPPER by register("vacuum_hopper", { BlockEntityType.Builder.create(::VacuumHopperEntity, BlockCompendium.VACUUM_HOPPER).build(null) })
-    val BIG_TORCH by register("big_torch", { BlockEntityType.Builder.create(::BigTorchBlockEntity, BlockCompendium.BIG_TORCH).build(null) })
-    val COOLER by register("cooler", { BlockEntityType.Builder.create(::CoolerBlockEntity, BlockCompendium.COOLER).build(null) })
-    val DRAWBRIDGE by register("drawbridge", { BlockEntityType.Builder.create(::DrawbridgeBlockEntity, BlockCompendium.DRAWBRIDGE).build(null) })
-    val WITHER_BUILDER by register("wither_builder", { BlockEntityType.Builder.create(::WitherBuilderBlockEntity, BlockCompendium.WITHER_BUILDER).build(null) })
-    val PLACER by register("placer", { BlockEntityType.Builder.create(::PlacerBlockEntity, BlockCompendium.PLACER).build(null) })
-    val BREAKER by register("breaker", { BlockEntityType.Builder.create(::BreakerBlockEntity, BlockCompendium.BREAKER).build(null) })
-    val HEATER by register("heater", { BlockEntityType.Builder.create(::HeaterBlockEntity, BlockCompendium.HEATER).build(null) })
-    val DEHUMIDIFIER by register("dehumidifier", { BlockEntityType.Builder.create(::DehumidifierBlockEntity, BlockCompendium.DEHUMIDIFIER).build(null) })
-    val BLOCK_GENERATOR by register("block_generator", { BlockEntityType.Builder.create(::BlockGeneratorBlockEntity, *BlockCompendium.BLOCK_GENERATORS).build(null) })
-    val CHUNK_LOADER by register("chunk_loader", { BlockEntityType.Builder.create(::ChunkLoaderBlockEntity, BlockCompendium.CHUNK_LOADER).build(null) })
-    val TANK by register("tank", { BlockEntityType.Builder.create(::TankBlockEntity, BlockCompendium.TANK).build(null) })
-    val XP_SHOWER by register("xp_shower", { BlockEntityType.Builder.create(::XpShowerBlockEntity, BlockCompendium.XP_SHOWER).build(null) })
-    val FLUID_HOPPER by register("fluid_hopper", { BlockEntityType.Builder.create(::FluidHopperBlockEntity, BlockCompendium.FLUID_HOPPER).build(null) })
+    val REDSTONE_TIMER by register("redstone_timer", ::RedstoneTimerEntity, { BlockCompendium.REDSTONE_TIMER })
+    val ENTANGLED_TANK by register("entangled_tank", ::EntangledTankEntity, { BlockCompendium.ENTANGLED_TANK })
+    val ENTANGLED_CHEST by register("entangled_chest", ::EntangledChestEntity, { BlockCompendium.ENTANGLED_CHEST })
+    val TRASH_CAN by register("trash_can", ::TrashCanEntity, { BlockCompendium.TRASH_CAN })
+    val VACUUM_HOPPER by register("vacuum_hopper", ::VacuumHopperEntity, { BlockCompendium.VACUUM_HOPPER })
+    val BIG_TORCH by register("big_torch", ::BigTorchBlockEntity, { BlockCompendium.BIG_TORCH })
+    val COOLER by register("cooler", ::CoolerBlockEntity, { BlockCompendium.COOLER })
+    val DRAWBRIDGE by register("drawbridge", ::DrawbridgeBlockEntity, { BlockCompendium.DRAWBRIDGE })
+    val WITHER_BUILDER by register("wither_builder", ::WitherBuilderBlockEntity, { BlockCompendium.WITHER_BUILDER })
+    val PLACER by register("placer", ::PlacerBlockEntity, { BlockCompendium.PLACER })
+    val BREAKER by register("breaker", ::BreakerBlockEntity, { BlockCompendium.BREAKER })
+    val HEATER by register("heater", ::HeaterBlockEntity, { BlockCompendium.HEATER })
+    val DEHUMIDIFIER by register("dehumidifier", ::DehumidifierBlockEntity, { BlockCompendium.DEHUMIDIFIER })
+    val BLOCK_GENERATOR by register("block_generator", ::BlockGeneratorBlockEntity, *BlockCompendium.BLOCK_GENERATORS.values.map { Supplier{ it.value } }.toTypedArray())
+    val CHUNK_LOADER by register("chunk_loader", ::ChunkLoaderBlockEntity, { BlockCompendium.CHUNK_LOADER })
+    val TANK by register("tank", ::TankBlockEntity, { BlockCompendium.TANK })
+    val XP_SHOWER by register("xp_shower", ::XpShowerBlockEntity, { BlockCompendium.XP_SHOWER })
+    val FLUID_HOPPER by register("fluid_hopper", ::FluidHopperBlockEntity, { BlockCompendium.FLUID_HOPPER })
+
+    fun <B: BlockEntity> register(string: String, factory: BlockEntityType.BlockEntityFactory<B>, vararg blocks: Supplier<Block>): Lazy<BlockEntityType<B>> {
+        return register(string) {
+            BlockEntityType.Builder.create(factory, *blocks.map { it.get() }.toTypedArray()).build(null)
+        }
+    }
 
     override fun initializeClient() {
         super.initializeClient()

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "l": {
+      "tag": "c:gems/lapis"
+    },
+    "y": {
+      "tag": "c:dyes/yellow"
+    }
+  },
+  "pattern": [
+    " l ",
+    "lil",
+    " ly"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:measuring_tape"
+  }
+}

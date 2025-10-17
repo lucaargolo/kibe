@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "tag": "minecraft:signs"
+    },
+    {
+      "item": "kibe:trash_can"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:pocket_trash_can"
+  }
+}
