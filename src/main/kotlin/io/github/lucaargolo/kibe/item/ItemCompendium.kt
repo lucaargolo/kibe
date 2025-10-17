@@ -58,7 +58,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
     private val AS_ITEM = mutableMapOf<DeferredHolder<Block, out Block>, String>()
 
-    val ELEVATORS = registerTag("elevators", *BlockCompendium.ELEVATORS.values.map{ AS_ITEM[it]!! }.toTypedArray())
+    val ELEVATORS by registerTag("elevators", *BlockCompendium.ELEVATORS.values.map{ AS_ITEM[it]!! }.toTypedArray())
 
     val KIBE by register("kibe") { Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().nutrition(6).saturationModifier(0.8F).build())) }
     val GOLDEN_KIBE by register("golden_kibe", { Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())) }, ItemTags.PIGLIN_LOVED)
@@ -108,7 +108,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val BROWN_GLIDER by register("brown_glider") { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) }
     val RED_GLIDER by register("red_glider") { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) }
     val BLACK_GLIDER by register("black_glider") { Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)) }
-    val GLIDERS = registerAssociatedTag("gliders",
+    val GLIDERS by registerAssociatedTag("gliders",
         DyeColor.WHITE to "white_glider", DyeColor.ORANGE to "orange_glider", DyeColor.MAGENTA to "magenta_glider", DyeColor.LIGHT_BLUE to "light_blue_glider",
         DyeColor.YELLOW to "yellow_glider", DyeColor.LIME to "lime_glider", DyeColor.PINK to "pink_glider", DyeColor.GRAY to "gray_glider",
         DyeColor.LIGHT_GRAY to "light_gray_glider", DyeColor.CYAN to "cyan_glider", DyeColor.BLUE to "blue_glider", DyeColor.PURPLE to "purple_glider",
@@ -143,7 +143,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val BROWN_SLEEPING_BAG by register("brown_sleeping_bag") { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) }
     val RED_SLEEPING_BAG by register("red_sleeping_bag") { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) }
     val BLACK_SLEEPING_BAG by register("black_sleeping_bag") { SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)) }
-    val SLEEPING_BAGS = registerAssociatedTag("sleeping_bags",
+    val SLEEPING_BAGS by registerAssociatedTag("sleeping_bags",
         DyeColor.WHITE to "white_sleeping_bag", DyeColor.ORANGE to "orange_sleeping_bag", DyeColor.MAGENTA to "magenta_sleeping_bag", DyeColor.LIGHT_BLUE to "light_blue_sleeping_bag",
         DyeColor.YELLOW to "yellow_sleeping_bag", DyeColor.LIME to "lime_sleeping_bag", DyeColor.PINK to "pink_sleeping_bag", DyeColor.GRAY to "gray_sleeping_bag",
         DyeColor.LIGHT_GRAY to "light_gray_sleeping_bag", DyeColor.CYAN to "cyan_sleeping_bag", DyeColor.BLUE to "blue_sleeping_bag", DyeColor.PURPLE to "purple_sleeping_bag",

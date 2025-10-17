@@ -40,7 +40,7 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
     val LIQUID_XP by registerStill("liquid_xp") { LiquidXpFluid.Still() }
     val LIQUID_XP_FLOWING by registerFlowing("flowing_liquid_xp") { LiquidXpFluid.Flowing() }
-    val EXPERIENCE = registerTag(Identifier.of("c", "experience"), "liquid_xp")
+    val EXPERIENCE by registerTag(Identifier.of("c", "experience"), "liquid_xp")
 
     fun <E : FlowableFluid> registerStill(string: String, entry: () -> E): DeferredHolder<Fluid, E> {
         val delegate = super.register(string, entry)

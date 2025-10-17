@@ -15,6 +15,7 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
     val DEFERRED = DeferredRegister.create(registry, KibeMod.MOD_ID)
 
     val entries = mutableMapOf<String, DeferredHolder<T, out T>>()
+    val lazyTags = mutableListOf<Lazy<*>>()
     val tags = mutableMapOf<TagKey<T>, TagEntry<T>>()
 
     fun get(identifier: Identifier): T? {
@@ -41,32 +42,36 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
         }
     }
 
-    protected open fun registerTag(string: String, vararg values: String, children: MutableCollection<TagKey<T>> = mutableListOf()): TagEntry<T> {
+    protected open fun registerTag(string: String, vararg values: String, children: MutableCollection<TagKey<T>> = mutableListOf()): Lazy<TagEntry<T>> {
         return registerTag(ModIdentifier.of(string), *values, children = children)
     }
 
-    protected open fun registerTag(identifier: Identifier, vararg values: String, children: MutableCollection<TagKey<T>> = mutableListOf()): TagEntry<T> {
-        val key = TagKey.of(registry.key, identifier)
-        if(tags.containsKey(key)) {
-            throw AssertionError("Tag was already registered: $key")
-        }
-        val entry = TagEntry(key, children, values.mapNotNull(entries::get).toMutableList())
-        tags[key] = entry
-        return entry
+    protected open fun registerTag(identifier: Identifier, vararg values: String, children: MutableCollection<TagKey<T>> = mutableListOf()): Lazy<TagEntry<T>> {
+        return lazy {
+            val key = TagKey.of(registry.key, identifier)
+            if (tags.containsKey(key)) {
+                throw AssertionError("Tag was already registered: $key")
+            }
+            val entry = TagEntry(key, children, values.mapNotNull(entries::get).toMutableList())
+            tags[key] = entry
+            return@lazy entry
+        }.also { lazyTags.add(it) }
     }
 
-    protected open fun <K: Any> registerAssociatedTag(string: String, vararg associations: Pair<K, String>): AssociatedTagEntry<T, K> {
+    protected open fun <K: Any> registerAssociatedTag(string: String, vararg associations: Pair<K, String>): Lazy<AssociatedTagEntry<T, K>> {
         return registerAssociatedTag(ModIdentifier.of(string), *associations)
     }
 
-    protected open fun <K: Any> registerAssociatedTag(identifier: Identifier, vararg associations: Pair<K, String>): AssociatedTagEntry<T, K> {
-        val key = TagKey.of(registry.key, identifier)
-        if(tags.containsKey(key)) {
-            throw AssertionError("Tag was already registered: $key")
-        }
-        val entry = AssociatedTagEntry(key, associations.mapNotNull{ p -> entries[p.second]?.let { Pair(p.first, it) } }.toMap(mutableMapOf()))
-        tags[key] = entry
-        return entry
+    protected open fun <K: Any> registerAssociatedTag(identifier: Identifier, vararg associations: Pair<K, String>): Lazy<AssociatedTagEntry<T, K>> {
+        return lazy {
+            val key = TagKey.of(registry.key, identifier)
+            if (tags.containsKey(key)) {
+                throw AssertionError("Tag was already registered: $key")
+            }
+            val entry = AssociatedTagEntry(key, associations.mapNotNull { p -> entries[p.second]?.let { Pair(p.first, it) } }.toMap(mutableMapOf()))
+            tags[key] = entry
+            return@lazy entry
+        }.also { lazyTags.add(it) }
     }
 
     override fun initialize() {
