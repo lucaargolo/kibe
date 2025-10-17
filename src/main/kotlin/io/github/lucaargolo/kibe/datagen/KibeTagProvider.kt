@@ -19,9 +19,9 @@ object KibeTagProvider {
             object: FabricTagProvider<Item>(output, RegistryKeys.ITEM, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     ItemCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
-                            entry.children.forEach(it::addTag)
-                        }.replace(false)
+                        (getOrCreateTagBuilder(key) as FabricTagProvider.FabricTagBuilder).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
+                            entry.children.forEach(it::forceAddTag)
+                        }.setReplace(false)
                     }
                 }
             }
@@ -30,9 +30,9 @@ object KibeTagProvider {
             object: FabricTagProvider<Block>(output, RegistryKeys.BLOCK, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     BlockCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
-                            entry.children.forEach(it::addTag)
-                        }.replace(false)
+                        (getOrCreateTagBuilder(key) as FabricTagProvider.FabricTagBuilder).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
+                            entry.children.forEach(it::forceAddTag)
+                        }.setReplace(false)
                     }
                 }
             }
@@ -41,9 +41,9 @@ object KibeTagProvider {
             object: FabricTagProvider<Fluid>(output, RegistryKeys.FLUID, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     FluidCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
+                        (getOrCreateTagBuilder(key) as FabricTagProvider.FabricTagBuilder).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
                             entry.children.forEach(it::addTag)
-                        }.replace(false)
+                        }.setReplace(false)
                     }
                 }
             }

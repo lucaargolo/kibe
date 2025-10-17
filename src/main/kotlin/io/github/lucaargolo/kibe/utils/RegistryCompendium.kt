@@ -15,7 +15,6 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
     val DEFERRED = DeferredRegister.create(registry, KibeMod.MOD_ID)
 
     val entries = mutableMapOf<String, DeferredHolder<T, out T>>()
-    val lazyTags = mutableListOf<Lazy<*>>()
     val tags = mutableMapOf<TagKey<T>, TagEntry<T>>()
 
     fun get(identifier: Identifier): T? {
@@ -83,5 +82,9 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
     open class TagEntry<T: Any>(val key: TagKey<T>, val children: MutableCollection<TagKey<T>>, val values: MutableCollection<DeferredHolder<T, out T>>)
 
     class AssociatedTagEntry<T: Any, K: Any>(tag: TagKey<T>, val associations: MutableMap<K, DeferredHolder<T, out T>>): TagEntry<T>(tag, mutableListOf(), associations.values)
+
+    companion object {
+        val lazyTags = mutableListOf<Lazy<*>>()
+    }
 
 }

@@ -18,10 +18,7 @@ import io.github.lucaargolo.kibe.network.PacketCompendium
 import io.github.lucaargolo.kibe.particle.ParticleCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeSerializerCompendium
 import io.github.lucaargolo.kibe.recipes.RecipeTypeCompendium
-import io.github.lucaargolo.kibe.utils.CreativeTab
-import io.github.lucaargolo.kibe.utils.EntangledChestOpenState
-import io.github.lucaargolo.kibe.utils.EntangledTankSync
-import io.github.lucaargolo.kibe.utils.ModConfig
+import io.github.lucaargolo.kibe.utils.*
 import io.github.lucaargolo.kibe.utils.helper.LootHelper
 import io.github.lucaargolo.kibe.utils.helper.TooltipHelper
 import io.github.lucaargolo.kibe.utils.helper.TransferHelper
@@ -124,6 +121,7 @@ object KibeMod {
     }
 
     fun onDataGen(event: GatherDataEvent) {
+        RegistryCompendium.lazyTags.forEach { it.value }
         val generator = FabricDataGenerator(event.generator, event.generator.packOutput.path, FabricLoader.getInstance().getModContainer(MOD_ID).get(), false, event.lookupProvider)
         KibeDatagen.onInitializeDataGenerator(generator)
     }
