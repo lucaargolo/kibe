@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_stone_spikes": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:stone_spikes"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:diamond_spikes"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_stone_spikes"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:diamond_spikes"
+    ]
+  }
+}

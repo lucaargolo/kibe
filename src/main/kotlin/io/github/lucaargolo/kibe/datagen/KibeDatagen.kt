@@ -6,8 +6,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 object KibeDatagen: DataGeneratorEntrypoint {
 
     override fun onInitializeDataGenerator(generator: FabricDataGenerator) {
-        val myPack: FabricDataGenerator.Pack = generator.createPack()
-        myPack.addProvider(::KibeBlockLootProvider)
+        val kibe = generator.createPack()
+        KibeTagsProvider.init(kibe)
+        kibe.addProvider(::KibeBlockLootProvider)
+        kibe.addProvider(::KibeRecipeProvider)
     }
 
 }

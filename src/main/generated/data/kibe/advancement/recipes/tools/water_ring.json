@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_diamond_ring": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:diamond_ring"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:water_ring"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_diamond_ring"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:water_ring"
+    ]
+  }
+}

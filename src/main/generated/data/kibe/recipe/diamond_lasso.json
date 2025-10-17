@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "kibe:golden_lasso"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    },
+    "S": {
+      "item": "kibe:cursed_lasso"
+    }
+  },
+  "pattern": [
+    " # ",
+    "DLD",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:diamond_lasso"
+  }
+}

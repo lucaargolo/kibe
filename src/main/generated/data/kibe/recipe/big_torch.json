@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:storage_blocks/coal"
+    },
+    "O": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": [
+    "#",
+    "O",
+    "O"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:big_torch"
+  }
+}

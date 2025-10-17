@@ -1,0 +1,17 @@
+{
+  "values": [
+    "kibe:iron_spikes",
+    "kibe:vacuum_hopper",
+    "kibe:drawbridge",
+    "kibe:placer",
+    "kibe:breaker",
+    "kibe:heater",
+    "kibe:dehumidifier",
+    "kibe:cobblestone_generator_mk1",
+    "kibe:basalt_generator_mk1",
+    "kibe:xp_shower",
+    "kibe:xp_drain",
+    "kibe:igniter",
+    "kibe:fluid_hopper"
+  ]
+}

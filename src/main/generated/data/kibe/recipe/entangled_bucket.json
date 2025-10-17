@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "kibe:void_bucket"
+    },
+    "g": {
+      "item": "kibe:entangled_tank"
+    }
+  },
+  "pattern": [
+    "g",
+    "S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:entangled_bucket"
+  }
+}

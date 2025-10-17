@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_kibe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:kibe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:golden_kibe"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_kibe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:golden_kibe"
+    ]
+  }
+}

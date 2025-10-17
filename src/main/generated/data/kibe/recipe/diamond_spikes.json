@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:diamond_sword"
+    },
+    "_": [
+      {
+        "item": "kibe:iron_spikes"
+      },
+      {
+        "item": "kibe:gold_spikes"
+      }
+    ]
+  },
+  "pattern": [
+    " # ",
+    "#_#"
+  ],
+  "result": {
+    "count": 4,
+    "id": "kibe:diamond_spikes"
+  }
+}

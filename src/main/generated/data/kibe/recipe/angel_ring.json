@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "tag": "c:nether_stars"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    },
+    "I": {
+      "item": "minecraft:elytra"
+    },
+    "P": {
+      "item": "kibe:diamond_ring"
+    }
+  },
+  "pattern": [
+    "#E#",
+    "IPI",
+    "#E#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:angel_ring"
+  }
+}

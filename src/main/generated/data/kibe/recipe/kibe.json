@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:bone_meal"
+    },
+    "C": {
+      "item": "minecraft:cooked_mutton"
+    },
+    "W": {
+      "item": "minecraft:wheat"
+    }
+  },
+  "pattern": [
+    " # ",
+    "CWC",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "kibe:kibe"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:gold_nugget"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "g": {
+      "tag": "c:ingots/gold"
+    }
+  },
+  "pattern": [
+    "#D#",
+    "g g",
+    " g "
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:diamond_ring"
+  }
+}

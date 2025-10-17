@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "kibe:cobblestone_generator_mk1"
+    },
+    "G": {
+      "tag": "c:storage_blocks/gold"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#G#",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:cobblestone_generator_mk2"
+  }
+}

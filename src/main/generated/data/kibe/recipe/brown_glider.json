@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "tag": "c:dyes/brown"
+    },
+    "D": {
+      "item": "kibe:glider_right_wing"
+    },
+    "L": {
+      "item": "kibe:glider_left_wing"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    " # ",
+    "LiD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:brown_glider"
+  }
+}

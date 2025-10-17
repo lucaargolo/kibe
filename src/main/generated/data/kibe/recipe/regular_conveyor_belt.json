@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:dyes/yellow"
+    },
+    "L": {
+      "item": "minecraft:sugar"
+    },
+    "S": {
+      "tag": "c:leathers"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "###",
+    "SLS",
+    "iii"
+  ],
+  "result": {
+    "count": 8,
+    "id": "kibe:regular_conveyor_belt"
+  }
+}

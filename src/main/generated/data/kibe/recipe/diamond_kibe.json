@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:gems/diamond"
+    },
+    "C": {
+      "item": "kibe:golden_kibe"
+    }
+  },
+  "pattern": [
+    "#C#",
+    "C#C",
+    "#C#"
+  ],
+  "result": {
+    "count": 8,
+    "id": "kibe:diamond_kibe"
+  }
+}

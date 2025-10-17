@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "tag": "c:dyes/red"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "#ii",
+    "iE ",
+    "#ii"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:magnet"
+  }
+}

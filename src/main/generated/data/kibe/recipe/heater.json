@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:cobblestones/normal"
+    },
+    "B": {
+      "item": "minecraft:blaze_powder"
+    },
+    "R": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "pattern": [
+    "#B#",
+    "BRB",
+    "#B#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:heater"
+  }
+}

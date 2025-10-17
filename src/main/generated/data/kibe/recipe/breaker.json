@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:smooth_stone"
+    },
+    "B": {
+      "tag": "c:chests"
+    },
+    "C": {
+      "tag": "c:cobblestones/normal"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "Z": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "pattern": [
+    "#D#",
+    "RZR",
+    "CBC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:breaker"
+  }
+}

@@ -15,6 +15,7 @@ import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import io.github.lucaargolo.kibe.utils.helper.AbilityHelper
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.block.Block
 import net.minecraft.client.item.ModelPredicateProviderRegistry
 import net.minecraft.component.type.FoodComponent
@@ -25,12 +26,19 @@ import net.minecraft.item.Item
 import net.minecraft.item.Item.Settings
 import net.minecraft.item.Items
 import net.minecraft.registry.Registries
+import net.minecraft.registry.tag.ItemTags
+import net.minecraft.registry.tag.TagKey
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Rarity
 
 object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
+    private val AS_ITEM = mutableMapOf<Block, Item>()
+
+    val ELEVATORS = registerTag("elevators", *BlockCompendium.ELEVATORS.values.map{ AS_ITEM[it]!! }.toTypedArray())
+
     val KIBE         = register("kibe", Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().nutrition(6).saturationModifier(0.8F).build())))
-    val GOLDEN_KIBE  = register("golden_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())))
+    val GOLDEN_KIBE  = register("golden_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())), ItemTags.PIGLIN_LOVED)
     val CURSED_KIBE  = register("cursed_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(10).saturationModifier(1.2F).build())))
     val DIAMOND_KIBE = register("diamond_kibe", Item(Settings().rarity(Rarity.RARE).food(FoodComponent.Builder().nutrition(16).saturationModifier(1F).build())))
     
@@ -45,18 +53,18 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val WATER_RING = register("water_ring", AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE), AbilityHelper.INFINITE_WATER_BREATHING))
     val LIGHT_RING   = register("light_ring",  LightRing(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
     
-    val GOLDEN_LASSO  = register("golden_lasso",  Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val GOLDEN_LASSO  = register("golden_lasso",  Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.PIGLIN_LOVED)
     val CURSED_LASSO  = register("cursed_lasso",  Lasso.CursedLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
     val DIAMOND_LASSO = register("diamond_lasso",  Lasso.DiamondLasso(Settings().maxCount(1).rarity(Rarity.RARE)))
     
-    val SLIME_BOOTS = register("slime_boots",  SlimeBoots(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)))
+    val SLIME_BOOTS = register("slime_boots",  SlimeBoots(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.FOOT_ARMOR)
     val SLIME_SLING = register("slime_sling",  SlimeSling(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)))
     
     val TORCH_SLING = register("torch_sling",  TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val ESCAPE_ROPE = register("escape_rope",  EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
+    val ESCAPE_ROPE = register("escape_rope",  EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.DURABILITY_ENCHANTABLE)
     
     val WOODEN_BUCKET = register("wooden_bucket", WoodenBucket.Empty(Settings().maxCount(16)))
-    val WOODEN_WATER_BUCKET = register("wooden_water_bucket", WoodenBucket.Water(Settings().maxCount(1)))
+    val WOODEN_WATER_BUCKET = register("wooden_water_bucket", WoodenBucket.Water(Settings().maxCount(1).recipeRemainder(WOODEN_BUCKET)), ConventionalItemTags.WATER_BUCKETS)
     
     val GLIDER_LEFT_WING = register("glider_left_wing", Item(Settings()))
     val GLIDER_RIGHT_WING = register("glider_right_wing", Item(Settings()))
@@ -77,7 +85,13 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val BROWN_GLIDER = register("brown_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
     val RED_GLIDER = register("red_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
     val BLACK_GLIDER = register("black_glider", Glider(Settings().maxCount(1).rarity(Rarity.UNCOMMON).maxDamage(KibeMod.CONFIG.miscellaneousModule.gliderDurability)))
-    
+    val GLIDERS = registerAssociatedTag("gliders",
+        DyeColor.WHITE to WHITE_GLIDER, DyeColor.ORANGE to ORANGE_GLIDER, DyeColor.MAGENTA to MAGENTA_GLIDER, DyeColor.LIGHT_BLUE to LIGHT_BLUE_GLIDER,
+        DyeColor.YELLOW to YELLOW_GLIDER, DyeColor.LIME to LIME_GLIDER, DyeColor.PINK to PINK_GLIDER, DyeColor.GRAY to GRAY_GLIDER,
+        DyeColor.LIGHT_GRAY to LIGHT_GRAY_GLIDER, DyeColor.CYAN to CYAN_GLIDER, DyeColor.BLUE to BLUE_GLIDER, DyeColor.PURPLE to PURPLE_GLIDER,
+        DyeColor.GREEN to GREEN_GLIDER, DyeColor.BROWN to BROWN_GLIDER, DyeColor.RED to RED_GLIDER, DyeColor.BLACK to BLACK_GLIDER
+    )
+
     val VOID_BUCKET = register("void_bucket", VoidBucket(Settings().maxCount(1).rarity(Rarity.RARE)))
     
     val POCKET_CRAFTING_TABLE = register("pocket_crafting_table",  PocketCraftingTable(Settings().maxCount(1)))
@@ -100,21 +114,28 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val GRAY_SLEEPING_BAG = register("gray_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val LIGHT_GRAY_SLEEPING_BAG = register("light_gray_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val CYAN_SLEEPING_BAG = register("cyan_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    val BLUE_SLEEPING_BAG = register("sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
+    val BLUE_SLEEPING_BAG = register("blue_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val PURPLE_SLEEPING_BAG = register("purple_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val GREEN_SLEEPING_BAG = register("green_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val BROWN_SLEEPING_BAG = register("brown_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val RED_SLEEPING_BAG = register("red_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
     val BLACK_SLEEPING_BAG = register("black_sleeping_bag", SleepingBag(Settings().maxCount(1).rarity(Rarity.RARE)))
-    
+    val SLEEPING_BAGS = registerAssociatedTag("sleeping_bags",
+        DyeColor.WHITE to WHITE_SLEEPING_BAG, DyeColor.ORANGE to ORANGE_SLEEPING_BAG, DyeColor.MAGENTA to MAGENTA_SLEEPING_BAG, DyeColor.LIGHT_BLUE to LIGHT_BLUE_SLEEPING_BAG,
+        DyeColor.YELLOW to YELLOW_SLEEPING_BAG, DyeColor.LIME to LIME_SLEEPING_BAG, DyeColor.PINK to PINK_SLEEPING_BAG, DyeColor.GRAY to GRAY_SLEEPING_BAG,
+        DyeColor.LIGHT_GRAY to LIGHT_GRAY_SLEEPING_BAG, DyeColor.CYAN to CYAN_SLEEPING_BAG, DyeColor.BLUE to BLUE_SLEEPING_BAG, DyeColor.PURPLE to PURPLE_SLEEPING_BAG,
+        DyeColor.GREEN to GREEN_SLEEPING_BAG, DyeColor.BROWN to BROWN_SLEEPING_BAG, DyeColor.RED to RED_SLEEPING_BAG, DyeColor.BLACK to BLACK_SLEEPING_BAG
+    )
     val MEASURING_TAPE = register("measuring_tape", MeasuringTape(Settings().maxCount(1)))
 
-    fun <E : Fluid> registerBucketItem(string: String, entry: E): BucketItem {
-        return register(string+"_bucket", BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)))
+    fun <E : Fluid> registerBucketItem(string: String, entry: E, vararg tags: TagKey<Item>): BucketItem {
+        return register(string+"_bucket", BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)), *tags)
     }
 
-    fun <E : Block> registerBlockItem(string: String, entry: E): BlockItem {
-        return register(string, BlockItem(entry, Settings()))
+    fun <E : Block> registerBlockItem(string: String, entry: E, vararg tags: TagKey<Item>): BlockItem {
+        return register(string, BlockItem(entry, Settings()), *tags).also {
+            AS_ITEM.put(entry, it)
+        }
     }
 
     override fun initializeClient() {

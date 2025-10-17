@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:cobblestone"
+    },
+    "C": {
+      "tag": "c:chests"
+    },
+    "I": {
+      "tag": "c:storage_blocks/iron"
+    },
+    "L": {
+      "tag": "c:buckets/lava"
+    },
+    "W": {
+      "tag": "c:buckets/water"
+    }
+  },
+  "pattern": [
+    "###",
+    "WIL",
+    "#C#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:cobblestone_generator_mk1"
+  }
+}

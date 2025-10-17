@@ -20,6 +20,7 @@ import net.minecraft.registry.Registries
 import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceType
 import net.minecraft.screen.PlayerScreenHandler
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockRenderView
 
@@ -27,6 +28,7 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
     val LIQUID_XP = register("liquid_xp", LiquidXpFluid.Still())
     val LIQUID_XP_FLOWING = register("flowing_liquid_xp", LiquidXpFluid.Flowing())
+    val EXPERIENCE = registerTag(Identifier.of("c", "experience"), LIQUID_XP)
 
     override fun initialize() {
         super.initialize()

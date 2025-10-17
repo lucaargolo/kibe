@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_basalt_generator_mk3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:basalt_generator_mk3"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:basalt_generator_mk4"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_basalt_generator_mk3"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:basalt_generator_mk4"
+    ]
+  }
+}

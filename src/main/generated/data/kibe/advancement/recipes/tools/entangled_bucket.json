@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_entangled_tank": {
+      "conditions": {
+        "items": [
+          {
+            "items": "kibe:entangled_tank"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:entangled_bucket"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_entangled_tank"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:entangled_bucket"
+    ]
+  }
+}

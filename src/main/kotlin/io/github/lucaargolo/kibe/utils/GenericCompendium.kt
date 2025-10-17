@@ -4,14 +4,17 @@ import net.minecraft.util.Identifier
 
 abstract class GenericCompendium<T: Any> {
 
-    val map = mutableMapOf<Identifier, T>()
+    val entries = mutableMapOf<Identifier, T>()
 
     protected open fun <E: T> register(string: String, entry: E): E {
         return register(ModIdentifier.of(string), entry)
     }
 
     protected open fun <E: T> register(identifier: Identifier, entry: E): E {
-        map[identifier] = entry
+        if(entries.containsKey(identifier)) {
+            throw AssertionError("Entry was already registered: $identifier")
+        }
+        entries[identifier] = entry
         return entry
     }
 

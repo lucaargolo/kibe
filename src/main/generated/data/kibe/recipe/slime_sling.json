@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "tag": "c:strings"
+    },
+    "S": {
+      "item": "minecraft:slime_block"
+    },
+    "W": {
+      "item": "minecraft:slime_ball"
+    }
+  },
+  "pattern": [
+    "#S#",
+    "W W",
+    " W "
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:slime_sling"
+  }
+}

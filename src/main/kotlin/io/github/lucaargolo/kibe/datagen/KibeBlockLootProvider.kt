@@ -17,11 +17,11 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider
 import net.minecraft.registry.RegistryWrapper
 import java.util.concurrent.CompletableFuture
 
-class KibeBlockLootProvider(dataOutput: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>?) : FabricBlockLootTableProvider(dataOutput, registryLookup) {
+class KibeBlockLootProvider(dataOutput: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : FabricBlockLootTableProvider(dataOutput, registryLookup) {
 
     override fun generate() {
         val list = mutableListOf<Block>()
-        list.addAll(BlockCompendium.map.values)
+        list.addAll(BlockCompendium.entries.values)
         list.remove(BlockCompendium.CURSED_DIRT)
         this.addDrop(BlockCompendium.CURSED_DIRT) { block -> this.drops(Blocks.DIRT) }
         addBlockEntity(list, BlockCompendium.ENTANGLED_CHEST, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)

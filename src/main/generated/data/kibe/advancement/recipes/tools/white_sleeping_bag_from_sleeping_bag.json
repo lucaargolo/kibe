@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sleeping_bags": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#kibe:sleeping_bags"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "kibe:white_sleeping_bag_from_sleeping_bag"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sleeping_bags"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "kibe:white_sleeping_bag_from_sleeping_bag"
+    ]
+  }
+}

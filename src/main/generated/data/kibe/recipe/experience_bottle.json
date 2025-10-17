@@ -1,0 +1,12 @@
+{
+  "type": "kibe:vacuum_hopper",
+  "input": {
+    "item": "minecraft:glass_bottle"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:experience_bottle"
+  },
+  "ticks": 20,
+  "xp": 333
+}

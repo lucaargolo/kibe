@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:cyan_wool"
+    },
+    "S": {
+      "tag": "c:strings"
+    }
+  },
+  "pattern": [
+    "###",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:cyan_sleeping_bag"
+  }
+}

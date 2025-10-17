@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:leathers"
+    },
+    "S": {
+      "tag": "c:strings"
+    },
+    "W": {
+      "item": "minecraft:white_wool"
+    }
+  },
+  "pattern": [
+    "#S ",
+    "##S",
+    "W##"
+  ],
+  "result": {
+    "count": 1,
+    "id": "kibe:glider_right_wing"
+  }
+}

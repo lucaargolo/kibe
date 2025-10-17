@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:stone_sword"
+    },
+    "_": {
+      "item": "minecraft:cobblestone_slab"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#_#"
+  ],
+  "result": {
+    "count": 4,
+    "id": "kibe:stone_spikes"
+  }
+}
