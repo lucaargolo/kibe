@@ -69,7 +69,7 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     val BASALT_GENERATOR_MK3 by register("basalt_generator_mk3", { BlockGenerator(Settings.copy(Blocks.DIAMOND_BLOCK).luminance { 4 }, Blocks.BASALT, 0.16f) }, BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
     val BASALT_GENERATOR_MK4 by register("basalt_generator_mk4", { BlockGenerator(Settings.copy(Blocks.EMERALD_BLOCK).luminance { 4 }, Blocks.BASALT, 0.64f) }, BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
     val BASALT_GENERATOR_MK5 by register("basalt_generator_mk5", { BlockGenerator(Settings.copy(Blocks.NETHERITE_BLOCK).luminance { 4 }, Blocks.BASALT, 2.56f) }, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BLOCK_GENERATORS = registerTag("block_generators",
+    val BLOCK_GENERATORS by registerTag("block_generators",
         "cobblestone_generator_mk1", "basalt_generator_mk1",
         "cobblestone_generator_mk2", "basalt_generator_mk2",
         "cobblestone_generator_mk3", "basalt_generator_mk3",
@@ -101,14 +101,14 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     val BROWN_ELEVATOR by register("brown_elevator", { Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BROWN).requiresTool().strength(1.5F, 6.0F)) }, BlockTags.PICKAXE_MINEABLE)
     val RED_ELEVATOR by register("red_elevator", { Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.RED).requiresTool().strength(1.5F, 6.0F)) }, BlockTags.PICKAXE_MINEABLE)
     val BLACK_ELEVATOR by register("black_elevator", { Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BLACK).requiresTool().strength(1.5F, 6.0F)) }, BlockTags.PICKAXE_MINEABLE)
-    val ELEVATORS = registerAssociatedTag("elevators",
+    val ELEVATORS by registerAssociatedTag("elevators",
         DyeColor.WHITE to "white_elevator", DyeColor.ORANGE to "orange_elevator", DyeColor.MAGENTA to "magenta_elevator", DyeColor.LIGHT_BLUE to "light_blue_elevator",
         DyeColor.YELLOW to "yellow_elevator", DyeColor.LIME to "lime_elevator", DyeColor.PINK to "pink_elevator", DyeColor.GRAY to "gray_elevator",
         DyeColor.LIGHT_GRAY to "light_gray_elevator", DyeColor.CYAN to "cyan_elevator", DyeColor.BLUE to "blue_elevator", DyeColor.PURPLE to "purple_elevator",
         DyeColor.GREEN to "green_elevator", DyeColor.BROWN to "brown_elevator", DyeColor.RED to "red_elevator", DyeColor.BLACK to "black_elevator"
     )
 
-    val MAGNET_INHIBITOR: TagEntry<Block> = registerTag("magnet_inhibitor", children = mutableListOf(ConventionalBlockTags.STORAGE_BLOCKS_COAL))
+    val MAGNET_INHIBITOR by registerTag("magnet_inhibitor", children = mutableListOf(ConventionalBlockTags.STORAGE_BLOCKS_COAL))
 
     fun <E : FlowableFluid> registerFluidBlock(string: String, entry: Supplier<E>, vararg tags: TagKey<Block>): Lazy<FluidBlock> {
         return register(string, Supplier { FluidBlock(entry.get(), Settings.copy(Blocks.LAVA)) }, *tags, hasItem = false)
