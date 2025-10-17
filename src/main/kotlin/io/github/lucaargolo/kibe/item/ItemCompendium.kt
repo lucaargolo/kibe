@@ -29,6 +29,7 @@ import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.ItemTags
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.DyeColor
+import net.minecraft.util.Identifier
 import net.minecraft.util.Rarity
 
 object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
@@ -38,7 +39,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val ELEVATORS = registerTag("elevators", *BlockCompendium.ELEVATORS.values.map{ AS_ITEM[it]!! }.toTypedArray())
 
     val KIBE         = register("kibe", Item(Settings().rarity(Rarity.COMMON).food(FoodComponent.Builder().nutrition(6).saturationModifier(0.8F).build())))
-    val GOLDEN_KIBE  = register("golden_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())), ItemTags.PIGLIN_LOVED)
+    val GOLDEN_KIBE  = this@ItemCompendium.register("golden_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(8).saturationModifier(1.2F).build())), ItemTags.PIGLIN_LOVED)
     val CURSED_KIBE  = register("cursed_kibe", Item(Settings().rarity(Rarity.UNCOMMON).food(FoodComponent.Builder().nutrition(10).saturationModifier(1.2F).build())))
     val DIAMOND_KIBE = register("diamond_kibe", Item(Settings().rarity(Rarity.RARE).food(FoodComponent.Builder().nutrition(16).saturationModifier(1F).build())))
     
@@ -53,18 +54,18 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     val WATER_RING = register("water_ring", AbilityRing.create(Settings().maxCount(1).rarity(Rarity.RARE), AbilityHelper.INFINITE_WATER_BREATHING))
     val LIGHT_RING   = register("light_ring",  LightRing(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
     
-    val GOLDEN_LASSO  = register("golden_lasso",  Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.PIGLIN_LOVED)
+    val GOLDEN_LASSO  = this@ItemCompendium.register("golden_lasso",  Lasso.GoldenLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.PIGLIN_LOVED)
     val CURSED_LASSO  = register("cursed_lasso",  Lasso.CursedLasso(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
     val DIAMOND_LASSO = register("diamond_lasso",  Lasso.DiamondLasso(Settings().maxCount(1).rarity(Rarity.RARE)))
     
-    val SLIME_BOOTS = register("slime_boots",  SlimeBoots(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.FOOT_ARMOR)
+    val SLIME_BOOTS = this@ItemCompendium.register("slime_boots",  SlimeBoots(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.FOOT_ARMOR)
     val SLIME_SLING = register("slime_sling",  SlimeSling(Settings().maxDamage(128).maxCount(1).rarity(Rarity.UNCOMMON)))
     
     val TORCH_SLING = register("torch_sling",  TorchSling(Settings().maxCount(1).rarity(Rarity.UNCOMMON)))
-    val ESCAPE_ROPE = register("escape_rope",  EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.DURABILITY_ENCHANTABLE)
+    val ESCAPE_ROPE = this@ItemCompendium.register("escape_rope",  EscapeRope(Settings().maxCount(1).rarity(Rarity.UNCOMMON)), ItemTags.DURABILITY_ENCHANTABLE)
     
     val WOODEN_BUCKET = register("wooden_bucket", WoodenBucket.Empty(Settings().maxCount(16)))
-    val WOODEN_WATER_BUCKET = register("wooden_water_bucket", WoodenBucket.Water(Settings().maxCount(1).recipeRemainder(WOODEN_BUCKET)), ConventionalItemTags.WATER_BUCKETS)
+    val WOODEN_WATER_BUCKET = this@ItemCompendium.register("wooden_water_bucket", WoodenBucket.Water(Settings().maxCount(1).recipeRemainder(WOODEN_BUCKET)), ConventionalItemTags.WATER_BUCKETS)
     
     val GLIDER_LEFT_WING = register("glider_left_wing", Item(Settings()))
     val GLIDER_RIGHT_WING = register("glider_right_wing", Item(Settings()))
@@ -128,12 +129,12 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
     )
     val MEASURING_TAPE = register("measuring_tape", MeasuringTape(Settings().maxCount(1)))
 
-    fun <E : Fluid> registerBucketItem(string: String, entry: E, vararg tags: TagKey<Item>): BucketItem {
-        return register(string+"_bucket", BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)), *tags)
+    fun <E : Fluid> registerBucketItem(identifier: Identifier, entry: E, vararg tags: TagKey<Item>): BucketItem {
+        return this@ItemCompendium.register(identifier.withSuffixedPath("_bucket"), BucketItem(entry, Settings().recipeRemainder(Items.BUCKET).maxCount(1)), *tags)
     }
 
-    fun <E : Block> registerBlockItem(string: String, entry: E, vararg tags: TagKey<Item>): BlockItem {
-        return register(string, BlockItem(entry, Settings()), *tags).also {
+    fun <E : Block> registerBlockItem(identifier: Identifier, entry: E, vararg tags: TagKey<Item>): BlockItem {
+        return this@ItemCompendium.register(identifier, BlockItem(entry, Settings()), *tags).also {
             AS_ITEM.put(entry, it)
         }
     }

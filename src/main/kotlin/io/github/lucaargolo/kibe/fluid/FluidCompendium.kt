@@ -41,8 +41,9 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
     }
 
     private fun setupFluid(still: ModdedFluid, flowing: ModdedFluid, name: String) {
-        val fluidBlock = BlockCompendium.registerFluidBlock(name, still)
-        val fluidBucket = ItemCompendium.registerBucketItem(name, still)
+        val id = ModIdentifier.of(name)
+        val fluidBlock = BlockCompendium.registerFluidBlock(id, still)
+        val fluidBucket = ItemCompendium.registerBucketItem(id, still)
         still.fluidBlock = fluidBlock
         still.fluidBucket = fluidBucket
         flowing.fluidBlock = fluidBlock
