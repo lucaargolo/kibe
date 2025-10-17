@@ -10,6 +10,7 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.RegistryWrapper
+import kotlin.jvm.optionals.getOrNull
 
 object KibeTagProvider {
 
@@ -18,9 +19,9 @@ object KibeTagProvider {
             object: FabricTagProvider<Item>(output, RegistryKeys.ITEM, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     ItemCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.map(Lazy<Item>::value).toTypedArray()).also {
-                            entry.children.forEach(it::forceAddTag)
-                        }.setReplace(false)
+                        getOrCreateTagBuilder(key).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
+                            entry.children.forEach(it::addTag)
+                        }.replace(false)
                     }
                 }
             }
@@ -29,9 +30,9 @@ object KibeTagProvider {
             object: FabricTagProvider<Block>(output, RegistryKeys.BLOCK, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     BlockCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.map(Lazy<Block>::value).toTypedArray()).also {
-                            entry.children.forEach(it::forceAddTag)
-                        }.setReplace(false)
+                        getOrCreateTagBuilder(key).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
+                            entry.children.forEach(it::addTag)
+                        }.replace(false)
                     }
                 }
             }
@@ -40,9 +41,9 @@ object KibeTagProvider {
             object: FabricTagProvider<Fluid>(output, RegistryKeys.FLUID, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     FluidCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.map(Lazy<Fluid>::value).toTypedArray()).also {
-                            entry.children.forEach(it::forceAddTag)
-                        }.setReplace(false)
+                        getOrCreateTagBuilder(key).add(*entry.values.mapNotNull { holder -> holder.keyOrValue.left().getOrNull() }.toTypedArray()).also {
+                            entry.children.forEach(it::addTag)
+                        }.replace(false)
                     }
                 }
             }

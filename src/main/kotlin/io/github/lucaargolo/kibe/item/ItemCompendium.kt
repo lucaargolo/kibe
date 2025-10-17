@@ -31,10 +31,12 @@ import net.minecraft.item.*
 import net.minecraft.item.Item.Settings
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.ItemTags
+import net.minecraft.registry.tag.TagKey
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Hand
 import net.minecraft.util.ItemActionResult
 import net.minecraft.util.Rarity
@@ -54,7 +56,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
         get() = fluidBuckets.mapKeys { e -> e.key.get() }.mapValues { e -> e.value.get() }
     private val fluidBuckets = mutableMapOf<DeferredHolder<Fluid, out Fluid>, DeferredHolder<Item, BucketItem>>()
 
-    private val AS_ITEM = mutableMapOf<Lazy<Block>, String>()
+    private val AS_ITEM = mutableMapOf<DeferredHolder<Block, out Block>, String>()
 
     val ELEVATORS = registerTag("elevators", *BlockCompendium.ELEVATORS.values.map{ AS_ITEM[it]!! }.toTypedArray())
 
@@ -150,14 +152,14 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
     val MEASURING_TAPE by register("measuring_tape") { MeasuringTape(Settings().maxCount(1)) }
 
-    fun <E : Fluid> registerBucketItem(string: String, entry: DeferredHolder<Fluid, E>): DeferredHolder<Item, BucketItem> {
-        val bucketDelegate = register(string+"_bucket", { BucketItem(entry.get(), Settings().recipeRemainder(Items.BUCKET).maxCount(1)) })
+    fun <E : Fluid> registerBucketItem(string: String, entry: DeferredHolder<Fluid, E>, vararg tags: TagKey<Item>): DeferredHolder<Item, BucketItem> {
+        val bucketDelegate = register(string+"_bucket", { BucketItem(entry.get(), Settings().recipeRemainder(Items.BUCKET).maxCount(1)) }, *tags)
         fluidBuckets[entry] = bucketDelegate
         return bucketDelegate
     }
 
-    fun <E : Block> registerBlockItem(string: String, entry: DeferredHolder<Block, E>): DeferredHolder<Item, BlockItem> {
-        return register(string, { BlockItem(entry.get(), Settings()) }), *tags).also {
+    fun <E : Block> registerBlockItem(string: String, entry: DeferredHolder<Block, E>, vararg tags: TagKey<Item>): DeferredHolder<Item, BlockItem> {
+        return register(string, { BlockItem(entry.get(), Settings()) }, *tags).also {
             AS_ITEM.put(entry, string)
         }
     }

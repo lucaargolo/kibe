@@ -3,21 +3,26 @@ package io.github.lucaargolo.kibe.datagen
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
+import net.minecraft.advancement.AdvancementCriterion
+import net.minecraft.advancement.criterion.Criteria
+import net.minecraft.advancement.criterion.InventoryChangedCriterion
+import net.minecraft.advancement.criterion.InventoryChangedCriterion.Conditions.Slots
 import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder
 import net.minecraft.data.server.recipe.RecipeExporter
-import net.minecraft.data.server.recipe.RecipeProvider.*
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.predicate.item.ItemPredicate
 import net.minecraft.recipe.Ingredient
 import net.minecraft.recipe.book.RecipeCategory
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
+import java.util.*
 
 internal fun RecipeExporter.shaped(category: RecipeCategory, item: ItemConvertible, count: Int = 1, name: Identifier = Registries.ITEM.getId(item.asItem()), build: ShapedRecipeJsonBuilder.() -> Unit) {
     ShapedRecipeJsonBuilder.create(category, item, count).apply(build).offerTo(this, name)
@@ -123,4 +128,28 @@ internal fun dyes(color: DyeColor): TagKey<Item> {
         DyeColor.RED -> ConventionalItemTags.RED_DYES
         DyeColor.BLACK -> ConventionalItemTags.BLACK_DYES
     }
+}
+
+private fun conditionsFromItem(item: ItemConvertible): AdvancementCriterion<InventoryChangedCriterion.Conditions> {
+    return conditionsFromPredicates(ItemPredicate.Builder.create().items(item))
+}
+
+private fun conditionsFromTag(tag: TagKey<Item>): AdvancementCriterion<InventoryChangedCriterion.Conditions> {
+    return conditionsFromPredicates(ItemPredicate.Builder.create().tag(tag))
+}
+
+private fun conditionsFromPredicates(vararg predicates: ItemPredicate.Builder): AdvancementCriterion<InventoryChangedCriterion.Conditions> {
+    return conditionsFromItemPredicates(*predicates.map(ItemPredicate.Builder::build).toTypedArray())
+}
+
+private fun conditionsFromItemPredicates(vararg predicates: ItemPredicate): AdvancementCriterion<InventoryChangedCriterion.Conditions> {
+    return Criteria.INVENTORY_CHANGED.create(InventoryChangedCriterion.Conditions(Optional.empty(), Slots.ANY, predicates.toList()))
+}
+
+private fun hasItem(item: ItemConvertible): String {
+    return "has_" + getItemPath(item)
+}
+
+private fun getItemPath(item: ItemConvertible): String {
+    return Registries.ITEM.getId(item.asItem()).getPath()
 }

@@ -2,7 +2,6 @@ package io.github.lucaargolo.kibe.utils
 
 import io.github.lucaargolo.kibe.KibeMod
 import net.minecraft.registry.Registry
-import net.minecraft.registry.entry.RegistryEntry
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.Identifier
 import net.neoforged.neoforge.registries.DeferredHolder
@@ -15,6 +14,7 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
 
     val DEFERRED = DeferredRegister.create(registry, KibeMod.MOD_ID)
 
+    val entries = mutableMapOf<String, DeferredHolder<T, out T>>()
     val tags = mutableMapOf<TagKey<T>, TagEntry<T>>()
 
     fun get(identifier: Identifier): T? {
@@ -25,8 +25,14 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
         return registry.getKey(entry).getOrNull()?.value
     }
 
-    override fun <E : T> register(string: String, entry: Supplier<E>, vararg tags: TagKey<T>): DeferredHolder<T, E> {
-        return DEFERRED.register(string, entry).also { lazy ->
+    override fun <E : T> register(string: String, entry: Supplier<E>): DeferredHolder<T, E> {
+        val holder = DEFERRED.register(string, entry)
+        entries[string] = holder
+        return holder
+    }
+
+    protected open fun <E : T> register(string: String, entry: Supplier<E>, vararg tags: TagKey<T>): DeferredHolder<T, E> {
+        return register(string, entry).also { lazy ->
             tags.forEach { tag ->
                 this.tags.getOrPut(tag) {
                     TagEntry(tag, mutableListOf(), mutableListOf())
@@ -69,8 +75,8 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
 
     override fun initializeClient() { }
 
-    open class TagEntry<T: Any>(val key: TagKey<T>, val children: MutableCollection<TagKey<T>>, val values: MutableCollection<Lazy<T>>)
+    open class TagEntry<T: Any>(val key: TagKey<T>, val children: MutableCollection<TagKey<T>>, val values: MutableCollection<DeferredHolder<T, out T>>)
 
-    class AssociatedTagEntry<T: Any, K: Any>(tag: TagKey<T>, val associations: MutableMap<K, Lazy<T>>): TagEntry<T>(tag, mutableListOf(), associations.values)
+    class AssociatedTagEntry<T: Any, K: Any>(tag: TagKey<T>, val associations: MutableMap<K, DeferredHolder<T, out T>>): TagEntry<T>(tag, mutableListOf(), associations.values)
 
 }

@@ -15,13 +15,14 @@ import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.loot.function.CopyComponentsLootFunction
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider
 import net.minecraft.registry.RegistryWrapper
+import net.neoforged.neoforge.registries.DeferredHolder
 import java.util.concurrent.CompletableFuture
 
 class KibeBlockLootProvider(dataOutput: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : FabricBlockLootTableProvider(dataOutput, registryLookup) {
 
     override fun generate() {
         val list = mutableListOf<Block>()
-        list.addAll(BlockCompendium.entries.values.map(Lazy<Block>::value))
+        list.addAll(BlockCompendium.entries.values.map(DeferredHolder<Block, out Block>::value))
         list.remove(BlockCompendium.CURSED_DIRT)
         this.addDrop(BlockCompendium.CURSED_DIRT) { block -> this.drops(Blocks.DIRT) }
         addBlockEntity(list, BlockCompendium.ENTANGLED_CHEST, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)

@@ -27,6 +27,7 @@ import io.github.lucaargolo.kibe.utils.helper.TooltipHelper
 import io.github.lucaargolo.kibe.utils.helper.TransferHelper
 import io.netty.buffer.ByteBuf
 import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.codec.PacketCodec
@@ -123,7 +124,8 @@ object KibeMod {
     }
 
     fun onDataGen(event: GatherDataEvent) {
-        KibeDatagen.onInitializeDataGenerator(event)
+        val generator = FabricDataGenerator(event.generator, event.generator.packOutput.path, FabricLoader.getInstance().getModContainer(MOD_ID).get(), false, event.lookupProvider)
+        KibeDatagen.onInitializeDataGenerator(generator)
     }
 
     private fun onCommonSetup(event: FMLCommonSetupEvent) {

@@ -47,36 +47,36 @@ class KibeRecipeProvider(output: FabricDataOutput, registryLookup: CompletableFu
         }
 
         BlockCompendium.ELEVATORS.associations.forEach { (color, elevator) ->
-            shaped(RecipeCategory.DECORATIONS, elevator.value) {
+            shaped(RecipeCategory.DECORATIONS, elevator.value()) {
                 pattern("#E#", "iPi", "#i#")
                 inputs('#' to wool(color), 'E' to ConventionalItemTags.ENDER_PEARLS, 'i' to ConventionalItemTags.IRON_INGOTS, 'P' to Items.PISTON)
                 criterion(ConventionalItemTags.ENDER_PEARLS)
             }
-            shapeless(RecipeCategory.DECORATIONS, elevator.value, name = ModIdentifier.of("${color.getName()}_elevator_from_elevator")) {
+            shapeless(RecipeCategory.DECORATIONS, elevator.value(), name = ModIdentifier.of("${color.getName()}_elevator_from_elevator")) {
                 inputs(ItemCompendium.ELEVATORS.key, dyes(color))
                 criterion(ItemCompendium.ELEVATORS.key)
             }
         }
 
         ItemCompendium.GLIDERS.associations.forEach { (color, glider) ->
-            shaped(RecipeCategory.TOOLS, glider.value) {
+            shaped(RecipeCategory.TOOLS, glider.value()) {
                 pattern(" # ", "LiD")
                 inputs('#' to dyes(color), 'L' to ItemCompendium.GLIDER_LEFT_WING, 'i' to ConventionalItemTags.IRON_INGOTS, 'D' to ItemCompendium.GLIDER_RIGHT_WING)
                 criterion(ItemTags.WOOL)
             }
-            shapeless(RecipeCategory.TOOLS, glider.value, name = ModIdentifier.of("${color.getName()}_glider_from_glider")) {
+            shapeless(RecipeCategory.TOOLS, glider.value(), name = ModIdentifier.of("${color.getName()}_glider_from_glider")) {
                 inputs(ItemCompendium.GLIDERS.key, dyes(color))
                 criterion(ItemCompendium.GLIDERS.key)
             }
         }
 
         ItemCompendium.SLEEPING_BAGS.associations.forEach { (color, sleepingBag) ->
-            shaped(RecipeCategory.TOOLS, sleepingBag.value) {
+            shaped(RecipeCategory.TOOLS, sleepingBag.value()) {
                 pattern("###", "SSS")
                 inputs('#' to wool(color), 'S' to ConventionalItemTags.STRINGS)
                 criterion(ItemTags.WOOL)
             }
-            shapeless(RecipeCategory.TOOLS, sleepingBag.value, name = ModIdentifier.of("${color.getName()}_sleeping_bag_from_sleeping_bag")) {
+            shapeless(RecipeCategory.TOOLS, sleepingBag.value(), name = ModIdentifier.of("${color.getName()}_sleeping_bag_from_sleeping_bag")) {
                 inputs(ItemCompendium.SLEEPING_BAGS.key, dyes(color))
                 criterion(ItemCompendium.SLEEPING_BAGS.key)
             }
@@ -280,7 +280,7 @@ class KibeRecipeProvider(output: FabricDataOutput, registryLookup: CompletableFu
             criterion(ItemCompendium.DIAMOND_RING)
         }
 
-        vacuum(Ingredient.ofItems(Items.BUCKET), 1000, FluidCompendium.LIQUID_XP.fluidBucket!!)
+        vacuum(Ingredient.ofItems(Items.BUCKET), 1000, ItemCompendium.FLUID_BUCKETS[FluidCompendium.LIQUID_XP]!!)
 
         shaped(RecipeCategory.TOOLS, ItemCompendium.MAGMA_RING) {
             pattern(" # ", "MGM", "NON")

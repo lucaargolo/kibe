@@ -3,11 +3,14 @@ package io.github.lucaargolo.kibe.blockentity
 import io.github.lucaargolo.kibe.block.BlockCompendium
 import io.github.lucaargolo.kibe.client.blockentity.*
 import io.github.lucaargolo.kibe.utils.RegistryCompendium
+import net.minecraft.block.Block
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories
 import net.minecraft.registry.Registries
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.client.ClientHooks
+import net.neoforged.neoforge.registries.DeferredHolder
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 import java.util.function.Supplier
@@ -27,13 +30,13 @@ object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries
     val BREAKER by register("breaker", ::BreakerBlockEntity, { BlockCompendium.BREAKER })
     val HEATER by register("heater", ::HeaterBlockEntity, { BlockCompendium.HEATER })
     val DEHUMIDIFIER by register("dehumidifier", ::DehumidifierBlockEntity, { BlockCompendium.DEHUMIDIFIER })
-    val BLOCK_GENERATOR by register("block_generator", ::BlockGeneratorBlockEntity, *BlockCompendium.BLOCK_GENERATORS.values.map { Supplier{ it.value } }.toTypedArray())
+    val BLOCK_GENERATOR by register("block_generator", ::BlockGeneratorBlockEntity, *BlockCompendium.BLOCK_GENERATORS.values.map { Supplier{ it.value() } }.toTypedArray())
     val CHUNK_LOADER by register("chunk_loader", ::ChunkLoaderBlockEntity, { BlockCompendium.CHUNK_LOADER })
     val TANK by register("tank", ::TankBlockEntity, { BlockCompendium.TANK })
     val XP_SHOWER by register("xp_shower", ::XpShowerBlockEntity, { BlockCompendium.XP_SHOWER })
     val FLUID_HOPPER by register("fluid_hopper", ::FluidHopperBlockEntity, { BlockCompendium.FLUID_HOPPER })
 
-    fun <B: BlockEntity> register(string: String, factory: BlockEntityType.BlockEntityFactory<B>, vararg blocks: Supplier<Block>): Lazy<BlockEntityType<B>> {
+    fun <B: BlockEntity> register(string: String, factory: BlockEntityType.BlockEntityFactory<B>, vararg blocks: Supplier<Block>): DeferredHolder<BlockEntityType<*>, BlockEntityType<B>> {
         return register(string) {
             BlockEntityType.Builder.create(factory, *blocks.map { it.get() }.toTypedArray()).build(null)
         }

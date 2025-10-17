@@ -12,8 +12,8 @@ import net.minecraft.block.*
 import net.minecraft.block.AbstractBlock.Settings
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.fluid.FlowableFluid
-import net.minecraft.item.Item
 import net.minecraft.fluid.Fluid
+import net.minecraft.item.Item
 import net.minecraft.registry.Registries
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.tag.BlockTags
@@ -23,7 +23,6 @@ import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.property.Properties
 import net.minecraft.util.ColorCode
 import net.minecraft.util.DyeColor
-import java.util.function.Supplier
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
 import net.neoforged.neoforge.registries.DeferredHolder
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -120,18 +119,18 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
 
     val MAGNET_INHIBITOR: TagEntry<Block> = registerTag("magnet_inhibitor", children = mutableListOf(ConventionalBlockTags.STORAGE_BLOCKS_COAL))
 
-    fun <E : FlowableFluid> registerFluidBlock(string: String, entry: Supplier<E>, vararg tags: TagKey<Block>): Lazy<FluidBlock> {
-        val blockDelegate = register(string, { FluidBlock(entry.get(), Settings.copy(Blocks.LAVA)) }, false)
+    fun <E : FlowableFluid> registerFluidBlock(string: String, entry: DeferredHolder<Fluid, E>, vararg tags: TagKey<Block>): DeferredHolder<Block, FluidBlock> {
+        val blockDelegate = register(string, { FluidBlock(entry.get(), Settings.copy(Blocks.LAVA)) }, *tags, hasItem = false)
         fluidBlocks[entry] = blockDelegate
         return blockDelegate
     }
 
-    override fun <E: Block> register(string: String, entry: Supplier<E>, vararg tags: TagKey<Block>): Lazy<E> {
+    override fun <E: Block> register(string: String, entry: Supplier<E>, vararg tags: TagKey<Block>): DeferredHolder<Block, E> {
         return register(string, entry, *tags, hasItem = true)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <E : Block> register(string: String, entry: Supplier<E>, vararg tags: TagKey<*>, hasItem: Boolean = true): Lazy<E> {
+    fun <E : Block> register(string: String, entry: Supplier<E>, vararg tags: TagKey<*>, hasItem: Boolean = true): DeferredHolder<Block, E> {
         return super.register(string, entry, *tags.filter { it.registry() == RegistryKeys.BLOCK }.map { it as TagKey<Block> }.toTypedArray()).also {
             if(hasItem) {
                 ItemCompendium.registerBlockItem(string, it, *tags.filter { it.registry() == RegistryKeys.ITEM }.map { it as TagKey<Item> }.toTypedArray())
