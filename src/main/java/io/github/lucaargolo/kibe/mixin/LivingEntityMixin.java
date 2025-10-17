@@ -2,6 +2,7 @@ package io.github.lucaargolo.kibe.mixin;
 
 import io.github.lucaargolo.kibe.block.Elevator;
 import io.github.lucaargolo.kibe.effect.EffectCompendium;
+import io.github.lucaargolo.kibe.enchantment.EnchantmentCompendium;
 import io.github.lucaargolo.kibe.item.Glider;
 import io.github.lucaargolo.kibe.item.ItemCompendium;
 import io.github.lucaargolo.kibe.item.SleepingBag;
@@ -117,7 +118,12 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if((Object) this instanceof PlayerEntity) {
             PlayerEntity player = ((PlayerEntity) ((Object) this));
-            if (player.getEquippedStack(EquipmentSlot.FEET).getItem() == ItemCompendium.INSTANCE.getSLIME_BOOTS()) {
+            ItemStack feetStack = player.getEquippedStack(EquipmentSlot.FEET);
+            boolean isSlimy = feetStack.getItem() == ItemCompendium.INSTANCE.getSLIME_BOOTS();
+            if(!isSlimy) {
+                isSlimy = feetStack.getEnchantments().getEnchantments().stream().anyMatch(enchantment -> EnchantmentCompendium.INSTANCE.getSLIMY().equals(enchantment.getKey().orElse(null)));
+            }
+            if (isSlimy) {
                 if(!isSneaking() && fallDistance > 2) {
                     this.fallDistance = 0;
 

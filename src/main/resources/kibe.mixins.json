@@ -3,6 +3,7 @@
   "package": "io.github.lucaargolo.kibe.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AnvilScreenHandlerMixin",
     "BiomeMixin",
     "BlockRenderViewMixin",
     "BucketItemAccessor",

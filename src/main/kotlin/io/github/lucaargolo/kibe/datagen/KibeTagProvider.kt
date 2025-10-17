@@ -11,7 +11,7 @@ import net.minecraft.item.Item
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.registry.RegistryWrapper
 
-object KibeTagsProvider {
+object KibeTagProvider {
 
     fun init(pack: FabricDataGenerator.Pack) {
         pack.addProvider { output, lookup ->

@@ -1,6 +1,5 @@
 package io.github.lucaargolo.kibe.block
 
-import io.github.lucaargolo.kibe.KibeMod
 import io.github.lucaargolo.kibe.client.model.DrawbridgeCustomModel
 import io.github.lucaargolo.kibe.client.model.TankCustomModel
 import io.github.lucaargolo.kibe.item.ItemCompendium
@@ -132,23 +131,21 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     }
 
     override fun initializeClient() {
-        super.initializeClient()
         BlockRenderLayerMap.INSTANCE.putBlock(DRAWBRIDGE, RenderLayer.getCutoutMipped())
         BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
         BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutoutMipped())
         BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
         BlockRenderLayerMap.INSTANCE.putBlock(WITHER_PROOF_GLASS, RenderLayer.getTranslucent())
         BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutoutMipped())
+
         ModelLoadingPlugin.register { plugin ->
             plugin.modifyModelOnLoad().register { model, context ->
-                val modelIdentifier = context.topLevelId()
-                if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID) {
-                    when (modelIdentifier.id.path) {
-                        "drawbridge" -> DrawbridgeCustomModel()
-                        "tank" -> TankCustomModel()
-                        else -> model
-                    }
-                } else model
+                val modelIdentifier = context.topLevelId() ?: return@register model
+                return@register when (modelIdentifier.id) {
+                    ModIdentifier.of("drawbridge") -> DrawbridgeCustomModel()
+                    ModIdentifier.of("tank") -> TankCustomModel()
+                    else -> model
+                }
             }
         }
     }

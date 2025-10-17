@@ -3,11 +3,8 @@ package io.github.lucaargolo.kibe.datagen
 import io.github.lucaargolo.kibe.recipes.vacuum.VacuumHopperRecipe
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
-import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder
-import net.minecraft.data.server.recipe.RecipeExporter
+import net.minecraft.data.server.recipe.*
 import net.minecraft.data.server.recipe.RecipeProvider.*
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
@@ -81,6 +78,10 @@ internal fun CookingRecipeJsonBuilder.criterion(item: ItemConvertible) {
 
 internal fun CookingRecipeJsonBuilder.criterion(tag: TagKey<Item>) {
     criterion("has_"+tag.id.path, conditionsFromTag(tag))
+}
+
+internal fun RecipeExporter.smithing() {
+    SmithingTransformRecipeJsonBuilder
 }
 
 internal fun wool(color: DyeColor): ItemConvertible {

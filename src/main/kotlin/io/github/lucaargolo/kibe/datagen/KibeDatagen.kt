@@ -7,9 +7,10 @@ object KibeDatagen: DataGeneratorEntrypoint {
 
     override fun onInitializeDataGenerator(generator: FabricDataGenerator) {
         val kibe = generator.createPack()
-        KibeTagsProvider.init(kibe)
+        KibeTagProvider.init(kibe)
         kibe.addProvider(::KibeBlockLootProvider)
         kibe.addProvider(::KibeRecipeProvider)
+        kibe.addProvider(::KibeEnchantmentProvider)
     }
 
 }

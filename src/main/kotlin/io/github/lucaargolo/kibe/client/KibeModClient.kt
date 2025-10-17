@@ -75,7 +75,8 @@ object KibeModClient: ClientModInitializer {
 
     fun initExtraModels() {
         ModelLoadingPlugin.register { out ->
-            out.addModels(ModIdentifier.of("block/redstone_timer_structure")) // not inventory
+            out.addModels(ModIdentifier.of("block/redstone_timer_structure"))
+            out.addModels(ModIdentifier.of("item/slimy_boots_overlay"))
             out.addModels(ModIdentifier.of("item/glider_active"))
             out.addModels(ModIdentifier.of("item/glider_handle"))
             out.addModels(ModIdentifier.of("item/white_glider_active"))

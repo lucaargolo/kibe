@@ -10,6 +10,7 @@ import io.github.lucaargolo.kibe.client.item.EntangledTankBlockItemDynamicRender
 import io.github.lucaargolo.kibe.client.item.GliderDynamicRenderer
 import io.github.lucaargolo.kibe.client.model.EntangledBagBakedModel
 import io.github.lucaargolo.kibe.client.model.EntangledBucketBakedModel
+import io.github.lucaargolo.kibe.client.model.SlimyBootsModel
 import io.github.lucaargolo.kibe.utils.ModIdentifier
 import io.github.lucaargolo.kibe.utils.RegistryCompendium
 import io.github.lucaargolo.kibe.utils.helper.AbilityHelper
@@ -18,13 +19,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.block.Block
 import net.minecraft.client.item.ModelPredicateProviderRegistry
+import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.component.type.FoodComponent
 import net.minecraft.fluid.Fluid
-import net.minecraft.item.BlockItem
-import net.minecraft.item.BucketItem
-import net.minecraft.item.Item
+import net.minecraft.item.*
 import net.minecraft.item.Item.Settings
-import net.minecraft.item.Items
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.ItemTags
 import net.minecraft.registry.tag.TagKey
@@ -142,6 +141,7 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
     override fun initializeClient() {
         ModelPredicateProviderRegistry.register(MEASURING_TAPE, ModIdentifier.of("extended"), MeasuringTape.PredicateProvider())
+
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_CHEST, EntangledChestBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(BlockCompendium.ENTANGLED_TANK, EntangledTankBlockItemDynamicRenderer())
         BuiltinItemRendererRegistry.INSTANCE.register(WHITE_GLIDER, GliderDynamicRenderer())
@@ -163,14 +163,20 @@ object ItemCompendium: RegistryCompendium<Item>(Registries.ITEM) {
 
         ModelLoadingPlugin.register { plugin ->
             plugin.modifyModelOnLoad().register { model, context ->
-                val modelIdentifier = context.topLevelId()
-                if(modelIdentifier != null && modelIdentifier.id.namespace == KibeMod.MOD_ID && modelIdentifier.variant == "inventory") {
-                    when (modelIdentifier.id.path) {
-                        "entangled_bag" -> EntangledBagBakedModel()
-                        "entangled_bucket" -> EntangledBucketBakedModel()
-                        else -> model
-                    }
-                } else model
+                val modelIdentifier = context.topLevelId() ?: return@register model
+                return@register when (modelIdentifier) {
+                    ModelIdentifier.ofInventoryVariant(ModIdentifier.of("entangled_bag")) -> EntangledBagBakedModel()
+                    ModelIdentifier.ofInventoryVariant(ModIdentifier.of("entangled_bucket")) -> EntangledBucketBakedModel()
+                    else -> model
+                }
+            }
+            plugin.modifyModelAfterBake().register { model, context ->
+                val modelIdentifier = context.topLevelId() ?: return@register model
+                val item = Registries.ITEM.get(modelIdentifier.id)
+                if(item is ArmorItem && item.type == ArmorItem.Type.BOOTS) {
+                    return@register model?.let(::SlimyBootsModel)
+                }
+                return@register model
             }
         }
     }
