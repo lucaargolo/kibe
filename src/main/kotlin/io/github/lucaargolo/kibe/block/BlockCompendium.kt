@@ -28,48 +28,48 @@ import net.minecraft.util.Identifier
 
 object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
 
-    val CURSED_DIRT = register("cursed_dirt", CursedDirt(Settings.copy(Blocks.GRASS_BLOCK).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS)), BlockTags.SHOVEL_MINEABLE)
-    val REDSTONE_TIMER = register("redstone_timer", RedstoneTimer(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F).nonOpaque()), BlockTags.PICKAXE_MINEABLE)
+    val CURSED_DIRT by register("cursed_dirt", CursedDirt(Settings.copy(Blocks.GRASS_BLOCK).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS)), BlockTags.SHOVEL_MINEABLE)
+    val REDSTONE_TIMER by register("redstone_timer", RedstoneTimer(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F).nonOpaque()), BlockTags.PICKAXE_MINEABLE)
 
-    val STONE_SPIKES = register("stone_spikes", Spikes(Spikes.Type.STONE, Settings.copy(Blocks.STONE)), BlockTags.PICKAXE_MINEABLE)
-    val IRON_SPIKES = register("iron_spikes", Spikes(Spikes.Type.IRON, Settings.copy(Blocks.IRON_BLOCK)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val GOLD_SPIKES = register("gold_spikes", Spikes(Spikes.Type.GOLD, Settings.copy(Blocks.GOLD_BLOCK)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, ItemTags.PIGLIN_LOVED)
-    val DIAMOND_SPIKES = register("diamond_spikes", Spikes(Spikes.Type.DIAMOND, Settings.copy(Blocks.DIAMOND_BLOCK)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val STONE_SPIKES by register("stone_spikes", Spikes(Spikes.Type.STONE, Settings.copy(Blocks.STONE)), BlockTags.PICKAXE_MINEABLE)
+    val IRON_SPIKES by register("iron_spikes", Spikes(Spikes.Type.IRON, Settings.copy(Blocks.IRON_BLOCK)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val GOLD_SPIKES by register("gold_spikes", Spikes(Spikes.Type.GOLD, Settings.copy(Blocks.GOLD_BLOCK)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, ItemTags.PIGLIN_LOVED)
+    val DIAMOND_SPIKES by register("diamond_spikes", Spikes(Spikes.Type.DIAMOND, Settings.copy(Blocks.DIAMOND_BLOCK)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
 
-    val REGULAR_CONVEYOR_BELT = register("regular_conveyor_belt", ConveyorBelt(0.050, Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.PICKAXE_MINEABLE)
-    val FAST_CONVEYOR_BELT = register("fast_conveyor_belt", ConveyorBelt(0.1, Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.PICKAXE_MINEABLE)
-    val EXPRESS_CONVEYOR_BELT = register("express_conveyor_belt", ConveyorBelt(0.2, Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.PICKAXE_MINEABLE)
+    val REGULAR_CONVEYOR_BELT by register("regular_conveyor_belt", ConveyorBelt(0.050, Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.PICKAXE_MINEABLE)
+    val FAST_CONVEYOR_BELT by register("fast_conveyor_belt", ConveyorBelt(0.1, Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.PICKAXE_MINEABLE)
+    val EXPRESS_CONVEYOR_BELT by register("express_conveyor_belt", ConveyorBelt(0.2, Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.PICKAXE_MINEABLE)
 
-    val ENTANGLED_TANK = register("entangled_tank", EntangledTank(Settings.copy(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F).luminance { state -> state[Properties.LEVEL_15] }), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, hasItem = false)
-    val ENTANGLED_CHEST = register("entangled_chest", EntangledChest(Settings.copy(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, hasItem = false)
-    val TRASH_CAN = register("trash_can", TrashCan(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val VACUUM_HOPPER = register("vacuum_hopper", VacuumHopper(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BIG_TORCH = register("big_torch", BigTorch(Settings.copy(Blocks.TORCH).strength(0.5f).luminance{ state -> if(state[Properties.ENABLED]) 15 else 0 }.sounds(BlockSoundGroup.WOOD)), BlockTags.AXE_MINEABLE)
-    val COOLER = register("cooler", Cooler(Settings.create().strength(0.2F).sounds(BlockSoundGroup.SNOW)), BlockTags.SHOVEL_MINEABLE, hasItem = false)
-    val DRAWBRIDGE = register("drawbridge", Drawbridge(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val ENTANGLED_TANK by register("entangled_tank", EntangledTank(Settings.copy(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F).luminance { state -> state[Properties.LEVEL_15] }), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, hasItem = false)
+    val ENTANGLED_CHEST by register("entangled_chest", EntangledChest(Settings.copy(Blocks.OBSIDIAN).requiresTool().strength(22.0F, 600.0F)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, hasItem = false)
+    val TRASH_CAN by register("trash_can", TrashCan(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val VACUUM_HOPPER by register("vacuum_hopper", VacuumHopper(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val BIG_TORCH by register("big_torch", BigTorch(Settings.copy(Blocks.TORCH).strength(0.5f).luminance{ state -> if(state[Properties.ENABLED]) 15 else 0 }.sounds(BlockSoundGroup.WOOD)), BlockTags.AXE_MINEABLE)
+    val COOLER by register("cooler", Cooler(Settings.create().strength(0.2F).sounds(BlockSoundGroup.SNOW)), BlockTags.SHOVEL_MINEABLE, hasItem = false)
+    val DRAWBRIDGE by register("drawbridge", Drawbridge(Settings.copy(Blocks.IRON_BLOCK).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
 
-    val OBSIDIAN_SAND = register("obsidian_sand", ColoredFallingBlock(ColorCode(0x171623), Settings.copy(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)), BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.SHOVEL_MINEABLE)
-    val WITHER_PROOF_BLOCK = register("wither_proof_block", Block(Settings.copy(Blocks.OBSIDIAN)), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val WITHER_PROOF_SAND = register("wither_proof_sand", ColoredFallingBlock(ColorCode(0x111111), Settings.copy(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.SHOVEL_MINEABLE)
-    val WITHER_PROOF_GLASS = register("wither_proof_glass", TransparentBlock(Settings.copy(Blocks.OBSIDIAN).nonOpaque()), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val WITHER_BUILDER = register("wither_builder", WitherBuilder(Settings.copy(Blocks.OBSIDIAN)), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val OBSIDIAN_SAND by register("obsidian_sand", ColoredFallingBlock(ColorCode(0x171623), Settings.copy(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)), BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.SHOVEL_MINEABLE)
+    val WITHER_PROOF_BLOCK by register("wither_proof_block", Block(Settings.copy(Blocks.OBSIDIAN)), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val WITHER_PROOF_SAND by register("wither_proof_sand", ColoredFallingBlock(ColorCode(0x111111), Settings.copy(Blocks.OBSIDIAN).sounds(BlockSoundGroup.SAND)), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.SHOVEL_MINEABLE)
+    val WITHER_PROOF_GLASS by register("wither_proof_glass", TransparentBlock(Settings.copy(Blocks.OBSIDIAN).nonOpaque()), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val WITHER_BUILDER by register("wither_builder", WitherBuilder(Settings.copy(Blocks.OBSIDIAN)), BlockTags.WITHER_IMMUNE, BlockTags.DRAGON_IMMUNE, BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
 
-    val PLACER = register("placer", Placer(Settings.copy(Blocks.IRON_BLOCK)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BREAKER = register("breaker", Breaker(Settings.copy(Blocks.IRON_BLOCK)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val PLACER by register("placer", Placer(Settings.copy(Blocks.IRON_BLOCK)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val BREAKER by register("breaker", Breaker(Settings.copy(Blocks.IRON_BLOCK)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
 
-    val HEATER = register("heater", Heater(Settings.copy(Blocks.COBBLESTONE).luminance { if(it[Properties.ENABLED]) 15 else 0 }), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val DEHUMIDIFIER = register("dehumidifier", Dehumidifier(Settings.copy(Blocks.COBBLESTONE)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val HEATER by register("heater", Heater(Settings.copy(Blocks.COBBLESTONE).luminance { if(it[Properties.ENABLED]) 15 else 0 }), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val DEHUMIDIFIER by register("dehumidifier", Dehumidifier(Settings.copy(Blocks.COBBLESTONE)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
 
-    val COBBLESTONE_GENERATOR_MK1 = register("cobblestone_generator_mk1", BlockGenerator(Settings.copy(Blocks.IRON_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.01f), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val COBBLESTONE_GENERATOR_MK2 = register("cobblestone_generator_mk2", BlockGenerator(Settings.copy(Blocks.GOLD_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.04f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, ItemTags.PIGLIN_LOVED)
-    val COBBLESTONE_GENERATOR_MK3 = register("cobblestone_generator_mk3", BlockGenerator(Settings.copy(Blocks.DIAMOND_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.16f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val COBBLESTONE_GENERATOR_MK4 = register("cobblestone_generator_mk4", BlockGenerator(Settings.copy(Blocks.EMERALD_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.64f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val COBBLESTONE_GENERATOR_MK5 = register("cobblestone_generator_mk5", BlockGenerator(Settings.copy(Blocks.NETHERITE_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 2.56f), BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BASALT_GENERATOR_MK1 = register("basalt_generator_mk1", BlockGenerator(Settings.copy(Blocks.IRON_BLOCK).luminance { 4 }, Blocks.BASALT, 0.01f), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BASALT_GENERATOR_MK2 = register("basalt_generator_mk2", BlockGenerator(Settings.copy(Blocks.GOLD_BLOCK).luminance { 4 }, Blocks.BASALT, 0.04f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, ItemTags.PIGLIN_LOVED)
-    val BASALT_GENERATOR_MK3 = register("basalt_generator_mk3", BlockGenerator(Settings.copy(Blocks.DIAMOND_BLOCK).luminance { 4 }, Blocks.BASALT, 0.16f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BASALT_GENERATOR_MK4 = register("basalt_generator_mk4", BlockGenerator(Settings.copy(Blocks.EMERALD_BLOCK).luminance { 4 }, Blocks.BASALT, 0.64f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val BASALT_GENERATOR_MK5 = register("basalt_generator_mk5", BlockGenerator(Settings.copy(Blocks.NETHERITE_BLOCK).luminance { 4 }, Blocks.BASALT, 2.56f), BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val COBBLESTONE_GENERATOR_MK1 by register("cobblestone_generator_mk1", BlockGenerator(Settings.copy(Blocks.IRON_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.01f), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val COBBLESTONE_GENERATOR_MK2 by register("cobblestone_generator_mk2", BlockGenerator(Settings.copy(Blocks.GOLD_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.04f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, ItemTags.PIGLIN_LOVED)
+    val COBBLESTONE_GENERATOR_MK3 by register("cobblestone_generator_mk3", BlockGenerator(Settings.copy(Blocks.DIAMOND_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.16f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val COBBLESTONE_GENERATOR_MK4 by register("cobblestone_generator_mk4", BlockGenerator(Settings.copy(Blocks.EMERALD_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 0.64f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val COBBLESTONE_GENERATOR_MK5 by register("cobblestone_generator_mk5", BlockGenerator(Settings.copy(Blocks.NETHERITE_BLOCK).luminance { 4 }, Blocks.COBBLESTONE, 2.56f), BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val BASALT_GENERATOR_MK1 by register("basalt_generator_mk1", BlockGenerator(Settings.copy(Blocks.IRON_BLOCK).luminance { 4 }, Blocks.BASALT, 0.01f), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val BASALT_GENERATOR_MK2 by register("basalt_generator_mk2", BlockGenerator(Settings.copy(Blocks.GOLD_BLOCK).luminance { 4 }, Blocks.BASALT, 0.04f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE, ItemTags.PIGLIN_LOVED)
+    val BASALT_GENERATOR_MK3 by register("basalt_generator_mk3", BlockGenerator(Settings.copy(Blocks.DIAMOND_BLOCK).luminance { 4 }, Blocks.BASALT, 0.16f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val BASALT_GENERATOR_MK4 by register("basalt_generator_mk4", BlockGenerator(Settings.copy(Blocks.EMERALD_BLOCK).luminance { 4 }, Blocks.BASALT, 0.64f), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val BASALT_GENERATOR_MK5 by register("basalt_generator_mk5", BlockGenerator(Settings.copy(Blocks.NETHERITE_BLOCK).luminance { 4 }, Blocks.BASALT, 2.56f), BlockTags.NEEDS_DIAMOND_TOOL, BlockTags.PICKAXE_MINEABLE)
     val BLOCK_GENERATORS = registerTag("block_generators",
         COBBLESTONE_GENERATOR_MK1, BASALT_GENERATOR_MK1,
         COBBLESTONE_GENERATOR_MK2, BASALT_GENERATOR_MK2,
@@ -78,30 +78,30 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
         COBBLESTONE_GENERATOR_MK5, BASALT_GENERATOR_MK5
     )
 
-    val LIGHT_SOURCE = register("light_source", LightSource(Settings.copy(Blocks.GLASS).luminance{ 15 }.ticksRandomly().noCollision().breakInstantly().dropsNothing()), hasItem = false)
-    val CHUNK_LOADER = register("chunk_loader", ChunkLoader(Settings.copy(Blocks.ENCHANTING_TABLE).requiresTool().strength(22.0F, 600.0F)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val TANK = register("tank", Tank(Settings.copy(Blocks.GLASS).strength(0.5F).nonOpaque().luminance { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)), hasItem = false)
-    val XP_SHOWER = register("xp_shower", XpShower(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val XP_DRAIN = register("xp_drain", XpDrain(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val IGNITER = register("igniter", Igniter(Settings.copy(Blocks.COBBLESTONE)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
-    val FLUID_HOPPER = register("fluid_hopper", FluidHopper(Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.STONE_GRAY).requiresTool().strength(3.0F, 4.8F).sounds(BlockSoundGroup.METAL).nonOpaque()), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val LIGHT_SOURCE by register("light_source", LightSource(Settings.copy(Blocks.GLASS).luminance{ 15 }.ticksRandomly().noCollision().breakInstantly().dropsNothing()), hasItem = false)
+    val CHUNK_LOADER by register("chunk_loader", ChunkLoader(Settings.copy(Blocks.ENCHANTING_TABLE).requiresTool().strength(22.0F, 600.0F)), BlockTags.NEEDS_IRON_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val TANK by register("tank", Tank(Settings.copy(Blocks.GLASS).strength(0.5F).nonOpaque().luminance { state -> state[Properties.LEVEL_15] }.sounds(BlockSoundGroup.GLASS)), hasItem = false)
+    val XP_SHOWER by register("xp_shower", XpShower(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val XP_DRAIN by register("xp_drain", XpDrain(Settings.copy(Blocks.STONE).requiresTool().strength(1.5F, 6.0F)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val IGNITER by register("igniter", Igniter(Settings.copy(Blocks.COBBLESTONE)), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
+    val FLUID_HOPPER by register("fluid_hopper", FluidHopper(Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.STONE_GRAY).requiresTool().strength(3.0F, 4.8F).sounds(BlockSoundGroup.METAL).nonOpaque()), BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)
 
-    val WHITE_ELEVATOR = register("white_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.WHITE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val ORANGE_ELEVATOR = register("orange_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.ORANGE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val MAGENTA_ELEVATOR = register("magenta_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.MAGENTA).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val LIGHT_BLUE_ELEVATOR = register("light_blue_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.LIGHT_BLUE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val YELLOW_ELEVATOR = register("yellow_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.YELLOW).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val LIME_ELEVATOR = register("lime_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.LIME).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val PINK_ELEVATOR = register("pink_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.PINK).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val GRAY_ELEVATOR = register("gray_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.GRAY).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val LIGHT_GRAY_ELEVATOR = register("light_gray_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.LIGHT_GRAY).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val CYAN_ELEVATOR = register("cyan_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.CYAN).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val BLUE_ELEVATOR = register("blue_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BLUE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val PURPLE_ELEVATOR = register("purple_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.PURPLE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val GREEN_ELEVATOR = register("green_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.GREEN).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val BROWN_ELEVATOR = register("brown_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BROWN).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val RED_ELEVATOR = register("red_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.RED).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
-    val BLACK_ELEVATOR = register("black_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BLACK).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val WHITE_ELEVATOR by register("white_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.WHITE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val ORANGE_ELEVATOR by register("orange_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.ORANGE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val MAGENTA_ELEVATOR by register("magenta_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.MAGENTA).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val LIGHT_BLUE_ELEVATOR by register("light_blue_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.LIGHT_BLUE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val YELLOW_ELEVATOR by register("yellow_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.YELLOW).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val LIME_ELEVATOR by register("lime_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.LIME).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val PINK_ELEVATOR by register("pink_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.PINK).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val GRAY_ELEVATOR by register("gray_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.GRAY).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val LIGHT_GRAY_ELEVATOR by register("light_gray_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.LIGHT_GRAY).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val CYAN_ELEVATOR by register("cyan_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.CYAN).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val BLUE_ELEVATOR by register("blue_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BLUE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val PURPLE_ELEVATOR by register("purple_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.PURPLE).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val GREEN_ELEVATOR by register("green_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.GREEN).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val BROWN_ELEVATOR by register("brown_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BROWN).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val RED_ELEVATOR by register("red_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.RED).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
+    val BLACK_ELEVATOR by register("black_elevator", Elevator(Settings.copy(Blocks.STONE).mapColor(MapColor.BLACK).requiresTool().strength(1.5F, 6.0F)), BlockTags.PICKAXE_MINEABLE)
     val ELEVATORS = registerAssociatedTag("elevators",
         DyeColor.WHITE to WHITE_ELEVATOR, DyeColor.ORANGE to ORANGE_ELEVATOR, DyeColor.MAGENTA to MAGENTA_ELEVATOR, DyeColor.LIGHT_BLUE to LIGHT_BLUE_ELEVATOR,
         DyeColor.YELLOW to YELLOW_ELEVATOR, DyeColor.LIME to LIME_ELEVATOR, DyeColor.PINK to PINK_ELEVATOR, DyeColor.GRAY to GRAY_ELEVATOR,
@@ -111,20 +111,20 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
 
     val MAGNET_INHIBITOR: TagEntry<Block> = registerTag("magnet_inhibitor", children = mutableListOf(ConventionalBlockTags.STORAGE_BLOCKS_COAL))
 
-    fun <E : FlowableFluid> registerFluidBlock(identifier: Identifier, entry: E): FluidBlock {
+    fun <E : FlowableFluid> registerFluidBlock(identifier: Identifier, entry: E): Lazy<FluidBlock> {
         return register(identifier, FluidBlock(entry, Settings.copy(Blocks.LAVA)), hasItem = false)
     }
 
-    override fun <E: Block> register(identifier: Identifier, entry: E, vararg tags: TagKey<Block>): E {
+    override fun <E: Block> register(identifier: Identifier, entry: E, vararg tags: TagKey<Block>): Lazy<E> {
         return register(identifier, entry, *tags, hasItem = true)
     }
 
-    fun <E : Block> register(string: String, entry: E, vararg tags: TagKey<*>, hasItem: Boolean = true): E {
+    fun <E : Block> register(string: String, entry: E, vararg tags: TagKey<*>, hasItem: Boolean = true): Lazy<E> {
         return register(ModIdentifier.of(string), entry, *tags, hasItem = hasItem)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <E : Block> register(identifier: Identifier, entry: E, vararg tags: TagKey<*>, hasItem: Boolean = true): E {
+    fun <E : Block> register(identifier: Identifier, entry: E, vararg tags: TagKey<*>, hasItem: Boolean = true): Lazy<E> {
         if(hasItem) {
             ItemCompendium.registerBlockItem(identifier, entry, *tags.filter { it.registry() == RegistryKeys.ITEM }.map { it as TagKey<Item> }.toTypedArray())
         }

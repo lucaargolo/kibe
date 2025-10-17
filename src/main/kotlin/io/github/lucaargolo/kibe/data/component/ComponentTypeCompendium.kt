@@ -10,14 +10,14 @@ import net.minecraft.util.DyeColor
 
 object ComponentTypeCompendium: RegistryCompendium<ComponentType<*>>(Registries.DATA_COMPONENT_TYPE) {
 
-    val ENABLED = register("enabled", ComponentType.Builder<Boolean>().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build())
-    val UNIQUE = register("unique", ComponentType.Builder<Boolean>().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build())
+    val ENABLED by register("enabled", ComponentType.Builder<Boolean>().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build())
+    val UNIQUE by register("unique", ComponentType.Builder<Boolean>().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build())
 
-    val ENTANGLED_KEY = register("entangled_key", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
-    val RUNE_SET = register("rune_set", ComponentType.Builder<List<DyeColor>>().codec(Codec.list(DyeColor.CODEC)).packetCodec(PacketCodecs.collection(::ArrayList, DyeColor.PACKET_CODEC)).build())
-    val OWNER = register("owner", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
+    val ENTANGLED_KEY by register("entangled_key", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
+    val RUNE_SET by register("rune_set", ComponentType.Builder<List<DyeColor>>().codec(Codec.list(DyeColor.CODEC)).packetCodec(PacketCodecs.collection(::ArrayList, DyeColor.PACKET_CODEC)).build())
+    val OWNER by register("owner", ComponentType.Builder<String>().codec(Codec.STRING).packetCodec(PacketCodecs.STRING).build())
 
-    val MEASURING_FROM = register("measuring_from", ComponentType.Builder<MeasuringTape.MeasuringData>().codec(MeasuringTape.MeasuringData.CODEC).packetCodec(MeasuringTape.MeasuringData.PACKET_CODEC).build())
-    val MEASURING_TO = register("measuring_to", ComponentType.Builder<MeasuringTape.MeasuringData>().codec(MeasuringTape.MeasuringData.CODEC).packetCodec(MeasuringTape.MeasuringData.PACKET_CODEC).build())
+    val MEASURING_FROM by register("measuring_from", ComponentType.Builder<MeasuringTape.MeasuringData>().codec(MeasuringTape.MeasuringData.CODEC).packetCodec(MeasuringTape.MeasuringData.PACKET_CODEC).build())
+    val MEASURING_TO by register("measuring_to", ComponentType.Builder<MeasuringTape.MeasuringData>().codec(MeasuringTape.MeasuringData.CODEC).packetCodec(MeasuringTape.MeasuringData.PACKET_CODEC).build())
 
 }

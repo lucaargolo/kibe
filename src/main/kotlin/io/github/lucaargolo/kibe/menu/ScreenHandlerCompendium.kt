@@ -18,19 +18,19 @@ import net.minecraft.world.World
 
 object ScreenHandlerCompendium : RegistryCompendium<ScreenHandlerType<*>>(Registries.SCREEN_HANDLER) {
 
-    val ENTANGLED_CHEST = register("entangled_chest", blockHandler(::EntangledChestScreenHandler))
-    val TRASH_CAN = register("trash_can", blockHandler(::TrashCanScreenHandler))
-    val VACUUM_HOPPER = register("vacuum_hopper", blockHandler(::VacuumHopperScreenHandler))
-    val BIG_TORCH = register("big_torch", blockHandler(::BigTorchScreenHandler))
-    val COOLER = register("cooler", blockHandler(::CoolerScreenHandler))
-    val DRAWBRIDGE = register("drawbridge", blockHandler(::DrawbridgeScreenHandler))
-    val WITHER_BUILDER = register("wither_builder", blockHandler(::WitherBuilderScreenHandler))
-    val PLACER = register("placer", blockHandler(::PlacerScreenHandler))
-    val BREAKER = register("breaker", blockHandler(::BreakerScreenHandler))
-    val BLOCK_GENERATOR = register("block_generator", blockHandler(::BlockGeneratorScreenHandler))
-    val POCKET_TRASH_CAN = register("pocket_trash_can", itemHandler(::PocketTrashCanScreenHandler))
-    val ENTANGLED_BAG = register("entangled_bag", itemHandler(::EntangledBagScreenHandler))
-    val COOLER_ITEM = register("cooler_item", itemHandler(::CoolerBlockItemScreenHandler))
+    val ENTANGLED_CHEST by register("entangled_chest", blockHandler(::EntangledChestScreenHandler))
+    val TRASH_CAN by register("trash_can", blockHandler(::TrashCanScreenHandler))
+    val VACUUM_HOPPER by register("vacuum_hopper", blockHandler(::VacuumHopperScreenHandler))
+    val BIG_TORCH by register("big_torch", blockHandler(::BigTorchScreenHandler))
+    val COOLER by register("cooler", blockHandler(::CoolerScreenHandler))
+    val DRAWBRIDGE by register("drawbridge", blockHandler(::DrawbridgeScreenHandler))
+    val WITHER_BUILDER by register("wither_builder", blockHandler(::WitherBuilderScreenHandler))
+    val PLACER by register("placer", blockHandler(::PlacerScreenHandler))
+    val BREAKER by register("breaker", blockHandler(::BreakerScreenHandler))
+    val BLOCK_GENERATOR by register("block_generator", blockHandler(::BlockGeneratorScreenHandler))
+    val POCKET_TRASH_CAN by register("pocket_trash_can", itemHandler(::PocketTrashCanScreenHandler))
+    val ENTANGLED_BAG by register("entangled_bag", itemHandler(::EntangledBagScreenHandler))
+    val COOLER_ITEM by register("cooler_item", itemHandler(::CoolerBlockItemScreenHandler))
 
     @Suppress("UNCHECKED_CAST")
     private fun <T: ScreenHandler, B: BlockEntity> blockHandler(consumer: (Int, PlayerInventory, B, ScreenHandlerContext) -> T): ExtendedScreenHandlerType<T, BlockPos> {

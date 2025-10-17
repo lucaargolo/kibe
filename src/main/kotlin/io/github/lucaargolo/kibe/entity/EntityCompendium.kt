@@ -9,7 +9,7 @@ import net.minecraft.registry.Registries
 
 object EntityCompendium : RegistryCompendium<EntityType<*>>(Registries.ENTITY_TYPE) {
 
-    val THROWN_TORCH = register("thrown_torch",
+    val THROWN_TORCH by register("thrown_torch",
         EntityType.Builder.create(::ThrownTorchEntity, SpawnGroup.MISC)
             .dimensions(0.25f, 0.25f)
             .build()

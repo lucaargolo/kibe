@@ -26,8 +26,8 @@ import net.minecraft.world.BlockRenderView
 
 object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
-    val LIQUID_XP = register("liquid_xp", LiquidXpFluid.Still())
-    val LIQUID_XP_FLOWING = register("flowing_liquid_xp", LiquidXpFluid.Flowing())
+    val LIQUID_XP by register("liquid_xp", LiquidXpFluid.Still())
+    val LIQUID_XP_FLOWING by register("flowing_liquid_xp", LiquidXpFluid.Flowing())
     val EXPERIENCE = registerTag(Identifier.of("c", "experience"), LIQUID_XP)
 
     override fun initialize() {
@@ -42,8 +42,8 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
     private fun setupFluid(still: ModdedFluid, flowing: ModdedFluid, name: String) {
         val id = ModIdentifier.of(name)
-        val fluidBlock = BlockCompendium.registerFluidBlock(id, still)
-        val fluidBucket = ItemCompendium.registerBucketItem(id, still)
+        val fluidBlock by BlockCompendium.registerFluidBlock(id, still)
+        val fluidBucket by ItemCompendium.registerBucketItem(id, still)
         still.fluidBlock = fluidBlock
         still.fluidBucket = fluidBucket
         flowing.fluidBlock = fluidBlock

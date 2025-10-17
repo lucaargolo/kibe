@@ -17,11 +17,11 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
         return registry.getId(entry)
     }
 
-    protected open fun <E: T> register(string: String, entry: E, vararg tags: TagKey<T>): E {
+    protected open fun <E: T> register(string: String, entry: E, vararg tags: TagKey<T>): Lazy<E> {
         return register(ModIdentifier.of(string), entry, *tags)
     }
 
-    protected open fun <E: T> register(identifier: Identifier, entry: E, vararg tags: TagKey<T>): E {
+    protected open fun <E: T> register(identifier: Identifier, entry: E, vararg tags: TagKey<T>): Lazy<E> {
         tags.forEach { tag ->
             this.tags.getOrPut(tag) {
                 TagEntry(tag, mutableListOf(), mutableListOf())

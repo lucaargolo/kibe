@@ -7,6 +7,6 @@ import net.minecraft.registry.Registries
 
 object RecipeSerializerCompendium: RegistryCompendium<RecipeSerializer<*>>(Registries.RECIPE_SERIALIZER) {
 
-    val VACUUM_HOPPER = register("vacuum_hopper", VacuumHopperRecipeSerializer())
+    val VACUUM_HOPPER by register("vacuum_hopper", VacuumHopperRecipeSerializer())
 
 }
