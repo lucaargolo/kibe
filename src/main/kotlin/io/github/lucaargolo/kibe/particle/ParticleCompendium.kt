@@ -9,7 +9,7 @@ import net.minecraft.registry.Registries
 
 object ParticleCompendium: RegistryCompendium<ParticleType<*>>(Registries.PARTICLE_TYPE) {
 
-    val WATER_DROPS by register("water_drops", FabricParticleTypes.simple())
+    val WATER_DROPS by register("water_drops") { FabricParticleTypes.simple() }
 
     override fun initializeClient() {
         ParticleFactoryRegistry.getInstance().register(WATER_DROPS) { sprite -> FlameParticle.Factory(sprite) }

@@ -18,7 +18,7 @@ object KibeTagProvider {
             object: FabricTagProvider<Item>(output, RegistryKeys.ITEM, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     ItemCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.toTypedArray()).also {
+                        getOrCreateTagBuilder(key).add(*entry.values.map(Lazy<Item>::value).toTypedArray()).also {
                             entry.children.forEach(it::forceAddTag)
                         }.setReplace(false)
                     }
@@ -29,7 +29,7 @@ object KibeTagProvider {
             object: FabricTagProvider<Block>(output, RegistryKeys.BLOCK, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     BlockCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.toTypedArray()).also {
+                        getOrCreateTagBuilder(key).add(*entry.values.map(Lazy<Block>::value).toTypedArray()).also {
                             entry.children.forEach(it::forceAddTag)
                         }.setReplace(false)
                     }
@@ -40,7 +40,7 @@ object KibeTagProvider {
             object: FabricTagProvider<Fluid>(output, RegistryKeys.FLUID, lookup) {
                 override fun configure(registryLookup: RegistryWrapper.WrapperLookup) {
                     FluidCompendium.tags.forEach { (key, entry) ->
-                        getOrCreateTagBuilder(key).add(*entry.values.toTypedArray()).also {
+                        getOrCreateTagBuilder(key).add(*entry.values.map(Lazy<Fluid>::value).toTypedArray()).also {
                             entry.children.forEach(it::forceAddTag)
                         }.setReplace(false)
                     }

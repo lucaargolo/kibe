@@ -4,6 +4,7 @@ import net.minecraft.registry.Registry
 import net.minecraft.registry.entry.RegistryEntry
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.Identifier
+import java.util.function.Supplier
 
 open class RegistryCompendium<T: Any>(private val registry: Registry<T>): GenericCompendium<T>() {
 
@@ -17,58 +18,52 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
         return registry.getId(entry)
     }
 
-    protected open fun <E: T> register(string: String, entry: E, vararg tags: TagKey<T>): Lazy<E> {
-        return register(ModIdentifier.of(string), entry, *tags)
+    protected open fun <E: T> register(string: String, entry: Supplier<E>, vararg tags: TagKey<T>): Lazy<E> {
+        return super.register(string, entry).also { lazy ->
+            tags.forEach { tag ->
+                this.tags.getOrPut(tag) {
+                    TagEntry(tag, mutableListOf(), mutableListOf())
+                }.values.add(lazy)
+            }
+        }
     }
 
-    protected open fun <E: T> register(identifier: Identifier, entry: E, vararg tags: TagKey<T>): Lazy<E> {
-        tags.forEach { tag ->
-            this.tags.getOrPut(tag) {
-                TagEntry(tag, mutableListOf(), mutableListOf())
-            }.values.add(entry)
-        }
-        return super.register(identifier, entry)
-    }
 
     protected open fun <E: T> registerReference(string: String, entry: E): RegistryEntry<T> {
-        return registerReference(ModIdentifier.of(string), entry)
+        return Registry.registerReference(registry, ModIdentifier.of(string), entry)
     }
 
-    protected open fun <E: T> registerReference(identifier: Identifier, entry: E): RegistryEntry<T> {
-        return Registry.registerReference(registry, identifier, entry)
-    }
-
-    protected open fun registerTag(string: String, vararg values: T, children: MutableCollection<TagKey<T>> = mutableListOf()): TagEntry<T> {
+    protected open fun registerTag(string: String, vararg values: String, children: MutableCollection<TagKey<T>> = mutableListOf()): TagEntry<T> {
         return registerTag(ModIdentifier.of(string), *values, children = children)
     }
 
-    protected open fun registerTag(identifier: Identifier, vararg values: T, children: MutableCollection<TagKey<T>> = mutableListOf()): TagEntry<T> {
+    protected open fun registerTag(identifier: Identifier, vararg values: String, children: MutableCollection<TagKey<T>> = mutableListOf()): TagEntry<T> {
         val key = TagKey.of(registry.key, identifier)
         if(tags.containsKey(key)) {
             throw AssertionError("Tag was already registered: $key")
         }
-        val entry = TagEntry(key, children, values.toMutableList())
+        val entry = TagEntry(key, children, values.mapNotNull(entries::get).toMutableList())
         tags[key] = entry
         return entry
     }
 
-    protected open fun <K: Any> registerAssociatedTag(string: String, vararg associations: Pair<K, T>): AssociatedTagEntry<T, K> {
+    protected open fun <K: Any> registerAssociatedTag(string: String, vararg associations: Pair<K, String>): AssociatedTagEntry<T, K> {
         return registerAssociatedTag(ModIdentifier.of(string), *associations)
     }
 
-    protected open fun <K: Any> registerAssociatedTag(identifier: Identifier, vararg associations: Pair<K, T>): AssociatedTagEntry<T, K> {
+    protected open fun <K: Any> registerAssociatedTag(identifier: Identifier, vararg associations: Pair<K, String>): AssociatedTagEntry<T, K> {
         val key = TagKey.of(registry.key, identifier)
         if(tags.containsKey(key)) {
             throw AssertionError("Tag was already registered: $key")
         }
-        val entry = AssociatedTagEntry(key, associations.toMap(mutableMapOf()))
+        val entry = AssociatedTagEntry(key, associations.mapNotNull{ p -> entries[p.second]?.let { Pair(p.first, it) } }.toMap(mutableMapOf()))
         tags[key] = entry
         return entry
     }
 
     override fun initialize() {
-        entries.forEach { (identifier, entry) ->
-            Registry.register(registry, identifier, entry)
+        entries.forEach { (path, entry) ->
+            Registry.register(registry, ModIdentifier.of(path), entry.value)
         }
     }
 
@@ -76,8 +71,8 @@ open class RegistryCompendium<T: Any>(private val registry: Registry<T>): Generi
 
     }
 
-    open class TagEntry<T: Any>(val key: TagKey<T>, val children: MutableCollection<TagKey<T>>, val values: MutableCollection<T>)
+    open class TagEntry<T: Any>(val key: TagKey<T>, val children: MutableCollection<TagKey<T>>, val values: MutableCollection<Lazy<T>>)
 
-    class AssociatedTagEntry<T: Any, K: Any>(tag: TagKey<T>, val associations: MutableMap<K, T>): TagEntry<T>(tag, mutableListOf(), associations.values)
+    class AssociatedTagEntry<T: Any, K: Any>(tag: TagKey<T>, val associations: MutableMap<K, Lazy<T>>): TagEntry<T>(tag, mutableListOf(), associations.values)
 
 }

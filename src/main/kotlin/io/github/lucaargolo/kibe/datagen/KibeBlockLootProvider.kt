@@ -21,7 +21,7 @@ class KibeBlockLootProvider(dataOutput: FabricDataOutput, registryLookup: Comple
 
     override fun generate() {
         val list = mutableListOf<Block>()
-        list.addAll(BlockCompendium.entries.values)
+        list.addAll(BlockCompendium.entries.values.map(Lazy<Block>::value))
         list.remove(BlockCompendium.CURSED_DIRT)
         this.addDrop(BlockCompendium.CURSED_DIRT) { block -> this.drops(Blocks.DIRT) }
         addBlockEntity(list, BlockCompendium.ENTANGLED_CHEST, ComponentTypeCompendium.RUNE_SET, ComponentTypeCompendium.ENTANGLED_KEY, ComponentTypeCompendium.OWNER)

@@ -1,21 +1,18 @@
 package io.github.lucaargolo.kibe.utils
 
-import net.minecraft.util.Identifier
+import java.util.function.Supplier
 
 abstract class GenericCompendium<T: Any> {
 
-    val entries = mutableMapOf<Identifier, T>()
+    val entries = mutableMapOf<String, Lazy<T>>()
 
-    protected open fun <E: T> register(string: String, entry: E): Lazy<E> {
-        return register(ModIdentifier.of(string), entry)
-    }
-
-    protected open fun <E: T> register(identifier: Identifier, entry: E): Lazy<E> {
-        if(entries.containsKey(identifier)) {
-            throw AssertionError("Entry was already registered: $identifier")
+    protected open fun <E: T> register(string: String, entry: Supplier<E>): Lazy<E> {
+        if(entries.containsKey(string)) {
+            throw AssertionError("Kibe entry was already registered: $string")
         }
-        entries[identifier] = entry
-        return lazy { entry }
+        val lazy = lazy { entry.get() }
+        entries[string] = lazy
+        return lazy
     }
 
     abstract fun initialize()
