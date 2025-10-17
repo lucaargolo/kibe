@@ -139,13 +139,6 @@ object BlockCompendium : RegistryCompendium<Block>(Registries.BLOCK) {
     }
 
     override fun initializeClient() {
-        BlockRenderLayerMap.INSTANCE.putBlock(DRAWBRIDGE, RenderLayer.getCutoutMipped())
-        BlockRenderLayerMap.INSTANCE.putBlock(VACUUM_HOPPER, RenderLayer.getTranslucent())
-        BlockRenderLayerMap.INSTANCE.putBlock(BIG_TORCH, RenderLayer.getCutoutMipped())
-        BlockRenderLayerMap.INSTANCE.putBlock(COOLER, RenderLayer.getTranslucent())
-        BlockRenderLayerMap.INSTANCE.putBlock(WITHER_PROOF_GLASS, RenderLayer.getTranslucent())
-        BlockRenderLayerMap.INSTANCE.putBlock(ENTANGLED_TANK, RenderLayer.getCutoutMipped())
-
         ModelLoadingPlugin.register { plugin ->
             plugin.modifyModelOnLoad().register { model, context ->
                 val modelIdentifier = context.topLevelId() ?: return@register model

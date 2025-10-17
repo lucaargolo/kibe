@@ -30,7 +30,7 @@ object BlockEntityCompendium : RegistryCompendium<BlockEntityType<*>>(Registries
     val BREAKER by register("breaker", ::BreakerBlockEntity) { arrayOf(BlockCompendium.BREAKER) }
     val HEATER by register("heater", ::HeaterBlockEntity) { arrayOf(BlockCompendium.HEATER) }
     val DEHUMIDIFIER by register("dehumidifier", ::DehumidifierBlockEntity) { arrayOf(BlockCompendium.DEHUMIDIFIER) }
-    val BLOCK_GENERATOR by register("block_generator", ::BlockGeneratorBlockEntity) { BlockCompendium.BLOCK_GENERATORS.values.map(Lazy<Block>::value).toTypedArray() }
+    val BLOCK_GENERATOR by register("block_generator", ::BlockGeneratorBlockEntity) { BlockCompendium.BLOCK_GENERATORS.values.map(DeferredHolder<Block, out Block>::value).toTypedArray() }
     val CHUNK_LOADER by register("chunk_loader", ::ChunkLoaderBlockEntity) { arrayOf(BlockCompendium.CHUNK_LOADER) }
     val TANK by register("tank", ::TankBlockEntity) { arrayOf(BlockCompendium.TANK) }
     val XP_SHOWER by register("xp_shower", ::XpShowerBlockEntity) { arrayOf(BlockCompendium.XP_SHOWER) }
