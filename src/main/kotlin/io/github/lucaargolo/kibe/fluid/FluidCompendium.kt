@@ -28,7 +28,7 @@ object FluidCompendium: RegistryCompendium<Fluid>(Registries.FLUID) {
 
     val LIQUID_XP by register("liquid_xp") { LiquidXpFluid.Still() }
     val LIQUID_XP_FLOWING by register("flowing_liquid_xp") { LiquidXpFluid.Flowing() }
-    val EXPERIENCE by registerTag(Identifier.of("c", "experience"), "liquid_xp")
+    val EXPERIENCE by registerTag(Identifier.of("c", "experience")) { arrayOf("liquid_xp") }
 
     override fun initialize() {
         super.initialize()
