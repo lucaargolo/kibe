@@ -70,7 +70,6 @@ object KibeModClient: ClientModInitializer {
             drawMeasuringTapeOverlay(context)
             immediate.draw()
         }
-        MinecraftClient.getInstance().overlay
     }
 
     fun initExtraModels() {
