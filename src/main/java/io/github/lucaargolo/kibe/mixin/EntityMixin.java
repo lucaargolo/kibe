@@ -30,12 +30,13 @@ public abstract class EntityMixin {
     @Inject(at = @At("HEAD"), method = "setSneaking")
     private void setSneaking(boolean sneaking, CallbackInfo info) {
         if(sneaking && !isSpectator()) {
-            BlockPos pos = getBlockPos();
+            BlockPos pos = this.getBlockPos();
             Block block = world.getBlockState(pos.down()).getBlock();
             if (block instanceof Elevator && world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
                 pos = pos.down();
                 while(pos.getY() > world.getBottomY()) {
                     if(world.getBlockState(pos.down()).getBlock().equals(block) && Elevator.Companion.isElevatorValid(world, pos.down())) {
+                        world.playSound(null, this.getBlockPos(), SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
                         requestTeleport(this.pos.x, pos.down().getY()+1.15, this.pos.z);
                         world.playSound(null, pos, SoundEvents.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.15F + 0.6F);
                         break;
