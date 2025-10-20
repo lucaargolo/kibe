@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 import net.minecraft.screen.ScreenHandlerContext
 import net.minecraft.screen.slot.Slot
-import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -42,14 +41,6 @@ class DrawbridgeScreenHandler(syncId: Int, val playerInventory: PlayerInventory,
         (0..8).forEach { n ->
             addSlot(Slot(playerInventory, n, 8 + n * 18, 107))
         }
-    }
-
-    override fun onSlotClick(slot: Int, mouse: Int, actionType: SlotActionType?, playerEntity: PlayerEntity?) {
-        if(slot == 0) {
-            entity.extendedStack = ItemStack.EMPTY
-            entity.extendedStacks = 0
-        }
-        super.onSlotClick(slot, mouse, actionType, playerEntity)
     }
 
     override fun onContentChanged(inventory: Inventory) {
