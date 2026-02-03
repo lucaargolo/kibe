@@ -21,6 +21,11 @@ open class BooleanItem(settings: Settings): Item(settings) {
         } else {
             appendDisabledTooltip(stack, tooltip)
         }
+        if (isBroken(stack)) {
+            appendBrokenTooltip(stack, tooltip)
+        } else {
+            appendUnbrokenTooltip(stack, tooltip)
+        }
     }
 
     override fun use(world: World, player: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
@@ -41,8 +46,20 @@ open class BooleanItem(settings: Settings): Item(settings) {
         tooltip.add(Text.translatable("tooltip.kibe.shift2disable"))
     }
 
+    open fun appendBrokenTooltip(stack: ItemStack, tooltip: MutableList<Text>) {
+        tooltip.add(Text.translatable("Broken"))
+    }
+
+    open fun appendUnbrokenTooltip(stack: ItemStack, tooltip: MutableList<Text>) {
+        tooltip.add(Text.translatable("Unbroken"))
+    }
+
     open fun isEnabled(stack: ItemStack): Boolean {
         return stack.nbt?.getBoolean(ENABLED) ?: false
+    }
+
+    open fun isBroken(stack: ItemStack): Boolean {
+        return stack.nbt?.getBoolean(BROKEN) ?: false
     }
 
     open fun enable(stack: ItemStack) {
@@ -51,6 +68,14 @@ open class BooleanItem(settings: Settings): Item(settings) {
 
     open fun disable(stack: ItemStack) {
         stack.orCreateNbt.putBoolean(ENABLED, false)
+    }
+
+    open fun broken(stack: ItemStack) {
+        stack.orCreateNbt.putBoolean(BROKEN, true)
+    }
+
+    open fun unbroken(stack: ItemStack) {
+        stack.orCreateNbt.putBoolean(BROKEN, false)
     }
 
     open fun toggle(stack: ItemStack) {
@@ -63,6 +88,7 @@ open class BooleanItem(settings: Settings): Item(settings) {
 
     companion object {
         const val ENABLED = "enabled"
+        const val BROKEN = "broken"
     }
 
 }
