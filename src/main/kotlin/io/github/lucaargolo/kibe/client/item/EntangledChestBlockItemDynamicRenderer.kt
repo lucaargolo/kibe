@@ -14,12 +14,13 @@ import net.minecraft.util.math.BlockPos
 
 class EntangledChestBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
+    private val dummyRenderer = EntangledChestEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
+
     override fun render(stack: ItemStack, mode: ModelTransformationMode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
         val client = MinecraftClient.getInstance()
         val dummyChest = EntangledChestEntity(BlockPos.ORIGIN, BlockCompendium.ENTANGLED_CHEST.defaultState)
         dummyChest.readComponents(stack)
-        val context = BlockEntityRendererFactory.Context(client.blockEntityRenderDispatcher, client.blockRenderManager, client.itemRenderer, client.entityRenderDispatcher, client.entityModelLoader, client.textRenderer)
-        val dummyRenderer = EntangledChestEntityRenderer(context)
         dummyRenderer.render(dummyChest, client.renderTickCounter.getTickDelta(true), matrixStack, vertexConsumerProvider, lightmap, overlay)
     }
+
 }

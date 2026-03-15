@@ -5,24 +5,28 @@ import io.github.lucaargolo.kibe.blockentity.EntangledChestEntity
 import io.github.lucaargolo.kibe.client.EntangledRenderer
 import io.github.lucaargolo.kibe.utils.EntangledChestAnimationState
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
+import net.minecraft.client.render.entity.model.EntityModelLayer
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.DyeItem
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.RotationAxis
 import org.joml.Matrix4f
 import java.util.*
+import java.util.function.Function
 
 class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledChestEntity> {
 
@@ -35,7 +39,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
     private val topModel = arg.getLayerModelPart(helper.topModelLayer)
     private val coreModelGold = arg.getLayerModelPart(helper.coreModelLayerGold)
     private val coreModelDiamond = arg.getLayerModelPart(helper.coreModelLayerDiamond)
-
+    private val runeModels: Function<EntityModelLayer, ModelPart> = Util.memoize { arg.getLayerModelPart(it) }
 
     private val random = Random(31100L)
 
@@ -79,7 +83,7 @@ class EntangledChestEntityRenderer(private val arg: BlockEntityRendererFactory.C
             val runeModelLayer = EntangledTankEntityRenderer.helper.getRuneLayer(idx, col)
             matrices.translate(0.0, popup, 0.0)
             runeModelLayer?.let {
-                val rune = arg.getLayerModelPart(runeModelLayer)
+                val rune = runeModels.apply(runeModelLayer)
                 rune.render(matrices, runesConsumer, lightAbove, overlay)
             }
             matrices.translate(0.0, -popup, 0.0)

@@ -18,13 +18,14 @@ import net.minecraft.util.math.random.Random
 
 class EntangledTankBlockItemDynamicRenderer: BuiltinItemRendererRegistry.DynamicItemRenderer {
 
+    private val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
+
     override fun render(stack: ItemStack, mode: ModelTransformationMode, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, lightmap: Int, overlay: Int) {
         val client = MinecraftClient.getInstance()
         val dummyTank = EntangledTankEntity(client.player?.blockPos ?: BlockPos.ORIGIN, BlockCompendium.ENTANGLED_TANK.defaultState)
         dummyTank.readComponents(stack)
         dummyTank.lastRenderedFluid = dummyTank.getTank().amount / 81000f
 
-        val dummyRenderer = EntangledTankEntityRenderer(BlockEntityRendererFactory.Context(MinecraftClient.getInstance().blockEntityRenderDispatcher, MinecraftClient.getInstance().blockRenderManager, MinecraftClient.getInstance().itemRenderer, MinecraftClient.getInstance().entityRenderDispatcher, MinecraftClient.getInstance().entityModelLoader, MinecraftClient.getInstance().textRenderer))
         dummyRenderer.render(dummyTank, client.renderTickCounter.getTickDelta(true), matrixStack, vertexConsumerProvider, lightmap, overlay)
 
         val tankGlassIdentifier = ModelIdentifier(ModIdentifier.of("entangled_tank"), "level=0")
