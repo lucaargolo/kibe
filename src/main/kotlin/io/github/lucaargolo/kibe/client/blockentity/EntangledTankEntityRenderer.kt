@@ -6,9 +6,11 @@ import io.github.lucaargolo.kibe.client.EntangledRenderer
 import io.github.lucaargolo.kibe.data.state.EntangledTankState
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.model.ModelPart
 import net.minecraft.client.render.*
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
+import net.minecraft.client.render.entity.model.EntityModelLayer
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.fluid.Fluids
@@ -16,12 +18,14 @@ import net.minecraft.item.DyeItem
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.MathHelper
 import org.joml.Vector3f
 import java.awt.Color
+import java.util.function.Function
 
 class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<EntangledTankEntity> {
 
@@ -33,6 +37,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
     private val topModel = arg.getLayerModelPart(helper.topModelLayer)
     private val coreModelGold = arg.getLayerModelPart(helper.coreModelLayerGold)
     private val coreModelDiamond = arg.getLayerModelPart(helper.coreModelLayerDiamond)
+    private val runeModels: Function<EntityModelLayer, ModelPart> = Util.memoize { arg.getLayerModelPart(it) }
 
     override fun render(entity: EntangledTankEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         matrices.push()
@@ -56,7 +61,7 @@ class EntangledTankEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             val runeModelLayer = helper.getRuneLayer(idx, col)
             matrices.translate(0.0, popup, 0.0)
             runeModelLayer?.let {
-                val rune = arg.getLayerModelPart(runeModelLayer)
+                val rune = runeModels.apply(runeModelLayer)
                 rune.render(matrices, runesConsumer, lightAbove, overlay)
             }
             matrices.translate(0.0, -popup, 0.0)

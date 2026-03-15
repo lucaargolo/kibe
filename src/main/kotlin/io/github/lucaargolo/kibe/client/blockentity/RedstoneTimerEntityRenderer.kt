@@ -13,46 +13,15 @@ import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.RotationAxis
 import net.minecraft.util.math.random.Random
+import java.util.function.Function
 
 class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Context): BlockEntityRenderer<RedstoneTimerEntity> {
 
-    companion object {
-        val selectorModelLayers = mutableListOf<EntityModelLayer>()
-
-        init {
-            (0..15).forEach { level ->
-                selectorModelLayers.add(EntityModelLayer(ModIdentifier.of("redstone_timer"), "selector${level}"))
-            }
-        }
-
-        fun setupSelectorModel(level: Int): TexturedModelData {
-            val offsetX = when(level) {
-                in 0..4 -> level*2
-                in 5..8 -> 8
-                in 9..12 -> 24-(level*2)
-                in 13..15 -> 0
-                else -> 0
-            }
-
-            val offsetY = when(level) {
-                in 0..4 -> 0
-                in 5..8 -> (level-4)*2
-                in 9..12 -> 4*2
-                in 13..15 -> 32-(level*2)
-                else -> 0
-            }
-
-            val lv = ModelData()
-            val lv2 = lv.getRoot()
-            lv2.addChild("selector", ModelPartBuilder.create().uv(3, 3).cuboid(0f, 3f+offsetX, 3f+offsetY, 1f, 2f, 2f), ModelTransform.NONE)
-            return TexturedModelData.of(lv, 16, 16)
-        }
-
-    }
-
+    private val selectorModels: Function<EntityModelLayer, ModelPart> = Util.memoize { arg.getLayerModelPart(it) }
 
     override fun render(blockEntity: RedstoneTimerEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
 
@@ -73,7 +42,7 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
             })
 
             matrices.translate(-0.5, -0.5, -0.5)
-            val selectorModel = arg.getLayerModelPart(selectorModelLayers[blockEntity.level])
+            val selectorModel = selectorModels.apply(selectorModelLayers[blockEntity.level])
             renderSelector(selectorModel, matrices, vertexConsumers, light, overlay)
             matrices.pop()
 
@@ -127,7 +96,6 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
 
     }
 
-
     private fun renderSelector(selector: ModelPart, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
         val ironTexture = SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("block/iron_block"))
         val ironConsumer = ironTexture.getVertexConsumer(vertexConsumers, RenderLayer::getEntitySolid)
@@ -139,7 +107,39 @@ class RedstoneTimerEntityRenderer(private val arg: BlockEntityRendererFactory.Co
         selector.render(matrices, ironConsumer, light, overlay)
     }
 
+    companion object {
+        val selectorModelLayers = mutableListOf<EntityModelLayer>()
 
+        init {
+            (0..15).forEach { level ->
+                selectorModelLayers.add(EntityModelLayer(ModIdentifier.of("redstone_timer"), "selector${level}"))
+            }
+        }
+
+        fun setupSelectorModel(level: Int): TexturedModelData {
+            val offsetX = when(level) {
+                in 0..4 -> level*2
+                in 5..8 -> 8
+                in 9..12 -> 24-(level*2)
+                in 13..15 -> 0
+                else -> 0
+            }
+
+            val offsetY = when(level) {
+                in 0..4 -> 0
+                in 5..8 -> (level-4)*2
+                in 9..12 -> 4*2
+                in 13..15 -> 32-(level*2)
+                else -> 0
+            }
+
+            val lv = ModelData()
+            val lv2 = lv.getRoot()
+            lv2.addChild("selector", ModelPartBuilder.create().uv(3, 3).cuboid(0f, 3f+offsetX, 3f+offsetY, 1f, 2f, 2f), ModelTransform.NONE)
+            return TexturedModelData.of(lv, 16, 16)
+        }
+
+    }
 
 
 }
