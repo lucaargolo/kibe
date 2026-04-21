@@ -115,7 +115,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         Licensed under the MIT license available at: https://tldrlegal.com/license/mit-license
      */
     @SuppressWarnings("ConstantConditions")
-    @Inject(at = @At("HEAD"), method = "handleFallDamage")
+    @Inject(at = @At("HEAD"), method = "handleFallDamage", cancellable = true)
     private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if((Object) this instanceof PlayerEntity) {
             PlayerEntity player = ((PlayerEntity) ((Object) this));
