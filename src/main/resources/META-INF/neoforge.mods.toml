@@ -24,5 +24,12 @@ versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.kibe]]
+modId = "fabric_api"
+type = "required"
+versionRange = "[0.115,)"
+ordering = "NONE"
+side = "BOTH"
+
 [[mixins]]
 config = "kibe.mixins.json"
